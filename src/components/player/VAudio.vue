@@ -91,7 +91,7 @@
         repeat.value ? repeat.value = false : repeat.value = true;
       }
       function toglePlayer () {
-        playerbtn.value ? playerbtn.value = false && player.value?.pause() : playerbtn.value = true && player.value?.play();
+        playerbtn.value ? playerbtn.value = false || player.value?.pause() : playerbtn.value = true && player.value?.play();
 
       }
       return {
