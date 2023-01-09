@@ -92,15 +92,19 @@
       function togleArrowLeft () {
         arrowLeft.value ? arrowLeft.value = false : arrowLeft.value = true;
         srcIndex.value === 0 || srcIndex.value--;
+        player.value.paused && toglePlayer();
         player.value?.load();
         player.value?.play();
+        clearArrow();
       }
 
       function togleArrowRight () {
         arrowRight.value ? arrowRight.value = false : arrowRight.value = true;
         srcIndex.value === src.value.length || srcIndex.value++;
+        player.value.paused && toglePlayer();
         player.value?.load();
         player.value?.play();
+        clearArrow();
       }
 
       function togleRepeat () {
@@ -110,7 +114,16 @@
       function toglePlayer () {
         playerbtn.value ? playerbtn.value = false || player.value?.pause() : playerbtn.value = true && player.value?.play();
       }
-      
+
+      function clearArrow() {
+        setTimeout(() => {
+                     arrowLeft.value = false;
+                     arrowRight.value = false;
+                     console.log();
+                   }
+                   , 300);
+      }
+
       return {
         shuffle,
         arrowLeft,
@@ -125,7 +138,8 @@
         togleArrowRight,
         togleRepeat,
         togleShuffle,
-        toglePlayer
+        toglePlayer,
+        clearArrow
       };
     }
   };
