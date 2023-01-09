@@ -51,7 +51,7 @@
     </div>
     <audio ref="player">
       <source
-        src="../../assets/music/GarikOk - Toxin Ливси.mp3"
+        :src="src[srcIndex]"
         type="audio/mpeg"
       >
     </audio>
@@ -71,6 +71,13 @@
       const repeat = ref(false);
       const playerbtn = ref(false);
       const player = ref(null);
+      const src = ref([
+        "src/assets/music/GarikOk - Toxin Ливси.mp3",
+        "src/assets/music/Helltaker - Titanium.mp3",
+        "src/assets/music/srakandaev - Vladimirsky Central Rock.mp3",
+      ]);
+
+      const srcIndex = ref(0);
 
       const playerIcon = computed (()=> {
         return {
@@ -81,19 +88,29 @@
       function togleShuffle () {
         shuffle.value ? shuffle.value = false : shuffle.value = true;
       }
+
       function togleArrowLeft () {
         arrowLeft.value ? arrowLeft.value = false : arrowLeft.value = true;
+        srcIndex.value === 0 || srcIndex.value--;
+        player.value?.load();
+        player.value?.play();
       }
+
       function togleArrowRight () {
         arrowRight.value ? arrowRight.value = false : arrowRight.value = true;
+        srcIndex.value === src.value.length || srcIndex.value++;
+        player.value?.load();
+        player.value?.play();
       }
+
       function togleRepeat () {
         repeat.value ? repeat.value = false : repeat.value = true;
       }
+
       function toglePlayer () {
         playerbtn.value ? playerbtn.value = false || player.value?.pause() : playerbtn.value = true && player.value?.play();
-
       }
+      
       return {
         shuffle,
         arrowLeft,
@@ -102,6 +119,8 @@
         player,
         playerbtn,
         playerIcon,
+        src,
+        srcIndex,
         togleArrowLeft,
         togleArrowRight,
         togleRepeat,
