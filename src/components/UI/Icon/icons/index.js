@@ -1,0 +1,9 @@
+export { default as VIconArrowLeft } from './VIconArrowLeft.vue';
+export { default as VIconArrowRight } from './VIconArrowRight.vue';
+export { default as VIconLike } from './VIconLike.vue';
+export { default as VIconLikeActive } from './VIconLikeActive.vue';
+export { default as VIconPause } from './VIconPause.vue';
+export { default as VIconPlay } from './VIconPlay.vue';
+export { default as VIconRepeat } from './VIconRepeat.vue';
+export { default as VIconShuffle } from './VIconShuffle.vue';
+export { default as VIconVolume } from './VIconVolume.vue';

@@ -45,7 +45,6 @@
   font-size: 16px;
   line-height: 19px;
   color: var(--color-onsurface);
-  font-family: 'Inter', sans-serif;
 
   &-autor {
     font-weight: 400;
