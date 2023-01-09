@@ -7,7 +7,7 @@
         :class="{'active':shuffle}"
         name="shuffle"
         size="large"
-        @click="togleShuffle"
+        @click.prevent="togleShuffle"
       />
     </div>
     <div>
@@ -17,16 +17,16 @@
         :class="{'active':arrowLeft}"
         name="arrowLeft"
         size="large"
-        @click="togleArrowLeft"
+        @click.prevent="togleArrowLeft"
       />
     </div>
     <div>
       <v-icon
-        v-model="player"
+        v-model="playerbtn"
         class="player-track-info-favorite"
         :name="playerIcon.name"
         size="large"
-        @click="toglePlayer"
+        @click.prevent="toglePlayer"
       />
     </div>
     <div>
@@ -36,7 +36,7 @@
         :class="{'active':arrowRight}"
         name="arrowRight"
         size="large"
-        @click="togleArrowRight"
+        @click.prevent="togleArrowRight"
       />
     </div>
     <div>
@@ -46,10 +46,10 @@
         :class="{'active':repeat}"
         name="repeat"
         size="large"
-        @click="togleRepeat"
+        @click.prevent="togleRepeat"
       />
     </div>
-    <audio>
+    <audio ref="player">
       <source
         src="../../assets/music/GarikOk - Toxin Ливси.mp3"
         type="audio/mpeg"
@@ -69,11 +69,12 @@
       const arrowLeft = ref(false);
       const arrowRight = ref(false);
       const repeat = ref(false);
-      const player = ref(false);
+      const playerbtn = ref(false);
+      const player = ref(null);
 
       const playerIcon = computed (()=> {
         return {
-          name: player.value ? "pause" : "play"
+          name: playerbtn.value ? "pause" : "play"
         };
       });
 
@@ -90,7 +91,8 @@
         repeat.value ? repeat.value = false : repeat.value = true;
       }
       function toglePlayer () {
-        player.value ? player.value = false : player.value = true;
+        playerbtn.value ? playerbtn.value = false && player.value?.pause() : playerbtn.value = true && player.value?.play();
+
       }
       return {
         shuffle,
@@ -98,6 +100,7 @@
         arrowRight,
         repeat,
         player,
+        playerbtn,
         playerIcon,
         togleArrowLeft,
         togleArrowRight,
