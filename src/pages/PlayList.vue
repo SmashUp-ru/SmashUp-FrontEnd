@@ -2,7 +2,9 @@
   <div class="read">
     Плейлист
   </div>
-  <a href="/"> Главная </a>
+  <router-link to="/">
+    Главная
+  </router-link>
 </template>
 
 <style scoped>
