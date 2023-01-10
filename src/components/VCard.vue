@@ -1,19 +1,19 @@
 <template>
   <div class="card">
-    <a
+    <router-link 
       class="card-logo-link"
-      :href="link"
+      :to="link"
     >
       <div class="card-logo"/>
-    </a>
-    <a
+    </router-link>
+    <router-link
       class="card-title-link"
-      :href="link"
+      :to="link"
     >
       <div class="card-title">
         Мэшап-Радио
       </div>
-    </a>
+    </router-link>
     <div class="card-autor">
       SmashUp
     </div>
