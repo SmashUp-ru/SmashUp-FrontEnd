@@ -1,14 +1,14 @@
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+</script>
 
 <template>
-  <router-view/>
-  <v-player/>
-</template>
+  <!-- <header>
+      <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
+  </header> -->
 
-<script>
-  import VPlayer from "../src/components/player/VPlayer.vue";
-  export default {
-    components: {
-      VPlayer
-    }
-  };
-</script>
+  <RouterView />
+</template>
