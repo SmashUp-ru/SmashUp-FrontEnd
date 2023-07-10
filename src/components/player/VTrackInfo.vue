@@ -49,6 +49,8 @@
       name: favoriteStatus.value ? "likeActive" : "like"
     };
   });
+
+  const togleLike = () => favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
 </script>
 <style lang="scss" scoped>
 .player-track-info {

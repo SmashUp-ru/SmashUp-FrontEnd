@@ -41,10 +41,6 @@
     img:'../Картинка.png'
   });
 
-  function togleLike () {
-    favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
-  }
-
   function muteVolume () {
     favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
   }
