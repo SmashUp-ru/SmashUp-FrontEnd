@@ -48,7 +48,7 @@
     
 
   &-logo {
-    background: url('../assets/images/Картинка.png') no-repeat;
+    background: url('../Картинка.png') no-repeat;
     height: 188px;
 
     &-link {
