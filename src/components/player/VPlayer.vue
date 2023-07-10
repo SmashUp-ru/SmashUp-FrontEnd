@@ -4,37 +4,7 @@
       <div class="player-bar-progress"/>
     </div>
     <div class="player-container">
-      <div class="player-track-info">
-        <a href="/playlist">
-          <img
-            class="player-track-info-img"
-            src="../../assets/images/Картинка.png"
-            alt="$"
-          >
-        </a>
-        <div class="player-track-info-container">
-          <div class="player-track-info-title">
-            <a
-              class="player-track-info-link"
-              href="/playlist"
-            >Без названия</a>
-          </div>
-          <div class="player-track-info-autor">
-            <a
-              class="player-track-info-link"
-              href="/playlist"
-            >Неизвестен</a>
-          </div>
-        </div>
-        <v-icon
-          ref="favorite"
-          v-model="favoriteStatus"
-          class="player-track-info-favorite"
-          :name="favoriteIcon.name"
-          size="large"
-          @click="togleLike"
-        />
-      </div>
+      <v-track-info :info="trackInfo"/>
       <div>
         <v-audio/>
       </div>
@@ -59,15 +29,16 @@
   </div>
 </template>
 <script setup>
-  import { ref,computed } from 'vue';
+  import { ref } from 'vue';
+  import VTrackInfo from './VTrackInfo.vue';
   import VAudio from './VAudio.vue';
   import VIcon from '../UI/Icon/VIcon.vue';
     
-  const favoriteStatus = ref(false);
-  const favoriteIcon = computed (()=> {
-    return {
-      name: favoriteStatus.value ? "likeActive" : "like"
-    };
+  const trackInfo = ref({
+    id:1,
+    autor:'Неизвестен',
+    title:'Без названия',
+    img:'../Картинка.png'
   });
 
   function togleLike () {
@@ -78,7 +49,7 @@
     favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .player{
     font-family: 'Inter', sans-serif;
     height: 105px;
