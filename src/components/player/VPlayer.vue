@@ -43,6 +43,7 @@
           <v-icon
             name="volume"
             size="large"
+            @click="muteVolume"
           />
           <div class="player-track-info-volume-bar">
             <input
@@ -57,35 +58,25 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
   import { ref,computed } from 'vue';
   import VAudio from './VAudio.vue';
   import VIcon from '../UI/Icon/VIcon.vue';
+    
+  const favoriteStatus = ref(false);
+  const favoriteIcon = computed (()=> {
+    return {
+      name: favoriteStatus.value ? "likeActive" : "like"
+    };
+  });
 
-  export default {
-    components: {
-      VAudio,
-      VIcon
-    },
-    setup() {
-      const favoriteStatus = ref(false);
-      const favoriteIcon = computed (()=> {
-        return {
-          name: favoriteStatus.value ? "likeActive" : "like"
-        };
-      });
+  function togleLike () {
+    favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
+  }
 
-      function togleLike () {
-        favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
-      }
-
-      return {
-        togleLike,
-        favoriteStatus,
-        favoriteIcon
-      };
-    }
-  };
+  function muteVolume () {
+    favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
+  }
 </script>
 <style lang="scss">
   .player{

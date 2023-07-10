@@ -7,52 +7,40 @@
       [`v-icon--theme-${theme}`]: theme,
     }"
   >
-    <component :is="currentIcon"/>
+    <component :is="iconComponent"/>
   </svg>
 </template>
 
-<script>
-  import { defineComponent, computed } from 'vue';
-  import * as icons from './icons';
+<script setup>
+  import { defineProps, computed, defineAsyncComponent } from 'vue';
 
-  export default defineComponent({
-    name: 'VIcon',
-    components: {
-      ...icons,
+  const props = defineProps({
+    name: {
+      type: String,
+      required: true,
     },
-    props: {
-      name: {
-        type: String,
-        required: true,
-      },
-      view: {
-        type: String,
-        default: '0 0 32 32',
-      },
-      size: {
-        type: String,
-        default: 'medium',
-      },
-      theme: {
-        type: String,
-        default: 'primary',
-      },
+    view: {
+      type: String,
+      default: '0 0 32 32',
     },
-    setup(props) {
-      const currentIcon = computed(() => {
-        const nameUppercase = props.name.charAt(0).toUpperCase() + props.name.slice(1);
+    size: {
+      type: String,
+      default: 'medium',
+    },
+    theme: {
+      type: String,
+      default: 'primary',
+    },
+  });
+  const iconComponent = computed(() => {
+    const nameUppercase = props.name.charAt(0).toUpperCase() + props.name.slice(1);
+    const componentName = `VIcon${nameUppercase}`;
 
-        return `VIcon${nameUppercase}`;
-      });
-
-      return {
-        currentIcon,
-      };
-    },
+    return defineAsyncComponent(() => import(`./icons/${componentName}.vue`));
   });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .v-icon {
   display: inline-flex;
   flex-shrink: 0;

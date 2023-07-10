@@ -19,21 +19,16 @@
     </div>
   </div>
 </template>
-<script>
-  import { PROP_TYPE_STRING } from "../utils/constants/props";
-  export default {
-    props: {
-      href: {
-        type: PROP_TYPE_STRING,
-        default: ''
-      }
-    },
-    computed: {
-      link () {
-        return `/${this.href}`;
-      }
+<script setup>
+  import { defineProps, computed } from 'vue';
+  const props = defineProps( {
+    href: {
+      type: String,
+      default: ''
     }
-  };
+  });
+
+  const link = computed(()=> `/${props.href}`);
 </script>
 <style lang="scss" scoped>
 .card {
