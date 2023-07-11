@@ -1,19 +1,19 @@
 <template>
   <div class="card">
-    <router-link 
+    <v-link 
       class="card-logo-link"
       :to="link"
     >
       <div class="card-logo"/>
-    </router-link>
-    <router-link
+    </v-link>
+    <v-link
       class="card-title-link"
       :to="link"
     >
       <div class="card-title">
         Мэшап-Радио
       </div>
-    </router-link>
+    </v-link>
     <div class="card-autor">
       SmashUp
     </div>
@@ -21,6 +21,7 @@
 </template>
 <script setup>
   import { defineProps, computed } from 'vue';
+  import VLink from '../components/UI/VLink.vue';
   const props = defineProps( {
     href: {
       type: String,

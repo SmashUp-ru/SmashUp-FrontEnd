@@ -37,8 +37,11 @@
   const trackInfo = ref({
     id:1,
     autor:'Неизвестен',
+    autorLink:'/playlist',
+    link:'/',
     title:'Без названия',
-    img:'../Картинка.png'
+    img:'../Картинка.png',
+
   });
 
   function muteVolume () {

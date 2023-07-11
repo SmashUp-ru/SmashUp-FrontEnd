@@ -1,24 +1,26 @@
 <template>
   <div class="player-track-info">
-    <a href="/playlist">
+    <v-link :href="info.link">
       <img
         class="player-track-info-img"
         :src="info.img"
         alt="$"
       >
-    </a>
+    </v-link>
     <div class="player-track-info-container">
       <div class="player-track-info-title">
-        <a
-          class="player-track-info-link"
-          href="/playlist"
-        >{{ info.title }}</a>
+        <v-link
+          :href="info.link"
+        >
+          {{ info.title }}
+        </v-link>
       </div>
       <div class="player-track-info-autor">
-        <a
-          class="player-track-info-link"
-          href="/playlist"
-        >{{ info.autor }}</a>
+        <v-link
+          :href="info.autorLink"
+        >
+          {{ info.autor }}
+        </v-link>
       </div>
     </div>
     <v-icon
@@ -34,6 +36,7 @@
 <script setup>
   import {ref, computed, defineProps} from 'vue';
   import VIcon from '../UI/Icon/VIcon.vue';
+  import VLink from '../UI/VLink.vue';
 
   defineProps({
     info: {
@@ -50,7 +53,7 @@
     };
   });
 
-  const togleLike = () => favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
+  const togleLike = () => favoriteStatus.value = !favoriteStatus.value;
 </script>
 <style lang="scss" scoped>
 .player-track-info {
@@ -79,11 +82,6 @@
     width: 64px;
     height: 64px;
     object-fit: cover;
-  }
-
-  &-link {
-    color: var(--color-onsurface);
-    text-decoration: none;
   }
 
   &-title {
