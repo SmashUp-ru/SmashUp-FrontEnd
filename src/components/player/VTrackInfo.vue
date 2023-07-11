@@ -57,7 +57,6 @@
 </script>
 <style lang="scss" scoped>
 .player-track-info {
-  margin-left: var(--gutter-40);
   display: flex;
   gap: 24px;
 
