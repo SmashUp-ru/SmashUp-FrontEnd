@@ -1,3 +1,7 @@
+# Документация: [GitHub](https://github.com/LeonidMem/SmashUp-FrontEnd/wiki)
+
+# Макет: [Figma](https://www.figma.com/file/rRag5NIqwib0N69njQFTbK/SmashUp-2.0?node-id=139%3A1473)
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
