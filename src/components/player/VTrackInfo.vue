@@ -1,25 +1,28 @@
 <template>
-  <div class="player-track-info">
-    <v-link :href="info.link">
+  <div
+    class="player-track-info"
+    :class="{ hide : !info.length }"
+  >
+    <v-link :href="info?.link">
       <img
         class="player-track-info-img"
-        :src="info.img"
+        :src="info?.img"
         alt="$"
       >
     </v-link>
     <div class="player-track-info-container">
       <div class="player-track-info-title">
         <v-link
-          :href="info.link"
+          :href="info?.link"
         >
-          {{ info.title }}
+          {{ info?.title }}
         </v-link>
       </div>
       <div class="player-track-info-autor">
         <v-link
-          :href="info.autorLink"
+          :href="info?.autorLink"
         >
-          {{ info.autor }}
+          {{ info?.autor }}
         </v-link>
       </div>
     </div>
@@ -67,6 +70,10 @@
     justify-content: center;
     font-size: 14px;
     line-height: 17px;
+  }
+
+  &.hide {
+    visibility: hidden;
   }
 
   &-favorite{ 

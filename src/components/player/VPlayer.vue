@@ -4,7 +4,7 @@
     <div
       class="player-container"
     >
-      <v-track-info :info="trackInfo"/>
+      <v-track-info :info="responseData"/>
       <div>
         <v-audio/>
       </div>
@@ -30,20 +30,22 @@
 </template>
 <script setup>
   import { ref } from 'vue';
+  import api from '../../api/api';
   import VTrackInfo from './VTrackInfo.vue';
   import VAudio from './VAudio.vue';
   import VIcon from '../UI/Icon/VIcon.vue';
   import VProgressBar from './VProgressBar.vue';
-    
-  const trackInfo = ref({
-    id:1,
-    autor:'Неизвестен',
-    autorLink:'/playlist',
-    link:'/',
-    title:'Без названия',
-    img:'../Картинка.png',
 
-  });
+  const responseData = ref(null);
+  const error = ref(null);
+
+  api.get('/mashup/get?id=1')
+    .then(response => {
+      responseData.value = response.data;
+    })
+    .catch(err => {
+      error.value = err.message;
+    });
 
   function muteVolume () {
     favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
