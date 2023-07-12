@@ -20,6 +20,7 @@
                 </div>
             </div>
             <slot />
+            <Player />
         </div>
     </div>
 </template>
