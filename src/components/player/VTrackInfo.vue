@@ -1,7 +1,7 @@
 <template>
   <div
     class="player-track-info"
-    :class="{ hide : !info.length }"
+    :class="{ hide : !info?.length }"
   >
     <v-link :href="info?.link">
       <img

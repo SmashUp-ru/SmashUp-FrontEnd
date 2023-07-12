@@ -4,11 +4,6 @@
   <v-player/>
 </template>
 
-<script>
+<script setup>
   import VPlayer from "../src/components/player/VPlayer.vue";
-  export default {
-    components: {
-      VPlayer
-    }
-  };
 </script>
