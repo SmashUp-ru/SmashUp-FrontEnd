@@ -1,36 +1,24 @@
 {
-  "name": "smashup",
+  "name": "nuxt-app",
   "private": true,
-  "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "prepare": "husky install",
-    "lint:style": "stylelint ./src --fix",
-    "lint:js": "eslint ./src --fix",
-    "lint": "yarn lint:style && yarn lint:js"
-  },
-  "dependencies": {
-    "axios": "^1.4.0",
-    "sass": "^1.55.0",
-    "vue": "^3.2.37",
-    "vue-router": "^4.1.5"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@vitejs/plugin-vue": "^3.1.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^8.23.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.4.0",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "prettier": "2.7.1",
-    "stylelint": "13.13.1",
-    "stylelint-config-rational-order": "^0.1.2",
-    "vite": "^3.1.0"
+    "@nuxt/devtools": "latest",
+    "@types/node": "^18",
+    "nuxt": "^3.6.2",
+    "sass": "^1.63.6",
+    "sass-loader": "^13.3.2"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.4.11",
+    "@vueuse/integrations": "^10.2.1",
+    "pinia": "^2.1.4",
+    "universal-cookie": "^4.0.4"
   }
 }
