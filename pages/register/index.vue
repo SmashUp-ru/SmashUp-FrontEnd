@@ -12,8 +12,7 @@
     const password = ref(null)
 
     async function sendData() {
-        console.log(email.value, password.value, keepAuth.value)
-        const iaAuthorised = await auth.loginUser(email.value, password.value, keepAuth.value)
+        const iaAuthorised = await auth.registerUser(username.value, email.value, password.value)
 
         if (!iaAuthorised) return
         await location.reload()

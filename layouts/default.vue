@@ -20,9 +20,9 @@
                 </div>
             </div>
             <slot />
-            <Player />
         </div>
     </div>
+    <Player />
 </template>
 
 <style lang="scss">

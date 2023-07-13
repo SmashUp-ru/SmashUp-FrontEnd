@@ -12,7 +12,6 @@
     const keepAuth = ref(null)
 
     async function sendData() {
-        console.log(email.value, password.value, keepAuth.value)
         const iaAuthorised = await auth.loginUser(email.value, password.value, keepAuth.value)
 
         if (!iaAuthorised) return
