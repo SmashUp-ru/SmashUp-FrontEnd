@@ -5,9 +5,9 @@
 </script>
 
 <template>
-    <div style="display: flex;">
+    <div class="container">
         <Nav />
-        <div style="width: 100%; margin-left: 30px;">
+        <div>
             <div class="mainHeader">
                 <Search />
                 <div class="mainHeaderInfo">
@@ -25,30 +25,39 @@
     <Player />
 </template>
 
-<style lang="scss">
-    .mainHeader {
-        display: flex;
-        height: 130px;
-        padding: 50px 0;
-        padding-right: 30px;
-        justify-content: space-between;
-        align-items: center;
+<style lang="scss" scoped>
+.container {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 105px);
+    & > div {
+        padding: 0 30px;
+        height: calc(100vh - 105px);
+        overflow: auto;
+    }
+}
+.mainHeader {
+    display: flex;
+    height: 130px;
+    padding: 50px 0;
+    justify-content: space-between;
+    align-items: center;
+    &Info {
+        display: flex;  
     }
 
-    .mainHeaderInfo {
-        display: flex;
-    }
-
-    .mainHeaderUser {
+    &User {
         width: 120px;
         display: flex;
         align-items: center;
         justify-content: space-between;
 
-        & img {
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-        }
+    & img {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
     }
+    }
+}
+
 </style>

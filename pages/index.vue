@@ -13,7 +13,6 @@ const categories = [
   ] }
 ]
 
-// const categories = []
 </script>
 
 <template>
@@ -25,9 +24,6 @@ const categories = [
           <template v-for="playlist of category.playlists" :key="playlist">
             <a :href="`/playlist/${playlist.id}`" class="playlist">
               <img class="playlist_image" :src="playlist.image" alt="">
-              <div class="playlist_text">
-
-              </div>
               <p class="playlist_name">{{ playlist.name }}</p>
               <p class="playlist_user">{{ playlist.user }}</p>
             </a>
@@ -38,38 +34,32 @@ const categories = [
   </div>
 </template>
 
-<style scoped lang="scss">
-  .mainContainer {
-    display: flex;
-  }
-
-  .playlistsWraper {
+<style lang="scss" scoped>
+.playlists {
     width: 100%;
     display: flex;
-    // padding-left: 32px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 48px;
-  }
-
-  .playlistsConatiner {
-    width: 100%;
-  }
-
-  .playlists {
-    width: 100%;
-    display: flex;
-    overflow-y: scroll;
+    flex-wrap: wrap;
+    gap: 30px;
+    &Conatiner {
+      width: 100%;
+    }
 
     &_name {
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    &Wraper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 48px;
     }
   }
 
   .playlist {
-    margin: 0 15px;
     display: flex;
     padding: 25px;
     flex-direction: column;

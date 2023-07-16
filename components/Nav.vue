@@ -41,7 +41,7 @@ const playlists = [{ name: "Периорекс", id: "29" }, { name: "Новый
     background: #0A0A0A;
     display: flex;
     min-width: 282px;
-    height: 100vh;
+    height: calc(100vh - 105px);
     padding: 70px 40px 40px;
     flex-direction: column;
     align-items: center;
