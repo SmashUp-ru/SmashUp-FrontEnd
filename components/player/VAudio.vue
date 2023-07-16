@@ -3,7 +3,6 @@
     <div>
       <v-icon
         v-model="shuffle"
-        class="player-track-info-favorite"
         :class="{ active: shuffle }"
         name="shuffle"
         size="large"
@@ -13,7 +12,6 @@
     <div>
       <v-icon
         v-model="arrowLeft"
-        class="player-track-info-favorite"
         :class="{ active: arrowLeft }"
         name="arrowLeft"
         size="large"
@@ -23,7 +21,6 @@
     <div>
       <v-icon
         v-model="playerbtn"
-        class="player-track-info-favorite"
         :name="playerIcon.name"
         size="large"
         @click.prevent="toglePlayer"
@@ -32,7 +29,6 @@
     <div>
       <v-icon
         v-model="arrowRight"
-        class="player-track-info-favorite"
         :class="{ active: arrowRight }"
         name="arrowRight"
         size="large"
@@ -42,7 +38,6 @@
     <div>
       <v-icon
         v-model="repeat"
-        class="player-track-info-favorite"
         :class="{ active: repeat }"
         name="repeat"
         size="large"
@@ -66,11 +61,7 @@
   const repeat = ref(false);
   const playerbtn = ref(false);
   const player = ref(null);
-  const src = ref([
-    'src/assets/music/GarikOk - Toxin Ливси.mp3',
-    'src/assets/music/Helltaker - Titanium.mp3',
-    'src/assets/music/srakandaev - Vladimirsky Central Rock.mp3',
-  ]);
+  const src = ref(['asas']);
 
   const duration = player.value;
 
@@ -109,10 +100,10 @@
   }
 
   function toglePlayer() {
+    console.log(playerbtn.value)
     playerbtn.value
-      ? (playerbtn.value = false || player.value?.pause())
-      : (playerbtn.value = true && player.value?.play());
-    console.log(player.value.duration);
+      ? ((playerbtn.value = false) )
+      : ((playerbtn.value = true) );
   }
 
   function clearArrow() {
@@ -125,9 +116,9 @@
 <style lang="scss" scoped>
 .audio {
   display: flex;
-  gap: var(--gutter-24);
+  gap: 24px;
 }
 .active {
-  fill: var(--color-primary);
+  fill: #A887F8;
 }
 </style>

@@ -38,14 +38,6 @@
   const responseData = ref(null);
   const error = ref(null);
 
-  // api.get('/mashup/get?id=1')
-  //   .then(response => {
-  //     responseData.value = response.data;
-  //   })
-  //   .catch(err => {
-  //     error.value = err.message;
-  //   });
-
   function muteVolume () {
     favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
   }

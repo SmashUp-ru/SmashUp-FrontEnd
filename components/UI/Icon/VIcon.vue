@@ -3,69 +3,66 @@
     class="v-icon"
     :viewBox="`${view}`"
     :class="{
-      [`v-icon--size-${size}`]: size,
-      [`v-icon--theme-${theme}`]: theme,
+      ['v-icon--size-' + size]: size,
+      ['v-icon--theme-' + theme]: theme
     }"
   >
-    <component :is="iconComponent"/>
+    <component :is="iconComponent"></component>
   </svg>
 </template>
 
-<script setup>
-  import { defineProps, computed, defineAsyncComponent } from 'vue';
+<script>
+import * as icons from './icons';
 
-  const props = defineProps({
+export default {
+  props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     view: {
       type: String,
-      default: '0 0 32 32',
+      default: '0 0 32 32'
     },
     size: {
       type: String,
-      default: 'medium',
+      default: 'medium'
     },
     theme: {
       type: String,
-      default: 'primary',
-    },
-  });
-  const iconComponent = computed(() => {
-    const nameUppercase = props.name.charAt(0).toUpperCase() + props.name.slice(1);
-    const componentName = `VIcon${nameUppercase}`;
+      default: 'primary'
+    }
+  },
+  computed: {
+    iconComponent() {
+      const nameUppercase = this.name.charAt(0).toUpperCase() + this.name.slice(1);
+      const componentName = 'VIcon' + nameUppercase;
 
-    return defineAsyncComponent(() => import(`./icons/${componentName}.vue`));
-  });
+      return icons[componentName];
+    }
+  },
+  components: icons
+};
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-icon {
   display: inline-flex;
   flex-shrink: 0;
-
   transition: var(--transition-base);
-
-  &--size {
-    &-large {
-      width: 32px;
-      height: 32px;
-    }
-
-    &-medium {
-      width: 24px;
-      height: 24px;
-    }
-  }
-
-  &--theme {
-    &-primary {
-      fill: var(--color-onsurface);
-    }
-    &-secondary {
-      fill: var(--color-onsurface);
-    }
-  }
+}
+.v-icon--size-large {
+  width: 32px;
+  height: 32px;
+}
+.v-icon--size-medium {
+  width: 24px;
+  height: 24px;
+}
+.v-icon--theme-primary {
+  fill: #EBEBEB;
+}
+.v-icon--theme-secondary {
+  fill: #EBEBEB;
 }
 </style>
