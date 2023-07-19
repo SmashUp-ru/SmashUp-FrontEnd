@@ -92,6 +92,10 @@
     audioStore.setCurrentTime(currentTime.value);
   });
 
+  watch(() => audioStore.newTime, (newValue) => {
+    player.value.currentTime = newValue;
+  });
+
   function togleShuffle() {
     shuffle.value ? (shuffle.value = false) : (shuffle.value = true);
   }

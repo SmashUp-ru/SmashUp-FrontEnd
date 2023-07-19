@@ -5,6 +5,7 @@ export const useAudioStore = defineStore({
   state() {
     return {
       currentTime: 0,
+      newTime: null,
     };
   },
   getters: {
@@ -15,6 +16,9 @@ export const useAudioStore = defineStore({
   actions: {
     setCurrentTime(time) {
       this.currentTime = time;
+    },
+    setNewTime(time) {
+      this.newTime = time;
     },
   },
 });
