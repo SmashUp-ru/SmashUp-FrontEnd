@@ -9,15 +9,24 @@
   </div>
 </template>
 <script setup>
-  import { ref, computed, watch } from 'vue';
+  import { computed, watch, defineProps } from 'vue';
 
-  const progress = ref(0);
-  const duration = ref(0);
+  import { useAudioStore } from '@assets/utils/audio';
 
-  const fillWidth = computed(() => `${(progress.value / duration.value) * 100}%`);
+  const audioStore = useAudioStore();
 
-  watch([progress, duration], () => {
-  });
+  // Доступ к текущему значению времени воспроизведения
+  const currentTimeFormatted = computed(() => audioStore.currentTimeFormatted);
+
+  const props = defineProps({
+    duration: {
+      type: Number,
+      default: null
+    }
+  })
+
+  const fillWidth = computed(() => `${(currentTimeFormatted.value / props.duration) * 100}%`);
+
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template>
   <div
     class="player-track-info"
-    :class="{ hide : !info?.length }"
+    :class="{ hide : !title?.length }"
   >
     <v-link :href="info?.link">
       <img
@@ -15,7 +15,7 @@
         <v-link
           :href="info?.link"
         >
-          {{ info?.title }}
+          {{ title }}
         </v-link>
       </div>
       <div class="player-track-info-autor">
@@ -37,14 +37,18 @@
   </div>
 </template>
 <script setup>
-  import {ref, computed, defineProps} from 'vue';
+  import { ref, computed, defineProps } from 'vue';
   import VIcon from '../UI/Icon/VIcon.vue';
   import VLink from '../UI/VLink.vue';
 
   defineProps({
-    info: {
-      type: Object,
-      default: ()=> ({})
+    title: {
+      type: String,
+      default: '',
+    },
+    autor: {
+      type: Array,
+      default: () => [],
     }
   });
 

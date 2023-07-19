@@ -1,19 +1,18 @@
 <template>
   <div class="player">
-    <v-progress-bar/>
+    <v-progress-bar :duration="mashup.duration"/>
     <div
       class="player-container"
     >
-      <v-track-info :info="responseData"/>
+      <v-track-info :title="mashup.title"/>
       <div>
-        <v-audio/>
+        <v-audio :src="mashup.src"/>
       </div>
       <div>
         <div class="player-track-info-volume">
           <v-icon
             name="volume"
             size="large"
-            @click="muteVolume"
           />
           <div class="player-track-info-volume-bar">
             <input
@@ -30,26 +29,26 @@
 </template>
 <script setup>
   import { ref } from 'vue';
+  import { useMashupStore } from "@assets/utils/mashup"
   import VTrackInfo from './player/VTrackInfo.vue';
   import VAudio from './player/VAudio.vue';
   import VIcon from './UI/Icon/VIcon.vue';
   import VProgressBar from './player/VProgressBar.vue';
 
-  const responseData = ref(null);
-  const error = ref(null);
 
-  function muteVolume () {
-    favoriteStatus.value ? favoriteStatus.value = false : favoriteStatus.value = true;
-  }
+  const error = ref(null);
+  const mashup = useMashupStore();
+
+  mashup.getMashup(1);
 </script>
 <style lang="scss" scoped>
   .player{
     font-family: 'Inter', sans-serif;
     height: 105px;
-    background-color: var(--color-background);
+    background-color: #1A1A1A;
 
     &-container {
-      height: calc(100% - 6px);
+      height: calc(100% - 8px);
       margin: 0 40px;
 
       display: flex;

@@ -44,33 +44,52 @@
         @click.prevent="togleRepeat"
       />
     </div>
-    <audio ref="player">
-      <source
-        :src="src[srcIndex]"
-        type="audio/mpeg"
-      >
-    </audio>
+    <audio ref="player" :src="src"/>
   </div>
 </template>
 <script setup>
   import VIcon from '../UI/Icon/VIcon.vue';
-  import { ref, computed } from 'vue';
+  import { useAudioStore } from '@assets/utils/audio'
+  import { ref, computed, defineProps, watch, onMounted } from 'vue';
+
+  const currentTime = ref(0);
   const shuffle = ref(false);
   const arrowLeft = ref(false);
   const arrowRight = ref(false);
   const repeat = ref(false);
   const playerbtn = ref(false);
   const player = ref(null);
-  const src = ref(['asas']);
-
-  const duration = player.value;
-
   const srcIndex = ref(0);
+
+  const props = defineProps({
+    src: {
+      type: String,
+      default: '',
+    }
+  });
 
   const playerIcon = computed(() => {
     return {
       name: playerbtn.value ? 'pause' : 'play',
     };
+  });
+
+  const src = ref(props.src);
+  const audioStore = useAudioStore()
+
+  onMounted(() => {
+  setInterval(() => {
+    currentTime.value = player.value ? player.value.currentTime : 0;
+  }, 1000);
+  });
+
+  watch(() => props.src, (newValue) => {
+    src.value = newValue;
+  });
+
+  watch(() => currentTime.value, (newValue) => {
+    currentTime.value = newValue;
+    audioStore.setCurrentTime(currentTime.value);
   });
 
   function togleShuffle() {
@@ -100,10 +119,9 @@
   }
 
   function toglePlayer() {
-    console.log(playerbtn.value)
     playerbtn.value
-      ? ((playerbtn.value = false) )
-      : ((playerbtn.value = true) );
+      ? ((playerbtn.value = false) || player.value?.pause())
+      : ((playerbtn.value = true) && player.value?.play());
   }
 
   function clearArrow() {
