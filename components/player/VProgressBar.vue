@@ -10,16 +10,13 @@
 </template>
 <script setup>
   import { computed, defineProps } from 'vue';
-
   import { useAudioStore } from '@assets/utils/audio';
 
   const audioStore = useAudioStore();
-
   const progressBar = ref(null);
 
   // Доступ к текущему значению времени воспроизведения
   const currentTimeFormatted = computed(() => audioStore.currentTimeFormatted);
-
   const props = defineProps({
     duration: {
       type: Number,

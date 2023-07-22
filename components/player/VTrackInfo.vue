@@ -37,7 +37,6 @@
   </div>
 </template>
 <script setup>
-  import { ref, computed, defineProps } from 'vue';
   import VIcon from '../UI/Icon/VIcon.vue';
   import VLink from '../UI/VLink.vue';
 
@@ -49,6 +48,9 @@
     autor: {
       type: Array,
       default: () => [],
+    },
+    info: {
+      type: Object
     }
   });
 

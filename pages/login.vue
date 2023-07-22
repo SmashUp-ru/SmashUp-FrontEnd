@@ -68,7 +68,7 @@
 
         <div>
             <button class="button button_stroke button_stroke_default2"><img src="/icons/vk.svg" alt=""> VK ID</button>
-            <button class="button button_stroke button_stroke_default2"><img src="/icons/google.svg" alt=""> Google</button>
+            <!-- <button class="button button_stroke button_stroke_default2"><img src="/icons/google.svg" alt=""> Google</button> -->
         </div>
 
         <p class="register">Нет аккаунта? <NuxtLink to="/register">Зарегистрируйтесь</NuxtLink></p>

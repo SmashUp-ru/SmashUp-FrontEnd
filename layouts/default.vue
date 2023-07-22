@@ -2,12 +2,13 @@
     import { useUserStore } from "@assets/utils/user"
 
     const user = useUserStore()
+    await user.fetchUser()
 </script>
 
 <template>
     <div class="container">
         <Nav />
-        <div>
+        <div style="width: 100%;">
             <div class="mainHeader">
                 <Search />
                 <div class="mainHeaderInfo">
@@ -33,7 +34,6 @@
     & > div {
         padding: 0 30px;
         height: calc(100vh - 105px);
-        overflow: auto;
     }
 }
 .mainHeader {

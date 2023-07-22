@@ -38,7 +38,7 @@ const categories = [
 .playlists {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    overflow-x: scroll;
     gap: 30px;
     &Conatiner {
       width: 100%;
