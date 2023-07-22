@@ -5,10 +5,10 @@ export const useMashupStore = defineStore('mashup', {
     id: null, 
     title: '',
     bitrate: null,
-    imageUrl:'',
-    size:'',
-    duration:'',
-    src:'',
+    imageUrl: '',
+    size: '',
+    duration: 0,
+    src: '',
   }),
 
   // getters: {

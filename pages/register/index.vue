@@ -11,18 +11,19 @@
     const username = ref(null)
     const password = ref(null)
 
+    const isSent = ref(false)
+
     async function sendData() {
         const iaAuthorised = await auth.registerUser(username.value, email.value, password.value)
 
         if (!iaAuthorised) return
-        await location.reload()
-        await router.push('/')
+        isSent = true
     }
 </script>
 
 
 <template>
-    <div class="mainContent">
+    <div class="mainContent" v-if="!isSent">
         <div>
             <p class="mainTitle">Регистрация</p>
             <p class="mainDescription">Рады знакомству!</p>
@@ -83,10 +84,20 @@
 
         <div>
             <button class="button button_stroke button_stroke_default2"><img src="/icons/vk.svg" alt=""> VK ID</button>
-            <button class="button button_stroke button_stroke_default2"><img src="/icons/google.svg" alt=""> Google</button>
+            <!-- <button class="button button_stroke button_stroke_default2"><img src="/icons/google.svg" alt=""> Google</button> -->
         </div>
 
         <p class="register">Уже зарегистрированы? <NuxtLink to="/login">Войдите</NuxtLink></p>
+    </div>
+
+    <div class="mainContent" v-else>
+        <div>
+            <p class="mainTitle">Регистрация</p>
+        </div>
+
+        <p>Мы отправили вам на почту письмо с подтверждением.</p>
+
+
     </div>
 </template>
 

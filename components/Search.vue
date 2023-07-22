@@ -1,9 +1,9 @@
 <script setup>
-
+const searchString = ref(null)
 </script>
 
 <template>
-    <form action="" method="get">
+    <form action="/search" method="get">
         <div class="inputSearch">
             <input 
             name="stirng"
