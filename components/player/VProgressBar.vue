@@ -43,18 +43,18 @@
 .progress-bar {
   width: 100%;
   height: 8px;
-  background-color: #ccc;
+  background-color: #15121E;
   border-radius: 4px;
   overflow: hidden;
 
   &-track {
     height: 100%;
-    background-color: #aaa;
+    background-color: #15121E;
   }
 
   &-fill {
     height: 100%;
-    background-color: #007bff;
+    background-color: #EBEBEB;
     transition: width 0.3s ease-in-out;
   }
 }
