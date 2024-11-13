@@ -1,11 +1,17 @@
 import { IconProps } from '@/components/icons/props.tsx';
 import { cn } from '@/lib/utils.ts';
 
-export default function AddIcon({ className, color = 'onSurfaceVariant' }: IconProps) {
+export default function AddIcon({
+    className,
+    color = 'onSurfaceVariant',
+    size = 25,
+    width,
+    height
+}: IconProps) {
     return (
         <svg
-            width='25'
-            height='25'
+            width={size ? size : width}
+            height={size ? size : height}
             viewBox='0 0 25 25'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'

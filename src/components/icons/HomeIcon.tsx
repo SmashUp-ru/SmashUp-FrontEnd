@@ -1,11 +1,17 @@
 import { cn } from '@/lib/utils.ts';
 import { IconProps } from '@/components/icons/props.tsx';
 
-export default function HomeIcon({ className, color = 'onSurfaceVariant' }: IconProps) {
+export default function HomeIcon({
+    className,
+    color = 'onSurfaceVariant',
+    size = 25,
+    height,
+    width
+}: IconProps) {
     return (
         <svg
-            width='25'
-            height='25'
+            width={size ? size : width}
+            height={size ? size : height}
             viewBox='0 0 25 25'
             xmlns='http://www.w3.org/2000/svg'
             className={cn(`text-${color}`, 'fill-current', className)}

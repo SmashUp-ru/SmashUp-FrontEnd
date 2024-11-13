@@ -1,11 +1,17 @@
 import { IconProps } from '@/components/icons/props.tsx';
 import { cn } from '@/lib/utils.ts';
 
-export default function LogoIcon({ className, color = 'onSurfaceVariant' }: IconProps) {
+export default function LogoIcon({
+    className,
+    color = 'onSurfaceVariant',
+    size,
+    width = 67,
+    height = 34
+}: IconProps) {
     return (
         <svg
-            width='67'
-            height='34'
+            width={size ? size : width}
+            height={size ? size : height}
             viewBox='0 0 67 34'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'

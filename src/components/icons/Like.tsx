@@ -1,13 +1,18 @@
 import { cn } from '@/lib/utils.ts';
 import { IconProps } from '@/components/icons/props.tsx';
 
-export default function LikeIcon({ className, color = 'onSurfaceVariant' }: IconProps) {
+export default function LikeIcon({
+    className,
+    color = 'onSurfaceVariant',
+    size,
+    width = 27,
+    height = 23
+}: IconProps) {
     return (
         <svg
-            width='27'
-            height='23'
+            width={size ? size : width}
+            height={size ? size : height}
             viewBox='0 0 27 23'
-            fill='none'
             xmlns='http://www.w3.org/2000/svg'
         >
             <path

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/router/features/layout/Sidebar.tsx';
+import Header from '@/router/features/header/Header.tsx';
 
 export default function Layout() {
     return (
@@ -7,6 +8,7 @@ export default function Layout() {
             <Sidebar />
 
             <main className='h-full flex-1 overflow-y-auto'>
+                <Header />
                 <Outlet />
             </main>
         </div>
