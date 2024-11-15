@@ -6,7 +6,7 @@ export default function Sidebar() {
     const location = useLocation();
 
     return (
-        <div className='hidden md:flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px]'>
+        <div className='hidden md:flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
             {/* Логотип */}
             <Link className='px-7 mb-[70px]' to='/'>
                 <LogoIcon color='primary' />

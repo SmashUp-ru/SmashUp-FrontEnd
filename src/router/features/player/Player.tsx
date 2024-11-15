@@ -135,7 +135,7 @@ class FullControl extends Component<unknown, FullControlState> {
 
     render() {
         return (
-            <div className='w-full h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
+            <div className='mb-4 w-full h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
                 <ReactHowler
                     src={`https://api.smashup.ru/uploads/mashup/1.mp3`}
                     playing={this.state.playing}
