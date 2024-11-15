@@ -6,10 +6,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from '@/router/pages/layout.tsx';
 import Root from '@/router/pages/root/RootPage.tsx';
 import Playlist from '@/router/pages/playlist/Playlist.tsx';
+import NotFound from '@/router/features/error/NotFound.tsx';
 
 const router = createBrowserRouter([
     {
         element: <Layout />,
+        errorElement: <NotFound />,
         children: [
             {
                 element: <Root />,

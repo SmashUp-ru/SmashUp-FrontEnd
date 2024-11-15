@@ -10,8 +10,6 @@ export default {
         'bg-primary',
         'hover:text-primary',
         'hover:bg-primary'
-
-
     ],
     theme: {
         extend: {
@@ -34,4 +32,3 @@ export default {
     },
     plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar')({ nocompatible: true })]
 };
-
