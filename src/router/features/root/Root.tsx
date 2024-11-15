@@ -4,7 +4,7 @@ import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import radio from '@/assets/radio.png';
 import TrackThumb from '@/router/shared/TrackThumb/TrackThumb.tsx';
 
-export default function RootPage() {
+export default function Root() {
     return (
         <div className='flex flex-col gap-8 pb-12'>
             <Banner />

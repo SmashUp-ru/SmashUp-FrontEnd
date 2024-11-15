@@ -9,10 +9,10 @@ export default function TrackThumb({ img, title, author, length }: TrackThumbPro
     return (
         <div className='flex justify-between p-1.5 w-full'>
             <div className='flex items-center gap-x-4'>
-                <img src={img} alt={title} className='w-12 h-12 rounded-xl' />
+                <img src={img} alt={title} className='w-12 h-12 rounded-xl' draggable={false} />
                 <div className='flex flex-col'>
-                    <span>{title}</span>
-                    <span>{author}</span>
+                    <span className='font-bold text-onSurface'>{title}</span>
+                    <span className='font-medium text-onSurfaceVariant'>{author}</span>
                 </div>
             </div>
 

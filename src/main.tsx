@@ -4,7 +4,8 @@ import './index.css';
 import App from './App.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from '@/router/pages/layout.tsx';
-import Root from '@/router/pages/root/Root.tsx';
+import Root from '@/router/pages/root/RootPage.tsx';
+import Playlist from '@/router/pages/playlist/Playlist.tsx';
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
             {
                 element: <App />,
                 path: '/favorites'
+            },
+            {
+                element: <Playlist />,
+                path: '/playlist/:playlistId'
             }
         ]
     }

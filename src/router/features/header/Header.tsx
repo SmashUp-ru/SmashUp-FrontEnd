@@ -9,7 +9,7 @@ export default function Header() {
     const { searchValue, updateSearchValue } = useSearchStore();
 
     return (
-        <div className='py-4 flex justify-between items-center gap-x-12'>
+        <div className='py-4 pr-4 flex justify-between items-center gap-x-12'>
             <Input
                 startIcon={SearchIcon}
                 className={cn('font-bold text-lg', searchValue ? 'w-full' : 'w-[350px]')}

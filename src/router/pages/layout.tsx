@@ -14,7 +14,7 @@ export default function Layout() {
                 <Header />
 
                 <div className='flex-1 flex flex-col overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-slate-background scrollbar-thumb-surface'>
-                    <div className='flex-1 px-4 pb-4'>
+                    <div className='flex-1 pr-4 pb-4'>
                         <Outlet />
                         <Footer />
                     </div>
