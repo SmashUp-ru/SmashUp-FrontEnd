@@ -1,14 +1,17 @@
 export default function Footer() {
     return (
         <div className='flex flex-col gap-y-2 mt-5'>
-            <div className='flex items-center gap-x-8 font-bold text-onSurface'>
-                <span>Правообладателям</span>
-                <span>Пользовательское соглашение</span>
-                <span>Контакты</span>
+            <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-x-8 font-bold text-onSurface'>
+                    <span>Правообладателям</span>
+                    <span>Пользовательское соглашение</span>
+                    <span>Контакты</span>
+                </div>
+                <span className='text-primary font-bold'>2024 SmashUp</span>
             </div>
             <span className='font-medium text-onSurfaceVariant'>
-                Сервис <span className='text-primary'>smashup.ru</span> может содержать информацию,
-                не предназначенную для несовершеннолетних
+                Сервис smashup.ru может содержать информацию, не предназначенную для
+                несовершеннолетних
             </span>
         </div>
     );
