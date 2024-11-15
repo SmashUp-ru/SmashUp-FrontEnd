@@ -3,7 +3,6 @@ import Sidebar from '@/router/features/layout/Sidebar.tsx';
 import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
 import FullControl from '@/router/features/player/Player.tsx';
-// w-full h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px]
 
 export default function Layout() {
     return (

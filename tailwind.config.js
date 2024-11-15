@@ -22,9 +22,11 @@ export default {
                 background: 'rgba(2, 2, 2, 1)',
                 onBackground: 'rgb(245, 245, 245)',
                 surface: 'rgb(18, 18, 18)',
+                surfaceVariant: 'rgba(10, 10, 10, 1)',
                 onSurface: 'rgb(235, 235, 235)',
                 onSurfaceVariant: 'rgb(188, 188, 188)',
                 primary: 'rgb(168, 135, 248)',
+                badge: 'rgba(168, 135, 248, 0.2)',
                 additionalText: 'rgb(118, 118, 118)',
                 hover: 'rgba(10, 10, 10, 1)'
             }

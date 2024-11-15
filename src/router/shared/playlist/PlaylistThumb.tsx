@@ -11,7 +11,7 @@ interface PlaylistThumbProps {
 
 export default function PlaylistThumb({ id, title, author, img }: PlaylistThumbProps) {
     return (
-        <div className='flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <img
                     src={img}

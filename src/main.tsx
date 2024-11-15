@@ -5,8 +5,9 @@ import App from './App.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from '@/router/pages/layout.tsx';
 import Root from '@/router/pages/root/RootPage.tsx';
-import Playlist from '@/router/pages/playlist/Playlist.tsx';
 import NotFound from '@/router/features/error/NotFound.tsx';
+import PlaylistPage from '@/router/pages/playlist/PlaylistPage.tsx';
+import ProfilePage from '@/router/pages/profile/ProfilePage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -22,8 +23,12 @@ const router = createBrowserRouter([
                 path: '/favorites'
             },
             {
-                element: <Playlist />,
+                element: <PlaylistPage />,
                 path: '/playlist/:playlistId'
+            },
+            {
+                element: <ProfilePage />,
+                path: '/profile/:profileId'
             }
         ]
     }

@@ -16,7 +16,7 @@ export default function Root() {
                 </div>
             </Section>
 
-            <Section title='Премьера!'>
+            <Section title='Премьера!' link={{ href: '/playlist/1', title: 'ПОКАЗАТЬ ВСЕ' }}>
                 <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                     <TrackThumb
                         img={radio}

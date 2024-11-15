@@ -4,6 +4,8 @@ import SearchIcon from '@/components/icons/Search.tsx';
 import BellIcon from '@/components/icons/Bell.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import { cn } from '@/lib/utils.ts';
+import { Link } from 'react-router-dom';
+import leonid from '@/assets/leonid.png';
 
 export default function Header() {
     const { searchValue, updateSearchValue } = useSearchStore();
@@ -20,10 +22,12 @@ export default function Header() {
             <div className='flex items-center gap-x-6'>
                 <BellIcon active />
 
-                <Avatar>
-                    <AvatarImage src='https://github.com/shadcn.png' />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <Link to='/profile/0'>
+                    <Avatar>
+                        <AvatarImage src={leonid} />
+                        <AvatarFallback>LM</AvatarFallback>
+                    </Avatar>
+                </Link>
             </div>
         </div>
     );
