@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils.ts';
 export default function AddIcon({
     className,
     color = 'onSurfaceVariant',
+    hoverColor,
     size = 25,
     width,
     height
@@ -15,7 +16,7 @@ export default function AddIcon({
             viewBox='0 0 25 25'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color}`, 'fill-current', className)}
+            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
         >
             <path
                 fill-rule='evenodd'

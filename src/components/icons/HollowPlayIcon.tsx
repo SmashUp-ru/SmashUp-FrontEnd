@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils.ts';
 export default function HollowPlayIcon({
     className,
     color = 'primary',
+    hoverColor,
     size = 48,
     width,
     height
@@ -14,7 +15,7 @@ export default function HollowPlayIcon({
             height={size ? size : height}
             viewBox='0 0 48 48'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color}`, 'fill-current', className)}
+            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
         >
             <path
                 fill-rule='evenodd'

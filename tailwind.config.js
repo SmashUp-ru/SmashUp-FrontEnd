@@ -5,6 +5,14 @@ export default {
         './index.html',
         './src/**/*.{js,ts,jsx,tsx}'
     ],
+    safelist: [
+        'text-primary',
+        'bg-primary',
+        'hover:text-primary',
+        'hover:bg-primary'
+
+
+    ],
     theme: {
         extend: {
             borderRadius: {
@@ -19,8 +27,8 @@ export default {
                 onSurface: 'rgb(235, 235, 235)',
                 onSurfaceVariant: 'rgb(188, 188, 188)',
                 primary: 'rgb(168, 135, 248)',
-                additionalText: 'rgb(118, 118, 118)'
-
+                additionalText: 'rgb(118, 118, 118)',
+                hover: 'rgba(10, 10, 10, 1)'
             }
         }
     },

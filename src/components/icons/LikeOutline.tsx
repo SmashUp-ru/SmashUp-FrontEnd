@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils.ts';
 import { IconProps } from '@/components/icons/props.tsx';
 
-export default function LikeIcon({
+export default function LikeOutlineIcon({
     className,
     color = 'onSurfaceVariant',
     size,

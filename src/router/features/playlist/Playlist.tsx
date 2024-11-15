@@ -1,6 +1,6 @@
 import radio from '@/assets/radio.png';
 import { Button } from '@/components/ui/button.tsx';
-import TrackThumb from '@/router/shared/TrackThumb/TrackThumb.tsx';
+import TrackThumb from '@/router/shared/track/TrackThumb.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';

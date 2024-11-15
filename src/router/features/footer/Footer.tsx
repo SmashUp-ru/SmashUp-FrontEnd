@@ -7,8 +7,8 @@ export default function Footer() {
                 <span>Контакты</span>
             </div>
             <span className='font-medium text-onSurfaceVariant'>
-                Сервис smashup.ru может содержать информацию, не предназначенную для
-                несовершеннолетних
+                Сервис <span className='text-primary'>smashup.ru</span> может содержать информацию,
+                не предназначенную для несовершеннолетних
             </span>
         </div>
     );

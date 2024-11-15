@@ -1,4 +1,4 @@
-import LikeIcon from '@/components/icons/Like.tsx';
+import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import React from 'react';
 import { IconProps } from '@/components/icons/props.tsx';
@@ -16,7 +16,7 @@ export const navLinks: NavLink[] = [
     },
     {
         link: '/playlist/0',
-        icon: LikeIcon
+        icon: LikeOutlineIcon
     },
     {
         link: '/add',

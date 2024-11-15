@@ -2,7 +2,7 @@ import Banner from '@/router/features/root/Banner.tsx';
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import radio from '@/assets/radio.png';
-import TrackThumb from '@/router/shared/TrackThumb/TrackThumb.tsx';
+import TrackThumb from '@/router/shared/track/TrackThumb.tsx';
 
 export default function Root() {
     return (
@@ -11,8 +11,8 @@ export default function Root() {
 
             <Section title='Подборки'>
                 <div className='flex items-center'>
-                    <PlaylistThumb title='Мэшап-Радио' author='SmashUp' img={radio} />
-                    <PlaylistThumb title='Мэшап-Радио' author='SmashUp' img={radio} />
+                    <PlaylistThumb id='0' title='Мэшап-Радио' author='SmashUp' img={radio} />
+                    <PlaylistThumb id='0' title='Мэшап-Радио' author='SmashUp' img={radio} />
                 </div>
             </Section>
 
