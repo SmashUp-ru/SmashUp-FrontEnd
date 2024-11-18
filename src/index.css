@@ -17,3 +17,22 @@ html, body, :root, #root {
     height: 100%;
     font-family: "Manrope", sans-serif;
 }
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* TrackSideSheet */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: theme('colors.surface');
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.surface');
+}

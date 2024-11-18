@@ -31,7 +31,12 @@ export default function PlaylistThumb({ id, title, author, img }: PlaylistThumbP
                 <Link to={`/playlist/${id}`} className='font-bold text-lg text-onSurface'>
                     {title}
                 </Link>
-                <span className='font-medium text-lg text-onSurfaceVariant'>{author}</span>
+                <Link
+                    to={`/playlist/${author}`}
+                    className='font-medium text-lg text-onSurfaceVariant'
+                >
+                    {author}
+                </Link>
             </div>
         </div>
     );

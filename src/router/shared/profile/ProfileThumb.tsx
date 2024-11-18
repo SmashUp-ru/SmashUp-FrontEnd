@@ -1,44 +1,36 @@
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
-import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
+import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import { Link } from 'react-router-dom';
 
 interface ProfileThumbProps {
-    img: string;
     name: string;
+    caption: string;
+    img: string;
 }
 
-export default function ProfileThumb({ img, name }: ProfileThumbProps) {
+export default function ProfileThumb({ name, caption, img }: ProfileThumbProps) {
     return (
-        <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
-            <div className='flex items-center gap-x-4'>
-                <div className='relative'>
-                    <img
-                        src={img}
-                        alt={name}
-                        className='w-12 h-12 rounded-full group-hover:opacity-30'
-                        draggable={false}
-                    />
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                    >
-                        <HollowPlayIcon color='onSurface' size={24} />
-                    </Button>
-                </div>
-                <span className='font-bold text-onSurface'>{name}</span>
+        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+            <div className='relative'>
+                <img
+                    src={img}
+                    alt={name}
+                    className='w-[216px] h-[216px] object-cover rounded-full group-hover:opacity-30'
+                    draggable={false}
+                />
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                >
+                    <HollowPlayIcon color='onSurface' hoverColor='primary' />
+                </Button>
             </div>
-
-            <div className='flex items-center gap-x-[34px]'>
-                <span>
-                    <LikeOutlineIcon width={20} height={17} />
-                </span>
-
-                {/*последний элемент*/}
-                <div className='w-10 flex items-center justify-center'>
-                    <ChevronRightIcon />
-                </div>
+            <div className='flex flex-col items-center'>
+                <Link to={`/profile/${name}`} className='font-bold text-lg text-onSurface'>
+                    {name}
+                </Link>
+                <span className='font-medium text-lg text-onSurfaceVariant'>{caption}</span>
             </div>
         </div>
     );
