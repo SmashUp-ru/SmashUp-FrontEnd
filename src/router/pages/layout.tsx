@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '@/router/features/layout/Sidebar.tsx';
 import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
-import FullControl from '@/router/features/player/Player.tsx';
+import PlayerComponent from '@/router/features/player/Player.tsx';
 
 export default function Layout() {
     return (
@@ -19,7 +19,7 @@ export default function Layout() {
                     </div>
                 </div>
 
-                <FullControl />
+                <PlayerComponent />
             </main>
         </div>
     );
