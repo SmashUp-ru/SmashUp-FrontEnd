@@ -1,6 +1,6 @@
 import radio from '@/assets/radio.png';
 import { Button } from '@/components/ui/button.tsx';
-import TrackThumb from '@/router/shared/track/TrackThumb.tsx';
+import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
@@ -40,61 +40,61 @@ export default function Playlist({ playlistId }: PlaylistProps) {
             </div>
 
             <div className='flex flex-col gap-y-1'>
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'
                     length='2:26'
                 />
-                <TrackThumb
+                <MashupThumb
                     img={radio}
                     title='Развлекайтесь на 180db'
                     author='LeonidM'

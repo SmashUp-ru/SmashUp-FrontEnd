@@ -6,7 +6,7 @@ import ShareIcon from '@/components/icons/Share.tsx';
 import Section from '@/router/shared/section/Section.tsx';
 import radio from '@/assets/radio.png';
 import track from '@/assets/track.png';
-import TrackThumb from '@/router/shared/track/TrackThumb.tsx';
+import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 
 export default function Profile() {
@@ -47,31 +47,31 @@ export default function Profile() {
                     link={{ href: '/profile/0/tracks', title: 'ПОКАЗАТЬ ВСЕ' }}
                 >
                     <div className='flex flex-col'>
-                        <TrackThumb
+                        <MashupThumb
                             img={radio}
                             title='Развлекайтесь на 180db'
                             author='LeonidM'
                             length='2:26'
                         />
-                        <TrackThumb
+                        <MashupThumb
                             img={radio}
                             title='Развлекайтесь на 180db'
                             author='LeonidM'
                             length='2:26'
                         />
-                        <TrackThumb
+                        <MashupThumb
                             img={radio}
                             title='Развлекайтесь на 180db'
                             author='LeonidM'
                             length='2:26'
                         />
-                        <TrackThumb
+                        <MashupThumb
                             img={radio}
                             title='Развлекайтесь на 180db'
                             author='LeonidM'
                             length='2:26'
                         />
-                        <TrackThumb
+                        <MashupThumb
                             img={radio}
                             title='Развлекайтесь на 180db'
                             author='LeonidM'

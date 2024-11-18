@@ -2,7 +2,7 @@ import Banner from '@/router/features/root/Banner.tsx';
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import radio from '@/assets/radio.png';
-import TrackThumb from '@/router/shared/track/TrackThumb.tsx';
+import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 
 export default function Root() {
     return (
@@ -18,37 +18,37 @@ export default function Root() {
 
             <Section title='Премьера!' link={{ href: '/playlist/1', title: 'ПОКАЗАТЬ ВСЕ' }}>
                 <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
                         length='2:26'
                     />
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
                         length='2:26'
                     />
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
                         length='2:26'
                     />
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
                         length='2:26'
                     />
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
                         length='2:26'
                     />
-                    <TrackThumb
+                    <MashupThumb
                         img={radio}
                         title='Развлекайтесь на 180db'
                         author='LeonidM'
