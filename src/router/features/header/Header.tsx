@@ -6,6 +6,8 @@ import { useSearchStore } from '@/store/search.ts';
 import { cn } from '@/lib/utils.ts';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import leonid from '@/assets/leonid.png';
+import { Button } from '@/components/ui/button.tsx';
+import ChevronLeftIcon from '@/components/icons/ChevronLeft.tsx';
 
 export default function Header() {
     const { searchValue, updateSearchValue } = useSearchStore();
@@ -13,22 +15,29 @@ export default function Header() {
     const navigate = useNavigate();
 
     return (
-        <div className='py-4 pr-4 flex justify-between items-center gap-x-12'>
-            <Input
-                startIcon={SearchIcon}
-                className={cn(
-                    'font-bold text-lg',
-                    location.pathname === '/search' ? 'w-full' : 'w-[350px]'
-                )}
-                placeholder='Поиск'
-                value={searchValue}
-                onChange={(e) => updateSearchValue(e.target.value)}
-                onClick={() => {
-                    if (location.pathname !== '/search') {
-                        navigate('/search');
-                    }
-                }}
-            />
+        <div className='py-4 pr-4 flex items-center gap-x-12'>
+            <div className='w-full flex items-center gap-x-4'>
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    className='rounded-full bg-surface w-[40px] h-[40px]'
+                    onClick={() => navigate(-1)}
+                >
+                    <ChevronLeftIcon className='w-[40px]' />
+                </Button>
+                <Input
+                    startIcon={SearchIcon}
+                    className={cn('font-bold text-lg', 'w-full')}
+                    placeholder='Поиск'
+                    value={searchValue}
+                    onChange={(e) => updateSearchValue(e.target.value)}
+                    onClick={() => {
+                        if (location.pathname !== '/search') {
+                            navigate('/search');
+                        }
+                    }}
+                />
+            </div>
             <div className='flex items-center gap-x-6'>
                 <BellIcon active />
 
