@@ -8,8 +8,6 @@ import letov from '@/assets/letov.png';
 import leto from '@/assets/leto.png';
 
 export default function SearchResults() {
-    // const { searchValue } = useSearchStore();
-
     return (
         <div className='h-screen'>
             <Tabs defaultValue='account' className='flex-1'>

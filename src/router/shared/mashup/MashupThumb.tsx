@@ -2,6 +2,7 @@ import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import { Link } from 'react-router-dom';
 
 interface MashupThumbProps {
     img: string;
@@ -31,7 +32,9 @@ export default function MashupThumb({ img, title, author, length }: MashupThumbP
                 </div>
                 <div className='flex flex-col'>
                     <span className='font-bold text-onSurface'>{title}</span>
-                    <span className='font-medium text-onSurfaceVariant'>{author}</span>
+                    <Link to={`/profile/${author}`} className='font-medium text-onSurfaceVariant'>
+                        {author}
+                    </Link>
                 </div>
             </div>
 

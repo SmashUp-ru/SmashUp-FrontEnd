@@ -2,6 +2,7 @@ import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
+import { Link } from 'react-router-dom';
 
 interface ProfileThumbProps {
     img: string;
@@ -27,7 +28,9 @@ export default function ProfileSmallThumb({ img, name }: ProfileThumbProps) {
                         <HollowPlayIcon color='onSurface' size={24} />
                     </Button>
                 </div>
-                <span className='font-bold text-onSurface'>{name}</span>
+                <Link to={`/profile/${name}`} className='font-bold text-onSurface'>
+                    {name}
+                </Link>
             </div>
 
             <div className='flex items-center gap-x-[34px]'>
@@ -36,9 +39,9 @@ export default function ProfileSmallThumb({ img, name }: ProfileThumbProps) {
                 </span>
 
                 {/*последний элемент*/}
-                <div className='w-10 flex items-center justify-center'>
+                <Link to={`/profile/${name}`} className='w-10 flex items-center justify-center'>
                     <ChevronRightIcon />
-                </div>
+                </Link>
             </div>
         </div>
     );
