@@ -10,7 +10,7 @@ import leto from '@/assets/leto.png';
 export default function SearchResults() {
     return (
         <div className='h-screen'>
-            <Tabs defaultValue='account' className='flex-1'>
+            <Tabs defaultValue='все' className='flex-1'>
                 <TabsList>
                     <TabsTrigger value='все'>Все</TabsTrigger>
                     <TabsTrigger value='мэшапы'>Мэшапы</TabsTrigger>
