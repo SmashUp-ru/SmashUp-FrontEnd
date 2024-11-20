@@ -10,6 +10,7 @@ import ProfilePage from '@/router/pages/profile/ProfilePage.tsx';
 import SearchPage from '@/router/pages/search/SearchPage.tsx';
 import AuthLayout from '@/router/pages/authLayout.tsx';
 import LoginPage from '@/router/pages/login/LoginPage.tsx';
+import RegisterPage from '@/router/pages/register/RegisterPage.tsx';
 
 const router = createBrowserRouter([
     // основное приложение
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
             {
                 element: <LoginPage />,
                 path: '/login'
+            },
+            {
+                element: <RegisterPage />,
+                path: '/register'
             }
         ]
     }
