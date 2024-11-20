@@ -4,7 +4,7 @@ import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerComponent from '@/router/features/player/Player.tsx';
 
-export default function Layout() {
+export default function RootLayout() {
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />

@@ -9,7 +9,8 @@ export default {
         'text-primary',
         'bg-primary',
         'hover:text-primary',
-        'hover:bg-primary'
+        'hover:bg-primary',
+        'text-vk'
     ],
     theme: {
         extend: {
@@ -26,9 +27,11 @@ export default {
                 onSurface: 'rgb(235, 235, 235)',
                 onSurfaceVariant: 'rgb(188, 188, 188)',
                 primary: 'rgb(168, 135, 248)',
+                onPrimary: 'rgba(26, 26, 26, 1)',
                 badge: 'rgba(168, 135, 248, 0.2)',
                 additionalText: 'rgb(118, 118, 118)',
-                hover: 'rgba(10, 10, 10, 1)'
+                hover: 'rgba(10, 10, 10, 1)',
+                vk: 'rgba(0, 119, 255, 1)'
             }
         }
     },
