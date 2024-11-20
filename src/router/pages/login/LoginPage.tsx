@@ -40,7 +40,7 @@ export default function LoginPage() {
                             <Label htmlFor='password' className='font-medium text-onSurfaceVariant'>
                                 Пароль
                             </Label>
-                            <Link className='font-medium text-primary' to='/update-password'>
+                            <Link className='font-medium text-primary' to='/restore-password'>
                                 Забыл пароль?
                             </Link>
                         </div>

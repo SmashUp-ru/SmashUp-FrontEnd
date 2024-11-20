@@ -48,14 +48,9 @@ export default function RegisterPage() {
 
                     {/*Пароль*/}
                     <div className='w-full flex flex-col gap-y-2.5'>
-                        <div className='w-full flex justify-between items-center'>
-                            <Label htmlFor='password' className='font-medium text-onSurfaceVariant'>
-                                Пароль
-                            </Label>
-                            <Link className='font-medium text-primary' to='/update-password'>
-                                Забыл пароль?
-                            </Link>
-                        </div>
+                        <Label htmlFor='password' className='font-medium text-onSurfaceVariant'>
+                            Новый пароль
+                        </Label>
                         <Input
                             id='password'
                             className='w-full'

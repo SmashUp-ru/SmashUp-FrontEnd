@@ -11,6 +11,9 @@ import SearchPage from '@/router/pages/search/SearchPage.tsx';
 import AuthLayout from '@/router/pages/authLayout.tsx';
 import LoginPage from '@/router/pages/login/LoginPage.tsx';
 import RegisterPage from '@/router/pages/register/RegisterPage.tsx';
+import RestorePasswordPage from '@/router/pages/restorePassword/RestorePasswordPage.tsx';
+import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/RestorePasswordConfirmPage.tsx';
+import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/RestorePasswordUpdatePage.tsx';
 
 const router = createBrowserRouter([
     // основное приложение
@@ -48,6 +51,18 @@ const router = createBrowserRouter([
             {
                 element: <RegisterPage />,
                 path: '/register'
+            },
+            {
+                element: <RestorePasswordPage />,
+                path: '/restore-password'
+            },
+            {
+                element: <RestorePasswordConfirmPage />,
+                path: '/restore-confirm'
+            },
+            {
+                element: <RestorePasswordUpdatePage />,
+                path: '/restore-update'
             }
         ]
     }
