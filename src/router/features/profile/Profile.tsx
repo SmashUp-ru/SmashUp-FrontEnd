@@ -81,7 +81,10 @@ export default function Profile({ username }: ProfileProps) {
                         title='Популярные треки'
                         link={
                             mashups.length > 5
-                                ? { href: '/profile/0/tracks', title: 'ПОКАЗАТЬ ВСЕ' }
+                                ? {
+                                      href: `/profile/${user.username}/tracks`,
+                                      title: 'ПОКАЗАТЬ ВСЕ'
+                                  }
                                 : undefined
                         }
                     >

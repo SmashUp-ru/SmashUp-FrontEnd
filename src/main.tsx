@@ -14,6 +14,7 @@ import RestorePasswordPage from '@/router/pages/restorePassword/RestorePasswordP
 import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/RestorePasswordConfirmPage.tsx';
 import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/RestorePasswordUpdatePage.tsx';
 import DebugPage from '@/router/pages/debug/DebugPage.tsx';
+import ProfileTracksPage from '@/router/pages/profile/tracks/ProfileTracksPage.tsx';
 
 const router = createBrowserRouter([
     // основное приложение
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
             {
                 element: <ProfilePage />,
                 path: '/profile/:profileUsername'
+            },
+            {
+                element: <ProfileTracksPage />,
+                path: '/profile/:profileUsername/tracks'
             },
             {
                 element: <SearchPage />,
