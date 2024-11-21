@@ -5,20 +5,20 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
 
 interface MashupThumbProps {
-    img: string;
-    title: string;
-    author: string;
-    length: string;
+    imageUrl: string;
+    name: string;
+    authors: string[];
+    durationStr: string;
 }
 
-export default function MashupThumb({ img, title, author, length }: MashupThumbProps) {
+export default function MashupThumb({ imageUrl, name, authors, durationStr }: MashupThumbProps) {
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
             <div className='flex items-center gap-x-4'>
                 <div className='relative'>
                     <img
-                        src={img}
-                        alt={title}
+                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${imageUrl}_100x100.png`}
+                        alt={name}
                         className='w-12 h-12 rounded-xl group-hover:opacity-30'
                         draggable={false}
                     />
@@ -31,10 +31,16 @@ export default function MashupThumb({ img, title, author, length }: MashupThumbP
                     </Button>
                 </div>
                 <div className='flex flex-col'>
-                    <span className='font-bold text-onSurface'>{title}</span>
-                    <Link to={`/profile/${author}`} className='font-medium text-onSurfaceVariant'>
-                        {author}
-                    </Link>
+                    <span className='font-bold text-onSurface'>{name}</span>
+                    {authors &&
+                        authors.map((author) => (
+                            <Link
+                                to={`/profile/${author}`}
+                                className='font-medium text-onSurfaceVariant'
+                            >
+                                {author}
+                            </Link>
+                        ))}
                 </div>
             </div>
 
@@ -45,7 +51,7 @@ export default function MashupThumb({ img, title, author, length }: MashupThumbP
 
                 <div className='w-10 flex items-center justify-center'>
                     <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
-                        {length}
+                        {durationStr}
                     </span>
                     <span className='group-hover:block hidden'>
                         <MoreHorizontalIcon />

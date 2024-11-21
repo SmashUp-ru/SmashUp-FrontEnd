@@ -13,12 +13,14 @@ export default function PlaylistThumb({ id, title, authors, img }: PlaylistThumb
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
-                <img
-                    src={img}
-                    alt={title}
-                    className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
-                    draggable={false}
-                />
+                <Link to={`/playlist/${id}`}>
+                    <img
+                        src={img}
+                        alt={title}
+                        className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                        draggable={false}
+                    />
+                </Link>
                 <Button
                     variant='ghost'
                     size='icon'
@@ -32,14 +34,15 @@ export default function PlaylistThumb({ id, title, authors, img }: PlaylistThumb
                     {title}
                 </Link>
                 <div className='flex items-center'>
-                    {authors.map((author) => (
-                        <Link
-                            to={`/playlist/${author}`}
-                            className='font-medium text-lg text-onSurfaceVariant'
-                        >
-                            {author}
-                        </Link>
-                    ))}
+                    {authors &&
+                        authors.map((author) => (
+                            <Link
+                                to={`/playlist/${author}`}
+                                className='font-medium text-lg text-onSurfaceVariant'
+                            >
+                                {author}
+                            </Link>
+                        ))}
                 </div>
             </div>
         </div>

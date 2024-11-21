@@ -1,4 +1,3 @@
-import radio from '@/assets/radio.png';
 import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
@@ -9,14 +8,15 @@ interface MashupCollectionProps {
     title: string;
     name: string;
     children: ReactNode;
+    image: string;
 }
 
-export default function MashupCollection({ title, name, children }: MashupCollectionProps) {
+export default function MashupCollection({ title, name, image, children }: MashupCollectionProps) {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 <img
-                    src={radio}
+                    src={image}
                     alt='radio'
                     className='w-[216px] h-[216px] rounded-[34px]'
                     draggable={false}

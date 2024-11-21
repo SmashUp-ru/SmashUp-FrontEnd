@@ -9,11 +9,24 @@ export function createEntityStore<T extends CachingEntity>(apiPath: string) {
     type CacheStore = {
         cache: Record<number, T>;
         getManyByIds: (ids: number[]) => Promise<T[]>;
+        getOneById: (id: number) => Promise<T>;
         fetchAndCacheMany: (ids: number[]) => Promise<T[]>;
     };
 
     return create<CacheStore>((set, get) => ({
         cache: {},
+
+        getOneById: async (id: number): Promise<T> => {
+            const cache = get().cache;
+            const obj = cache[id];
+
+            if (obj) {
+                return get().cache[id];
+            }
+
+            await get().fetchAndCacheMany([id]);
+            return get().cache[id];
+        },
 
         getManyByIds: async (ids: number[]): Promise<T[]> => {
             const cache = get().cache;
