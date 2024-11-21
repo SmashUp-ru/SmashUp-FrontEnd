@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
+import { isExplicit } from '@/lib/bitmask.ts';
 
 export default function ProfileTracksPage() {
     const params = useParams();
@@ -36,7 +37,11 @@ export default function ProfileTracksPage() {
             image={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
         >
             {mashups.map((mashup) => (
-                <MashupSmallThumb key={mashup.id} {...mashup} />
+                <MashupSmallThumb
+                    key={mashup.id}
+                    explicit={isExplicit(mashup.statuses)}
+                    {...mashup}
+                />
             ))}
         </MashupCollection>
     );

@@ -10,6 +10,7 @@ import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import { isExplicit } from '@/lib/bitmask.ts';
 
 interface ProfileProps {
     username: string;
@@ -103,6 +104,7 @@ export default function Profile({ username }: ProfileProps) {
                             title={mashups[mashups.length - 1].name}
                             authors={mashups[mashups.length - 1].authors}
                             img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashups[mashups.length - 1].imageUrl}_400x400.png`}
+                            explicit={isExplicit(mashups[mashups.length - 1].statuses)}
                         />
                     </Section>
                 )}

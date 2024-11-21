@@ -5,6 +5,7 @@ import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
 import PlaylistPageSkeleton from '@/router/pages/skeletons/PlaylistPageSkeleton.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
+import { isExplicit } from '@/lib/bitmask.ts';
 
 export default function PlaylistPage() {
     const params = useParams();
@@ -40,7 +41,11 @@ export default function PlaylistPage() {
             image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
         >
             {mashups.map((mashup) => (
-                <MashupSmallThumb key={mashup.id} {...mashup} />
+                <MashupSmallThumb
+                    key={mashup.id}
+                    explicit={isExplicit(mashup.statuses)}
+                    {...mashup}
+                />
             ))}
         </MashupCollection>
     );

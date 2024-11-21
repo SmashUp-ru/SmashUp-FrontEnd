@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import ExplicitIcon from '@/components/icons/Explicit.tsx';
 
 interface MashupThumbProps {
     id: number;
     title: string;
     authors: string[];
     img: string;
+    explicit?: boolean;
 }
 
-export default function MashupThumb({ title, authors, img }: MashupThumbProps) {
+export default function MashupThumb({ title, authors, img, explicit }: MashupThumbProps) {
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
@@ -28,7 +30,12 @@ export default function MashupThumb({ title, authors, img }: MashupThumbProps) {
                 </Button>
             </div>
             <div className='flex flex-col'>
-                <span className='font-bold text-lg text-onSurface truncate w-[216px]'>{title}</span>
+                <div className='flex items-center gap-x-2'>
+                    <span className='font-bold text-lg text-onSurface truncate w-[216px]'>
+                        {title}
+                    </span>
+                    {explicit && <ExplicitIcon />}
+                </div>
                 <div className='flex items-center gap-x-2'>
                     {authors &&
                         authors.map((author, index) => (

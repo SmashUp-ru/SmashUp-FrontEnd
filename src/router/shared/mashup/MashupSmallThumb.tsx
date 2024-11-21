@@ -3,19 +3,22 @@ import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
+import ExplicitIcon from '@/components/icons/Explicit.tsx';
 
 interface MashupThumbProps {
     imageUrl: string;
     name: string;
     authors: string[];
     durationStr: string;
+    explicit?: boolean;
 }
 
 export default function MashupSmallThumb({
     imageUrl,
     name,
     authors,
-    durationStr
+    durationStr,
+    explicit
 }: MashupThumbProps) {
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -36,10 +39,14 @@ export default function MashupSmallThumb({
                     </Button>
                 </div>
                 <div className='flex flex-col'>
-                    <span className='font-bold text-onSurface'>{name}</span>
+                    <div className='flex items-center gap-x-2'>
+                        <span className='font-bold text-onSurface'>{name}</span>
+                        {explicit && <ExplicitIcon />}
+                    </div>
                     {authors &&
                         authors.map((author) => (
                             <Link
+                                key={author}
                                 to={`/profile/${author}`}
                                 className='font-medium text-onSurfaceVariant'
                             >
