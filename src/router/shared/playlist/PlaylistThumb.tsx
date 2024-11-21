@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 
 interface PlaylistThumbProps {
-    id: string;
+    id: number;
     title: string;
-    author: string;
+    authors: string[];
     img: string;
 }
 
-export default function PlaylistThumb({ id, title, author, img }: PlaylistThumbProps) {
+export default function PlaylistThumb({ id, title, authors, img }: PlaylistThumbProps) {
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
@@ -31,12 +31,16 @@ export default function PlaylistThumb({ id, title, author, img }: PlaylistThumbP
                 <Link to={`/playlist/${id}`} className='font-bold text-lg text-onSurface'>
                     {title}
                 </Link>
-                <Link
-                    to={`/playlist/${author}`}
-                    className='font-medium text-lg text-onSurfaceVariant'
-                >
-                    {author}
-                </Link>
+                <div className='flex items-center'>
+                    {authors.map((author) => (
+                        <Link
+                            to={`/playlist/${author}`}
+                            className='font-medium text-lg text-onSurfaceVariant'
+                        >
+                            {author}
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -14,6 +13,7 @@ import RegisterPage from '@/router/pages/register/RegisterPage.tsx';
 import RestorePasswordPage from '@/router/pages/restorePassword/RestorePasswordPage.tsx';
 import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/RestorePasswordConfirmPage.tsx';
 import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/RestorePasswordUpdatePage.tsx';
+import DebugPage from '@/router/pages/debug/DebugPage.tsx';
 
 const router = createBrowserRouter([
     // основное приложение
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         errorElement: <NotFound />,
         children: [
+            {
+                element: <DebugPage />,
+                path: '/debug'
+            },
             {
                 element: <Root />,
                 path: '/'
@@ -69,7 +73,8 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <RouterProvider router={router} />
-    </StrictMode>
+    // <StrictMode>
+    //
+    // </StrictMode>
+    <RouterProvider router={router} />
 );
