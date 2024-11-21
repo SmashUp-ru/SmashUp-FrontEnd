@@ -22,12 +22,7 @@ export default function SearchResults() {
                 <TabsContent value='все'>
                     <Section title='Лучшие результаты'>
                         <div className='flex items-center'>
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
                             <ProfileThumb
                                 name='Егор Летов'
                                 caption='Мэшапы с автором'
@@ -42,24 +37,9 @@ export default function SearchResults() {
                 <TabsContent value='мэшапы'>
                     <Section title='Мэшапы'>
                         <div className='flex items-center'>
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
                         </div>
                     </Section>
                 </TabsContent>
@@ -79,24 +59,9 @@ export default function SearchResults() {
                 <TabsContent value='плейлисты'>
                     <Section title='Плейлисты'>
                         <div className='flex items-center'>
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
-                            <PlaylistThumb
-                                id='0'
-                                title='Мэшап-Радио'
-                                author='SmashUp'
-                                img={radio}
-                            />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
+                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
                         </div>
                     </Section>
                 </TabsContent>

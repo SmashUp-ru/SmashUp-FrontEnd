@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import MashupCollection from '@/router/features/mashupCollection/MashupCollection.tsx';
-import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
+import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
 import PlaylistPageSkeleton from '@/router/pages/skeletons/PlaylistPageSkeleton.tsx';
@@ -40,7 +40,7 @@ export default function PlaylistPage() {
             image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
         >
             {mashups.map((mashup) => (
-                <MashupThumb key={mashup.id} {...mashup} />
+                <MashupSmallThumb key={mashup.id} {...mashup} />
             ))}
         </MashupCollection>
     );

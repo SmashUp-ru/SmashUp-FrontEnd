@@ -4,7 +4,7 @@ import Profile from '@/router/features/profile/Profile.tsx';
 export default function ProfilePage() {
     const params = useParams();
 
-    if (!params.profileId) return;
+    if (!params.profileUsername) return;
 
-    return <Profile />;
+    return <Profile username={params.profileUsername} />;
 }

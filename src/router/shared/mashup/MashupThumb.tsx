@@ -1,61 +1,45 @@
-import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
-import { Button } from '@/components/ui/button.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button.tsx';
+import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 
 interface MashupThumbProps {
-    imageUrl: string;
-    name: string;
+    id: number;
+    title: string;
     authors: string[];
-    durationStr: string;
+    img: string;
 }
 
-export default function MashupThumb({ imageUrl, name, authors, durationStr }: MashupThumbProps) {
+export default function MashupThumb({ title, authors, img }: MashupThumbProps) {
     return (
-        <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
-            <div className='flex items-center gap-x-4'>
-                <div className='relative'>
-                    <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${imageUrl}_100x100.png`}
-                        alt={name}
-                        className='w-12 h-12 rounded-xl group-hover:opacity-30'
-                        draggable={false}
-                    />
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                    >
-                        <HollowPlayIcon color='onSurface' size={24} />
-                    </Button>
-                </div>
-                <div className='flex flex-col'>
-                    <span className='font-bold text-onSurface'>{name}</span>
+        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+            <div className='relative'>
+                <img
+                    src={img}
+                    alt={title}
+                    className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                    draggable={false}
+                />
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                >
+                    <HollowPlayIcon color='onSurface' hoverColor='primary' />
+                </Button>
+            </div>
+            <div className='flex flex-col'>
+                <span className='font-bold text-lg text-onSurface truncate w-[216px]'>{title}</span>
+                <div className='flex items-center gap-x-2'>
                     {authors &&
-                        authors.map((author) => (
+                        authors.map((author, index) => (
                             <Link
+                                key={index}
                                 to={`/profile/${author}`}
-                                className='font-medium text-onSurfaceVariant'
+                                className='font-medium text-lg text-onSurfaceVariant truncate'
                             >
                                 {author}
                             </Link>
                         ))}
-                </div>
-            </div>
-
-            <div className='flex items-center gap-x-[34px]'>
-                <span>
-                    <LikeOutlineIcon width={20} height={17} />
-                </span>
-
-                <div className='w-10 flex items-center justify-center'>
-                    <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
-                        {durationStr}
-                    </span>
-                    <span className='group-hover:block hidden'>
-                        <MoreHorizontalIcon />
-                    </span>
                 </div>
             </div>
         </div>

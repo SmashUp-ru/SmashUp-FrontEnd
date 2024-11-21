@@ -41,7 +41,7 @@ export default function Header() {
             <div className='flex items-center gap-x-6'>
                 <BellIcon active />
 
-                <Link to='/profile/0'>
+                <Link to='/profile/LeonidM'>
                     <Avatar>
                         <AvatarImage src={leonid} />
                         <AvatarFallback>LM</AvatarFallback>

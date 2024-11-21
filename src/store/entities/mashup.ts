@@ -1,20 +1,5 @@
 import { createEntityStore } from '@/store/entities/entities.ts';
-
-export class Bitmask {
-    bitmask: number;
-
-    constructor(bitmask: number) {
-        this.bitmask = bitmask;
-    }
-
-    read(bit: number): boolean {
-        return ((this.bitmask >> bit) & 1) == 1;
-    }
-
-    toString(): string {
-        return 'Bitmask{' + this.bitmask + '}';
-    }
-}
+import { Bitmask } from '@/lib/types.ts';
 
 export class MashupStatuses extends Bitmask {
     constructor(bitmask: number) {
