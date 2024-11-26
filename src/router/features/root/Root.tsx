@@ -14,13 +14,15 @@ export default function Root() {
     return (
         <div className='flex flex-col gap-8 pb-12'>
             <Section title='Подборки'>
-                <div className='flex items-center'>
-                    {playlists.map((playlist) => (
-                        <PlaylistThumb
-                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`}
-                            {...playlist}
-                        />
-                    ))}
+                <div className='flex items-center flex-wrap'>
+                    {playlists
+                        .filter((playlist) => playlist.mashups.length > 0)
+                        .map((playlist) => (
+                            <PlaylistThumb
+                                img={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`}
+                                {...playlist}
+                            />
+                        ))}
                 </div>
             </Section>
 
