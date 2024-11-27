@@ -16,7 +16,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                'min-w-[237px] w-[237px] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-y-scroll',
+                'min-w-[237px] w-[237px] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden',
                 'flex flex-col gap-y-4 items-start'
             )}
         >
@@ -37,7 +37,7 @@ export default function MashupInfo() {
                 className='w-[216px] h-[216px] rounded-[30px]'
             />
 
-            <div className='overflow-hidden flex flex-col w-full'>
+            <div className='flex flex-col w-full'>
                 <span className='font-bold text-[18px] text-onSurface truncate'>
                     Леонид, дай денег
                 </span>
@@ -50,46 +50,20 @@ export default function MashupInfo() {
                 <ShareIcon />
             </Button>
 
-            <div className='flex flex-col gap-y-2.5 w-full'>
-                <span className='font-bold text-[18px] text-onSurfaceVariant truncate'>
+            <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
+                <span className='font-bold text-[18px] text-onSurfaceVariant'>
                     Использованные треки
                 </span>
 
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
-
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
-
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
-
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
-
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
-
-                <TrackSmallThumb
-                    imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                    name='Гимн России'
-                    authors={['Сережа']}
-                />
+                <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
+                    {Array.from({ length: 10 }).map(() => (
+                        <TrackSmallThumb
+                            imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
+                            name='Гимн России'
+                            authors={['Сережа']}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );
