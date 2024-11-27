@@ -14,6 +14,9 @@ interface PlayerState {
 
     volume: number;
     updateVolume: (newVolume: number) => void;
+
+    info: boolean;
+    updateInfo: (newInfo: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set) => ({
@@ -29,5 +32,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),
 
     volume: 1.0,
-    updateVolume: (newVolume: number) => set({ volume: newVolume })
+    updateVolume: (newVolume: number) => set({ volume: newVolume }),
+
+    info: false,
+    updateInfo: (newInfo: boolean) => set({ info: newInfo })
 }));

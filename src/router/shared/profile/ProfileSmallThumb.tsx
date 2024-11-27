@@ -17,7 +17,7 @@ export default function ProfileSmallThumb({ img, name }: ProfileThumbProps) {
                     <img
                         src={img}
                         alt={name}
-                        className='w-12 h-12 rounded-full group-hover:opacity-30'
+                        className='w-12 h-12 rounded-full group-hover:opacity-30 object-cover'
                         draggable={false}
                     />
                     <Button

@@ -13,7 +13,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
 
 export default function PlayerBar() {
-    const { src, isPlaying, loop, updateLoop } = usePlayerStore();
+    const { src, isPlaying, loop, updateLoop, info, updateInfo } = usePlayerStore();
 
     if (!src) {
         return;
@@ -76,7 +76,7 @@ export default function PlayerBar() {
 
                 {/*правая часть*/}
                 <div className='w-1/3 flex justify-end items-center gap-x-6'>
-                    <Button variant='ghost' size='icon'>
+                    <Button variant='ghost' size='icon' onClick={() => updateInfo(!info)}>
                         <InfoIcon />
                     </Button>
 

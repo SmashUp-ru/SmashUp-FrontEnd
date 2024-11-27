@@ -3,6 +3,7 @@ import Sidebar from '@/router/features/layout/Sidebar.tsx';
 import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerBar from '@/router/features/player/PlayerBar.tsx';
+import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 
 export default function RootLayout() {
     return (
@@ -22,12 +23,7 @@ export default function RootLayout() {
                         </div>
                     </div>
 
-                    <div className='min-w-[237px] w-[237px] sticky top-0 bg-primary my-4 mr-4'>
-                        <div className='w-full h-full flex flex-col justify-between'>
-                            <span>TODO</span>
-                            <span>TODO</span>
-                        </div>
-                    </div>
+                    <MashupInfo />
                 </div>
 
                 <PlayerBar />
