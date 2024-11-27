@@ -64,11 +64,11 @@ export default function RegisterPage() {
                         <Checkbox id='rules' />
                         <Label htmlFor='rules' className='text-onSurface font-medium'>
                             Я принимаю{' '}
-                            <Link to='#' className='text-primary'>
+                            <Link draggable={false} to='#' className='text-primary'>
                                 пользовательское соглашение
                             </Link>
                             <br /> и{' '}
-                            <Link to='#' className='text-primary'>
+                            <Link draggable={false} to='#' className='text-primary'>
                                 политику конфиденциальности
                             </Link>
                         </Label>
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                         <span className='font-medium text-onSurfaceVariant'>
                             Уже зарегистрированы?
                         </span>
-                        <Link className='font-bold text-primary' to='/register'>
+                        <Link draggable={false} className='font-bold text-primary' to='/register'>
                             Войдите
                         </Link>
                     </div>

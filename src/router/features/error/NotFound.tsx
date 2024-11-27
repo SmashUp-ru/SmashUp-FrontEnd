@@ -20,7 +20,9 @@ export default function NotFound() {
                 <div className='flex flex-col items-center gap-y-[34px]'>
                     <h3 className='font-medium text-[40px] text-onSurface'>Что-то сломалось</h3>
                     <Button size='classic' asChild>
-                        <Link to='/'>Вернуться на главную</Link>
+                        <Link draggable={false} to='/'>
+                            Вернуться на главную
+                        </Link>
                     </Button>
                 </div>
             </div>

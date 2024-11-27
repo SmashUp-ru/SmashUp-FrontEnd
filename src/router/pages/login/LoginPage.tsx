@@ -40,7 +40,11 @@ export default function LoginPage() {
                             <Label htmlFor='password' className='font-medium text-onSurfaceVariant'>
                                 Пароль
                             </Label>
-                            <Link className='font-medium text-primary' to='/restore-password'>
+                            <Link
+                                draggable={false}
+                                className='font-medium text-primary'
+                                to='/restore-password'
+                            >
                                 Забыл пароль?
                             </Link>
                         </div>
@@ -80,7 +84,7 @@ export default function LoginPage() {
                     {/*Нет аккаунта?*/}
                     <div className='flex items-center gap-x-2.5'>
                         <span className='font-medium text-onSurfaceVariant'>Нет аккаунта?</span>
-                        <Link className='font-bold text-primary' to='/register'>
+                        <Link draggable={false} className='font-bold text-primary' to='/register'>
                             Зарегистрируйтесь
                         </Link>
                     </div>

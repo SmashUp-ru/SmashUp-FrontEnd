@@ -13,7 +13,7 @@ export default function PlaylistThumb({ id, name, authors, img }: PlaylistThumbP
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
-                <Link to={`/playlist/${id}`}>
+                <Link draggable={false} to={`/playlist/${id}`}>
                     <img
                         src={img}
                         alt={name}

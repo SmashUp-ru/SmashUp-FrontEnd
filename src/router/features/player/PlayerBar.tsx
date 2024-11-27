@@ -35,7 +35,11 @@ export default function PlayerBar() {
                         <span className='font-bold text-[18px] text-onSurface'>
                             Леонид, дай денег
                         </span>
-                        <Link to='/profile/warkkaa' className='font-medium text-onSurfaceVariant'>
+                        <Link
+                            draggable={false}
+                            to='/profile/warkkaa'
+                            className='font-medium text-onSurfaceVariant'
+                        >
                             warkkaa
                         </Link>
                     </div>

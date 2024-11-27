@@ -41,7 +41,11 @@ export default function MashupInfo() {
                 <span className='font-bold text-[18px] text-onSurface truncate'>
                     Леонид, дай денег
                 </span>
-                <Link to='/profile/warkkaa' className='font-medium text-onSurfaceVariant truncate'>
+                <Link
+                    draggable={false}
+                    to='/profile/warkkaa'
+                    className='font-medium text-onSurfaceVariant truncate'
+                >
                     warkkaa
                 </Link>
             </div>

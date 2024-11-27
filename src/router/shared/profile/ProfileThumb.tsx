@@ -27,7 +27,11 @@ export default function ProfileThumb({ name, caption, img }: ProfileThumbProps) 
                 </Button>
             </div>
             <div className='flex flex-col items-center'>
-                <Link to={`/profile/${name}`} className='font-bold text-lg text-onSurface'>
+                <Link
+                    draggable={false}
+                    to={`/profile/${name}`}
+                    className='font-bold text-lg text-onSurface'
+                >
                     {name}
                 </Link>
                 <span className='font-medium text-lg text-onSurfaceVariant'>{caption}</span>

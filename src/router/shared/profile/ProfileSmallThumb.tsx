@@ -28,7 +28,11 @@ export default function ProfileSmallThumb({ img, name }: ProfileThumbProps) {
                         <HollowPlayIcon color='onSurface' size={24} />
                     </Button>
                 </div>
-                <Link to={`/profile/${name}`} className='font-bold text-onSurface'>
+                <Link
+                    draggable={false}
+                    to={`/profile/${name}`}
+                    className='font-bold text-onSurface'
+                >
                     {name}
                 </Link>
             </div>
@@ -39,7 +43,11 @@ export default function ProfileSmallThumb({ img, name }: ProfileThumbProps) {
                 </span>
 
                 {/*последний элемент*/}
-                <Link to={`/profile/${name}`} className='w-10 flex items-center justify-center'>
+                <Link
+                    draggable={false}
+                    to={`/profile/${name}`}
+                    className='w-10 flex items-center justify-center'
+                >
                     <ChevronRightIcon />
                 </Link>
             </div>
