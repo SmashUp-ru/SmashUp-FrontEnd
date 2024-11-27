@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 interface TrackThumbProps {
     imageUrl: string;
     name: string;
@@ -22,13 +20,9 @@ export default function TrackSmallThumb({ imageUrl, name, authors }: TrackThumbP
                     </div>
                     {authors &&
                         authors.map((author) => (
-                            <Link
-                                key={author}
-                                to={`/profile/${author}`}
-                                className='font-medium text-onSurfaceVariant'
-                            >
+                            <span key={author} className='font-medium text-onSurfaceVariant'>
                                 {author}
-                            </Link>
+                            </span>
                         ))}
                 </div>
             </div>
