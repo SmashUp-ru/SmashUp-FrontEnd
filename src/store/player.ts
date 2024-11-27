@@ -9,6 +9,7 @@ interface PlayerState {
     src: number;
     updateSrc: (newSrc: number) => void;
 
+    // player bar info
     loop: boolean;
     updateLoop: (newLoop: boolean) => void;
 

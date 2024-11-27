@@ -5,11 +5,31 @@ import CancelIcon from '@/components/icons/Cancel.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import { useEffect, useState } from 'react';
+import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
+import { Track, useTrackStore } from '@/store/entities/track.ts';
 
 export default function MashupInfo() {
-    const { info, updateInfo } = usePlayerStore();
+    const { src, info, updateInfo } = usePlayerStore();
+    const getMashupById = useMashupStore((state) => state.getOneById);
+    const getTracksById = useTrackStore((state) => state.getManyByIds);
 
-    if (!info) {
+    const [mashup, setMashup] = useState<Mashup | null>(null);
+    const [tracks, setTracks] = useState<Track[]>([]);
+
+    useEffect(() => {
+        if (src) {
+            getMashupById(src).then((r) => setMashup(r));
+        }
+    }, [src]);
+
+    useEffect(() => {
+        if (mashup) {
+            getTracksById(mashup.tracks).then((r) => setTracks(r));
+        }
+    }, [mashup]);
+
+    if (!info || !mashup) {
         return;
     }
 
@@ -32,22 +52,22 @@ export default function MashupInfo() {
             </div>
 
             <img
-                src='https://s3-alpha-sig.figma.com/img/6158/4e0e/f870d3d8df844dcd031aa1eebd4fb001?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=C2FEEGt2kkFdwiQumuW-7T3fYGzcAZ42FGQRqAvXXQ6vPYtS-yJdn8UOs7Z2xiFDaqdx4ensemDh8JAB7f-~LbiHPMSVhl2iZ7Nt6xqvq5SCV1Bcd3Woh4KU~1H~gDdFaOoKPhFW5ekJPdJJ6iO5Dwl57XT5pjgFobm8mnCweWoWd1Fkaolh8zZS6GiIOO6xRKm4I5sJD0h-5CK-wq1U-lUU8nmr0fpUPT8yy91jNQ~XbGKk7Gr2e8gDawph36B5LTmvyBOKalEU40chd1-aqT1z2EV2MFwbnPrM-dmYuWSi3CkGwyM9vsZHbOiMHQpwNDiMbHGyi1-Nv8M31UsQOg__'
+                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
                 alt='track name'
                 className='w-[216px] h-[216px] rounded-[30px]'
             />
 
             <div className='flex flex-col w-full'>
-                <span className='font-bold text-[18px] text-onSurface truncate'>
-                    Леонид, дай денег
-                </span>
-                <Link
-                    draggable={false}
-                    to='/profile/warkkaa'
-                    className='font-medium text-onSurfaceVariant truncate'
-                >
-                    warkkaa
-                </Link>
+                <span className='font-bold text-[18px] text-onSurface truncate'>{mashup.name}</span>
+                {mashup.authors.map((author) => (
+                    <Link
+                        draggable={false}
+                        to={`/profile/${author}`}
+                        className='font-medium text-onSurfaceVariant truncate'
+                    >
+                        {author}
+                    </Link>
+                ))}
             </div>
 
             <Button variant='ghost' size='icon'>
@@ -60,11 +80,12 @@ export default function MashupInfo() {
                 </span>
 
                 <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
-                    {Array.from({ length: 10 }).map(() => (
+                    {tracks.map((track) => (
                         <TrackSmallThumb
-                            imageUrl='https://s3-alpha-sig.figma.com/img/a997/3d39/4532b2f0d8593fe9f383a496e58a7219?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JbPaM0eC2rzQKNr~49T6Znnps1ml8lCfCKzR~7oELWnE17kdxPpxrMHmV3RhK1LdmK46pX77Uh2RUkoyzOaFUtc-dWrkifDSYjr-NIrnjMiVEIkkK-G1swGK6g7FYqv2tJg6xwgvl48rxi7PJZk22JY07mwTBgvEfRoeS8-kitgYsXsJeHdEmyl-Lm-fb9d3Bm-THSI7WAIekAVLY7I4H3x~kCK-Z9FNbxo9nLY2W0HHSGDPVlw9nQkG81xRdtlKMCVPtoIfX-UsR8GLmCsbc-PghHAwl3VvmCw6SON3FMuGgFYRicZUl2ZxoQWUw5gnbHnEzofa9CGkkPkhS~Mniw__'
-                            name='Гимн России'
-                            authors={['Сережа']}
+                            imageUrl={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`}
+                            name={track.name}
+                            authors={track.authors}
+                            link={track.link}
                         />
                     ))}
                 </div>

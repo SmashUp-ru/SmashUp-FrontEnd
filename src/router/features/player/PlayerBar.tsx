@@ -11,11 +11,22 @@ import InfoIcon from '@/components/icons/Info.tsx';
 import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
+import { useEffect, useState } from 'react';
 
 export default function PlayerBar() {
     const { src, isPlaying, loop, updateLoop, info, updateInfo } = usePlayerStore();
+    const getMashupById = useMashupStore((state) => state.getOneById);
 
-    if (!src) {
+    const [mashup, setMashup] = useState<Mashup | null>(null);
+
+    useEffect(() => {
+        if (src) {
+            getMashupById(src).then((r) => setMashup(r));
+        }
+    }, [src]);
+
+    if (!src || !mashup) {
         return;
     }
 
@@ -25,23 +36,23 @@ export default function PlayerBar() {
                 {/*левая часть*/}
                 <div className='w-1/3 flex items-center gap-x-6'>
                     <img
-                        src='https://s3-alpha-sig.figma.com/img/6158/4e0e/f870d3d8df844dcd031aa1eebd4fb001?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=C2FEEGt2kkFdwiQumuW-7T3fYGzcAZ42FGQRqAvXXQ6vPYtS-yJdn8UOs7Z2xiFDaqdx4ensemDh8JAB7f-~LbiHPMSVhl2iZ7Nt6xqvq5SCV1Bcd3Woh4KU~1H~gDdFaOoKPhFW5ekJPdJJ6iO5Dwl57XT5pjgFobm8mnCweWoWd1Fkaolh8zZS6GiIOO6xRKm4I5sJD0h-5CK-wq1U-lUU8nmr0fpUPT8yy91jNQ~XbGKk7Gr2e8gDawph36B5LTmvyBOKalEU40chd1-aqT1z2EV2MFwbnPrM-dmYuWSi3CkGwyM9vsZHbOiMHQpwNDiMbHGyi1-Nv8M31UsQOg__'
+                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
                         alt='mashup title'
                         className='w-16 h-16 rounded-2xl'
                         draggable={false}
                     />
 
                     <div className='flex flex-col'>
-                        <span className='font-bold text-[18px] text-onSurface'>
-                            Леонид, дай денег
-                        </span>
-                        <Link
-                            draggable={false}
-                            to='/profile/warkkaa'
-                            className='font-medium text-onSurfaceVariant'
-                        >
-                            warkkaa
-                        </Link>
+                        <span className='font-bold text-[18px] text-onSurface'>{mashup.name}</span>
+                        {mashup.authors.map((author) => (
+                            <Link
+                                draggable={false}
+                                to={`/profile/${author}`}
+                                className='font-medium text-onSurfaceVariant'
+                            >
+                                {author}
+                            </Link>
+                        ))}
                     </div>
 
                     <Button variant='ghost' size='icon'>
