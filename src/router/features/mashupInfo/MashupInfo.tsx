@@ -10,7 +10,7 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Track, useTrackStore } from '@/store/entities/track.ts';
 
 export default function MashupInfo() {
-    const { src, info, updateInfo } = usePlayerStore();
+    const { queue, queueIndex, queueName, info, updateInfo } = usePlayerStore();
     const getMashupById = useMashupStore((state) => state.getOneById);
     const getTracksById = useTrackStore((state) => state.getManyByIds);
 
@@ -18,10 +18,10 @@ export default function MashupInfo() {
     const [tracks, setTracks] = useState<Track[]>([]);
 
     useEffect(() => {
-        if (src) {
-            getMashupById(src).then((r) => setMashup(r));
+        if (queueIndex >= 0 && queue) {
+            getMashupById(queue[queueIndex]).then((r) => setMashup(r));
         }
-    }, [src]);
+    }, [queue, queueIndex]);
 
     useEffect(() => {
         if (mashup) {
@@ -40,10 +40,10 @@ export default function MashupInfo() {
                 'flex flex-col gap-y-4 items-start'
             )}
         >
-            <div className='flex items-center gap-x-[30px]'>
+            <div className='w-full flex items-center justify-between gap-x-[30px]'>
                 <div className='max-w-[168px] overflow-hidden'>
                     <span className='truncate block font-bold text-[18px] text-onSurface'>
-                        Название плейлиста
+                        {queueName}
                     </span>
                 </div>
                 <Button variant='ghost' size='icon' onClick={() => updateInfo(false)}>
@@ -55,6 +55,7 @@ export default function MashupInfo() {
                 src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
                 alt='track name'
                 className='w-[216px] h-[216px] rounded-[30px]'
+                draggable={false}
             />
 
             <div className='flex flex-col w-full'>

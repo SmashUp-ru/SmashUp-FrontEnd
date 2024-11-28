@@ -10,7 +10,6 @@ import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
-import { isExplicit } from '@/lib/bitmask.ts';
 
 interface ProfileProps {
     username: string;
@@ -31,7 +30,7 @@ export default function Profile({ username }: ProfileProps) {
 
     useEffect(() => {
         if (user) {
-            getMashupsByIds(user.mashups).then((r) => setMashups(r));
+            getMashupsByIds(user.mashups.slice(0, 5)).then((r) => setMashups(r));
             getManyPlaylistsByIds(user.playlists).then((r) => setPlaylists(r));
         }
     }, [user]);
@@ -81,7 +80,7 @@ export default function Profile({ username }: ProfileProps) {
                     <Section
                         title='Популярные треки'
                         link={
-                            mashups.length > 5
+                            user.mashups.length > 5
                                 ? {
                                       href: `/profile/${user.username}/tracks`,
                                       title: 'ПОКАЗАТЬ ВСЕ'
@@ -90,11 +89,13 @@ export default function Profile({ username }: ProfileProps) {
                         }
                     >
                         <div className='flex flex-col'>
-                            {mashups.slice(0, 5).map((mashup) => (
+                            {mashups.map((mashup, idx) => (
                                 <MashupSmallThumb
                                     key={mashup.id}
-                                    {...mashup}
-                                    explicit={isExplicit(mashup.statuses)}
+                                    mashup={mashup}
+                                    playlist={user.mashups}
+                                    indexInPlaylist={idx}
+                                    playlistName={`Популярные треки ${user.username}`}
                                 />
                             ))}
                         </div>
@@ -103,13 +104,7 @@ export default function Profile({ username }: ProfileProps) {
 
                 {mashups.length > 0 && mashups[mashups.length - 1] && (
                     <Section title='Недавний релиз'>
-                        <MashupThumb
-                            id={mashups[mashups.length - 1].id}
-                            title={mashups[mashups.length - 1].name}
-                            authors={mashups[mashups.length - 1].authors}
-                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashups[mashups.length - 1].imageUrl}_400x400.png`}
-                            explicit={isExplicit(mashups[mashups.length - 1].statuses)}
-                        />
+                        <MashupThumb mashup={mashups[mashups.length - 1]} />
                     </Section>
                 )}
 

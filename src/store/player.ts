@@ -8,8 +8,10 @@ interface PlayerState {
 
     queue: number[];
     updateQueue: (newQueue: number[]) => void;
-    queueIndex: number | null;
+    queueIndex: number;
     updateQueueIndex: (newQueueIndex: number) => void;
+    queueName: string;
+    updateQueueName: (newQueueName: string) => void;
 
     // player bar info
     loop: boolean;
@@ -32,6 +34,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     updateQueue: (newQueue: number[]) => set({ queue: newQueue }),
     queueIndex: 0,
     updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
+    queueName: 'Тест',
+    updateQueueName: (newQueueName: string) => set({ queueName: newQueueName }),
 
     loop: false,
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),

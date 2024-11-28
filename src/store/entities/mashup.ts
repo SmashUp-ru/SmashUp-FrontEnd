@@ -15,7 +15,6 @@ export interface Mashup {
     streams: number;
     bitrate: number;
     duration: number;
-    durationStr: string;
     liked: boolean;
 }
 
