@@ -19,11 +19,15 @@ cd SmashUp-FrontEnd-New2
 ```
 
 2. Установите зависимости
+
 ```shell
 npm install
 ```
 
-3. Запустите dev сборку
+3. Заполните `.env.local` в соответствии с `.env.example`
+
+4. Запустите dev сборку
+
 ```shell
 npm run dev
 ```
