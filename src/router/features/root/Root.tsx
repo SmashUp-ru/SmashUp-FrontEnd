@@ -18,10 +18,7 @@ export default function Root() {
                     {playlists
                         .filter((playlist) => playlist.mashups.length > 0)
                         .map((playlist) => (
-                            <PlaylistThumb
-                                img={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`}
-                                {...playlist}
-                            />
+                            <PlaylistThumb playlist={playlist} />
                         ))}
                 </div>
             </Section>
