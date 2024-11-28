@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
@@ -52,7 +52,14 @@ export default function PlaylistPage() {
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>{`Плейлист ${playlist.authors.join(', ')}`}</span>
+                        <span className='font-medium text-lg text-additionalText'>
+                            Плейлист{' '}
+                            {playlist.authors.map((author) => (
+                                <Link to={`/profile/${author}`} className='text-onSurface'>
+                                    {author}
+                                </Link>
+                            ))}
+                        </span>
                         <h1 className='font-bold text-4xl text-onSurface'>{playlist.name}</h1>
                     </div>
                     <div className='flex items-center gap-x-4'>

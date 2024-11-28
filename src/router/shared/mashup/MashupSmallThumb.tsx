@@ -72,7 +72,7 @@ export default function MashupSmallThumb({
                 </div>
                 <div className='flex flex-col'>
                     <div className='flex items-center gap-x-2'>
-                        <span className='font-bold text-onSurface'>{mashup.name}</span>
+                        <span className='font-bold text-onSurface line-clamp-1'>{mashup.name}</span>
                         {isExplicit(mashup.statuses) && <ExplicitIcon />}
                     </div>
                     {mashup.authors.map((author) => (

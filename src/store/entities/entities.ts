@@ -84,7 +84,10 @@ export function createEntityStoreWithStringKey<T extends CachingEntity>(
 
         getOneById: (id: number) => Promise<T>;
         getOneByStringKey: (key: string) => Promise<T>;
-        fetchAndCacheMany: (ids: number[]) => Promise<T[]>;
+
+        getManyByIds: (ids: number[]) => Promise<T[]>;
+
+        fetchAndCacheMany: (ids: number[], many?: boolean) => Promise<T[]>;
     };
 
     return create<CacheStore>((set, get) => ({
@@ -133,13 +136,29 @@ export function createEntityStoreWithStringKey<T extends CachingEntity>(
             }
         },
 
-        fetchAndCacheMany: async (ids: number[]): Promise<T[]> => {
+        getManyByIds: async (ids: number[]): Promise<T[]> => {
+            const cache = get().cache;
+            const missingIds = ids.filter((id) => !cache[id]);
+
+            if (missingIds.length === 0) {
+                console.log('Cache hit for all IDs');
+                return ids.map((id) => cache[id]);
+            }
+
+            await get().fetchAndCacheMany(missingIds, true);
+
+            return ids.map((id) => get().cache[id]);
+        },
+
+        fetchAndCacheMany: async (ids: number[], many?: boolean): Promise<T[]> => {
             console.log(`Fetching data for IDs: ${ids}`);
             try {
                 const response = await axios.get<{
                     status: string;
                     response: T[];
-                }>(`${import.meta.env.VITE_BACKEND_URL}/${apiPath}?id=${ids}`);
+                }>(
+                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${many ? '_many' : ''}?id=${ids}`
+                );
 
                 const fetchedData = response.data;
 
