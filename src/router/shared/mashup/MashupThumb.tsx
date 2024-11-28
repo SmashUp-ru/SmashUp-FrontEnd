@@ -30,10 +30,8 @@ export default function MashupThumb({ title, authors, img, explicit }: MashupThu
                 </Button>
             </div>
             <div className='flex flex-col'>
-                <div className='flex items-center gap-x-2'>
-                    <span className='font-bold text-lg text-onSurface truncate w-[216px]'>
-                        {title}
-                    </span>
+                <div className='flex items-center gap-x-2 min-w-0'>
+                    <span className='font-bold text-lg text-onSurface truncate'>{title}</span>
                     {explicit && <ExplicitIcon />}
                 </div>
                 <div className='flex items-center gap-x-2'>

@@ -6,8 +6,10 @@ interface PlayerState {
     play: () => void;
     stop: () => void;
 
-    src: number;
-    updateSrc: (newSrc: number) => void;
+    queue: number[];
+    updateQueue: (newQueue: number[]) => void;
+    queueIndex: number | null;
+    updateQueueIndex: (newQueueIndex: number) => void;
 
     // player bar info
     loop: boolean;
@@ -26,8 +28,10 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     play: () => set({ isPlaying: true }),
     stop: () => set({ isPlaying: false }),
 
-    src: 1,
-    updateSrc: (newSrc: number) => set(() => ({ src: newSrc })),
+    queue: [1, 2, 3],
+    updateQueue: (newQueue: number[]) => set({ queue: newQueue }),
+    queueIndex: 0,
+    updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
 
     loop: false,
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),

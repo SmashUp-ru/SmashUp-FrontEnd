@@ -3,7 +3,7 @@ import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 
 const Player: React.FC = () => {
-    const { isPlaying, loop, volume } = usePlayerStore();
+    const { isPlaying, loop, volume, queue, queueIndex } = usePlayerStore();
 
     const player = useRef<ReactHowler | null>(null);
 
@@ -13,7 +13,8 @@ const Player: React.FC = () => {
 
     return (
         <ReactHowler
-            src={`https://api.smashup.ru/uploads/mashup/1.mp3`}
+            // @ts-expect-error сделано специально, но мб стоит каждый раз пересоздавать плеер. потом посмотрю, что лучше
+            src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3`}
             playing={isPlaying}
             onLoad={handleOnLoad}
             onEnd={handleOnEnd}

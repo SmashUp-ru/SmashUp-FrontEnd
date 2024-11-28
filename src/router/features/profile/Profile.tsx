@@ -91,7 +91,11 @@ export default function Profile({ username }: ProfileProps) {
                     >
                         <div className='flex flex-col'>
                             {mashups.slice(0, 5).map((mashup) => (
-                                <MashupSmallThumb key={mashup.id} {...mashup} />
+                                <MashupSmallThumb
+                                    key={mashup.id}
+                                    {...mashup}
+                                    explicit={isExplicit(mashup.statuses)}
+                                />
                             ))}
                         </div>
                     </Section>
