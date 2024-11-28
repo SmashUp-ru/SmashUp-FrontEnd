@@ -54,11 +54,11 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                 )}
             </div>
             <div className='flex flex-col'>
-                <div className='flex items-center gap-x-2 min-w-0'>
+                <div className='flex items-center gap-x-2 min-w-0 max-w-[216px]'>
                     <span className='font-bold text-lg text-onSurface truncate'>{mashup.name}</span>
                     {isExplicit(mashup.statuses) && <ExplicitIcon />}
                 </div>
-                <div className='flex items-center gap-x-2'>
+                <div className='flex items-center gap-x-2 max-w-[216px]'>
                     {mashup.authors.map((author, index) => (
                         <Link
                             key={index}

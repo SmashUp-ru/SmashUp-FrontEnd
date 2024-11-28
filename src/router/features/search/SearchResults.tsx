@@ -2,14 +2,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import ProfileThumb from '@/router/shared/profile/ProfileThumb.tsx';
-
-import radio from '@/assets/radio.png';
-import letov from '@/assets/letov.png';
-import leto from '@/assets/leto.png';
+import { useSearch } from '@/router/features/search/useSearch.ts';
+import { useSearchStore } from '@/store/search.ts';
+import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 
 export default function SearchResults() {
+    const { searchValue } = useSearchStore();
+    const { mashups, playlists, users } = useSearch(searchValue);
+
     return (
-        <div className='h-screen'>
+        <div className=''>
             <Tabs defaultValue='все' className='flex-1'>
                 <TabsList>
                     <TabsTrigger value='все'>Все</TabsTrigger>
@@ -20,51 +22,75 @@ export default function SearchResults() {
 
                 {/*все*/}
                 <TabsContent value='все'>
-                    <Section title='Лучшие результаты'>
-                        <div className='flex items-center'>
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                            <ProfileThumb
-                                name='Егор Летов'
-                                caption='Мэшапы с автором'
-                                img={letov}
-                            />
-                            <ProfileThumb name='Егор ЛетоОо' caption='Мэшапер' img={leto} />
-                        </div>
-                    </Section>
+                    {mashups && mashups.length > 0 && (
+                        <Section title='Мэшапы'>
+                            <div className='flex flex-wrap items-center'>
+                                {mashups.map((mashup) => (
+                                    <MashupThumb mashup={mashup} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
+
+                    {users && users.length > 0 && (
+                        <Section title='Авторы'>
+                            <div className='flex flex-wrap items-center'>
+                                {users.map((user) => (
+                                    <ProfileThumb user={user} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
+
+                    {playlists && playlists.length > 0 && (
+                        <Section title='Плейлисты'>
+                            <div className='flex items-center'>
+                                {playlists.map((playlist) => (
+                                    <PlaylistThumb playlist={playlist} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
                 </TabsContent>
 
                 {/*мэшапы*/}
-                <TabsContent value='мэшапы'>
-                    <Section title='Мэшапы'>
-                        <div className='flex items-center'>
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                        </div>
-                    </Section>
-                </TabsContent>
+                {mashups && (
+                    <TabsContent value='мэшапы'>
+                        <Section title='Мэшапы'>
+                            <div className='flex flex-wrap items-center'>
+                                {mashups.map((mashup) => (
+                                    <MashupThumb mashup={mashup} />
+                                ))}
+                            </div>
+                        </Section>
+                    </TabsContent>
+                )}
 
                 {/*авторы*/}
-                <TabsContent value='авторы'>
-                    <Section title='Авторы'>
-                        <div className='flex items-center'>
-                            <ProfileThumb name='Егор ЛетоОо' caption='Мэшапер' img={leto} />
-                            <ProfileThumb name='Егор ЛетоОо' caption='Мэшапер' img={leto} />
-                            <ProfileThumb name='Егор ЛетоОо' caption='Мэшапер' img={leto} />
-                        </div>
-                    </Section>
-                </TabsContent>
+                {users && (
+                    <TabsContent value='авторы'>
+                        <Section title='Авторы'>
+                            <div className='flex items-center'>
+                                {users.map((user) => (
+                                    <ProfileThumb user={user} />
+                                ))}
+                            </div>
+                        </Section>
+                    </TabsContent>
+                )}
 
                 {/*плейлисты*/}
-                <TabsContent value='плейлисты'>
-                    <Section title='Плейлисты'>
-                        <div className='flex items-center'>
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                            <PlaylistThumb id='0' name='Мэшап-Радио' author='SmashUp' img={radio} />
-                        </div>
-                    </Section>
-                </TabsContent>
+                {playlists && (
+                    <TabsContent value='плейлисты'>
+                        <Section title='Плейлисты'>
+                            <div className='flex items-center'>
+                                {playlists.map((playlist) => (
+                                    <PlaylistThumb playlist={playlist} />
+                                ))}
+                            </div>
+                        </Section>
+                    </TabsContent>
+                )}
             </Tabs>
         </div>
     );

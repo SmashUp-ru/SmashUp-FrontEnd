@@ -1,20 +1,19 @@
 import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Link } from 'react-router-dom';
+import { User } from '@/store/entities/user.ts';
 
 interface ProfileThumbProps {
-    name: string;
-    caption: string;
-    img: string;
+    user: User;
 }
 
-export default function ProfileThumb({ name, caption, img }: ProfileThumbProps) {
+export default function ProfileThumb({ user }: ProfileThumbProps) {
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <img
-                    src={img}
-                    alt={name}
+                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_400x400.png`}
+                    alt={user.username}
                     className='w-[216px] h-[216px] object-cover rounded-full group-hover:opacity-30'
                     draggable={false}
                 />
@@ -29,12 +28,12 @@ export default function ProfileThumb({ name, caption, img }: ProfileThumbProps) 
             <div className='flex flex-col items-center'>
                 <Link
                     draggable={false}
-                    to={`/profile/${name}`}
+                    to={`/profile/${user.username}`}
                     className='font-bold text-lg text-onSurface'
                 >
-                    {name}
+                    {user.username}
                 </Link>
-                <span className='font-medium text-lg text-onSurfaceVariant'>{caption}</span>
+                <span className='font-medium text-lg text-onSurfaceVariant'>'Мэшапер</span>
             </div>
         </div>
     );

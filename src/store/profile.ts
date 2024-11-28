@@ -6,7 +6,7 @@ interface ProfileState {
     updateToken: (newToken: string | undefined) => void;
 }
 
-export const useSearchStore = create<ProfileState>((set) => ({
+export const useProfileStore = create<ProfileState>((set) => ({
     token: getToken(),
     updateToken: (newToken: string | undefined) => set(() => ({ token: newToken }))
 }));

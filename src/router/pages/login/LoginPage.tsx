@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input.tsx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -16,6 +16,11 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form.tsx';
+import { AxiosResponse } from 'axios';
+import { axiosSession } from '@/lib/utils.ts';
+import { useProfileStore } from '@/store/profile.ts';
+import { LoginResponse } from '@/types/api/login.ts';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
     email: z
@@ -36,6 +41,9 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
+    const navigate = useNavigate();
+    const { token, updateToken } = useProfileStore();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -46,8 +54,24 @@ export default function LoginPage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        axiosSession
+            .post('/login', { username: values.email, password: values.password })
+            .then((r: AxiosResponse<LoginResponse>) => {
+                updateToken(r.data.response.token);
+                if (values.remember) {
+                    localStorage.setItem('smashup_token', r.data.response.token);
+                } else {
+                    sessionStorage.setItem('smashup_token', r.data.response.token);
+                }
+            })
+            .then(() => navigate('/'));
     }
+
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+        }
+    }, [token]);
 
     return (
         <div className='flex justify-center items-center h-full'>
