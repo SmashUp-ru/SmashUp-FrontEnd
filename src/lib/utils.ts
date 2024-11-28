@@ -11,3 +11,7 @@ export function msToMinutesAndSeconds(ms: number) {
     const seconds = date.getSeconds();
     return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 }
+
+export function getToken(): string | null {
+    return sessionStorage.getItem('smashup_token') || localStorage.getItem('smashup_token');
+}
