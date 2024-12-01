@@ -31,7 +31,8 @@ export default {
                 badge: 'rgba(168, 135, 248, 0.2)',
                 additionalText: 'rgb(118, 118, 118)',
                 hover: 'rgba(10, 10, 10, 1)',
-                vk: 'rgba(0, 119, 255, 1)'
+                vk: 'rgba(0, 119, 255, 1)',
+                sliderBg: 'rgba(29, 29, 29, 1)'
             }
         }
     },
