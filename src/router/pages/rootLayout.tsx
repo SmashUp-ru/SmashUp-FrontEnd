@@ -3,27 +3,20 @@ import Sidebar from '@/router/features/layout/Sidebar.tsx';
 import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerBar from '@/router/features/player/PlayerBar.tsx';
-import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 
 export default function RootLayout() {
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />
 
-            <main className='w-full flex flex-col'>
-                <div className='w-full flex flex-grow overflow-hidden'>
-                    <div className='w-full flex flex-col overflow-hidden'>
-                        <Header />
+            <main className='flex-1 flex flex-col'>
+                <Header />
 
-                        <div className='flex flex-grow overflow-hidden'>
-                            <div className='flex-1 pr-4 pb-4 overflow-x-hidden overflow-y-auto'>
-                                <Outlet />
-                                <Footer />
-                            </div>
-                        </div>
+                <div className='flex-1 flex flex-col overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-slate-background scrollbar-thumb-surface'>
+                    <div className='flex-1 pr-4 pb-4'>
+                        <Outlet />
+                        <Footer />
                     </div>
-
-                    <MashupInfo />
                 </div>
 
                 <PlayerBar />

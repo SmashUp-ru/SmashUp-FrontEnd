@@ -14,9 +14,11 @@ import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useState } from 'react';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import { Slider } from '@/components/ui/slider.tsx';
 
 export default function PlayerBar() {
-    const { queue, queueIndex, isPlaying, loop, updateLoop, info, updateInfo } = usePlayerStore();
+    const { queue, queueIndex, isPlaying, loop, updateLoop, info, updateInfo, seek, updateSeek } =
+        usePlayerStore();
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
@@ -34,10 +36,19 @@ export default function PlayerBar() {
     }
 
     return (
-        <div className='mt-auto mb-4 mr-4 h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
+        <div className='relative mt-auto mb-4 mr-4 h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
+            <div className='absolute top-0 w-full pr-8'>
+                <Slider
+                    min={0}
+                    max={mashup.duration}
+                    value={[seek]}
+                    onValueChange={(value) => updateSeek(value[0])}
+                />
+            </div>
+
             <div className='w-full flex justify-between items-center'>
                 {/*левая часть*/}
-                <div className='w-1/4 flex items-center gap-x-6'>
+                <div className='w-1/3 flex items-center gap-x-6'>
                     <img
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
                         alt='mashup title'
@@ -66,7 +77,7 @@ export default function PlayerBar() {
                 </div>
 
                 {/*центральная часть*/}
-                <div className='absolute left-1/2 transform -translate-x-1/2  flex flex-row justify-center items-center gap-x-6'>
+                <div className='flex flex-row justify-center items-center gap-x-6'>
                     <Button variant='ghost' size='icon' onClick={() => {}}>
                         <ShuffleIcon />
                     </Button>
@@ -109,7 +120,7 @@ export default function PlayerBar() {
                 </div>
 
                 {/*правая часть*/}
-                <div className='w-1/4 flex justify-end items-center gap-x-6'>
+                <div className='w-1/3 flex justify-end items-center gap-x-6'>
                     <Button variant='ghost' size='icon' onClick={() => updateInfo(!info)}>
                         <InfoIcon />
                     </Button>

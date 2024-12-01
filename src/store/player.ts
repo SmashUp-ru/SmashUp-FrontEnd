@@ -20,6 +20,9 @@ interface PlayerState {
     volume: number;
     updateVolume: (newVolume: number) => void;
 
+    seek: number;
+    updateSeek: (newSeek: number) => void;
+
     info: boolean;
     updateInfo: (newInfo: boolean) => void;
 }
@@ -42,6 +45,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
     volume: 1.0,
     updateVolume: (newVolume: number) => set({ volume: newVolume }),
+
+    seek: 0,
+    updateSeek: (newSeek: number) => set({ seek: newSeek }),
 
     info: false,
     updateInfo: (newInfo: boolean) => set({ info: newInfo })
