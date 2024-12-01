@@ -13,7 +13,7 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 export default function PlaylistPage() {
     const params = useParams();
-    const { updateQueue, updateQueueName } = usePlayerStore();
+    const { updateQueue, updateQueueName, updateQueueIndex } = usePlayerStore();
     const { play } = usePlayer();
 
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
@@ -68,6 +68,7 @@ export default function PlaylistPage() {
                             size='icon'
                             onClick={() => {
                                 updateQueue(playlist.mashups);
+                                updateQueueIndex(0);
                                 updateQueueName(playlist.name);
                                 play();
                             }}
