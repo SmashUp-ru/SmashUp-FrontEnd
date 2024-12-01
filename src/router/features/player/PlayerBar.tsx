@@ -26,7 +26,7 @@ export default function PlayerBar() {
         info,
         updateInfo,
         seek,
-        updateSeek,
+        updateChangedSeek,
         volume,
         updateVolume
     } = usePlayerStore();
@@ -53,7 +53,9 @@ export default function PlayerBar() {
                     min={0}
                     max={mashup.duration}
                     value={[seek]}
-                    onValueChange={(value) => updateSeek(value[0])}
+                    onValueChange={(value) => {
+                        updateChangedSeek(value[0]);
+                    }}
                 />
             </div>
 
@@ -83,14 +85,14 @@ export default function PlayerBar() {
                     </div>
 
                     <Button variant='ghost' size='icon'>
-                        <LikeOutlineIcon />
+                        <LikeOutlineIcon color='onSurface' />
                     </Button>
                 </div>
 
                 {/*центральная часть*/}
                 <div className='flex flex-row justify-center items-center gap-x-6'>
                     <Button variant='ghost' size='icon' onClick={() => {}}>
-                        <ShuffleIcon />
+                        <ShuffleIcon color='onSurface' />
                     </Button>
 
                     <Button
@@ -101,16 +103,16 @@ export default function PlayerBar() {
                             play();
                         }}
                     >
-                        <SkipLeftIcon />
+                        <SkipLeftIcon color='onSurface' />
                     </Button>
 
                     {isPlaying ? (
                         <Button variant='ghost' size='icon' onClick={() => pause()}>
-                            <HollowPauseIcon color='onSurfaceVariant' />
+                            <HollowPauseIcon color='onSurface' />
                         </Button>
                     ) : (
                         <Button variant='ghost' size='icon' onClick={() => play()}>
-                            <HollowPlayIcon color='onSurfaceVariant' />
+                            <HollowPlayIcon color='onSurface' />
                         </Button>
                     )}
 
@@ -126,18 +128,18 @@ export default function PlayerBar() {
                     </Button>
 
                     <Button variant='ghost' size='icon' onClick={() => updateLoop(!loop)}>
-                        <RepeatIcon repeating={loop} />
+                        <RepeatIcon repeating={loop} color='onSurface' />
                     </Button>
                 </div>
 
                 {/*правая часть*/}
                 <div className='w-1/3 flex justify-end items-center gap-x-6'>
                     <Button variant='ghost' size='icon' onClick={() => updateInfo(!info)}>
-                        <InfoIcon />
+                        <InfoIcon color='onSurface' />
                     </Button>
 
                     <div>
-                        <VolumeIcon />
+                        <VolumeIcon color='onSurface' />
                     </div>
 
                     <Slider

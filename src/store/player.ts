@@ -22,6 +22,8 @@ interface PlayerState {
 
     seek: number;
     updateSeek: (newSeek: number) => void;
+    changedSeek: number;
+    updateChangedSeek: (newChangedSeek: number) => void;
 
     info: boolean;
     updateInfo: (newInfo: boolean) => void;
@@ -48,6 +50,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
     seek: 0,
     updateSeek: (newSeek: number) => set({ seek: newSeek }),
+    changedSeek: 0,
+    updateChangedSeek: (newIsSeeking: number) => set({ changedSeek: newIsSeeking }),
 
     info: false,
     updateInfo: (newInfo: boolean) => set({ info: newInfo })

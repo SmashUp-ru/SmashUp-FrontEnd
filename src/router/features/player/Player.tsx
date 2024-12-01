@@ -1,9 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
+import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 const Player: React.FC = () => {
-    const { isPlaying, loop, volume, queue, queueIndex, seek, updateSeek } = usePlayerStore();
+    const { isPlaying, loop, volume, queue, queueIndex, updateSeek, changedSeek } =
+        usePlayerStore();
+    const { next } = usePlayer();
+
     const player = useRef<ReactHowler | null>(null);
     const raf = useRef<number | null>(null);
 
@@ -30,17 +34,17 @@ const Player: React.FC = () => {
         };
     }, [isPlaying]);
 
+    // перемотка из слайдера
     useEffect(() => {
         if (player.current) {
-            const currentSeek = player.current.seek() * 1000;
-            if (Math.abs(currentSeek - seek) > 100) {
-                player.current.seek(seek / 1000);
-            }
+            player.current.seek(changedSeek / 1000);
+            updateSeek(player.current.seek() * 1000);
         }
-    }, [seek]);
+    }, [changedSeek]);
 
     const handleOnEnd = () => {
         console.log('Track ended');
+        next();
     };
 
     const handleOnLoad = () => {
