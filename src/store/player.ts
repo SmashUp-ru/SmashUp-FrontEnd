@@ -43,7 +43,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     loop: false,
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),
 
-    volume: 1.0,
+    volume: 0.5,
     updateVolume: (newVolume: number) => set({ volume: newVolume }),
 
     seek: 0,

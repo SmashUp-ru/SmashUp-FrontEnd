@@ -17,8 +17,19 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 
 export default function PlayerBar() {
-    const { queue, queueIndex, isPlaying, loop, updateLoop, info, updateInfo, seek, updateSeek } =
-        usePlayerStore();
+    const {
+        queue,
+        queueIndex,
+        isPlaying,
+        loop,
+        updateLoop,
+        info,
+        updateInfo,
+        seek,
+        updateSeek,
+        volume,
+        updateVolume
+    } = usePlayerStore();
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
@@ -125,13 +136,19 @@ export default function PlayerBar() {
                         <InfoIcon />
                     </Button>
 
-                    <VolumeIcon />
-
-                    {/*временная замена слайдеру громкости TODO*/}
-                    <div className='flex items-center'>
-                        <div className='w-[82px] h-[5px] bg-onSurface rounded-l' />
-                        <div className='w-[68px] h-[5px] bg-surfaceVariant rounded-r' />
+                    <div>
+                        <VolumeIcon />
                     </div>
+
+                    <Slider
+                        className='w-[150px]'
+                        trackClassName='h-[5px]'
+                        min={0.0}
+                        max={1.0}
+                        step={0.01}
+                        value={[volume]}
+                        onValueChange={(value) => updateVolume(value[0])}
+                    />
                 </div>
             </div>
             <Player />
