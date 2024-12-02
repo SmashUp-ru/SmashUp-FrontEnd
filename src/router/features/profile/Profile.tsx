@@ -10,12 +10,16 @@ import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import { useToast } from '@/hooks/use-toast.ts';
+import CopiedToast from '@/router/features/toasts/copied.tsx';
 
 interface ProfileProps {
     username: string;
 }
 
 export default function Profile({ username }: ProfileProps) {
+    const { toast } = useToast();
+
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
@@ -68,7 +72,27 @@ export default function Profile({ username }: ProfileProps) {
                         </div>
                     </div>
                     <div className='flex items-center gap-x-5'>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(
+                                        `${import.meta.env.VITE_FRONTEND_URL}/profile/${user.username}`
+                                    )
+                                    .then(() => {
+                                        toast({
+                                            element: (
+                                                <CopiedToast
+                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                                                    name={user.username}
+                                                />
+                                            ),
+                                            duration: 2000
+                                        });
+                                    });
+                            }}
+                        >
                             <ShareIcon />
                         </Button>
                     </div>

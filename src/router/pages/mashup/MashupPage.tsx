@@ -9,8 +9,12 @@ import { usePlayerStore } from '@/store/player.ts';
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import CopiedToast from '@/router/features/toasts/copied.tsx';
+import { useToast } from '@/hooks/use-toast.ts';
 
 export default function MashupPage() {
+    const { toast } = useToast();
+
     const params = useParams();
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { playPlaylist, pause } = usePlayer();
@@ -78,7 +82,27 @@ export default function MashupPage() {
                         <Button variant='ghost' size='icon'>
                             <HideIcon />
                         </Button>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(
+                                        `${import.meta.env.VITE_FRONTEND_URL}/mashup/${mashup.id}`
+                                    )
+                                    .then(() => {
+                                        toast({
+                                            element: (
+                                                <CopiedToast
+                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                                    name={mashup.name}
+                                                />
+                                            ),
+                                            duration: 2000
+                                        });
+                                    });
+                            }}
+                        >
                             <ShareIcon />
                         </Button>
                     </div>

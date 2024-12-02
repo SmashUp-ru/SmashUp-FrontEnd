@@ -9,8 +9,12 @@ import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import { useToast } from '@/hooks/use-toast.ts';
+import CopiedToast from '@/router/features/toasts/copied.tsx';
 
 export default function PlaylistPage() {
+    const { toast } = useToast();
+
     const params = useParams();
     const { playPlaylist } = usePlayer();
 
@@ -73,7 +77,27 @@ export default function PlaylistPage() {
                         <Button variant='ghost' size='icon'>
                             <HideIcon />
                         </Button>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(
+                                        `${import.meta.env.VITE_FRONTEND_URL}/playlist/${playlist.id}`
+                                    )
+                                    .then(() => {
+                                        toast({
+                                            element: (
+                                                <CopiedToast
+                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
+                                                    name={playlist.name}
+                                                />
+                                            ),
+                                            duration: 2000
+                                        });
+                                    });
+                            }}
+                        >
                             <ShareIcon />
                         </Button>
                     </div>
