@@ -44,7 +44,7 @@ export default function SearchResults() {
 
                     {playlists && playlists.length > 0 && (
                         <Section title='Плейлисты'>
-                            <div className='flex items-center'>
+                            <div className='flex flex-wrap items-center'>
                                 {playlists.map((playlist) => (
                                     <PlaylistThumb playlist={playlist} />
                                 ))}

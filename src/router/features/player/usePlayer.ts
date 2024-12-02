@@ -25,7 +25,7 @@ export function usePlayer() {
     }
 
     function playPlaylist(playlist: number[], playlistName: string, index: number = 0) {
-        updateQueue(playlist);
+        updateQueue([...playlist]);
         updateQueueIndex(index);
         updateQueueName(playlistName);
         play();

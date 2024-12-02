@@ -24,7 +24,7 @@ export default function PlaylistPage() {
         if (params.playlistId) {
             getPlaylistById(parseInt(params.playlistId)).then((r) => setPlaylist(r));
         }
-    }, []);
+    }, [params.playlistId]);
 
     useEffect(() => {
         if (playlist) {

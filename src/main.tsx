@@ -15,6 +15,7 @@ import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/Re
 import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/RestorePasswordUpdatePage.tsx';
 import DebugPage from '@/router/pages/debug/DebugPage.tsx';
 import ProfileTracksPage from '@/router/pages/profile/tracks/ProfileTracksPage.tsx';
+import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
 
 const router = createBrowserRouter([
     // основное приложение
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
             {
                 element: <PlaylistPage />,
                 path: '/playlist/:playlistId'
+            },
+            {
+                element: <MashupPage />,
+                path: '/mashup/:mashupId'
             },
             {
                 element: <ProfilePage />,
