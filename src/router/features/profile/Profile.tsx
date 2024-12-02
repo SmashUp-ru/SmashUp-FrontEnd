@@ -52,6 +52,7 @@ export default function Profile({ username }: ProfileProps) {
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
                     alt='profile'
                     className='w-[200px] h-[200px] rounded-full'
+                    draggable={false}
                 />
                 <div className='flex flex-col gap-y-4'>
                     <div>

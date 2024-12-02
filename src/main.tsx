@@ -16,67 +16,73 @@ import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/Rest
 import DebugPage from '@/router/pages/debug/DebugPage.tsx';
 import ProfileTracksPage from '@/router/pages/profile/tracks/ProfileTracksPage.tsx';
 import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
+import Layout from '@/router/pages/layout.tsx';
 
 const router = createBrowserRouter([
-    // основное приложение
     {
-        element: <RootLayout />,
-        errorElement: <NotFound />,
+        element: <Layout />,
         children: [
+            // основное приложение
             {
-                element: <DebugPage />,
-                path: '/debug'
+                element: <RootLayout />,
+                errorElement: <NotFound />,
+                children: [
+                    {
+                        element: <DebugPage />,
+                        path: '/debug'
+                    },
+                    {
+                        element: <Root />,
+                        path: '/'
+                    },
+                    {
+                        element: <PlaylistPage />,
+                        path: '/playlist/:playlistId'
+                    },
+                    {
+                        element: <MashupPage />,
+                        path: '/mashup/:mashupId'
+                    },
+                    {
+                        element: <ProfilePage />,
+                        path: '/profile/:profileUsername'
+                    },
+                    {
+                        element: <ProfileTracksPage />,
+                        path: '/profile/:profileUsername/tracks'
+                    },
+                    {
+                        element: <SearchPage />,
+                        path: '/search'
+                    }
+                ]
             },
+            // страницы входа
             {
-                element: <Root />,
-                path: '/'
-            },
-            {
-                element: <PlaylistPage />,
-                path: '/playlist/:playlistId'
-            },
-            {
-                element: <MashupPage />,
-                path: '/mashup/:mashupId'
-            },
-            {
-                element: <ProfilePage />,
-                path: '/profile/:profileUsername'
-            },
-            {
-                element: <ProfileTracksPage />,
-                path: '/profile/:profileUsername/tracks'
-            },
-            {
-                element: <SearchPage />,
-                path: '/search'
-            }
-        ]
-    },
-    // страницы входа
-    {
-        element: <AuthLayout />,
-        errorElement: <NotFound />,
-        children: [
-            {
-                element: <LoginPage />,
-                path: '/login'
-            },
-            {
-                element: <RegisterPage />,
-                path: '/register'
-            },
-            {
-                element: <RestorePasswordPage />,
-                path: '/restore-password'
-            },
-            {
-                element: <RestorePasswordConfirmPage />,
-                path: '/restore-confirm'
-            },
-            {
-                element: <RestorePasswordUpdatePage />,
-                path: '/restore-update'
+                element: <AuthLayout />,
+                errorElement: <NotFound />,
+                children: [
+                    {
+                        element: <LoginPage />,
+                        path: '/login'
+                    },
+                    {
+                        element: <RegisterPage />,
+                        path: '/register'
+                    },
+                    {
+                        element: <RestorePasswordPage />,
+                        path: '/restore-password'
+                    },
+                    {
+                        element: <RestorePasswordConfirmPage />,
+                        path: '/restore-confirm'
+                    },
+                    {
+                        element: <RestorePasswordUpdatePage />,
+                        path: '/restore-update'
+                    }
+                ]
             }
         ]
     }

@@ -41,7 +41,7 @@ export default function MashupPage() {
                 <div className='flex flex-col gap-y-6'>
                     <div>
                         <span className='font-medium text-lg text-additionalText'>
-                            Плейлист{' '}
+                            Мэшап{' '}
                             {mashup.authors.map((author) => (
                                 <Link to={`/profile/${author}`} className='text-onSurface'>
                                     {author}
