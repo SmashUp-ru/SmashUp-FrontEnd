@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
-import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 interface PlaylistThumbProps {
@@ -10,8 +9,7 @@ interface PlaylistThumbProps {
 }
 
 export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
-    const { updateQueue, updateQueueIndex, updateQueueName } = usePlayerStore();
-    const { play } = usePlayer();
+    const { playPlaylist } = usePlayer();
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
@@ -29,10 +27,7 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
                     size='icon'
                     className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                     onClick={() => {
-                        updateQueue(playlist.mashups);
-                        updateQueueIndex(0);
-                        updateQueueName(playlist.name);
-                        play();
+                        playPlaylist(playlist.mashups, playlist.name);
                     }}
                 >
                     <HollowPlayIcon color='onSurface' hoverColor='primary' />

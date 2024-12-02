@@ -1,7 +1,8 @@
 import { usePlayerStore } from '@/store/player.ts';
 
 export function usePlayer() {
-    const { updatePlaying, queue, queueIndex, updateQueueIndex } = usePlayerStore();
+    const { updatePlaying, queue, updateQueue, queueIndex, updateQueueIndex, updateQueueName } =
+        usePlayerStore();
 
     function play() {
         updatePlaying(true);
@@ -23,10 +24,18 @@ export function usePlayer() {
         }
     }
 
+    function playPlaylist(playlist: number[], playlistName: string, index: number = 0) {
+        updateQueue(playlist);
+        updateQueueIndex(index);
+        updateQueueName(playlistName);
+        play();
+    }
+
     return {
         play,
         pause,
         next,
-        prev
+        prev,
+        playPlaylist
     };
 }

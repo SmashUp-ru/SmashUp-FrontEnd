@@ -8,13 +8,11 @@ import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
-import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 export default function PlaylistPage() {
     const params = useParams();
-    const { updateQueue, updateQueueName, updateQueueIndex } = usePlayerStore();
-    const { play } = usePlayer();
+    const { playPlaylist } = usePlayer();
 
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
     const [playlist, setPlaylist] = useState<Playlist | null>(null);
@@ -67,10 +65,7 @@ export default function PlaylistPage() {
                             variant='ghost'
                             size='icon'
                             onClick={() => {
-                                updateQueue(playlist.mashups);
-                                updateQueueIndex(0);
-                                updateQueueName(playlist.name);
-                                play();
+                                playPlaylist(playlist.mashups, playlist.name);
                             }}
                         >
                             <HollowPlayIcon />

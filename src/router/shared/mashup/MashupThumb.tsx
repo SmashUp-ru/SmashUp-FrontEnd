@@ -13,9 +13,8 @@ interface MashupThumbProps {
 }
 
 export default function MashupThumb({ mashup }: MashupThumbProps) {
-    const { isPlaying, updateQueue, updateQueueIndex, updateQueueName, queue, queueIndex } =
-        usePlayerStore();
-    const { play, pause } = usePlayer();
+    const { isPlaying, queue, queueIndex } = usePlayerStore();
+    const { pause, playPlaylist } = usePlayer();
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
@@ -43,10 +42,7 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                         size='icon'
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
-                            updateQueue([mashup.id]);
-                            updateQueueIndex(0);
-                            updateQueueName(mashup.name);
-                            play();
+                            playPlaylist([mashup.id], mashup.name);
                         }}
                     >
                         <HollowPlayIcon color='onSurface' hoverColor='primary' />

@@ -24,9 +24,8 @@ export default function MashupSmallThumb({
     indexInPlaylist,
     playlistName
 }: MashupThumbProps) {
-    const { isPlaying, updateQueue, updateQueueIndex, updateQueueName, queue, queueIndex } =
-        usePlayerStore();
-    const { play, pause } = usePlayer();
+    const { isPlaying, queue, queueIndex } = usePlayerStore();
+    const { pause, playPlaylist } = usePlayer();
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -60,10 +59,7 @@ export default function MashupSmallThumb({
                             size='icon'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={() => {
-                                updateQueue(playlist);
-                                updateQueueIndex(indexInPlaylist);
-                                updateQueueName(playlistName);
-                                play();
+                                playPlaylist(playlist, playlistName, indexInPlaylist);
                             }}
                         >
                             <HollowPlayIcon color='onSurface' size={24} />
