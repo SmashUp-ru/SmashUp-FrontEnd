@@ -1,4 +1,4 @@
-import { createEntityStoreWithStringKey } from '@/store/entities/entities.ts';
+import { createEntityStore } from '@/store/entities/entities.ts';
 
 export interface User {
     id: number;
@@ -10,4 +10,4 @@ export interface User {
     playlists: number[];
 }
 
-export const useUserStore = createEntityStoreWithStringKey<User>('user/get', 'username');
+export const useUserStore = createEntityStore<User>('user/get', ['username', 'token']);

@@ -5,11 +5,11 @@ import BellIcon from '@/components/icons/Bell.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import { cn } from '@/lib/utils.ts';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import leonid from '@/assets/leonid.png';
 import { Button } from '@/components/ui/button.tsx';
 import ChevronLeftIcon from '@/components/icons/ChevronLeft.tsx';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
+import { useUser } from '@/hooks/useUser.ts';
 
 export default function Header() {
     const { updateSearchValue } = useSearchStore();
@@ -22,6 +22,8 @@ export default function Header() {
     useEffect(() => {
         updateSearchValue(debouncedValue);
     }, [debouncedValue]);
+
+    const user = useUser();
 
     return (
         <div className='py-4 pr-4 flex items-center gap-x-12'>
@@ -50,12 +52,18 @@ export default function Header() {
             <div className='flex items-center gap-x-6'>
                 <BellIcon active />
 
-                <Link draggable={false} to='/profile/LeonidM'>
-                    <Avatar>
-                        <AvatarImage src={leonid} />
-                        <AvatarFallback>LM</AvatarFallback>
-                    </Avatar>
-                </Link>
+                {user ? (
+                    <Link draggable={false} to={`/profile/${user.username}`}>
+                        <Avatar>
+                            <AvatarImage
+                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
+                            />
+                            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                    </Link>
+                ) : (
+                    <></>
+                )}
             </div>
         </div>
     );

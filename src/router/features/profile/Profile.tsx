@@ -29,7 +29,10 @@ export default function Profile({ username }: ProfileProps) {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     useEffect(() => {
-        getUserByUsername(username).then((r) => setUser(r));
+        getUserByUsername('username', username).then((r) => {
+            setUser(r);
+            console.log(`profile: ${JSON.stringify(user)}`);
+        });
     }, [username]);
 
     useEffect(() => {
