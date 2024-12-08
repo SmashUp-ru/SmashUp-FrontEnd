@@ -11,7 +11,10 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
     ({ className, trackClassName, ...props }, ref) => (
         <SliderPrimitive.Root
             ref={ref}
-            className={cn('relative flex w-full touch-none select-none items-center', className)}
+            className={cn(
+                'group relative flex w-full touch-none select-none items-center',
+                className
+            )}
             {...props}
         >
             <SliderPrimitive.Track
@@ -22,7 +25,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
             >
                 <SliderPrimitive.Range className='absolute h-full bg-onSurface' />
             </SliderPrimitive.Track>
-            <SliderPrimitive.Thumb className='' />
+            <SliderPrimitive.Thumb className='group-hover:block w-4 h-4 bg-onSurface rounded-full' />
         </SliderPrimitive.Root>
     )
 );
