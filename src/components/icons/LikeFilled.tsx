@@ -3,11 +3,11 @@ import { cn } from '@/lib/utils.ts';
 
 export default function LikeFilledIcon({
     className,
-    color = 'onSurfaceVariant',
+    color = 'primary',
     hoverColor,
     size,
-    width = 20,
-    height = 17
+    width = 27,
+    height = 23
 }: IconProps) {
     return (
         <svg

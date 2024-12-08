@@ -15,6 +15,9 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useState } from 'react';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
+import { useLikesStore } from '@/store/likes.ts';
+import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
+import { axiosSession } from '@/lib/utils.ts';
 
 export default function PlayerBar() {
     const {
@@ -33,14 +36,20 @@ export default function PlayerBar() {
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
+    const { likes } = useLikesStore();
 
     const [mashup, setMashup] = useState<Mashup | null>(null);
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         if (queue && queueIndex !== null && queueIndex >= 0 && queueIndex < queue.length) {
             getMashupById(queue[queueIndex]).then((r) => setMashup(r));
         }
     }, [queue, queueIndex]);
+
+    useEffect(() => {
+        setIsLiked(!!likes.find((id) => id === queue[queueIndex]));
+    }, [likes, queue, queueIndex]);
 
     if (!queue || queueIndex === null || !mashup) {
         return;
@@ -84,9 +93,35 @@ export default function PlayerBar() {
                         ))}
                     </div>
 
-                    <Button variant='ghost' size='icon'>
-                        <LikeOutlineIcon color='onSurface' />
-                    </Button>
+                    {isLiked ? (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                axiosSession
+                                    .post(
+                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
+                                    )
+                                    .then(() => setIsLiked(false));
+                            }}
+                        >
+                            <LikeFilledIcon />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                axiosSession
+                                    .post(
+                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
+                                    )
+                                    .then(() => setIsLiked(true));
+                            }}
+                        >
+                            <LikeOutlineIcon color='onSurface' />
+                        </Button>
+                    )}
                 </div>
 
                 {/*центральная часть*/}

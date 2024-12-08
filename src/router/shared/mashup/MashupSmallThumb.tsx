@@ -8,8 +8,11 @@ import { Mashup } from '@/store/entities/mashup.ts';
 import { isExplicit } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
+import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import { useLikesStore } from '@/store/likes.ts';
+import { useEffect, useState } from 'react';
+import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -28,6 +31,12 @@ export default function MashupSmallThumb({
 }: MashupThumbProps) {
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { pause, playMashup } = usePlayer();
+
+    const { likes } = useLikesStore();
+    const [isLiked, setIsLiked] = useState(false);
+    useEffect(() => {
+        setIsLiked(!!likes.find((id) => id === mashup.id));
+    }, [likes, mashup]);
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -86,9 +95,35 @@ export default function MashupSmallThumb({
             </div>
 
             <div className='flex items-center gap-x-[34px]'>
-                <span>
-                    <LikeOutlineIcon width={20} height={17} />
-                </span>
+                {isLiked ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            axiosSession
+                                .post(
+                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
+                                )
+                                .then(() => setIsLiked(false));
+                        }}
+                    >
+                        <LikeFilledIcon width={20} height={17} />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            axiosSession
+                                .post(
+                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
+                                )
+                                .then(() => setIsLiked(true));
+                        }}
+                    >
+                        <LikeOutlineIcon color='onSurface' width={20} height={17} />
+                    </Button>
+                )}
 
                 <div className='w-10 flex items-center justify-center'>
                     <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>

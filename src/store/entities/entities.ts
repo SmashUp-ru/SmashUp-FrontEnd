@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import { axiosSession } from '@/lib/utils.ts';
 
 interface CachingEntity {
     id: number;
@@ -20,6 +21,9 @@ export function createEntityStore<T extends CachingEntity>(
 
         fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
         fetchAndCacheMany: (ids: number[]) => Promise<T[]>;
+
+        updateOneById: (id: number, updatedData: Partial<T>) => void;
+        updateManyById: (ids: number[], updatedData: Partial<T>[]) => void;
     };
 
     return create<CacheStore>((set, get) => ({
@@ -77,7 +81,7 @@ export function createEntityStore<T extends CachingEntity>(
                 return uniqueIds.map((id) => get().cache[id]).filter(Boolean);
             }
 
-            const fetchPromise = axios
+            const fetchPromise = axiosSession
                 .get<{ status: string; response: T[] }>(
                     `${import.meta.env.VITE_BACKEND_URL}/${apiPath}?id=${toFetchIds.join(',')}`
                 )
@@ -178,6 +182,30 @@ export function createEntityStore<T extends CachingEntity>(
                 });
 
             return await fetchPromise;
+        },
+
+        updateOneById: (id: number, updatedData: Partial<T>) => {
+            const currentData = get().cache[id];
+            const newData = { ...currentData, ...updatedData };
+            set((state) => ({
+                cache: {
+                    ...state.cache,
+                    [id]: newData
+                }
+            }));
+        },
+
+        updateManyById: (ids: number[], updatedData: Partial<T>[]) => {
+            ids.forEach((id, idx) => {
+                const currentData = get().cache[id];
+                const newData = { ...currentData, ...updatedData[idx] };
+                set((state) => ({
+                    cache: {
+                        ...state.cache,
+                        [id]: newData
+                    }
+                }));
+            });
         }
     }));
 }
