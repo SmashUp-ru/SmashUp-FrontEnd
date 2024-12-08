@@ -11,12 +11,15 @@ import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
+import { usePlayerStore } from '@/store/player.ts';
+import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
 
     const params = useParams();
-    const { playPlaylist } = usePlayer();
+    const { isPlaying, queueId } = usePlayerStore();
+    const { playQueue, pause } = usePlayer();
 
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
     const [playlist, setPlaylist] = useState<Playlist | null>(null);
@@ -65,15 +68,31 @@ export default function PlaylistPage() {
                         <h1 className='font-bold text-4xl text-onSurface'>{playlist.name}</h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => {
-                                playPlaylist(playlist.mashups, playlist.name);
-                            }}
-                        >
-                            <HollowPlayIcon />
-                        </Button>
+                        {isPlaying && queueId === `playlist/${playlist.id}` ? (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    pause();
+                                }}
+                            >
+                                <HollowPauseIcon />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    playQueue(
+                                        playlist.mashups,
+                                        playlist.name,
+                                        `playlist/${playlist.id}`
+                                    );
+                                }}
+                            >
+                                <HollowPlayIcon />
+                            </Button>
+                        )}
                         <Button variant='ghost' size='icon'>
                             <HideIcon />
                         </Button>
@@ -112,6 +131,7 @@ export default function PlaylistPage() {
                         playlist={playlist.mashups}
                         indexInPlaylist={idx}
                         playlistName={playlist.name}
+                        queueId={`playlist/${playlist.id}`}
                     />
                 ))}
             </div>

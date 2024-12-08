@@ -3,13 +3,16 @@ import { Button } from '@/components/ui/button.tsx';
 import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import { usePlayerStore } from '@/store/player.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
 }
 
 export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
-    const { playPlaylist } = usePlayer();
+    const { isPlaying, queueId } = usePlayerStore();
+    const { playQueue, pause } = usePlayer();
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
@@ -22,16 +25,29 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
                         draggable={false}
                     />
                 </Link>
-                <Button
-                    variant='ghost'
-                    size='icon'
-                    className='hidden group-hover:block absolute bottom-3 right-3 z-20'
-                    onClick={() => {
-                        playPlaylist(playlist.mashups, playlist.name);
-                    }}
-                >
-                    <HollowPlayIcon color='onSurface' hoverColor='primary' />
-                </Button>
+                {isPlaying && queueId === `playlist/${playlist.id}` ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            pause();
+                        }}
+                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                    >
+                        <HollowPauseIcon />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            playQueue(playlist.mashups, playlist.name, `playlist/${playlist.id}`);
+                        }}
+                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                    >
+                        <HollowPlayIcon color='onSurface' hoverColor='primary' />
+                    </Button>
+                )}
             </div>
             <div className='flex flex-col'>
                 <Link

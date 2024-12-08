@@ -124,6 +124,7 @@ export default function Profile({ username }: ProfileProps) {
                                     playlist={user.mashups}
                                     indexInPlaylist={idx}
                                     playlistName={`Популярные треки ${user.username}`}
+                                    queueId={`user/${user.username}/tracks`}
                                 />
                             ))}
                         </div>

@@ -4,13 +4,16 @@ import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
 import { Link } from 'react-router-dom';
 import { User } from '@/store/entities/user.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import { usePlayerStore } from '@/store/player.ts';
+import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
 
 interface ProfileThumbProps {
     user: User;
 }
 
 export default function ProfileSmallThumb({ user }: ProfileThumbProps) {
-    const { playPlaylist } = usePlayer();
+    const { isPlaying, queueId } = usePlayerStore();
+    const { playQueue, pause } = usePlayer();
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -22,16 +25,33 @@ export default function ProfileSmallThumb({ user }: ProfileThumbProps) {
                         className='w-12 h-12 rounded-full group-hover:opacity-30 object-cover'
                         draggable={false}
                     />
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                        onClick={() => {
-                            playPlaylist(user.mashups, `Мэшапы ${user.username}`);
-                        }}
-                    >
-                        <HollowPlayIcon color='onSurface' size={24} />
-                    </Button>
+                    {isPlaying && queueId === `user/${user.username}/tracks` ? (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            onClick={() => {
+                                pause();
+                            }}
+                        >
+                            <HollowPauseIcon color='onSurface' size={24} />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            onClick={() => {
+                                playQueue(
+                                    user.mashups,
+                                    `Мэшапы ${user.username}`,
+                                    `user/${user.username}/tracks`
+                                );
+                            }}
+                        >
+                            <HollowPlayIcon color='onSurface' size={24} />
+                        </Button>
+                    )}
                 </div>
                 <Link
                     draggable={false}

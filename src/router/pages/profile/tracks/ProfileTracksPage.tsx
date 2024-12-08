@@ -9,11 +9,12 @@ import ShareIcon from '@/components/icons/Share.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
 
 export default function ProfileTracksPage() {
     const params = useParams();
-    const { updateQueue, updateQueueName } = usePlayerStore();
-    const { play } = usePlayer();
+    const { isPlaying, queueId } = usePlayerStore();
+    const { playQueue, pause } = usePlayer();
 
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
@@ -23,7 +24,7 @@ export default function ProfileTracksPage() {
 
     useEffect(() => {
         if (params.profileUsername) {
-            getUserByUsername(params.profileUsername).then((r) => setUser(r));
+            getUserByUsername('username', params.profileUsername).then((r) => setUser(r));
         }
     }, [params.profileUsername]);
 
@@ -52,17 +53,31 @@ export default function ProfileTracksPage() {
                         <h1 className='font-bold text-4xl text-onSurface'>{`Мэшапы ${user.username}`}</h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => {
-                                updateQueue(user.mashups);
-                                updateQueueName(`Мэшапы ${user.username}`);
-                                play();
-                            }}
-                        >
-                            <HollowPlayIcon />
-                        </Button>
+                        {isPlaying && queueId === `user/${user.username}/tracks` ? (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    pause();
+                                }}
+                            >
+                                <HollowPauseIcon />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    playQueue(
+                                        user.mashups,
+                                        `Мэшапы ${user.username}`,
+                                        `user/${user.username}/tracks`
+                                    );
+                                }}
+                            >
+                                <HollowPlayIcon />
+                            </Button>
+                        )}
                         <Button variant='ghost' size='icon'>
                             <HideIcon />
                         </Button>
@@ -81,6 +96,7 @@ export default function ProfileTracksPage() {
                         playlist={user.mashups}
                         indexInPlaylist={idx}
                         playlistName={`Мэшапы ${user.username}`}
+                        queueId={`user/${user.username}/tracks`}
                     />
                 ))}
             </div>

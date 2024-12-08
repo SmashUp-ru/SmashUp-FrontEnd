@@ -6,12 +6,18 @@ interface PlayerState {
     play: () => void;
     stop: () => void;
 
+    // очередь треков
     queue: number[];
     updateQueue: (newQueue: number[]) => void;
+    // индекс текущего трека в очереди
     queueIndex: number;
     updateQueueIndex: (newQueueIndex: number) => void;
+    // название текущей очереди, для отображения в mashup info
     queueName: string;
     updateQueueName: (newQueueName: string) => void;
+    // идентификатор текущей очереди, для удобной работы кнопки воспроизведения
+    queueId: string;
+    updateQueueId: (newQueueId: string) => void;
 
     // player bar info
     loop: boolean;
@@ -41,6 +47,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
     queueName: 'Тест',
     updateQueueName: (newQueueName: string) => set({ queueName: newQueueName }),
+    queueId: 'playlist/test',
+    updateQueueId: (newQueueId: string) => set({ queueId: newQueueId }),
 
     loop: false,
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),

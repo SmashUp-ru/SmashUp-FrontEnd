@@ -1,8 +1,16 @@
 import { usePlayerStore } from '@/store/player.ts';
 
 export function usePlayer() {
-    const { updatePlaying, queue, updateQueue, queueIndex, updateQueueIndex, updateQueueName } =
-        usePlayerStore();
+    const {
+        updatePlaying,
+        queue,
+        updateQueue,
+        queueIndex,
+        updateQueueIndex,
+        updateQueueName,
+        queueId,
+        updateQueueId
+    } = usePlayerStore();
 
     function play() {
         updatePlaying(true);
@@ -24,11 +32,35 @@ export function usePlayer() {
         }
     }
 
-    function playPlaylist(playlist: number[], playlistName: string, index: number = 0) {
-        updateQueue([...playlist]);
-        updateQueueIndex(index);
-        updateQueueName(playlistName);
-        play();
+    function playQueue(newQueue: number[], newQueueName: string, newQueueId: string) {
+        if (newQueueId === queueId) {
+            play();
+        } else {
+            updateQueueId(newQueueId);
+
+            updateQueue([...newQueue]);
+            updateQueueIndex(0);
+            updateQueueName(newQueueName);
+            play();
+        }
+    }
+
+    function playMashup(
+        newQueue: number[],
+        newQueueName: string,
+        newQueueId: string,
+        newQueueIndex: number
+    ) {
+        if (newQueueId === queueId && queueIndex === newQueueIndex) {
+            play();
+        } else {
+            updateQueueId(newQueueId);
+
+            updateQueue([...newQueue]);
+            updateQueueIndex(newQueueIndex);
+            updateQueueName(newQueueName);
+            play();
+        }
     }
 
     return {
@@ -36,6 +68,7 @@ export function usePlayer() {
         pause,
         next,
         prev,
-        playPlaylist
+        playQueue,
+        playMashup
     };
 }
