@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { ReactNode } from 'react';
@@ -29,7 +29,7 @@ export default function MashupCollection({ title, name, image, children }: Mashu
                     </div>
                     <div className='flex items-center gap-x-4'>
                         <Button variant='ghost' size='icon'>
-                            <HollowPlayIcon />
+                            <PlayHollowIcon />
                         </Button>
                         <Button variant='ghost' size='icon'>
                             <HideIcon />

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { isExplicit } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -34,7 +34,7 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                             pause();
                         }}
                     >
-                        <HollowPauseIcon color='onSurface' hoverColor='primary' />
+                        <PauseHollowIcon color='onSurface' hoverColor='primary' />
                     </Button>
                 ) : (
                     <Button
@@ -45,7 +45,7 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                             playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
                         }}
                     >
-                        <HollowPlayIcon color='onSurface' hoverColor='primary' />
+                        <PlayHollowIcon color='onSurface' hoverColor='primary' />
                     </Button>
                 )}
             </div>

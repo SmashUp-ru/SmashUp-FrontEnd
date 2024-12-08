@@ -1,7 +1,7 @@
 import { IconProps } from '@/components/icons/props.tsx';
 import { cn } from '@/lib/utils.ts';
 
-export default function HollowPlayIcon({
+export default function PlayHollowIcon({
     className,
     color = 'primary',
     hoverColor,

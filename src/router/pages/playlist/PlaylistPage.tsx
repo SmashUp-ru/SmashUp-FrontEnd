@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 import PlaylistPageSkeleton from '@/router/pages/skeletons/PlaylistPageSkeleton.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlayerStore } from '@/store/player.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -76,7 +76,7 @@ export default function PlaylistPage() {
                                     pause();
                                 }}
                             >
-                                <HollowPauseIcon />
+                                <PauseHollowIcon />
                             </Button>
                         ) : (
                             <Button
@@ -90,7 +90,7 @@ export default function PlaylistPage() {
                                     );
                                 }}
                             >
-                                <HollowPlayIcon />
+                                <PlayHollowIcon />
                             </Button>
                         )}
                         <Button variant='ghost' size='icon'>

@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Link } from 'react-router-dom';
 import { User } from '@/store/entities/user.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 
 interface ProfileThumbProps {
@@ -32,7 +32,7 @@ export default function ProfileThumb({ user }: ProfileThumbProps) {
                             pause();
                         }}
                     >
-                        <HollowPauseIcon color='onSurface' size={24} />
+                        <PauseHollowIcon color='onSurface' size={24} />
                     </Button>
                 ) : (
                     <Button
@@ -47,7 +47,7 @@ export default function ProfileThumb({ user }: ProfileThumbProps) {
                             );
                         }}
                     >
-                        <HollowPlayIcon color='onSurface' size={24} />
+                        <PlayHollowIcon color='onSurface' size={24} />
                     </Button>
                 )}
             </div>

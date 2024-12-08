@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 
 export default function ProfileTracksPage() {
     const params = useParams();
@@ -61,7 +61,7 @@ export default function ProfileTracksPage() {
                                     pause();
                                 }}
                             >
-                                <HollowPauseIcon />
+                                <PauseHollowIcon />
                             </Button>
                         ) : (
                             <Button
@@ -75,7 +75,7 @@ export default function ProfileTracksPage() {
                                     );
                                 }}
                             >
-                                <HollowPlayIcon />
+                                <PlayHollowIcon />
                             </Button>
                         )}
                         <Button variant='ghost' size='icon'>

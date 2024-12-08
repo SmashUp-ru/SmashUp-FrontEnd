@@ -1,7 +1,7 @@
 import { IconProps } from '@/components/icons/props.tsx';
 import { cn } from '@/lib/utils.ts';
 
-export default function HollowPauseIcon({
+export default function PauseHollowIcon({
     className,
     color = 'primary',
     hoverColor,

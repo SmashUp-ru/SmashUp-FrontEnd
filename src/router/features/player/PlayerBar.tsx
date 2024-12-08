@@ -4,13 +4,13 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
 import SkipLeftIcon from '@/components/icons/SkipLeft.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import SkipRightIcon from '@/components/icons/SkipRight.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
 import InfoIcon from '@/components/icons/Info.tsx';
 import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useState } from 'react';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
@@ -108,11 +108,11 @@ export default function PlayerBar() {
 
                     {isPlaying ? (
                         <Button variant='ghost' size='icon' onClick={() => pause()}>
-                            <HollowPauseIcon color='onSurface' />
+                            <PauseHollowIcon color='onSurface' />
                         </Button>
                     ) : (
                         <Button variant='ghost' size='icon' onClick={() => play()}>
-                            <HollowPlayIcon color='onSurface' />
+                            <PlayHollowIcon color='onSurface' />
                         </Button>
                     )}
 

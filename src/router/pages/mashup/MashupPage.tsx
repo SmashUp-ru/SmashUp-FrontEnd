@@ -1,14 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
 
@@ -64,7 +64,7 @@ export default function MashupPage() {
                                     pause();
                                 }}
                             >
-                                <HollowPauseIcon color='primary' />
+                                <PauseHollowIcon color='primary' />
                             </Button>
                         ) : (
                             <Button
@@ -75,7 +75,7 @@ export default function MashupPage() {
                                     playPlaylist([mashup.id], mashup.name);
                                 }}
                             >
-                                <HollowPlayIcon color='primary' />
+                                <PlayHollowIcon color='primary' />
                             </Button>
                         )}
 

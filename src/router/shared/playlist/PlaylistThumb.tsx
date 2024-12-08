@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 
 interface PlaylistThumbProps {
@@ -34,7 +34,7 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
                         }}
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                     >
-                        <HollowPauseIcon />
+                        <PauseHollowIcon />
                     </Button>
                 ) : (
                     <Button
@@ -45,7 +45,7 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
                         }}
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                     >
-                        <HollowPlayIcon color='onSurface' hoverColor='primary' />
+                        <PlayHollowIcon color='onSurface' hoverColor='primary' />
                     </Button>
                 )}
             </div>

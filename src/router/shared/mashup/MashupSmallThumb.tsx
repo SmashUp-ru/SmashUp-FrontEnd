@@ -1,5 +1,5 @@
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
-import HollowPlayIcon from '@/components/icons/HollowPlayIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { isExplicit } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
-import HollowPauseIcon from '@/components/icons/HollowPauseIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -53,7 +53,7 @@ export default function MashupSmallThumb({
                                 pause();
                             }}
                         >
-                            <HollowPauseIcon color='onSurfaceVariant' size={24} />
+                            <PauseHollowIcon color='onSurfaceVariant' size={24} />
                         </Button>
                     ) : (
                         <Button
@@ -64,7 +64,7 @@ export default function MashupSmallThumb({
                                 playMashup(playlist, playlistName, queueId, indexInPlaylist);
                             }}
                         >
-                            <HollowPlayIcon color='onSurface' size={24} />
+                            <PlayHollowIcon color='onSurface' size={24} />
                         </Button>
                     )}
                 </div>
