@@ -36,7 +36,7 @@ export default function PlayerBar() {
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
-    const { likes } = useLikesStore();
+    const { likes, updateLikes } = useLikesStore();
 
     const [mashup, setMashup] = useState<Mashup | null>(null);
     const [isLiked, setIsLiked] = useState(false);
@@ -102,7 +102,9 @@ export default function PlayerBar() {
                                     .post(
                                         `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
                                     )
-                                    .then(() => setIsLiked(false));
+                                    .then(() =>
+                                        updateLikes([...likes.filter((id) => id !== mashup.id)])
+                                    );
                             }}
                         >
                             <LikeFilledIcon />
@@ -116,7 +118,7 @@ export default function PlayerBar() {
                                     .post(
                                         `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
                                     )
-                                    .then(() => setIsLiked(true));
+                                    .then(() => updateLikes([...likes, mashup.id]));
                             }}
                         >
                             <LikeOutlineIcon color='onSurface' />

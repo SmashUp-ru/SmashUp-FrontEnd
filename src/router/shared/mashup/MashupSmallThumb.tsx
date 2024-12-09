@@ -32,7 +32,7 @@ export default function MashupSmallThumb({
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { pause, playMashup } = usePlayer();
 
-    const { likes } = useLikesStore();
+    const { likes, updateLikes } = useLikesStore();
     const [isLiked, setIsLiked] = useState(false);
     useEffect(() => {
         setIsLiked(!!likes.find((id) => id === mashup.id));
@@ -104,7 +104,9 @@ export default function MashupSmallThumb({
                                 .post(
                                     `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
                                 )
-                                .then(() => setIsLiked(false));
+                                .then(() =>
+                                    updateLikes([...likes.filter((id) => id !== mashup.id)])
+                                );
                         }}
                     >
                         <LikeFilledIcon width={20} height={17} />
@@ -118,7 +120,7 @@ export default function MashupSmallThumb({
                                 .post(
                                     `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
                                 )
-                                .then(() => setIsLiked(true));
+                                .then(() => updateLikes([...likes, mashup.id]));
                         }}
                     >
                         <LikeOutlineIcon color='onSurface' width={20} height={17} />
