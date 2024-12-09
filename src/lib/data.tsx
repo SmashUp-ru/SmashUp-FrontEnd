@@ -15,7 +15,7 @@ export const navLinks: NavLink[] = [
         icon: HomeIcon
     },
     {
-        link: '/playlist/0',
+        link: '/favorites',
         icon: LikeOutlineIcon
     },
     {
