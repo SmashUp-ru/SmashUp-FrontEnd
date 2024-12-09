@@ -18,6 +18,7 @@ import ProfileTracksPage from '@/router/pages/profile/tracks/ProfileTracksPage.t
 import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
 import Layout from '@/router/pages/layout.tsx';
 import FavoritesPage from '@/router/pages/favorites/FavoritesPage.tsx';
+import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
                     {
                         element: <FavoritesPage />,
                         path: '/favorites'
+                    },
+                    {
+                        element: <RecommendationsPage />,
+                        path: '/recommendations'
                     },
                     {
                         element: <PlaylistPage />,
