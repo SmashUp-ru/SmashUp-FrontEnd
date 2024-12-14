@@ -9,6 +9,9 @@ interface PlayerState {
     // очередь треков
     queue: number[];
     updateQueue: (newQueue: number[]) => void;
+    // оригинальная очередь треков, которая никогда не будет перемешиваться
+    originalQueue: number[];
+    updateOriginalQueue: (newOriginalQueue: number[]) => void;
     // индекс текущего трека в очереди
     queueIndex: number;
     updateQueueIndex: (newQueueIndex: number) => void;
@@ -22,6 +25,9 @@ interface PlayerState {
     // player bar info
     loop: boolean;
     updateLoop: (newLoop: boolean) => void;
+
+    shuffle: boolean;
+    updateShuffle: (newShuffle: boolean) => void;
 
     volume: number;
     updateVolume: (newVolume: number) => void;
@@ -43,6 +49,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
     queue: [1, 2, 3],
     updateQueue: (newQueue: number[]) => set({ queue: newQueue }),
+    originalQueue: [1, 2, 3],
+    updateOriginalQueue: (newOriginalQueue: number[]) => set({ originalQueue: newOriginalQueue }),
     queueIndex: 0,
     updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
     queueName: 'Тест',
@@ -52,6 +60,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
     loop: false,
     updateLoop: (newLoop: boolean) => set({ loop: newLoop }),
+
+    shuffle: false,
+    updateShuffle: (newShuffle: boolean) => set({ shuffle: newShuffle }),
 
     volume: 0.5,
     updateVolume: (newVolume: number) => set({ volume: newVolume }),

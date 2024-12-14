@@ -17,11 +17,12 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import { useLikesStore } from '@/store/likes.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import { axiosSession } from '@/lib/utils.ts';
+import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 
 export default function PlayerBar() {
     const {
         queue,
+        originalQueue,
         queueIndex,
         isPlaying,
         loop,
@@ -31,7 +32,15 @@ export default function PlayerBar() {
         seek,
         updateChangedSeek,
         volume,
-        updateVolume
+        updateVolume,
+        shuffle,
+        updateShuffle,
+        updateQueue,
+        queueId,
+        updateQueueId,
+        updateQueueIndex,
+        queueName,
+        updateQueueName
     } = usePlayerStore();
     const { play, pause, next, prev } = usePlayer();
 
@@ -128,9 +137,37 @@ export default function PlayerBar() {
 
                 {/*центральная часть*/}
                 <div className='flex flex-row justify-center items-center gap-x-6'>
-                    <Button variant='ghost' size='icon' onClick={() => {}}>
-                        <ShuffleIcon color='onSurface' />
-                    </Button>
+                    {shuffle ? (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                updateShuffle(false);
+                                updateQueueIndex(originalQueue.indexOf(queue[queueIndex]));
+                                updateQueue(originalQueue);
+                            }}
+                        >
+                            <ShuffleIcon color='primary' />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                updateShuffle(true);
+
+                                const [newQueue, newQueueIndex] = shuffleQueue(queue, queueIndex);
+
+                                updateQueueId(queueId);
+                                updateQueue([...newQueue]);
+                                updateQueueIndex(newQueueIndex);
+                                updateQueueName(queueName);
+                                play();
+                            }}
+                        >
+                            <ShuffleIcon color='onSurface' />
+                        </Button>
+                    )}
 
                     <Button
                         variant='ghost'

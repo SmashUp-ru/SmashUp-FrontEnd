@@ -23,3 +23,22 @@ export const axiosSession = axios.create({
         Authorization: `Bearer ${getToken()}`
     }
 });
+
+export function shuffleQueue(queue: number[], indexInQueue: number): [number[], number] {
+    const shuffledQueue = [...queue];
+    let targetNewIndex = indexInQueue;
+
+    for (let i = shuffledQueue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        if (i === targetNewIndex) {
+            targetNewIndex = j;
+        } else if (j === targetNewIndex) {
+            targetNewIndex = i;
+        }
+
+        [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
+    }
+
+    return [shuffledQueue, targetNewIndex];
+}

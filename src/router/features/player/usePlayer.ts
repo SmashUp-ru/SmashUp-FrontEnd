@@ -1,15 +1,18 @@
 import { usePlayerStore } from '@/store/player.ts';
+import { shuffleQueue } from '@/lib/utils.ts';
 
 export function usePlayer() {
     const {
         updatePlaying,
         queue,
         updateQueue,
+        updateOriginalQueue,
         queueIndex,
         updateQueueIndex,
         updateQueueName,
         queueId,
-        updateQueueId
+        updateQueueId,
+        shuffle
     } = usePlayerStore();
 
     function play() {
@@ -32,14 +35,24 @@ export function usePlayer() {
         }
     }
 
-    function playQueue(newQueue: number[], newQueueName: string, newQueueId: string) {
+    function playQueue(
+        newQueue: number[],
+        newQueueName: string,
+        newQueueId: string,
+        newQueueIndex: number = 0
+    ) {
         if (newQueueId === queueId) {
             play();
         } else {
-            updateQueueId(newQueueId);
+            updateOriginalQueue(newQueue);
 
+            if (shuffle) {
+                [newQueue] = shuffleQueue(newQueue, newQueueIndex);
+            }
+
+            updateQueueId(newQueueId);
             updateQueue([...newQueue]);
-            updateQueueIndex(0);
+            updateQueueIndex(newQueueIndex);
             updateQueueName(newQueueName);
             play();
         }
@@ -54,6 +67,8 @@ export function usePlayer() {
         if (newQueueId === queueId && queueIndex === newQueueIndex) {
             play();
         } else {
+            updateOriginalQueue(newQueue);
+
             updateQueueId(newQueueId);
 
             updateQueue([...newQueue]);
