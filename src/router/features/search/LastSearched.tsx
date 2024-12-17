@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { User } from '@/store/entities/user.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { Playlist } from '@/store/entities/playlist.ts';
+import PlaylistSmallThumb from '@/router/shared/playlist/PlaylistSmallThumb.tsx';
 
 export default function LastSearched() {
     interface searchHistoryElement {
@@ -19,7 +20,7 @@ export default function LastSearched() {
         setSearchHistory(searchHistory ? JSON.parse(searchHistory) : []);
     }, []);
 
-    if (!searchHistory) return <div>История пуста!</div>;
+    if (!searchHistory || searchHistory.length === 0) return <div>История пуста!</div>;
 
     return (
         <div className='flex flex-col gap-y-4 h-full'>
@@ -44,7 +45,7 @@ export default function LastSearched() {
                             );
 
                         case 'playlist':
-                            return <div>Плейлист {(element.object as Playlist).name}</div>;
+                            return <PlaylistSmallThumb playlist={element.object as Playlist} />;
                     }
                 })}
             </div>
