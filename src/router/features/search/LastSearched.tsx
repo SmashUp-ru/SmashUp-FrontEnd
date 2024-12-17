@@ -1,29 +1,25 @@
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import ProfileSmallThumb from '@/router/shared/profile/ProfileSmallThumb.tsx';
+import UserSmallThumb from '@/router/shared/user/UserSmallThumb.tsx';
 import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { User, useUserStore } from '@/store/entities/user.ts';
+import { User } from '@/store/entities/user.ts';
+import { Mashup } from '@/store/entities/mashup.ts';
+import { Playlist } from '@/store/entities/playlist.ts';
 
 export default function LastSearched() {
-    const [mashups, setMashups] = useState<Mashup[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
-
-    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
-    const getUsersByKeys = useUserStore((state) => state.getManyByIds);
-
-    useEffect(() => {
-        getMashupsByIds([1, 2, 3]).then((r) => setMashups(r));
-    }, []);
-
-    useEffect(() => {
-        getUsersByKeys([1, 2, 3]).then((r) => {
-            setUsers(r);
-        });
-    }, []);
-
-    if (!mashups && !users) {
-        return;
+    interface searchHistoryElement {
+        href: string;
+        type: 'user' | 'mashup' | 'playlist';
+        object: User | Mashup | Playlist;
     }
+
+    const [searchHistory, setSearchHistory] = useState<searchHistoryElement[]>([]);
+
+    useEffect(() => {
+        const searchHistory = localStorage.getItem('search_history');
+        setSearchHistory(searchHistory ? JSON.parse(searchHistory) : []);
+    }, []);
+
+    if (!searchHistory) return <div>История пуста!</div>;
 
     return (
         <div className='flex flex-col gap-y-4 h-full'>
@@ -31,17 +27,26 @@ export default function LastSearched() {
                 <h1 className='font-bold text-xl text-onSurface'>История поиска</h1>
             </div>
             <div className='flex flex-col gap-y-1 flex-1'>
-                {mashups.map((mashup, idx) => (
-                    <MashupSmallThumb
-                        mashup={mashup}
-                        playlist={[1, 2, 3]}
-                        indexInPlaylist={idx}
-                        playlistName='История поиска'
-                    />
-                ))}
-                {users.map((user) => (
-                    <ProfileSmallThumb key={user.id} user={user} />
-                ))}
+                {searchHistory.map((element) => {
+                    switch (element.type) {
+                        case 'user':
+                            return <UserSmallThumb user={element.object as User} />;
+
+                        case 'mashup':
+                            return (
+                                <MashupSmallThumb
+                                    mashup={element.object as Mashup}
+                                    playlist={[element.object.id]}
+                                    indexInPlaylist={0}
+                                    playlistName='История поиска'
+                                    queueId='searchHistory'
+                                />
+                            );
+
+                        case 'playlist':
+                            return <div>Плейлист {(element.object as Playlist).name}</div>;
+                    }
+                })}
             </div>
         </div>
     );

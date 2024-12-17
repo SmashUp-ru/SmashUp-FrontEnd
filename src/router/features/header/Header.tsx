@@ -53,7 +53,7 @@ export default function Header() {
                 <BellIcon active />
 
                 {user ? (
-                    <Link draggable={false} to={`/profile/${user.username}`}>
+                    <Link draggable={false} to={`/user/${user.username}`}>
                         <Avatar>
                             <AvatarImage
                                 src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}

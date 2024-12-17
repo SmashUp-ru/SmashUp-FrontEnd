@@ -61,7 +61,7 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
                     {playlist.authors.map((author, index) => (
                         <Link
                             key={index}
-                            to={`/profile/${author}`}
+                            to={`/user/${author}`}
                             className='font-medium text-lg text-onSurfaceVariant truncate'
                         >
                             {author}

@@ -17,7 +17,7 @@ export default function MashupPage() {
 
     const params = useParams();
     const { isPlaying, queue, queueIndex } = usePlayerStore();
-    const { playPlaylist, pause } = usePlayer();
+    const { playQueue, pause } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
 
@@ -47,7 +47,7 @@ export default function MashupPage() {
                         <span className='font-medium text-lg text-additionalText'>
                             Мэшап{' '}
                             {mashup.authors.map((author) => (
-                                <Link to={`/profile/${author}`} className='text-onSurface'>
+                                <Link to={`/user/${author}`} className='text-onSurface'>
                                     {author}
                                 </Link>
                             ))}
@@ -71,9 +71,9 @@ export default function MashupPage() {
                                 variant='ghost'
                                 size='icon'
                                 className=''
-                                onClick={() => {
-                                    playPlaylist([mashup.id], mashup.name);
-                                }}
+                                onClick={() =>
+                                    playQueue([mashup.id], mashup.name, `mashup/${mashup.id}`)
+                                }
                             >
                                 <PlayHollowIcon color='primary' />
                             </Button>
@@ -116,6 +116,7 @@ export default function MashupPage() {
                     playlist={[mashup.id]}
                     indexInPlaylist={0}
                     playlistName={mashup.name}
+                    queueId={`mashup/${mashup.id}`}
                 />
             </div>
         </div>

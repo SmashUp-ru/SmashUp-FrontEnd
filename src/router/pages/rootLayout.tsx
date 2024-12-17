@@ -40,6 +40,12 @@ export default function RootLayout() {
         );
     }, []);
 
+    useEffect(() => {
+        if (!localStorage.getItem('search_history')) {
+            localStorage.setItem('search_history', JSON.stringify([]));
+        }
+    }, []);
+
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />

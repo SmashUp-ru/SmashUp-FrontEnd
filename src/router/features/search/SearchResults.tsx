@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
-import ProfileThumb from '@/router/shared/profile/ProfileThumb.tsx';
+import UserThumb from '@/router/shared/user/UserThumb.tsx';
 import { useSearch } from '@/router/features/search/useSearch.ts';
 import { useSearchStore } from '@/store/search.ts';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
@@ -36,7 +36,7 @@ export default function SearchResults() {
                         <Section title='Авторы'>
                             <div className='flex flex-wrap items-center'>
                                 {users.map((user) => (
-                                    <ProfileThumb user={user} />
+                                    <UserThumb user={user} />
                                 ))}
                             </div>
                         </Section>
@@ -72,7 +72,7 @@ export default function SearchResults() {
                         <Section title='Авторы'>
                             <div className='flex items-center'>
                                 {users.map((user) => (
-                                    <ProfileThumb user={user} />
+                                    <UserThumb user={user} />
                                 ))}
                             </div>
                         </Section>

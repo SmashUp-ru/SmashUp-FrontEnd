@@ -10,7 +10,7 @@ interface ProfileThumbProps {
     user: User;
 }
 
-export default function ProfileThumb({ user }: ProfileThumbProps) {
+export default function UserThumb({ user }: ProfileThumbProps) {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
@@ -54,7 +54,7 @@ export default function ProfileThumb({ user }: ProfileThumbProps) {
             <div className='flex flex-col items-center'>
                 <Link
                     draggable={false}
-                    to={`/profile/${user.username}`}
+                    to={`/user/${user.username}`}
                     className='font-bold text-lg text-onSurface'
                 >
                     {user.username}

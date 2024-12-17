@@ -17,7 +17,7 @@ interface ProfileProps {
     username: string;
 }
 
-export default function Profile({ username }: ProfileProps) {
+export default function User({ username }: ProfileProps) {
     const { toast } = useToast();
 
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);

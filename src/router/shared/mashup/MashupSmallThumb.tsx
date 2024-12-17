@@ -85,7 +85,7 @@ export default function MashupSmallThumb({
                     {mashup.authors.map((author) => (
                         <Link
                             key={author}
-                            to={`/profile/${author}`}
+                            to={`/user/${author}`}
                             className='font-medium text-onSurfaceVariant'
                         >
                             {author}

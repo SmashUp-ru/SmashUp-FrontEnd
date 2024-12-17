@@ -11,7 +11,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 
-export default function ProfileTracksPage() {
+export default function UserTracksPage() {
     const params = useParams();
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
