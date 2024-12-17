@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import Section from '@/router/shared/section/Section.tsx';
-import { User, useUserStore } from '@/store/entities/user.ts';
+import { User as UserType, useUserStore } from '@/store/entities/user.ts';
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
@@ -24,7 +24,7 @@ export default function User({ username }: ProfileProps) {
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
 
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserType | null>(null);
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 

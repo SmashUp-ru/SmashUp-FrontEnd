@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
 
 interface CachingEntity {
@@ -15,12 +14,22 @@ export function createEntityStore<T extends CachingEntity>(
         additionalCache: Record<string, Record<string, number>>;
         pendingRequests: Record<number, Promise<T | T[]>>;
 
-        getManyByIds: (ids: number[]) => Promise<T[]>;
+        getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
+        getManyByStringKeys: (
+            keyName: string,
+            keys: string[],
+            needToBeModified?: boolean
+        ) => Promise<T[]>;
         getOneById: (id: number) => Promise<T>;
         getOneByStringKey: (keyName: string, key: string) => Promise<T>;
 
         fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
-        fetchAndCacheMany: (ids: number[]) => Promise<T[]>;
+        fetchAndCacheManyByStringKeys: (
+            keyName: string,
+            keys: string[],
+            needToBeModified?: boolean
+        ) => Promise<T[]>;
+        fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
         updateOneById: (id: number, updatedData: Partial<T>) => void;
         updateManyById: (ids: number[], updatedData: Partial<T>[]) => void;
@@ -58,16 +67,33 @@ export function createEntityStore<T extends CachingEntity>(
             return get().cache[get().additionalCache[keyName][key]];
         },
 
-        getManyByIds: async (ids: number[]): Promise<T[]> => {
+        getManyByStringKeys: async (
+            keyName: string,
+            keys: string[],
+            needToBeModified: boolean = false
+        ): Promise<T[]> => {
+            const missingIds = keys.filter((key) => !get().additionalCache[keyName][key]);
+
+            if (!missingIds.length)
+                return keys.map((key) => get().cache[get().additionalCache[keyName][key]]);
+
+            await get().fetchAndCacheManyByStringKeys(keyName, keys, needToBeModified);
+            return keys.map((key) => get().cache[get().additionalCache[keyName][key]]);
+        },
+
+        getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
             const missingIds = ids.filter((id) => !get().cache[id]);
 
             if (!missingIds.length) return ids.map((id) => get().cache[id]);
 
-            await get().fetchAndCacheMany(missingIds);
+            await get().fetchAndCacheMany(missingIds, needToBeModified);
             return ids.map((id) => get().cache[id]);
         },
 
-        fetchAndCacheMany: async (ids: number[]): Promise<T[]> => {
+        fetchAndCacheMany: async (
+            ids: number[],
+            needToBeModified: boolean = false
+        ): Promise<T[]> => {
             const uniqueIds = Array.from(new Set(ids));
             const toFetchIds = uniqueIds.filter(
                 (id) => !get().cache[id] && !get().pendingRequests[id]
@@ -83,7 +109,7 @@ export function createEntityStore<T extends CachingEntity>(
 
             const fetchPromise = axiosSession
                 .get<{ status: string; response: T[] }>(
-                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}?id=${toFetchIds.join(',')}`
+                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?id=${toFetchIds.join(',')}`
                 )
                 .then((response) => {
                     const fetchedData = response.data.response;
@@ -151,7 +177,7 @@ export function createEntityStore<T extends CachingEntity>(
                 return get().getOneById(get().additionalCache[keyName][key]);
             }
 
-            const fetchPromise = axios
+            const fetchPromise = axiosSession
                 .get<{ status: string; response: T }>(
                     `${import.meta.env.VITE_BACKEND_URL}/${apiPath}?${keyName}=${key}`
                 )
@@ -182,6 +208,61 @@ export function createEntityStore<T extends CachingEntity>(
                 });
 
             return await fetchPromise;
+        },
+
+        fetchAndCacheManyByStringKeys: async (
+            keyName: string,
+            keys: string[],
+            needToBeModified: boolean = false
+        ): Promise<T[]> => {
+            const uniqueKeys = Array.from(new Set(keys));
+            const toFetchKeys = uniqueKeys.filter((key) => !get().additionalCache[keyName]?.[key]);
+
+            if (toFetchKeys.length === 0) {
+                return uniqueKeys.map((key) => {
+                    const id = get().additionalCache[keyName][key];
+                    return get().cache[id];
+                });
+            }
+
+            try {
+                const response = await axiosSession.get<{ status: string; response: T[] }>(
+                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?${keyName}=${toFetchKeys.join(',')}`
+                );
+
+                const fetchedData = response.data.response;
+
+                set((state) => {
+                    const newCache = { ...state.cache };
+                    const newAdditionalCache = { ...state.additionalCache };
+
+                    fetchedData.forEach((elem) => {
+                        newCache[elem.id] = elem;
+
+                        if (!newAdditionalCache[keyName]) {
+                            newAdditionalCache[keyName] = {};
+                        }
+                        // @ts-expect-error сделано специально, в наличии поля уверен
+                        if (elem[keyName]) {
+                            // @ts-expect-error сделано специально, в наличии поля уверен
+                            newAdditionalCache[keyName][elem[keyName]] = elem.id;
+                        }
+                    });
+
+                    return {
+                        cache: newCache,
+                        additionalCache: newAdditionalCache
+                    };
+                });
+
+                return fetchedData;
+            } catch (error) {
+                console.error(
+                    `Failed to fetch data for keys: ${keyName}=${toFetchKeys.join(',')}`,
+                    error
+                );
+                throw new Error('Failed to fetch data');
+            }
         },
 
         updateOneById: (id: number, updatedData: Partial<T>) => {

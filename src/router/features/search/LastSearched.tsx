@@ -10,7 +10,7 @@ export default function LastSearched() {
     interface searchHistoryElement {
         href: string;
         type: 'user' | 'mashup' | 'playlist';
-        object: User | Mashup | Playlist;
+        id: number | string;
     }
 
     const [searchHistory, setSearchHistory] = useState<searchHistoryElement[]>([]);
@@ -19,6 +19,28 @@ export default function LastSearched() {
         const searchHistory = localStorage.getItem('search_history');
         setSearchHistory(searchHistory ? JSON.parse(searchHistory) : []);
     }, []);
+
+    useEffect(() => {
+        if (searchHistory) {
+            const userIds = [];
+            const mashupIds = [];
+            const playlistIds = [];
+
+            searchHistory.forEach((elem) => {
+                switch (elem.type) {
+                    case 'user':
+                        userIds.push(elem.id);
+                        break;
+                    case 'mashup':
+                        mashupIds.push(elem.id);
+                        break;
+                    case 'playlist':
+                        playlistIds.push(elem.id);
+                        break;
+                }
+            });
+        }
+    }, [searchHistory]);
 
     if (!searchHistory || searchHistory.length === 0) return <div>История пуста!</div>;
 
