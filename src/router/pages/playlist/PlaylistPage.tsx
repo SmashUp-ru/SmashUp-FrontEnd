@@ -60,7 +60,11 @@ export default function PlaylistPage() {
                         <span className='font-medium text-lg text-additionalText'>
                             Плейлист{' '}
                             {playlist.authors.map((author) => (
-                                <Link to={`/user/${author}`} className='text-onSurface'>
+                                <Link
+                                    key={author}
+                                    to={`/user/${author}`}
+                                    className='text-onSurface'
+                                >
                                     {author}
                                 </Link>
                             ))}

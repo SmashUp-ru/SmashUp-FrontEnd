@@ -15,10 +15,9 @@ export default function Sidebar() {
             <div className='flex flex-col gap-y-12 px-12'>
                 {/* Навигация */}
                 <div className='flex flex-col gap-y-12'>
-                    {navLinks.map((link, i) => (
-                        <Link draggable={false} to={link.link}>
+                    {navLinks.map((link, idx) => (
+                        <Link key={idx} draggable={false} to={link.link}>
                             <link.icon
-                                key={i}
                                 color={
                                     location.pathname === link.link ? 'primary' : 'onSurfaceVariant'
                                 }

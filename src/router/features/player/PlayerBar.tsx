@@ -93,6 +93,7 @@ export default function PlayerBar() {
                         </span>
                         {mashup.authors.map((author) => (
                             <Link
+                                key={author}
                                 draggable={false}
                                 to={`/profile/${author}`}
                                 className='font-medium text-onSurfaceVariant'

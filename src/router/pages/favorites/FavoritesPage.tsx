@@ -45,7 +45,7 @@ export default function FavoritesPage() {
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
                         <h1 className='font-bold text-4xl text-onSurface'>
                             Любимое{' '}
-                            <Link to={`/profile/${user.username}`} className='text-onSurface'>
+                            <Link to={`/user/${user.username}`} className='text-onSurface'>
                                 {user.username}
                             </Link>
                         </h1>

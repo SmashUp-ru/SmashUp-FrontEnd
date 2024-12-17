@@ -7,8 +7,8 @@ export default function PlaylistPageSkeleton() {
             <Skeleton className='w-full h-[252px] rounded-[50px]' />
 
             <div className='flex flex-col gap-y-1'>
-                {Array.from({ length: 10 }).map(() => (
-                    <MashupThumbSkeleton />
+                {Array.from({ length: 10 }).map((_, idx) => (
+                    <MashupThumbSkeleton key={idx} />
                 ))}
             </div>
         </div>

@@ -46,9 +46,9 @@ export default function BellIcon({
                     width='17.332'
                     height='17.333'
                     filterUnits='userSpaceOnUse'
-                    color-interpolation-filters='sRGB'
+                    colorInterpolationFilters='sRGB'
                 >
-                    <feFlood flood-opacity='0' result='BackgroundImageFix' />
+                    <feFlood floodOpacity='0' result='BackgroundImageFix' />
                     <feColorMatrix
                         in='SourceAlpha'
                         type='matrix'
