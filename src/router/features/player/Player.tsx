@@ -4,9 +4,17 @@ import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 const Player: React.FC = () => {
-    const { isPlaying, loop, volume, queue, queueIndex, updateSeek, changedSeek } =
-        usePlayerStore();
-    const { next } = usePlayer();
+    const {
+        isPlaying,
+        loop,
+        volume,
+        queue,
+        queueIndex,
+        updateQueueIndex,
+        updateSeek,
+        changedSeek
+    } = usePlayerStore();
+    const { next, play } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
     const raf = useRef<number | null>(null);
@@ -42,9 +50,20 @@ const Player: React.FC = () => {
         }
     }, [changedSeek]);
 
+    useEffect(() => console.log(loop), [loop]);
+
     const handleOnEnd = () => {
-        console.log('Track ended');
-        next();
+        console.log(`Track ended at ${queueIndex} in length of ${queue.length}. Loop is ${loop}`);
+        if (queueIndex === queue.length - 1) {
+            if (loop === 'queue') {
+                updateQueueIndex(0);
+                play();
+            }
+        } else {
+            if (loop !== 'mashup') {
+                next();
+            }
+        }
     };
 
     const handleOnLoad = () => {
@@ -57,7 +76,7 @@ const Player: React.FC = () => {
             playing={isPlaying}
             onLoad={handleOnLoad}
             onEnd={handleOnEnd}
-            loop={loop}
+            loop={loop === 'mashup'}
             volume={volume}
             ref={(ref) => (player.current = ref)}
         />

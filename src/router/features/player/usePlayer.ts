@@ -24,14 +24,22 @@ export function usePlayer() {
     }
 
     function next() {
-        if (queueIndex !== null && queueIndex + 1 < queue.length) {
+        if (queueIndex < queue.length - 1) {
             updateQueueIndex(queueIndex + 1);
+        }
+
+        if (queueIndex === queue.length - 1) {
+            pause();
         }
     }
 
     function prev() {
-        if (queueIndex !== null && queueIndex > 0) {
+        if (queueIndex > 0) {
             updateQueueIndex(queueIndex - 1);
+        }
+
+        if (queueIndex === 0) {
+            pause();
         }
     }
 

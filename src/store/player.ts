@@ -23,8 +23,8 @@ interface PlayerState {
     updateQueueId: (newQueueId: string) => void;
 
     // player bar info
-    loop: boolean;
-    updateLoop: (newLoop: boolean) => void;
+    loop: string;
+    updateLoop: (newLoop: string) => void;
 
     shuffle: boolean;
     updateShuffle: (newShuffle: boolean) => void;
@@ -58,8 +58,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     queueId: 'playlist/test',
     updateQueueId: (newQueueId: string) => set({ queueId: newQueueId }),
 
-    loop: false,
-    updateLoop: (newLoop: boolean) => set({ loop: newLoop }),
+    loop: 'none',
+    updateLoop: (newLoop: string) => set({ loop: newLoop }),
 
     shuffle: false,
     updateShuffle: (newShuffle: boolean) => set({ shuffle: newShuffle }),

@@ -201,9 +201,23 @@ export default function PlayerBar() {
                         <SkipRightIcon />
                     </Button>
 
-                    <Button variant='ghost' size='icon' onClick={() => updateLoop(!loop)}>
-                        <RepeatIcon repeating={loop} color='onSurface' />
-                    </Button>
+                    {loop === 'none' && (
+                        <Button variant='ghost' size='icon' onClick={() => updateLoop('queue')}>
+                            <RepeatIcon repeating={false} color='onSurface' />
+                        </Button>
+                    )}
+
+                    {loop === 'queue' && (
+                        <Button variant='ghost' size='icon' onClick={() => updateLoop('mashup')}>
+                            <RepeatIcon repeating={false} color='primary' />
+                        </Button>
+                    )}
+
+                    {loop === 'mashup' && (
+                        <Button variant='ghost' size='icon' onClick={() => updateLoop('none')}>
+                            <RepeatIcon repeating={true} color='primary' />
+                        </Button>
+                    )}
                 </div>
 
                 {/*правая часть*/}
