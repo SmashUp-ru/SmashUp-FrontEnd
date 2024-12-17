@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 import { useMashupStore } from '@/store/entities/mashup.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import { useSearchStore } from '@/store/search.ts';
 
 export default function NavigationTracker() {
     const location = useLocation();
+    const { searchValue } = useSearchStore();
+
     const [lastLocation, setLastLocation] = useState<string | null>(null);
 
     const getMashupById = useMashupStore((state) => state.getOneById);
@@ -14,7 +17,7 @@ export default function NavigationTracker() {
 
     const handleLocationChange = (newLocation: string) => {
         console.log(`Transition from ${lastLocation} to ${newLocation}`);
-        if (lastLocation === '/search') {
+        if (lastLocation === '/search' && searchValue) {
             const splitResult = newLocation.slice(1).split('/');
             const resultType = splitResult[0];
 
