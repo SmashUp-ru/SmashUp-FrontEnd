@@ -21,9 +21,8 @@ export default function NavigationTracker() {
                         'search_history',
                         JSON.stringify([
                             {
-                                href: newLocation,
                                 type: 'playlist',
-                                object: resultId
+                                id: resultId
                             },
                             ...JSON.parse(localStorage.getItem('search_history')!)
                         ])
@@ -35,9 +34,8 @@ export default function NavigationTracker() {
                         'search_history',
                         JSON.stringify([
                             {
-                                href: newLocation,
                                 type: 'mashup',
-                                object: resultId
+                                id: resultId
                             },
                             ...JSON.parse(localStorage.getItem('search_history')!)
                         ])
@@ -49,9 +47,8 @@ export default function NavigationTracker() {
                         'search_history',
                         JSON.stringify([
                             {
-                                href: newLocation,
                                 type: 'user',
-                                object: resultId
+                                id: resultId
                             },
                             ...JSON.parse(localStorage.getItem('search_history')!)
                         ])
