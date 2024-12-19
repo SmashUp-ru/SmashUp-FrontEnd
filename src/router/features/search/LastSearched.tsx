@@ -1,9 +1,9 @@
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import UserSmallThumb from '@/router/shared/user/UserSmallThumb.tsx';
 import { useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
+import UserSmallThumb from '@/router/shared/user/UserSmallThumb.tsx';
+import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import PlaylistSmallThumb from '@/router/shared/playlist/PlaylistSmallThumb.tsx';
 
 export default function LastSearched() {
@@ -20,11 +20,11 @@ export default function LastSearched() {
 
     const getPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
-    const getUsersByStringKeys = useUserStore((state) => state.getManyByStringKeys);
+    const getUsersByIds = useUserStore((state) => state.getManyByIds);
 
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
     const getMashupById = useMashupStore((state) => state.getOneById);
-    const getUserByStringKey = useUserStore((state) => state.getOneByStringKey);
+    const getUserById = useUserStore((state) => state.getOneById);
 
     const [searchHistory, setSearchHistory] = useState<searchHistoryElement[]>([]);
     const [searchHistoryObjects, setSearchHistoryObjects] = useState<searchHistoryObjectsElement[]>(
@@ -38,14 +38,14 @@ export default function LastSearched() {
 
     useEffect(() => {
         if (searchHistory) {
-            const userIds: string[] = [];
+            const userIds: number[] = [];
             const mashupIds: number[] = [];
             const playlistIds: number[] = [];
 
             searchHistory.forEach((elem) => {
                 switch (elem.type) {
                     case 'user':
-                        userIds.push(elem.id);
+                        userIds.push(parseInt(elem.id));
                         break;
                     case 'mashup':
                         mashupIds.push(parseInt(elem.id));
@@ -59,42 +59,42 @@ export default function LastSearched() {
             const loadData = async () => {
                 await getPlaylistsByIds(playlistIds);
                 await getMashupsByIds(mashupIds);
-                await getUsersByStringKeys('username', userIds, true);
+                await getUsersByIds(userIds, true);
             };
 
             loadData().then(() => {
                 searchHistory.forEach((elem) => {
                     switch (elem.type) {
                         case 'user':
-                            getUserByStringKey('username', elem.id).then((r) =>
-                                setSearchHistoryObjects([
+                            getUserById(parseInt(elem.id)).then((r) =>
+                                setSearchHistoryObjects((prev) => [
                                     {
                                         type: 'user',
                                         object: r
                                     },
-                                    ...searchHistoryObjects
+                                    ...prev
                                 ])
                             );
                             break;
                         case 'mashup':
                             getMashupById(parseInt(elem.id)).then((r) =>
-                                setSearchHistoryObjects([
+                                setSearchHistoryObjects((prev) => [
                                     {
                                         type: 'mashup',
                                         object: r
                                     },
-                                    ...searchHistoryObjects
+                                    ...prev
                                 ])
                             );
                             break;
                         case 'playlist':
                             getPlaylistById(parseInt(elem.id)).then((r) =>
-                                setSearchHistoryObjects([
+                                setSearchHistoryObjects((prev) => [
                                     {
                                         type: 'playlist',
                                         object: r
                                     },
-                                    ...searchHistoryObjects
+                                    ...prev
                                 ])
                             );
                             break;
@@ -112,10 +112,10 @@ export default function LastSearched() {
                 <h1 className='font-bold text-xl text-onSurface'>История поиска</h1>
             </div>
             <div className='flex flex-col gap-y-1 flex-1'>
-                {searchHistoryObjects.map((element) => {
+                {searchHistoryObjects.map((element, idx) => {
                     switch (element.type) {
                         case 'user':
-                            return <UserSmallThumb user={element.object as User} />;
+                            return <UserSmallThumb user={element.object as User} key={idx} />;
 
                         case 'mashup':
                             return (
@@ -125,11 +125,17 @@ export default function LastSearched() {
                                     indexInPlaylist={0}
                                     playlistName='История поиска'
                                     queueId='searchHistory'
+                                    key={idx}
                                 />
                             );
 
                         case 'playlist':
-                            return <PlaylistSmallThumb playlist={element.object as Playlist} />;
+                            return (
+                                <PlaylistSmallThumb
+                                    playlist={element.object as Playlist}
+                                    key={idx}
+                                />
+                            );
                     }
                 })}
             </div>

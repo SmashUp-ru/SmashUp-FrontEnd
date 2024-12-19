@@ -15,20 +15,10 @@ export function createEntityStore<T extends CachingEntity>(
         pendingRequests: Record<number, Promise<T | T[]>>;
 
         getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
-        getManyByStringKeys: (
-            keyName: string,
-            keys: string[],
-            needToBeModified?: boolean
-        ) => Promise<T[]>;
         getOneById: (id: number) => Promise<T>;
         getOneByStringKey: (keyName: string, key: string) => Promise<T>;
 
         fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
-        fetchAndCacheManyByStringKeys: (
-            keyName: string,
-            keys: string[],
-            needToBeModified?: boolean
-        ) => Promise<T[]>;
         fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
         updateOneById: (id: number, updatedData: Partial<T>) => void;
@@ -65,20 +55,6 @@ export function createEntityStore<T extends CachingEntity>(
 
             await get().fetchAndCacheOneByStringKey(keyName, key);
             return get().cache[get().additionalCache[keyName][key]];
-        },
-
-        getManyByStringKeys: async (
-            keyName: string,
-            keys: string[],
-            needToBeModified: boolean = false
-        ): Promise<T[]> => {
-            const missingIds = keys.filter((key) => !get().additionalCache[keyName][key]);
-
-            if (!missingIds.length)
-                return keys.map((key) => get().cache[get().additionalCache[keyName][key]]);
-
-            await get().fetchAndCacheManyByStringKeys(keyName, keys, needToBeModified);
-            return keys.map((key) => get().cache[get().additionalCache[keyName][key]]);
         },
 
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
@@ -132,6 +108,9 @@ export function createEntityStore<T extends CachingEntity>(
                                     keyNames.forEach((keyName) => {
                                         // @ts-expect-error сделано специально, в наличии поля уверен
                                         if (obj[keyName]) {
+                                            if (!acc[keyName]) {
+                                                acc[keyName] = {};
+                                            }
                                             // @ts-expect-error сделано специально, в наличии поля уверен
                                             acc[keyName][obj[keyName]] = obj.id;
                                         }

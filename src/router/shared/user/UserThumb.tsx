@@ -8,9 +8,10 @@ import { usePlayerStore } from '@/store/player.ts';
 
 interface ProfileThumbProps {
     user: User;
+    searchMode?: boolean;
 }
 
-export default function UserThumb({ user }: ProfileThumbProps) {
+export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
@@ -54,7 +55,7 @@ export default function UserThumb({ user }: ProfileThumbProps) {
             <div className='flex flex-col items-center'>
                 <Link
                     draggable={false}
-                    to={`/user/${user.username}`}
+                    to={`/user/${user.username}${searchMode ? `?searchId=${user.id}` : ''}`}
                     className='font-bold text-lg text-onSurface'
                 >
                     {user.username}

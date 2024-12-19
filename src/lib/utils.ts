@@ -42,3 +42,8 @@ export function shuffleQueue(queue: number[], indexInQueue: number): [number[], 
 
     return [shuffledQueue, targetNewIndex];
 }
+
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+export function zip(rows: any[][]) {
+    return rows[0].map((_, c) => rows.map((row) => row[c]));
+}

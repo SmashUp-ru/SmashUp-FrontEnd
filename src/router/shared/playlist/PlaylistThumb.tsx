@@ -8,16 +8,20 @@ import { usePlayerStore } from '@/store/player.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
+    searchMode?: boolean;
 }
 
-export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
+export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbProps) {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
-                <Link draggable={false} to={`/playlist/${playlist.id}`}>
+                <Link
+                    draggable={false}
+                    to={`/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`}
+                >
                     <img
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`}
                         alt={playlist.name}
@@ -51,7 +55,7 @@ export default function PlaylistThumb({ playlist }: PlaylistThumbProps) {
             </div>
             <div className='flex flex-col'>
                 <Link
-                    to={`/playlist/${playlist.id}`}
+                    to={`/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`}
                     className='font-bold text-lg text-onSurface truncate w-[216px]'
                     title={playlist.name}
                 >

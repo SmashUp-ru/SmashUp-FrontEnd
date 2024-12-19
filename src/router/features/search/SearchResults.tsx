@@ -26,7 +26,7 @@ export default function SearchResults() {
                         <Section title='Мэшапы'>
                             <div className='flex flex-wrap items-center'>
                                 {mashups.map((mashup) => (
-                                    <MashupThumb mashup={mashup} />
+                                    <MashupThumb mashup={mashup} searchMode key={mashup.id} />
                                 ))}
                             </div>
                         </Section>
@@ -36,7 +36,7 @@ export default function SearchResults() {
                         <Section title='Авторы'>
                             <div className='flex flex-wrap items-center'>
                                 {users.map((user) => (
-                                    <UserThumb user={user} />
+                                    <UserThumb user={user} searchMode key={user.id} />
                                 ))}
                             </div>
                         </Section>
@@ -46,7 +46,11 @@ export default function SearchResults() {
                         <Section title='Плейлисты'>
                             <div className='flex flex-wrap items-center'>
                                 {playlists.map((playlist) => (
-                                    <PlaylistThumb playlist={playlist} />
+                                    <PlaylistThumb
+                                        playlist={playlist}
+                                        searchMode
+                                        key={playlist.id}
+                                    />
                                 ))}
                             </div>
                         </Section>
@@ -59,7 +63,7 @@ export default function SearchResults() {
                         <Section title='Мэшапы'>
                             <div className='flex flex-wrap items-center'>
                                 {mashups.map((mashup) => (
-                                    <MashupThumb mashup={mashup} />
+                                    <MashupThumb mashup={mashup} key={mashup.id} />
                                 ))}
                             </div>
                         </Section>
@@ -72,7 +76,7 @@ export default function SearchResults() {
                         <Section title='Авторы'>
                             <div className='flex items-center'>
                                 {users.map((user) => (
-                                    <UserThumb user={user} />
+                                    <UserThumb user={user} key={user.id} />
                                 ))}
                             </div>
                         </Section>
@@ -85,7 +89,7 @@ export default function SearchResults() {
                         <Section title='Плейлисты'>
                             <div className='flex items-center'>
                                 {playlists.map((playlist) => (
-                                    <PlaylistThumb playlist={playlist} />
+                                    <PlaylistThumb playlist={playlist} key={playlist.id} />
                                 ))}
                             </div>
                         </Section>

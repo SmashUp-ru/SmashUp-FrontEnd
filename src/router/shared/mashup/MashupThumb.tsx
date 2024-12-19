@@ -7,12 +7,14 @@ import { isExplicit } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import { zip } from '@/lib/utils.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
+    searchMode?: boolean;
 }
 
-export default function MashupThumb({ mashup }: MashupThumbProps) {
+export default function MashupThumb({ mashup, searchMode }: MashupThumbProps) {
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { pause, playMashup } = usePlayer();
 
@@ -53,7 +55,7 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                 <div className='flex items-center gap-x-2 min-w-0 max-w-[216px]'>
                     <Link
                         draggable={false}
-                        to={`/mashup/${mashup.id}`}
+                        to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
                         className='font-bold text-lg text-onSurface truncate'
                     >
                         {mashup.name}
@@ -61,10 +63,10 @@ export default function MashupThumb({ mashup }: MashupThumbProps) {
                     {isExplicit(mashup.statuses) && <ExplicitIcon />}
                 </div>
                 <div className='flex items-center gap-x-2 max-w-[216px]'>
-                    {mashup.authors.map((author, index) => (
+                    {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (
                         <Link
                             key={index}
-                            to={`/user/${author}`}
+                            to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
                             className='font-medium text-lg text-onSurfaceVariant truncate'
                         >
                             {author}

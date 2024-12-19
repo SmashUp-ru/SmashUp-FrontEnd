@@ -142,7 +142,7 @@ export default function User({ username }: ProfileProps) {
                         <Section title='Плейлисты'>
                             <div className='flex items-center flex-wrap'>
                                 {playlists.map((playlist) => (
-                                    <PlaylistThumb playlist={playlist} />
+                                    <PlaylistThumb playlist={playlist} key={playlist.id} />
                                 ))}
                             </div>
                         </Section>
