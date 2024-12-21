@@ -94,6 +94,8 @@ export const usePlayerStore = create<PlayerState>()(
                     changedSeek, // плеер
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     isPlaying,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    info,
                     ...rest
                 } = state;
                 return rest;
