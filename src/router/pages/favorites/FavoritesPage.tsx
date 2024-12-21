@@ -7,18 +7,32 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { getToken } from '@/lib/utils.ts';
-import { useLikesStore } from '@/store/likes.ts';
+import { axiosSession, getToken } from '@/lib/utils.ts';
 import { useUser } from '@/hooks/useUser.ts';
+import { AxiosResponse } from 'axios';
 
 export default function FavoritesPage() {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
+    const [likes, setLikes] = useState<number[]>([]);
+
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
-    const { likes } = useLikesStore();
+    useEffect(() => {
+        axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
+            (
+                r: AxiosResponse<{
+                    status: string;
+                    response: number[];
+                }>
+            ) => {
+                setLikes(r.data.response);
+            }
+        );
+    }, []);
+
     useEffect(() => {
         if (likes) {
             getMashupsByIds(likes).then((r) => setMashups(r));

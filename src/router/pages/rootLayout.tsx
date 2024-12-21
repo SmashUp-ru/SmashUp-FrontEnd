@@ -7,25 +7,10 @@ import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { useLikesStore } from '@/store/likes.ts';
 import { useRecommendationsStore } from '@/store/recommendations.ts';
 
 export default function RootLayout() {
-    const { updateLikes } = useLikesStore();
     const { updateRecommendationsIds } = useRecommendationsStore();
-
-    useEffect(() => {
-        axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
-            (
-                r: AxiosResponse<{
-                    status: string;
-                    response: number[];
-                }>
-            ) => {
-                updateLikes(r.data.response);
-            }
-        );
-    }, []);
 
     useEffect(() => {
         axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`).then(

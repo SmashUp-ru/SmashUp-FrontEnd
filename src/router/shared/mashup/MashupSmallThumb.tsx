@@ -4,13 +4,12 @@ import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
-import { Mashup } from '@/store/entities/mashup.ts';
+import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { isExplicit } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { useLikesStore } from '@/store/likes.ts';
 import { useEffect, useState } from 'react';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 
@@ -29,14 +28,18 @@ export default function MashupSmallThumb({
     playlistName,
     queueId
 }: MashupThumbProps) {
+    const updateMashupById = useMashupStore((state) => state.updateOneById);
+
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { pause, playMashup } = usePlayer();
 
-    const { likes, updateLikes } = useLikesStore();
     const [isLiked, setIsLiked] = useState(false);
+
     useEffect(() => {
-        setIsLiked(!!likes.find((id) => id === mashup.id));
-    }, [likes, mashup]);
+        if (mashup) {
+            setIsLiked(mashup.liked);
+        }
+    }, [mashup]);
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -104,9 +107,10 @@ export default function MashupSmallThumb({
                                 .post(
                                     `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
                                 )
-                                .then(() =>
-                                    updateLikes([...likes.filter((id) => id !== mashup.id)])
-                                );
+                                .then(() => {
+                                    setIsLiked(false);
+                                    updateMashupById(mashup.id, { liked: false });
+                                });
                         }}
                     >
                         <LikeFilledIcon width={20} height={17} />
@@ -120,7 +124,10 @@ export default function MashupSmallThumb({
                                 .post(
                                     `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
                                 )
-                                .then(() => updateLikes([...likes, mashup.id]));
+                                .then(() => {
+                                    setIsLiked(true);
+                                    updateMashupById(mashup.id, { liked: true });
+                                });
                         }}
                     >
                         <LikeOutlineIcon color='onSurface' width={20} height={17} />

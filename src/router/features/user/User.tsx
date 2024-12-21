@@ -110,7 +110,7 @@ export default function User({ username }: ProfileProps) {
                         link={
                             user.mashups.length > 5
                                 ? {
-                                      href: `/profile/${user.username}/tracks`,
+                                      href: `/user/${user.username}/tracks`,
                                       title: 'ПОКАЗАТЬ ВСЕ'
                                   }
                                 : undefined

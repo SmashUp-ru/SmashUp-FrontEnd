@@ -15,7 +15,6 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useState } from 'react';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
-import { useLikesStore } from '@/store/likes.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 
@@ -45,7 +44,7 @@ export default function PlayerBar() {
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
-    const { likes, updateLikes } = useLikesStore();
+    const updateMashupById = useMashupStore((state) => state.updateOneById);
 
     const [mashup, setMashup] = useState<Mashup | null>(null);
     const [isLiked, setIsLiked] = useState(false);
@@ -57,8 +56,10 @@ export default function PlayerBar() {
     }, [queue, queueIndex]);
 
     useEffect(() => {
-        setIsLiked(!!likes.find((id) => id === queue[queueIndex]));
-    }, [likes, queue, queueIndex]);
+        if (mashup) {
+            setIsLiked(mashup.liked);
+        }
+    }, [mashup]);
 
     if (!queue || queueIndex === null || !mashup) {
         return;
@@ -112,9 +113,10 @@ export default function PlayerBar() {
                                     .post(
                                         `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
                                     )
-                                    .then(() =>
-                                        updateLikes([...likes.filter((id) => id !== mashup.id)])
-                                    );
+                                    .then(() => {
+                                        setIsLiked(false);
+                                        updateMashupById(mashup.id, { liked: false });
+                                    });
                             }}
                         >
                             <LikeFilledIcon />
@@ -128,7 +130,10 @@ export default function PlayerBar() {
                                     .post(
                                         `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
                                     )
-                                    .then(() => updateLikes([...likes, mashup.id]));
+                                    .then(() => {
+                                        setIsLiked(true);
+                                        updateMashupById(mashup.id, { liked: true });
+                                    });
                             }}
                         >
                             <LikeOutlineIcon color='onSurface' />
