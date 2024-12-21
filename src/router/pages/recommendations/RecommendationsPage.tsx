@@ -7,9 +7,9 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { getToken } from '@/lib/utils.ts';
 import { useUser } from '@/hooks/useUser.ts';
 import { useRecommendationsStore } from '@/store/recommendations.ts';
+import { getToken } from '@/store/profile.ts';
 
 export default function RecommendationsPage() {
     const getManyMashupsByIds = useMashupStore((state) => state.getManyByIds);

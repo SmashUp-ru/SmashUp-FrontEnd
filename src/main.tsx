@@ -19,15 +19,17 @@ import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
 import Layout from '@/router/pages/layout.tsx';
 import FavoritesPage from '@/router/pages/favorites/FavoritesPage.tsx';
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
+import RegisterFinishPage from '@/router/pages/registerFinish/RegisterFinishPage.tsx';
+import RegisterConfirmPage from '@/router/pages/registerConfirm/RegisterConfirmPage.tsx';
 
 const router = createBrowserRouter([
     {
         element: <Layout />,
+        errorElement: <NotFound />,
         children: [
             // основное приложение
             {
                 element: <RootLayout />,
-                errorElement: <NotFound />,
                 children: [
                     {
                         element: <DebugPage />,
@@ -70,7 +72,6 @@ const router = createBrowserRouter([
             // страницы входа
             {
                 element: <AuthLayout />,
-                errorElement: <NotFound />,
                 children: [
                     {
                         element: <LoginPage />,
@@ -81,16 +82,24 @@ const router = createBrowserRouter([
                         path: '/register'
                     },
                     {
+                        element: <RegisterFinishPage />,
+                        path: '/register/finish'
+                    },
+                    {
+                        element: <RegisterConfirmPage />,
+                        path: '/register/confirm'
+                    },
+                    {
                         element: <RestorePasswordPage />,
-                        path: '/restore-password'
+                        path: '/restore/password'
                     },
                     {
                         element: <RestorePasswordConfirmPage />,
-                        path: '/restore-confirm'
+                        path: '/restore/password/confirm'
                     },
                     {
                         element: <RestorePasswordUpdatePage />,
-                        path: '/restore-update'
+                        path: '/restore/password/update'
                     }
                 ]
             }

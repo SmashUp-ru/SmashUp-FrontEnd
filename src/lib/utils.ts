@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import axios from 'axios';
+import { getToken } from '@/store/profile.ts';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -11,10 +12,6 @@ export function msToMinutesAndSeconds(ms: number) {
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
     return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-}
-
-export function getToken(): string | null {
-    return sessionStorage.getItem('smashup_token') || localStorage.getItem('smashup_token');
 }
 
 export const axiosSession = axios.create({

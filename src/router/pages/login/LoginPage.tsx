@@ -125,7 +125,7 @@ export default function LoginPage() {
                                         <Link
                                             draggable={false}
                                             className='font-medium text-primary'
-                                            to='/restore-password'
+                                            to='/restore/password'
                                         >
                                             Забыл пароль?
                                         </Link>
@@ -178,7 +178,7 @@ export default function LoginPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <Button className='w-full py-[15px]' variant='outline'>
+                    <Button className='w-full py-[15px]' variant='outline' disabled>
                         <VKIcon />
                         VK ID
                     </Button>

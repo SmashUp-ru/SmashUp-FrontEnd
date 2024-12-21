@@ -7,9 +7,10 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { axiosSession, getToken } from '@/lib/utils.ts';
+import { axiosSession } from '@/lib/utils.ts';
 import { useUser } from '@/hooks/useUser.ts';
 import { AxiosResponse } from 'axios';
+import { getToken } from '@/store/profile.ts';
 
 export default function FavoritesPage() {
     const { isPlaying, queueId } = usePlayerStore();

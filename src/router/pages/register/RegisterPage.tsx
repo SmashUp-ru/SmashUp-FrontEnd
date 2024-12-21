@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input.tsx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -17,6 +17,9 @@ import {
 } from '@/components/ui/form.tsx';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useProfileStore } from '@/store/profile.ts';
+import { useEffect } from 'react';
+import { axiosSession } from '@/lib/utils.ts';
 
 const formSchema = z.object({
     nickname: z
@@ -43,6 +46,9 @@ const formSchema = z.object({
 });
 
 export default function RegisterPage() {
+    const navigate = useNavigate();
+    const { token } = useProfileStore();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -54,8 +60,20 @@ export default function RegisterPage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        axiosSession
+            .post('/register', {
+                username: values.nickname,
+                email: values.email,
+                password: values.password
+            })
+            .then(() => navigate('/register/finish'));
     }
+
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+        }
+    }, [token]);
 
     return (
         <div className='flex justify-center items-center h-full'>
@@ -184,7 +202,7 @@ export default function RegisterPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <Button className='w-full py-[15px]' variant='outline'>
+                    <Button className='w-full py-[15px]' variant='outline' disabled>
                         <VKIcon />
                         VK ID
                     </Button>

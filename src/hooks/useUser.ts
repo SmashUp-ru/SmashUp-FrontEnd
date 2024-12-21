@@ -1,6 +1,6 @@
-import { getToken } from '@/lib/utils.ts';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { useEffect, useState } from 'react';
+import { getToken } from '@/store/profile.ts';
 
 export function useUser(): User | null {
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
