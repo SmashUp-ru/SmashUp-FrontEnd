@@ -104,12 +104,9 @@ export default function MashupInfo() {
 
                 <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
                     {tracks.map((track) => (
-                        <TrackSmallThumb
-                            imageUrl={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`}
-                            name={track.name}
-                            authors={track.authors}
-                            link={track.link}
-                        />
+                        <Link to={track.link} target='_blank' className=''>
+                            <TrackSmallThumb track={track} />
+                        </Link>
                     ))}
                 </div>
             </div>

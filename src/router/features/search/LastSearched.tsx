@@ -5,8 +5,13 @@ import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import UserSmallThumb from '@/router/shared/user/UserSmallThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import PlaylistSmallThumb from '@/router/shared/playlist/PlaylistSmallThumb.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { cn } from '@/lib/utils.ts';
+import { useSearchStore } from '@/store/search.ts';
 
 export default function LastSearched() {
+    const { type, updateType } = useSearchStore();
+
     interface searchHistoryElement {
         href: string;
         type: 'user' | 'mashup' | 'playlist';
@@ -32,8 +37,10 @@ export default function LastSearched() {
     );
 
     useEffect(() => {
-        const searchHistory = localStorage.getItem('search_history');
-        setSearchHistory(searchHistory ? JSON.parse(searchHistory) : []);
+        if (searchHistory.length === 0) {
+            const searchHistory = localStorage.getItem('search_history');
+            setSearchHistory(searchHistory ? JSON.parse(searchHistory) : []);
+        }
     }, []);
 
     useEffect(() => {
@@ -110,6 +117,30 @@ export default function LastSearched() {
         <div className='flex flex-col gap-y-4 h-full'>
             <div className='flex items-center justify-between'>
                 <h1 className='font-bold text-xl text-onSurface'>История поиска</h1>
+                <div className='flex bg-surfaceVariant rounded-xl'>
+                    <Button
+                        size='sm'
+                        variant='ghost'
+                        onClick={() => updateType('search')}
+                        className={cn(
+                            'bg-surfaceVariant text-onSurfaceVariant',
+                            type === 'search' && 'bg-primary text-surfaceVariant'
+                        )}
+                    >
+                        Поиск
+                    </Button>
+                    <Button
+                        size='sm'
+                        variant='ghost'
+                        onClick={() => updateType('crossover')}
+                        className={cn(
+                            'bg-surfaceVariant text-onSurfaceVariant',
+                            type === 'crossover' && 'bg-primary text-surfaceVariant'
+                        )}
+                    >
+                        Кроссовер
+                    </Button>
+                </div>
             </div>
             <div className='flex flex-col gap-y-1 flex-1'>
                 {searchHistoryObjects.map((element, idx) => {

@@ -1,33 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Track } from '@/store/entities/track.ts';
 
 interface TrackThumbProps {
-    imageUrl: string;
-    name: string;
-    authors: string[];
-    link: string;
+    track: Track;
 }
 
-export default function TrackSmallThumb({ imageUrl, name, authors, link }: TrackThumbProps) {
+export default function TrackSmallThumb({ track }: TrackThumbProps) {
     return (
-        <Link
-            to={link}
-            target='_blank'
-            className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'
-        >
-            <div className='flex items-center gap-x-4 w-full'>
-                <img
-                    src={imageUrl}
-                    alt={name}
-                    className='w-12 h-12 rounded-xl object-cover'
-                    draggable={false}
-                />
-                <div className='flex flex-col min-w-0 w-full'>
-                    <span className='font-bold text-onSurface truncate'>{name}</span>
-                    <span className='font-medium text-onSurfaceVariant truncate'>
-                        {authors.join(', ')}
-                    </span>
-                </div>
+        <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl items-center gap-x-4'>
+            <img
+                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`}
+                alt={track.name}
+                className='w-12 h-12 rounded-xl object-cover'
+                draggable={false}
+            />
+            <div className='flex flex-col min-w-0 w-full text-left'>
+                <span className='font-bold text-onSurface truncate'>{track.name}</span>
+                <span className='font-medium text-onSurfaceVariant truncate'>
+                    {track.authors.join(', ')}
+                </span>
             </div>
-        </Link>
+        </div>
     );
 }

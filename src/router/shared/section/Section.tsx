@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils.ts';
 
 interface SectionProps {
     title: string;
@@ -8,11 +9,12 @@ interface SectionProps {
         href: string;
         title: string;
     };
+    className?: string;
 }
 
-export default function Section({ children, title, link }: SectionProps) {
+export default function Section({ children, title, link, className }: SectionProps) {
     return (
-        <section className='flex flex-col gap-y-2.5'>
+        <section className={cn('flex flex-col gap-y-2.5', className)}>
             <div className='flex items-center justify-between'>
                 <h2 className='font-semibold text-2xl text-onSurface'>{title}</h2>
                 {link && (

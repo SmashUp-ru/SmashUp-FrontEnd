@@ -1,24 +1,56 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Section from '@/router/shared/section/Section.tsx';
-import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
-import UserThumb from '@/router/shared/user/UserThumb.tsx';
 import { useSearch } from '@/router/features/search/useSearch.ts';
-import { useSearchStore } from '@/store/search.ts';
+import {
+    TabsContent,
+    TabsList,
+    TabsSeparated,
+    TabsTrigger
+} from '@/components/ui/tabs-separated.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { cn } from '@/lib/utils.ts';
+import Section from '@/router/shared/section/Section.tsx';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
+import UserThumb from '@/router/shared/user/UserThumb.tsx';
+import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import { useSearchStore } from '@/store/search.ts';
 
 export default function SearchResults() {
+    const { updateType } = useSearchStore();
     const { searchValue } = useSearchStore();
+
     const { mashups, playlists, users } = useSearch(searchValue);
 
     return (
         <div className=''>
-            <Tabs defaultValue='все' className='flex-1'>
-                <TabsList>
-                    <TabsTrigger value='все'>Все</TabsTrigger>
-                    <TabsTrigger value='мэшапы'>Мэшапы</TabsTrigger>
-                    <TabsTrigger value='авторы'>Авторы</TabsTrigger>
-                    <TabsTrigger value='плейлисты'>Плейлисты</TabsTrigger>
-                </TabsList>
+            <TabsSeparated defaultValue='все' className='flex-1'>
+                <div className='flex items-center justify-between'>
+                    <TabsList>
+                        <TabsTrigger value='все'>Все</TabsTrigger>
+                        <TabsTrigger value='мэшапы'>Мэшапы</TabsTrigger>
+                        <TabsTrigger value='авторы'>Авторы</TabsTrigger>
+                        <TabsTrigger value='плейлисты'>Плейлисты</TabsTrigger>
+                    </TabsList>
+
+                    <div className='flex bg-surfaceVariant rounded-xl'>
+                        <Button
+                            size='sm'
+                            variant='ghost'
+                            className={cn(
+                                'bg-surfaceVariant text-onSurfaceVariant',
+                                'bg-primary text-surfaceVariant'
+                            )}
+                        >
+                            Поиск
+                        </Button>
+                        <Button
+                            size='sm'
+                            variant='ghost'
+                            onClick={() => updateType('crossover')}
+                            className={cn('bg-surfaceVariant text-onSurfaceVariant')}
+                        >
+                            Кроссовер
+                        </Button>
+                    </div>
+                </div>
 
                 {/*все*/}
                 <TabsContent value='все'>
@@ -63,7 +95,7 @@ export default function SearchResults() {
                         <Section title='Мэшапы'>
                             <div className='flex flex-wrap items-center'>
                                 {mashups.map((mashup) => (
-                                    <MashupThumb mashup={mashup} key={mashup.id} />
+                                    <MashupThumb mashup={mashup} searchMode key={mashup.id} />
                                 ))}
                             </div>
                         </Section>
@@ -76,7 +108,7 @@ export default function SearchResults() {
                         <Section title='Авторы'>
                             <div className='flex items-center'>
                                 {users.map((user) => (
-                                    <UserThumb user={user} key={user.id} />
+                                    <UserThumb user={user} searchMode key={user.id} />
                                 ))}
                             </div>
                         </Section>
@@ -89,13 +121,17 @@ export default function SearchResults() {
                         <Section title='Плейлисты'>
                             <div className='flex items-center'>
                                 {playlists.map((playlist) => (
-                                    <PlaylistThumb playlist={playlist} key={playlist.id} />
+                                    <PlaylistThumb
+                                        playlist={playlist}
+                                        searchMode
+                                        key={playlist.id}
+                                    />
                                 ))}
                             </div>
                         </Section>
                     </TabsContent>
                 )}
-            </Tabs>
+            </TabsSeparated>
         </div>
     );
 }

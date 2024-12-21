@@ -3,7 +3,7 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 
 import { cn } from '@/lib/utils';
 
-const Tabs = TabsPrimitive.Root;
+const TabsSeparated = TabsPrimitive.Root;
 
 const TabsList = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.List>,
@@ -12,7 +12,7 @@ const TabsList = React.forwardRef<
     <TabsPrimitive.List
         ref={ref}
         className={cn(
-            'inline-flex gap-x-4 items-center justify-center p-1 text-muted-foreground',
+            'inline-flex gap-x-4 items-center justify-center text-muted-foreground',
             className
         )}
         {...props}
@@ -27,7 +27,7 @@ const TabsTrigger = React.forwardRef<
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
-            'inline-flex bg-surfaceVariant font-bold text-[18px] text-onSurface items-center justify-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-surface',
+            'inline-flex bg-surfaceVariant font-bold text-[18px] px-4 py-2 text-onSurface items-center justify-center whitespace-nowrap rounded-2xl transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-surface',
             className
         )}
         {...props}
@@ -50,4 +50,4 @@ const TabsContent = React.forwardRef<
 ));
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+export { TabsSeparated, TabsList, TabsTrigger, TabsContent };

@@ -133,7 +133,7 @@ export default function User({ username }: ProfileProps) {
                                     mashup={mashup}
                                     playlist={user.mashups}
                                     indexInPlaylist={idx}
-                                    playlistName={`Популярные треки ${user.username}`}
+                                    playlistName={`Мэшапы ${user.username}`}
                                     queueId={`user/${user.username}/tracks`}
                                 />
                             ))}

@@ -41,7 +41,7 @@ export function useSearch(query: string) {
     }, [query]);
 
     return {
-        isFetching: mashupsFetching && playlistsFetching && usersFetching,
+        isFetching: mashupsFetching || playlistsFetching || usersFetching,
         mashups,
         playlists,
         users
