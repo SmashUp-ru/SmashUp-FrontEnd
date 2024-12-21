@@ -96,7 +96,7 @@ export default function PlayerBar() {
                             <Link
                                 key={author}
                                 draggable={false}
-                                to={`/profile/${author}`}
+                                to={`/user/${author}`}
                                 className='font-medium text-onSurfaceVariant'
                             >
                                 {author}

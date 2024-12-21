@@ -49,7 +49,7 @@ export default function MashupSmallThumb({
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
                         alt={mashup.name}
                         className={cn(
-                            'w-12 h-12 rounded-xl',
+                            'w-12 h-12 min-w-12 min-h-12 rounded-xl',
                             queue[queueIndex] === mashup.id && isPlaying
                                 ? 'opacity-30'
                                 : 'group-hover:opacity-30'

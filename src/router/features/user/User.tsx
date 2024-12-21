@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils.ts';
+import { cn, declOfNum } from '@/lib/utils.ts';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
@@ -69,8 +69,18 @@ export default function User({ username }: ProfileProps) {
                                 {user.username}
                             </span>
                             <div className='flex items-center gap-x-5'>
-                                <Badge>{user.mashups.length} Мэшапов</Badge>
-                                <Badge>{user.playlists.length} Плейлистов</Badge>
+                                <Badge>
+                                    {user.mashups.length}{' '}
+                                    {declOfNum(user.mashups.length, ['Мэшап', 'Мэшапа', 'Мэшапов'])}
+                                </Badge>
+                                <Badge>
+                                    {user.playlists.length}{' '}
+                                    {declOfNum(user.mashups.length, [
+                                        'Плейлист',
+                                        'Плейлиста',
+                                        'Плейлистов'
+                                    ])}
+                                </Badge>
                             </div>
                         </div>
                     </div>
