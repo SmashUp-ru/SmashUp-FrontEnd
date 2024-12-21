@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface PlayerState {
     isPlaying: boolean;
@@ -6,23 +7,17 @@ interface PlayerState {
     play: () => void;
     stop: () => void;
 
-    // очередь треков
     queue: number[];
     updateQueue: (newQueue: number[]) => void;
-    // оригинальная очередь треков, которая никогда не будет перемешиваться
     originalQueue: number[];
     updateOriginalQueue: (newOriginalQueue: number[]) => void;
-    // индекс текущего трека в очереди
     queueIndex: number;
     updateQueueIndex: (newQueueIndex: number) => void;
-    // название текущей очереди, для отображения в mashup info
     queueName: string;
     updateQueueName: (newQueueName: string) => void;
-    // идентификатор текущей очереди, для удобной работы кнопки воспроизведения
     queueId: string;
     updateQueueId: (newQueueId: string) => void;
 
-    // player bar info
     loop: string;
     updateLoop: (newLoop: string) => void;
 
@@ -41,37 +36,68 @@ interface PlayerState {
     updateInfo: (newInfo: boolean) => void;
 }
 
-export const usePlayerStore = create<PlayerState>((set) => ({
-    isPlaying: false,
-    updatePlaying: (newIsPlaying: boolean) => set({ isPlaying: newIsPlaying }),
-    play: () => set({ isPlaying: true }),
-    stop: () => set({ isPlaying: false }),
+export const usePlayerStore = create<PlayerState>()(
+    persist(
+        (set) => ({
+            isPlaying: false,
+            updatePlaying: (newIsPlaying: boolean) => set({ isPlaying: newIsPlaying }),
+            play: () => set({ isPlaying: true }),
+            stop: () => set({ isPlaying: false }),
 
-    queue: [1, 2, 3],
-    updateQueue: (newQueue: number[]) => set({ queue: newQueue }),
-    originalQueue: [1, 2, 3],
-    updateOriginalQueue: (newOriginalQueue: number[]) => set({ originalQueue: newOriginalQueue }),
-    queueIndex: 0,
-    updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
-    queueName: 'Тест',
-    updateQueueName: (newQueueName: string) => set({ queueName: newQueueName }),
-    queueId: 'playlist/test',
-    updateQueueId: (newQueueId: string) => set({ queueId: newQueueId }),
+            queue: [],
+            updateQueue: (newQueue: number[]) => set({ queue: newQueue }),
+            originalQueue: [],
+            updateOriginalQueue: (newOriginalQueue: number[]) =>
+                set({ originalQueue: newOriginalQueue }),
+            queueIndex: -1,
+            updateQueueIndex: (newQueueIndex: number) => set({ queueIndex: newQueueIndex }),
+            queueName: '',
+            updateQueueName: (newQueueName: string) => set({ queueName: newQueueName }),
+            queueId: '',
+            updateQueueId: (newQueueId: string) => set({ queueId: newQueueId }),
 
-    loop: 'none',
-    updateLoop: (newLoop: string) => set({ loop: newLoop }),
+            loop: 'none',
+            updateLoop: (newLoop: string) => set({ loop: newLoop }),
 
-    shuffle: false,
-    updateShuffle: (newShuffle: boolean) => set({ shuffle: newShuffle }),
+            shuffle: false,
+            updateShuffle: (newShuffle: boolean) => set({ shuffle: newShuffle }),
 
-    volume: 0.5,
-    updateVolume: (newVolume: number) => set({ volume: newVolume }),
+            volume: 0.5,
+            updateVolume: (newVolume: number) => set({ volume: newVolume }),
 
-    seek: 0,
-    updateSeek: (newSeek: number) => set({ seek: newSeek }),
-    changedSeek: 0,
-    updateChangedSeek: (newIsSeeking: number) => set({ changedSeek: newIsSeeking }),
+            seek: 0,
+            updateSeek: (newSeek: number) => set({ seek: newSeek }),
+            changedSeek: 0,
+            updateChangedSeek: (newChangedSeek: number) => set({ changedSeek: newChangedSeek }),
 
-    info: false,
-    updateInfo: (newInfo: boolean) => set({ info: newInfo })
-}));
+            info: false,
+            updateInfo: (newInfo: boolean) => set({ info: newInfo })
+        }),
+        {
+            name: 'player-storage',
+
+            partialize: (state) => {
+                const {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    queue,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    originalQueue,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    queueIndex,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    queueName,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    queueId,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    seek,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    changedSeek, // плеер
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    isPlaying,
+                    ...rest
+                } = state;
+                return rest;
+            }
+        }
+    )
+);

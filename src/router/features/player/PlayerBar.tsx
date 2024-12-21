@@ -224,7 +224,7 @@ export default function PlayerBar() {
                 {/*правая часть*/}
                 <div className='w-1/3 flex justify-end items-center gap-x-6'>
                     <Button variant='ghost' size='icon' onClick={() => updateInfo(!info)}>
-                        <InfoIcon color='onSurface' />
+                        <InfoIcon color={info ? 'primary' : 'onSurface'} />
                     </Button>
 
                     <div>
@@ -242,7 +242,7 @@ export default function PlayerBar() {
                     />
                 </div>
             </div>
-            <Player />
+            {queue.length > 0 && queueIndex !== -1 && <Player />}
         </div>
     );
 }

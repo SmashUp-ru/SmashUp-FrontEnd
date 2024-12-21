@@ -12,7 +12,7 @@ type ToasterToast = ToastProps & {
     id: string;
 };
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const actionTypes = {
     ADD_TOAST: 'ADD_TOAST',
     UPDATE_TOAST: 'UPDATE_TOAST',
