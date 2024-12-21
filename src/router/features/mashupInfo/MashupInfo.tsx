@@ -67,7 +67,7 @@ export default function MashupInfo() {
                 {mashup.authors.map((author) => (
                     <Link
                         draggable={false}
-                        to={`/profile/${author}`}
+                        to={`/user/${author}`}
                         className='font-medium text-onSurfaceVariant truncate'
                     >
                         {author}
