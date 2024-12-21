@@ -31,7 +31,7 @@ export default function RootPage() {
                     {playlists
                         .filter((playlist) => playlist.mashups.length > 0)
                         .map((playlist) => (
-                            <PlaylistThumb playlist={playlist} />
+                            <PlaylistThumb key={playlist.id} playlist={playlist} />
                         ))}
                 </div>
             </Section>
@@ -44,6 +44,7 @@ export default function RootPage() {
                     <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                         {recommendations.slice(0, 6).map((recommendation, idx) => (
                             <MashupSmallThumb
+                                key={idx}
                                 mashup={recommendation}
                                 playlist={recommendationsIds}
                                 indexInPlaylist={idx}
