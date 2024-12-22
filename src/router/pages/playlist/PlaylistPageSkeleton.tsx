@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import MashupThumbSkeleton from '@/router/shared/skeletons/MashupThumbSkeleton.tsx';
+import MashupSmallThumbSkeleton from '@/router/shared/mashup/MashupSmallThumbSkeleton.tsx';
 
 export default function PlaylistPageSkeleton() {
     return (
@@ -8,7 +8,7 @@ export default function PlaylistPageSkeleton() {
 
             <div className='flex flex-col gap-y-1'>
                 {Array.from({ length: 10 }).map((_, idx) => (
-                    <MashupThumbSkeleton key={idx} />
+                    <MashupSmallThumbSkeleton key={idx} />
                 ))}
             </div>
         </div>

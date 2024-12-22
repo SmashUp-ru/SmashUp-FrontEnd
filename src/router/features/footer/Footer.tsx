@@ -1,4 +1,10 @@
+import { useGlobalStore } from '@/store/global.ts';
+
 export default function Footer() {
+    const { isLoading } = useGlobalStore();
+
+    if (isLoading) return null;
+
     return (
         <div className='flex flex-col gap-y-2 mt-5'>
             <div className='flex items-center justify-between'>

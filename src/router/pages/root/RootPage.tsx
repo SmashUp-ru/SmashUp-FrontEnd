@@ -5,8 +5,12 @@ import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { useRecommendationsStore } from '@/store/recommendations.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import RootPageSkeleton from '@/router/pages/root/RootPageSkeleton.tsx';
 
 export default function RootPage() {
+    const { isLoading } = useGlobalStore();
+
     const getManyMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
 
@@ -23,6 +27,8 @@ export default function RootPage() {
             getManyMashupsByIds(recommendationsIds).then((r) => setRecommendations(r));
         }
     }, [recommendationsIds]);
+
+    if (isLoading) return <RootPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-8 pb-12'>

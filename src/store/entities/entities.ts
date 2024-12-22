@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { axiosSession } from '@/lib/utils.ts';
+import { finishLoading, startLoading } from '@/store/global.ts';
 
 interface CachingEntity {
     id: number;
@@ -22,7 +23,7 @@ export function createEntityStore<T extends CachingEntity>(
         fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
         updateOneById: (id: number, updatedData: Partial<T>) => void;
-        updateManyById: (ids: number[], updatedData: Partial<T>[]) => void;
+        updateManyByIds: (ids: number[], updatedData: Partial<T>[]) => void;
     };
 
     return create<CacheStore>((set, get) => ({
@@ -37,32 +38,49 @@ export function createEntityStore<T extends CachingEntity>(
         pendingRequests: {},
 
         getOneById: async (id: number): Promise<T> => {
-            if (get().cache[id]) return get().cache[id];
+            startLoading();
+
+            if (get().cache[id]) {
+                finishLoading();
+                return get().cache[id];
+            }
 
             if (get().pendingRequests[id] !== undefined) {
                 await get().pendingRequests[id];
+                finishLoading();
                 return get().cache[id];
             }
 
             await get().fetchAndCacheMany([id]);
+            finishLoading();
             return get().cache[id];
         },
 
         getOneByStringKey: async (keyName: string, key: string): Promise<T> => {
+            startLoading();
+
             if (get().additionalCache[keyName][key]) {
+                finishLoading();
                 return get().cache[get().additionalCache[keyName][key]];
             }
 
             await get().fetchAndCacheOneByStringKey(keyName, key);
+            finishLoading();
             return get().cache[get().additionalCache[keyName][key]];
         },
 
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
+            startLoading();
+
             const missingIds = ids.filter((id) => !get().cache[id]);
 
-            if (!missingIds.length) return ids.map((id) => get().cache[id]);
+            if (!missingIds.length) {
+                finishLoading();
+                return ids.map((id) => get().cache[id]);
+            }
 
             await get().fetchAndCacheMany(missingIds, needToBeModified);
+            finishLoading();
             return ids.map((id) => get().cache[id]);
         },
 
@@ -70,6 +88,8 @@ export function createEntityStore<T extends CachingEntity>(
             ids: number[],
             needToBeModified: boolean = false
         ): Promise<T[]> => {
+            startLoading();
+
             const uniqueIds = Array.from(new Set(ids));
             const toFetchIds = uniqueIds.filter(
                 (id) => !get().cache[id] && !get().pendingRequests[id]
@@ -80,6 +100,7 @@ export function createEntityStore<T extends CachingEntity>(
                 if (pendingIds.length) {
                     await Promise.all(pendingIds.map((id) => get().pendingRequests[id]));
                 }
+                finishLoading();
                 return uniqueIds.map((id) => get().cache[id]).filter(Boolean);
             }
 
@@ -148,11 +169,15 @@ export function createEntityStore<T extends CachingEntity>(
                 }
             }));
 
-            return await fetchPromise;
+            finishLoading();
+            return fetchPromise;
         },
 
         fetchAndCacheOneByStringKey: async (keyName: string, key: string): Promise<T> => {
+            startLoading();
+
             if (get().additionalCache[keyName][key]) {
+                finishLoading();
                 return get().getOneById(get().additionalCache[keyName][key]);
             }
 
@@ -186,62 +211,8 @@ export function createEntityStore<T extends CachingEntity>(
                     throw new Error('Failed to fetch data');
                 });
 
-            return await fetchPromise;
-        },
-
-        fetchAndCacheManyByStringKeys: async (
-            keyName: string,
-            keys: string[],
-            needToBeModified: boolean = false
-        ): Promise<T[]> => {
-            const uniqueKeys = Array.from(new Set(keys));
-            const toFetchKeys = uniqueKeys.filter((key) => !get().additionalCache[keyName]?.[key]);
-
-            if (toFetchKeys.length === 0) {
-                return uniqueKeys.map((key) => {
-                    const id = get().additionalCache[keyName][key];
-                    return get().cache[id];
-                });
-            }
-
-            try {
-                const response = await axiosSession.get<{ status: string; response: T[] }>(
-                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?${keyName}=${toFetchKeys.join(',')}`
-                );
-
-                const fetchedData = response.data.response;
-
-                set((state) => {
-                    const newCache = { ...state.cache };
-                    const newAdditionalCache = { ...state.additionalCache };
-
-                    fetchedData.forEach((elem) => {
-                        newCache[elem.id] = elem;
-
-                        if (!newAdditionalCache[keyName]) {
-                            newAdditionalCache[keyName] = {};
-                        }
-                        // @ts-expect-error сделано специально, в наличии поля уверен
-                        if (elem[keyName]) {
-                            // @ts-expect-error сделано специально, в наличии поля уверен
-                            newAdditionalCache[keyName][elem[keyName]] = elem.id;
-                        }
-                    });
-
-                    return {
-                        cache: newCache,
-                        additionalCache: newAdditionalCache
-                    };
-                });
-
-                return fetchedData;
-            } catch (error) {
-                console.error(
-                    `Failed to fetch data for keys: ${keyName}=${toFetchKeys.join(',')}`,
-                    error
-                );
-                throw new Error('Failed to fetch data');
-            }
+            finishLoading();
+            return fetchPromise;
         },
 
         updateOneById: (id: number, updatedData: Partial<T>) => {
@@ -255,7 +226,7 @@ export function createEntityStore<T extends CachingEntity>(
             }));
         },
 
-        updateManyById: (ids: number[], updatedData: Partial<T>[]) => {
+        updateManyByIds: (ids: number[], updatedData: Partial<T>[]) => {
             ids.forEach((id, idx) => {
                 const currentData = get().cache[id];
                 const newData = { ...currentData, ...updatedData[idx] };

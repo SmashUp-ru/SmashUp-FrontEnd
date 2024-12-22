@@ -16,4 +16,12 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     finishLoading: () => set(() => ({ isLoading: false }))
 }));
 
-// const {startLoading, finishLoading, isLoading} = useGlobalStore();
+export function startLoading() {
+    const state = useGlobalStore.getState();
+    state.startLoading();
+}
+
+export function finishLoading() {
+    const state = useGlobalStore.getState();
+    state.finishLoading();
+}

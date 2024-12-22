@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
-import PlaylistPageSkeleton from '@/router/pages/skeletons/PlaylistPageSkeleton.tsx';
+import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
