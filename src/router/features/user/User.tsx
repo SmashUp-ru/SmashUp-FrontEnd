@@ -3,48 +3,28 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import Section from '@/router/shared/section/Section.tsx';
-import { User as UserType, useUserStore } from '@/store/entities/user.ts';
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';
+import { useUserData } from '@/router/features/user/useUserData.ts';
 
 interface ProfileProps {
     username: string;
 }
 
 export default function User({ username }: ProfileProps) {
+    const { isLoading } = useGlobalStore();
+
     const { toast } = useToast();
 
-    const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
-    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
-    const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
+    const { user, mashups, playlists } = useUserData(username);
 
-    const [user, setUser] = useState<UserType | null>(null);
-    const [mashups, setMashups] = useState<Mashup[]>([]);
-    const [playlists, setPlaylists] = useState<Playlist[]>([]);
-
-    useEffect(() => {
-        getUserByUsername('username', username).then((r) => {
-            setUser(r);
-            console.log(`profile: ${JSON.stringify(user)}`);
-        });
-    }, [username]);
-
-    useEffect(() => {
-        if (user) {
-            getMashupsByIds(user.mashups.slice(0, 5)).then((r) => setMashups(r));
-            getManyPlaylistsByIds(user.playlists).then((r) => setPlaylists(r));
-        }
-    }, [user]);
-
-    if (!user) {
-        return;
-    }
+    if (isLoading) return <UserPageSkeleton />;
+    if (!user) return null;
 
     return (
         <div className='flex flex-col gap-y-6'>
