@@ -6,29 +6,25 @@ import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import MashupPageSkeleton from '@/router/pages/mashup/MashupPageSkeleton.tsx';
+import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts';
 
 export default function MashupPage() {
+    const { isLoading } = useGlobalStore();
+
     const { toast } = useToast();
 
     const params = useParams();
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const getMashupById = useMashupStore((state) => state.getOneById);
+    const { mashup } = useMashupPageData(params.mashupId);
 
-    const [mashup, setMashup] = useState<Mashup | null>(null);
-
-    useEffect(() => {
-        if (params.mashupId) {
-            getMashupById(parseInt(params.mashupId)).then((r) => setMashup(r));
-        }
-    }, [params.mashupId]);
-
+    if (isLoading) return <MashupPageSkeleton />;
     if (!params.mashupId) return;
     if (!mashup) return;
 
