@@ -37,7 +37,7 @@ export default function RecoverPasswordPage() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         axiosSession
             .post(`/user/recover_password`, { username: values.email })
-            .then(() => navigate('/restore/password/finish'))
+            .then(() => navigate('/user/recover_password/email'))
             .catch(() => {
                 // TODO: toast with error
             });

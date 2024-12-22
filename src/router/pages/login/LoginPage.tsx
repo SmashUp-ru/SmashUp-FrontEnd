@@ -125,7 +125,7 @@ export default function LoginPage() {
                                         <Link
                                             draggable={false}
                                             className='font-medium text-primary'
-                                            to='/restore/password'
+                                            to='/user/recover_password'
                                         >
                                             Забыл пароль?
                                         </Link>
