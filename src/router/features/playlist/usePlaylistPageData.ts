@@ -46,6 +46,7 @@ export function usePlaylistPageData(playlistId?: string) {
         playlist,
         mashups,
         isLiked,
+        setIsLiked,
         isLoading: mashupsLoading || playlistLoading
     };
 }

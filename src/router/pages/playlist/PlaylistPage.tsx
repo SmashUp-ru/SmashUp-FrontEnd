@@ -28,7 +28,7 @@ export default function PlaylistPage() {
 
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
 
-    const { playlist, mashups, isLiked } = usePlaylistPageData(params.playlistId);
+    const { playlist, mashups, isLiked, setIsLiked } = usePlaylistPageData(params.playlistId);
 
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;
