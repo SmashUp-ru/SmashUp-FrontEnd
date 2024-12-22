@@ -11,7 +11,7 @@ import AuthLayout from '@/router/pages/authLayout.tsx';
 import LoginPage from '@/router/pages/login/LoginPage.tsx';
 import RegisterPage from '@/router/pages/register/RegisterPage.tsx';
 import RestorePasswordPage from '@/router/pages/restorePassword/RestorePasswordPage.tsx';
-import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/RestorePasswordConfirmPage.tsx';
+import RestorePasswordFinishPage from '@/router/pages/restorePasswordFinish/RestorePasswordFinishPage.tsx';
 import RestorePasswordUpdatePage from '@/router/pages/restorePasswordUpdate/RestorePasswordUpdatePage.tsx';
 import DebugPage from '@/router/pages/debug/DebugPage.tsx';
 import ProfileTracksPage from '@/router/pages/user/tracks/UserTracksPage.tsx';
@@ -21,6 +21,7 @@ import FavoritesPage from '@/router/pages/favorites/FavoritesPage.tsx';
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 import RegisterFinishPage from '@/router/pages/registerFinish/RegisterFinishPage.tsx';
 import RegisterConfirmPage from '@/router/pages/registerConfirm/RegisterConfirmPage.tsx';
+import RestorePasswordConfirmPage from '@/router/pages/restorePasswordConfirm/RestorePasswordConfirmPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -94,12 +95,16 @@ const router = createBrowserRouter([
                         path: '/restore/password'
                     },
                     {
-                        element: <RestorePasswordConfirmPage />,
-                        path: '/restore/password/confirm'
+                        element: <RestorePasswordFinishPage />,
+                        path: '/restore/password/finish'
                     },
                     {
                         element: <RestorePasswordUpdatePage />,
-                        path: '/restore/password/update'
+                        path: '/user/recover_password/confirm'
+                    },
+                    {
+                        element: <RestorePasswordConfirmPage />,
+                        path: '/restore/password/confirm'
                     }
                 ]
             }

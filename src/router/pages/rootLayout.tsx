@@ -8,21 +8,24 @@ import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { useRecommendationsStore } from '@/store/recommendations.ts';
+import { getToken } from '@/store/profile.ts';
 
 export default function RootLayout() {
     const { updateRecommendationsIds } = useRecommendationsStore();
 
     useEffect(() => {
-        axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`).then(
-            (
-                r: AxiosResponse<{
-                    status: string;
-                    response: number[];
-                }>
-            ) => {
-                updateRecommendationsIds(r.data.response);
-            }
-        );
+        if (getToken()) {
+            axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`).then(
+                (
+                    r: AxiosResponse<{
+                        status: string;
+                        response: number[];
+                    }>
+                ) => {
+                    updateRecommendationsIds(r.data.response);
+                }
+            );
+        }
     }, []);
 
     useEffect(() => {

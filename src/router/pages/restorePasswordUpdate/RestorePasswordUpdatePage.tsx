@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/form.tsx';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { axiosSession } from '@/lib/utils.ts';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const formSchema = z
     .object({
@@ -34,6 +36,9 @@ const formSchema = z
     });
 
 export default function RestorePasswordUpdatePage() {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,7 +48,19 @@ export default function RestorePasswordUpdatePage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        axiosSession
+            .post(`/user/recover_password/confirm`, {
+                id: searchParams.get('id'),
+                newPassword: values.confirmPassword
+            })
+            .then(() => navigate('/restore/password/confirm'))
+            .catch(() => {
+                // TODO: toast with error
+            });
+    }
+
+    if (!searchParams.has('id')) {
+        throw new Error('No ID');
     }
 
     return (

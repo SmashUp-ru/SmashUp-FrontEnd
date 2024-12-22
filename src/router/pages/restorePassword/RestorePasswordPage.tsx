@@ -12,6 +12,8 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form.tsx';
+import { axiosSession } from '@/lib/utils.ts';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
     email: z
@@ -23,6 +25,8 @@ const formSchema = z.object({
 });
 
 export default function RestorePasswordPage() {
+    const navigate = useNavigate();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -31,7 +35,12 @@ export default function RestorePasswordPage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        axiosSession
+            .post(`/user/recover_password`, { username: values.email })
+            .then(() => navigate('/restore/password/finish'))
+            .catch(() => {
+                // TODO: toast with error
+            });
     }
 
     return (
