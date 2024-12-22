@@ -13,6 +13,9 @@ import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import { axiosSession } from '@/lib/utils.ts';
+import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
+import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -26,6 +29,9 @@ export default function PlaylistPage() {
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
+    const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
+
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         if (params.playlistId) {
@@ -36,6 +42,7 @@ export default function PlaylistPage() {
     useEffect(() => {
         if (playlist) {
             getMashupsByIds(playlist.mashups).then((r) => setMashups(r));
+            setIsLiked(playlist.liked);
         }
     }, [playlist]);
 
@@ -97,6 +104,43 @@ export default function PlaylistPage() {
                                 <PlayHollowIcon />
                             </Button>
                         )}
+
+                        {isLiked ? (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    axiosSession
+                                        .post(
+                                            `${import.meta.env.VITE_BACKEND_URL}/playlist/remove_like?id=${playlist.id}`
+                                        )
+                                        .then(() => {
+                                            setIsLiked(false);
+                                            updatePlaylistById(playlist.id, { liked: false });
+                                        });
+                                }}
+                            >
+                                <LikeFilledIcon />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => {
+                                    axiosSession
+                                        .post(
+                                            `${import.meta.env.VITE_BACKEND_URL}/playlist/add_like?id=${playlist.id}`
+                                        )
+                                        .then(() => {
+                                            setIsLiked(true);
+                                            updatePlaylistById(playlist.id, { liked: true });
+                                        });
+                                }}
+                            >
+                                <LikeOutlineIcon color='onSurface' />
+                            </Button>
+                        )}
+
                         <Button variant='ghost' size='icon'>
                             <HideIcon />
                         </Button>

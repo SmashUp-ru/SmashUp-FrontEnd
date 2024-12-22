@@ -35,7 +35,7 @@ export default function Header() {
 
                 {user ? (
                     <TooltipProvider>
-                        <Tooltip>
+                        <Tooltip delayDuration={0}>
                             <TooltipTrigger>
                                 <Link draggable={false} to={`/user/${user.username}`}>
                                     <Avatar>

@@ -7,6 +7,7 @@ export interface Playlist {
     authors: string[];
     imageUrl: string;
     backgroundColor: number;
+    liked: boolean;
     mashups: number[];
     likes: number;
     streams: number;
