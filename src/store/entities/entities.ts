@@ -12,7 +12,7 @@ export function createEntityStore<T extends CachingEntity>(
     type CacheStore = {
         cache: Record<number, T>;
         additionalCache: Record<string, Record<string, number>>;
-        pendingRequests: Record<number, Promise<T | T[]>>;
+        pendingRequests: Record<number | string, Promise<T | T[]>>; // Обновлено для поддержки строковых ключей
 
         getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
         getOneById: (id: number) => Promise<T>;
@@ -51,12 +51,36 @@ export function createEntityStore<T extends CachingEntity>(
         },
 
         getOneByStringKey: async (keyName: string, key: string): Promise<T> => {
+            const stringKey = `${keyName}:${key}`; // Уникальный идентификатор для строкового ключа
+
             if (get().additionalCache[keyName][key]) {
                 return get().cache[get().additionalCache[keyName][key]];
             }
 
-            await get().fetchAndCacheOneByStringKey(keyName, key);
-            return get().cache[get().additionalCache[keyName][key]];
+            if (get().pendingRequests[stringKey] !== undefined) {
+                await get().pendingRequests[stringKey];
+                return get().cache[get().additionalCache[keyName][key]];
+            }
+
+            const fetchPromise = get().fetchAndCacheOneByStringKey(keyName, key);
+
+            set((state) => ({
+                pendingRequests: {
+                    ...state.pendingRequests,
+                    [stringKey]: fetchPromise
+                }
+            }));
+
+            try {
+                const result = await fetchPromise;
+                return result;
+            } finally {
+                set((state) => {
+                    const newPending = { ...state.pendingRequests };
+                    delete newPending[stringKey];
+                    return { pendingRequests: newPending };
+                });
+            }
         },
 
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
