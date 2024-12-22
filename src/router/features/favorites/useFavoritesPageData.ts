@@ -5,13 +5,12 @@ import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 
 export function useFavoritesPageData() {
-    const { startLoading, updateIsLoading } = useGlobalStore();
+    const { startLoading, updateIsLoading, likes, updateLikes } = useGlobalStore();
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
     const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(false);
     const [mashupsLoading, setMashupsLoading] = useState(false);
 
-    const [likes, setLikes] = useState<number[]>([]);
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
     useEffect(() => {
@@ -25,17 +24,19 @@ export function useFavoritesPageData() {
     }, [isPlaylistPageLoading, mashupsLoading]);
 
     useEffect(() => {
-        axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
-            (
-                r: AxiosResponse<{
-                    status: string;
-                    response: number[];
-                }>
-            ) => {
-                setLikes(r.data.response);
-                setIsPlaylistPageLoading(false);
-            }
-        );
+        if (likes === null) {
+            axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
+                (
+                    r: AxiosResponse<{
+                        status: string;
+                        response: number[];
+                    }>
+                ) => {
+                    updateLikes(r.data.response);
+                    setIsPlaylistPageLoading(false);
+                }
+            );
+        }
     }, []);
 
     useEffect(() => {
@@ -48,7 +49,7 @@ export function useFavoritesPageData() {
 
     return {
         mashups,
-        likes,
+        likes: likes === null ? [] : likes,
         isLoading: mashupsLoading || isPlaylistPageLoading
     };
 }
