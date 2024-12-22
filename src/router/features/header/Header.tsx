@@ -6,8 +6,13 @@ import ChevronLeftIcon from '@/components/icons/ChevronLeft.tsx';
 import { useUser } from '@/hooks/useUser.ts';
 import SearchBar from '@/router/features/header/SearchBar.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import GavelIcon from '@/components/icons/Gavel.tsx';
+import { useProfileStore } from '@/store/profile.ts';
 
 export default function Header() {
+    const { updateToken } = useProfileStore();
+
     const navigate = useNavigate();
     const user = useUser();
 
@@ -26,17 +31,44 @@ export default function Header() {
                 <SearchBar />
             </div>
             <div className='flex items-center gap-x-6'>
-                <BellIcon active />
+                {user && <BellIcon active />}
 
                 {user ? (
-                    <Link draggable={false} to={`/user/${user.username}`}>
-                        <Avatar>
-                            <AvatarImage
-                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
-                            />
-                            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                    </Link>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Link draggable={false} to={`/user/${user.username}`}>
+                                    <Avatar>
+                                        <AvatarImage
+                                            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
+                                        />
+                                        <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent
+                                sideOffset={18}
+                                className='flex flex-col gap-y-7 rounded-3xl bg-surfaceVariant border-none p-2'
+                            >
+                                <Link to='/moderation'>
+                                    <GavelIcon />
+                                </Link>
+                                <Button
+                                    variant='ghost'
+                                    size='icon'
+                                    onClick={() => {
+                                        localStorage.removeItem('smashup_token');
+                                        sessionStorage.removeItem('smashup_token');
+                                        localStorage.removeItem('player-storage');
+                                        updateToken('');
+                                        navigate('/');
+                                    }}
+                                >
+                                    <DoorIcon color='error' />
+                                </Button>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 ) : (
                     <Link to='/login' draggable={false}>
                         <DoorIcon />

@@ -13,6 +13,11 @@ export default {
         'bg-primary',
         'hover:text-primary',
         'hover:bg-primary',
+        'text-vk',
+        'text-error',
+        'bg-error',
+        'hover:text-error',
+        'hover:bg-error',
         'text-vk'
     ],
     theme: {
@@ -35,7 +40,8 @@ export default {
                 additionalText: 'rgb(118, 118, 118)',
                 hover: 'rgba(10, 10, 10, 1)',
                 vk: 'rgba(0, 119, 255, 1)',
-                sliderBg: 'rgba(29, 29, 29, 1)'
+                sliderBg: 'rgba(29, 29, 29, 1)',
+                error: 'rgba(255, 69, 69, 1)'
             }
         }
     },
