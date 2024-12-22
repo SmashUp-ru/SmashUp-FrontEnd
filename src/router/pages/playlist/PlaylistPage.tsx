@@ -1,9 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
-import { useEffect, useState } from 'react';
+import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
@@ -16,41 +14,25 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { axiosSession } from '@/lib/utils.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 
 export default function PlaylistPage() {
+    const { isLoading } = useGlobalStore();
+
     const { toast } = useToast();
 
     const params = useParams();
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const getPlaylistById = usePlaylistStore((state) => state.getOneById);
-    const [playlist, setPlaylist] = useState<Playlist | null>(null);
-    const [mashups, setMashups] = useState<Mashup[]>([]);
-
-    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
 
-    const [isLiked, setIsLiked] = useState(false);
+    const { playlist, mashups, isLiked } = usePlaylistPageData(params.playlistId);
 
-    useEffect(() => {
-        if (params.playlistId) {
-            getPlaylistById(parseInt(params.playlistId)).then((r) => setPlaylist(r));
-        }
-    }, [params.playlistId]);
-
-    useEffect(() => {
-        if (playlist) {
-            getMashupsByIds(playlist.mashups).then((r) => setMashups(r));
-            setIsLiked(playlist.liked);
-        }
-    }, [playlist]);
-
-    if (!params.playlistId) return;
-
-    if (!playlist) {
-        return <PlaylistPageSkeleton />;
-    }
+    if (!params.playlistId) return null;
+    if (isLoading) return <PlaylistPageSkeleton />;
+    if (!playlist) return null;
 
     return (
         <div className='flex flex-col gap-y-6'>

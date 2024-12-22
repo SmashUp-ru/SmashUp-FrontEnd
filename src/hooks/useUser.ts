@@ -10,7 +10,9 @@ export function useUser(): User | null {
 
     useEffect(() => {
         if (token) {
-            getUserByToken('token', token).then((r) => setUser(r));
+            getUserByToken('token', token).then((r) => {
+                setUser(r);
+            });
             console.log(`useUser: ${JSON.stringify(user)}`);
         }
     }, [token]);

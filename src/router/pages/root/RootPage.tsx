@@ -1,32 +1,13 @@
-import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
-import { useEffect, useState } from 'react';
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { useRecommendationsStore } from '@/store/recommendations.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import RootPageSkeleton from '@/router/pages/root/RootPageSkeleton.tsx';
+import { useRootPageData } from '@/router/features/root/useRootPageData.ts';
 
 export default function RootPage() {
     const { isLoading } = useGlobalStore();
-
-    const getManyMashupsByIds = useMashupStore((state) => state.getManyByIds);
-    const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);
-
-    const { recommendationsIds } = useRecommendationsStore();
-
-    const [playlists, setPlaylists] = useState<Playlist[]>([]);
-    useEffect(() => {
-        getManyPlaylistsByIds([1, 2, 3, 27, 1043]).then((r) => setPlaylists(r));
-    }, []);
-
-    const [recommendations, setRecommendations] = useState<Mashup[]>([]);
-    useEffect(() => {
-        if (recommendationsIds) {
-            getManyMashupsByIds(recommendationsIds).then((r) => setRecommendations(r));
-        }
-    }, [recommendationsIds]);
+    const { playlists, recommendationsIds, recommendations } = useRootPageData();
 
     if (isLoading) return <RootPageSkeleton />;
 

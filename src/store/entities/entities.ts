@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { axiosSession } from '@/lib/utils.ts';
-import { finishLoading, startLoading } from '@/store/global.ts';
 
 interface CachingEntity {
     id: number;
@@ -38,49 +37,36 @@ export function createEntityStore<T extends CachingEntity>(
         pendingRequests: {},
 
         getOneById: async (id: number): Promise<T> => {
-            startLoading();
-
             if (get().cache[id]) {
-                finishLoading();
                 return get().cache[id];
             }
 
             if (get().pendingRequests[id] !== undefined) {
                 await get().pendingRequests[id];
-                finishLoading();
                 return get().cache[id];
             }
 
             await get().fetchAndCacheMany([id]);
-            finishLoading();
             return get().cache[id];
         },
 
         getOneByStringKey: async (keyName: string, key: string): Promise<T> => {
-            startLoading();
-
             if (get().additionalCache[keyName][key]) {
-                finishLoading();
                 return get().cache[get().additionalCache[keyName][key]];
             }
 
             await get().fetchAndCacheOneByStringKey(keyName, key);
-            finishLoading();
             return get().cache[get().additionalCache[keyName][key]];
         },
 
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
-            startLoading();
-
             const missingIds = ids.filter((id) => !get().cache[id]);
 
             if (!missingIds.length) {
-                finishLoading();
                 return ids.map((id) => get().cache[id]);
             }
 
             await get().fetchAndCacheMany(missingIds, needToBeModified);
-            finishLoading();
             return ids.map((id) => get().cache[id]);
         },
 
@@ -88,8 +74,6 @@ export function createEntityStore<T extends CachingEntity>(
             ids: number[],
             needToBeModified: boolean = false
         ): Promise<T[]> => {
-            startLoading();
-
             const uniqueIds = Array.from(new Set(ids));
             const toFetchIds = uniqueIds.filter(
                 (id) => !get().cache[id] && !get().pendingRequests[id]
@@ -100,7 +84,6 @@ export function createEntityStore<T extends CachingEntity>(
                 if (pendingIds.length) {
                     await Promise.all(pendingIds.map((id) => get().pendingRequests[id]));
                 }
-                finishLoading();
                 return uniqueIds.map((id) => get().cache[id]).filter(Boolean);
             }
 
@@ -169,19 +152,15 @@ export function createEntityStore<T extends CachingEntity>(
                 }
             }));
 
-            finishLoading();
             return fetchPromise;
         },
 
         fetchAndCacheOneByStringKey: async (keyName: string, key: string): Promise<T> => {
-            startLoading();
-
             if (get().additionalCache[keyName][key]) {
-                finishLoading();
                 return get().getOneById(get().additionalCache[keyName][key]);
             }
 
-            const fetchPromise = axiosSession
+            return axiosSession
                 .get<{ status: string; response: T }>(
                     `${import.meta.env.VITE_BACKEND_URL}/${apiPath}?${keyName}=${key}`
                 )
@@ -210,9 +189,6 @@ export function createEntityStore<T extends CachingEntity>(
                     console.error(`Failed to fetch data for key: ${keyName}=${key}`, error);
                     throw new Error('Failed to fetch data');
                 });
-
-            finishLoading();
-            return fetchPromise;
         },
 
         updateOneById: (id: number, updatedData: Partial<T>) => {

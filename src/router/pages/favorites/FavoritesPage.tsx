@@ -11,8 +11,13 @@ import { axiosSession } from '@/lib/utils.ts';
 import { useUser } from '@/hooks/useUser.ts';
 import { AxiosResponse } from 'axios';
 import { getToken } from '@/store/profile.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 
 export default function FavoritesPage() {
+    const { isLoading } = useGlobalStore();
+    const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(true);
+
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
@@ -30,6 +35,7 @@ export default function FavoritesPage() {
                 }>
             ) => {
                 setLikes(r.data.response);
+                setIsPlaylistPageLoading(false);
             }
         );
     }, []);
@@ -44,6 +50,7 @@ export default function FavoritesPage() {
 
     if (!getToken()) return;
     if (!user) return;
+    if (isLoading || isPlaylistPageLoading) return <PlaylistPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
