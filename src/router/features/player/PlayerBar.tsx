@@ -17,8 +17,11 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function PlayerBar() {
+    const { isLoading } = useGlobalStore();
     const {
         queue,
         originalQueue,
@@ -64,6 +67,8 @@ export default function PlayerBar() {
     if (!queue || queueIndex === null || !mashup) {
         return;
     }
+
+    if (isLoading) return <Skeleton className='mt-auto mb-4 mr-4 h-[96px] p-4 rounded-[30px]' />;
 
     return (
         <div className='relative mt-auto mb-4 mr-4 h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
