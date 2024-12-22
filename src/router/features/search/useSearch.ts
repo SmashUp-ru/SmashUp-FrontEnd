@@ -9,39 +9,70 @@ import {
     PlaylistsSearchResponse,
     UsersSearchResponse
 } from '@/types/api/search.ts';
+import { useGlobalStore } from '@/store/global.ts';
 
 export function useSearch(query: string) {
-    const [mashupsFetching, setMashupsFetching] = useState(true);
-    const [playlistsFetching, setPlaylistsFetching] = useState(true);
-    const [usersFetching, setUsersFetching] = useState(true);
+    const { startLoading, updateIsLoading } = useGlobalStore();
+
+    const [mashupsFetching, setMashupsFetching] = useState(false);
+    const [playlistsFetching, setPlaylistsFetching] = useState(false);
+    const [usersFetching, setUsersFetching] = useState(false);
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [users, setUsers] = useState<User[]>([]);
 
     useEffect(() => {
-        axiosSession
-            .get(`/mashup/search?query=${query}`)
-            .then((r: AxiosResponse<MashupsSearchResponse>) => setMashups(r.data.response))
-            .then(() => setMashupsFetching(false));
+        if (query.length >= 4) {
+            setMashupsFetching(true);
+            setPlaylistsFetching(true);
+            setUsersFetching(true);
+            startLoading();
+        }
     }, [query]);
 
     useEffect(() => {
-        axiosSession
-            .get(`/playlist/search?query=${query}`)
-            .then((r: AxiosResponse<PlaylistsSearchResponse>) => setPlaylists(r.data.response))
-            .then(() => setPlaylistsFetching(false));
+        updateIsLoading(mashupsFetching || playlistsFetching || usersFetching);
+    }, [playlistsFetching, mashupsFetching, usersFetching]);
+
+    useEffect(() => {
+        if (query.length >= 4) {
+            axiosSession
+                .get(`/mashup/search?query=${query}`)
+                .then((r: AxiosResponse<MashupsSearchResponse>) => setMashups(r.data.response))
+                .catch((err) => {
+                    console.error('Error fetching mashups:', err);
+                })
+                .finally(() => setMashupsFetching(false)); // Устанавливаем состояние в любом случае
+        }
     }, [query]);
 
     useEffect(() => {
-        axiosSession
-            .get(`/user/search?query=${query}`)
-            .then((r: AxiosResponse<UsersSearchResponse>) => setUsers(r.data.response))
-            .then(() => setUsersFetching(false));
+        if (query.length >= 4) {
+            axiosSession
+                .get(`/playlist/search?query=${query}`)
+                .then((r: AxiosResponse<PlaylistsSearchResponse>) => setPlaylists(r.data.response))
+                .catch((err) => {
+                    console.error('Error fetching playlists:', err);
+                })
+                .finally(() => setPlaylistsFetching(false));
+        }
+    }, [query]);
+
+    useEffect(() => {
+        if (query.length >= 4) {
+            axiosSession
+                .get(`/user/search?query=${query}`)
+                .then((r: AxiosResponse<UsersSearchResponse>) => setUsers(r.data.response))
+                .catch((err) => {
+                    console.error('Error fetching users:', err);
+                })
+                .finally(() => setUsersFetching(false));
+        }
     }, [query]);
 
     return {
-        isFetching: mashupsFetching || playlistsFetching || usersFetching,
+        isLoading: mashupsFetching || playlistsFetching || usersFetching,
         mashups,
         playlists,
         users

@@ -6,7 +6,7 @@ export default function SearchPage() {
     const { searchValue, type, crossoverArtists, crossoverTracks } = useSearchStore();
 
     if (
-        (type === 'search' && !searchValue) ||
+        (type === 'search' && (!searchValue || searchValue.length < 4)) ||
         (type === 'crossover' && crossoverArtists.length === 0 && crossoverTracks.length === 0)
     ) {
         return <LastSearched />;

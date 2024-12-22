@@ -4,8 +4,11 @@ import { axiosSession } from '@/lib/utils.ts';
 import { CrossoverResponse, TrackAuthor } from '@/types/api/search.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Track } from '@/store/entities/track.ts';
+import { useGlobalStore } from '@/store/global.ts';
 
 export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
+    const { startLoading, updateIsLoading } = useGlobalStore();
+
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
     const [mashupsIds, setMashupsIds] = useState<number[]>([]);
@@ -13,6 +16,14 @@ export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [mashupsFetching, setMashupsFetching] = useState(true);
+
+    useEffect(() => {
+        startLoading();
+    }, []);
+
+    useEffect(() => {
+        updateIsLoading(mashupsFetching || mashupsIdsFetching);
+    }, [mashupsIdsFetching, mashupsFetching]);
 
     useEffect(() => {
         if (tracks.length > 0 || trackAuthors.length > 0) {
