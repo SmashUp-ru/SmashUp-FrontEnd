@@ -6,9 +6,9 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useUser } from '@/hooks/useUser.ts';
-import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useFavoritesPageData } from '@/router/features/favorites/useFavoritesPageData.ts';
+import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton.tsx';
 
 export default function FavoritesPage() {
     const { isLoading } = useGlobalStore();
@@ -20,7 +20,7 @@ export default function FavoritesPage() {
     const { mashups, likes } = useFavoritesPageData();
 
     if (!user) return;
-    if (isLoading) return <PlaylistPageSkeleton />;
+    if (isLoading) return <FavoritesPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
