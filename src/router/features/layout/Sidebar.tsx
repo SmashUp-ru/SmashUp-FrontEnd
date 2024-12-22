@@ -1,12 +1,20 @@
 import { Link, useLocation } from 'react-router-dom';
 import { navLinks } from '@/lib/data.tsx';
 import LogoIcon from '@/components/icons/Logo.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function Sidebar() {
     const location = useLocation();
+    const { isLoading } = useGlobalStore();
+
+    if (isLoading)
+        return (
+            <Skeleton className='rounded-[30px] min-w-[123px] w-[123px] py-[70px] mr-[30px] my-4' />
+        );
 
     return (
-        <div className='hidden md:flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
+        <div className='flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
                 <LogoIcon color='primary' />

@@ -41,7 +41,8 @@ export default {
                 hover: 'rgba(10, 10, 10, 1)',
                 vk: 'rgba(0, 119, 255, 1)',
                 sliderBg: 'rgba(29, 29, 29, 1)',
-                error: 'rgba(255, 69, 69, 1)'
+                error: 'rgba(255, 69, 69, 1)',
+                onError: 'rgba(11, 11, 11, 1)'
             }
         }
     },
