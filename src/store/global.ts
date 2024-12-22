@@ -8,6 +8,9 @@ interface GlobalState {
 
     likes: null | number[];
     updateLikes: (newLikes: number[]) => void;
+
+    recommendations: null | number[];
+    updateRecommendations: (newRecommendations: number[]) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -18,5 +21,9 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     finishLoading: () => set(() => ({ isLoading: false })),
 
     likes: null,
-    updateLikes: (newLikes: number[]) => set(() => ({ likes: newLikes }))
+    updateLikes: (newLikes: number[]) => set(() => ({ likes: newLikes })),
+
+    recommendations: null,
+    updateRecommendations: (newRecommendations: number[]) =>
+        set(() => ({ recommendations: newRecommendations }))
 }));

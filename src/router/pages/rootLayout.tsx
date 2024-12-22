@@ -5,33 +5,8 @@ import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerBar from '@/router/features/player/PlayerBar.tsx';
 import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 import { useEffect } from 'react';
-import { axiosSession } from '@/lib/utils.ts';
-import { AxiosResponse } from 'axios';
-import { useRecommendationsStore } from '@/store/recommendations.ts';
-import { getToken } from '@/store/profile.ts';
 
 export default function RootLayout() {
-    const { updateRecommendationsIds } = useRecommendationsStore();
-
-    useEffect(() => {
-        if (getToken()) {
-            axiosSession
-                .get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`, {
-                    headers: { Authorization: `Bearer ${getToken()}` }
-                })
-                .then(
-                    (
-                        r: AxiosResponse<{
-                            status: string;
-                            response: number[];
-                        }>
-                    ) => {
-                        updateRecommendationsIds(r.data.response);
-                    }
-                );
-        }
-    }, []);
-
     useEffect(() => {
         if (!localStorage.getItem('search_history')) {
             localStorage.setItem('search_history', JSON.stringify([]));
