@@ -35,7 +35,7 @@ const formSchema = z
         path: ['confirmPassword']
     });
 
-export default function RestorePasswordUpdatePage() {
+export default function RecoverPasswordConfirmPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 

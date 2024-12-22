@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useProfileStore } from '@/store/profile.ts';
 import { useEffect } from 'react';
 
-export default function RegisterFinishPage() {
+export default function RegisterEmailPage() {
     const navigate = useNavigate();
     const { token } = useProfileStore();
 
@@ -25,7 +25,7 @@ export default function RegisterFinishPage() {
                 </div>
 
                 <Button asChild className='w-full'>
-                    <Link draggable={false} to='/'>
+                    <Link draggable={false} to='/public'>
                         Вернуться на главную
                     </Link>
                 </Button>

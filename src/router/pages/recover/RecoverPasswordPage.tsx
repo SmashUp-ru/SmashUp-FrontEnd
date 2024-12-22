@@ -24,7 +24,7 @@ const formSchema = z.object({
     //.regex(/ /, { message: 'В электронной почте должны быть только буквы, цифры, а так же специальные символы.' })
 });
 
-export default function RestorePasswordPage() {
+export default function RecoverPasswordPage() {
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof formSchema>>({
