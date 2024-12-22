@@ -157,7 +157,7 @@ export default function LoginPage() {
                                             onCheckedChange={field.onChange}
                                         />
                                     </FormControl>
-                                    <FormLabel className='text-onSurface font-medium'>
+                                    <FormLabel className='text-onSurface font-medium mt-0'>
                                         Запомнить меня
                                     </FormLabel>
                                     <FormMessage />

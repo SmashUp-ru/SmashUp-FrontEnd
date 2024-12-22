@@ -15,16 +15,20 @@ export default function RootLayout() {
 
     useEffect(() => {
         if (getToken()) {
-            axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`).then(
-                (
-                    r: AxiosResponse<{
-                        status: string;
-                        response: number[];
-                    }>
-                ) => {
-                    updateRecommendationsIds(r.data.response);
-                }
-            );
+            axiosSession
+                .get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`, {
+                    headers: { Authorization: `Bearer ${getToken()}` }
+                })
+                .then(
+                    (
+                        r: AxiosResponse<{
+                            status: string;
+                            response: number[];
+                        }>
+                    ) => {
+                        updateRecommendationsIds(r.data.response);
+                    }
+                );
         }
     }, []);
 

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button.tsx';
 import ChevronLeftIcon from '@/components/icons/ChevronLeft.tsx';
 import { useUser } from '@/hooks/useUser.ts';
 import SearchBar from '@/router/features/header/SearchBar.tsx';
+import DoorIcon from '@/components/icons/Door.tsx';
 
 export default function Header() {
     const navigate = useNavigate();
@@ -37,7 +38,9 @@ export default function Header() {
                         </Avatar>
                     </Link>
                 ) : (
-                    <></>
+                    <Link to='/login' draggable={false}>
+                        <DoorIcon />
+                    </Link>
                 )}
             </div>
         </div>
