@@ -33,10 +33,10 @@ export function useFavoritesPageData() {
                     }>
                 ) => {
                     updateLikes(r.data.response);
-                    setIsPlaylistPageLoading(false);
                 }
             );
         }
+        setIsPlaylistPageLoading(false);
     }, []);
 
     useEffect(() => {
