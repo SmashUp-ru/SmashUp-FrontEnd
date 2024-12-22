@@ -1,56 +1,26 @@
 import { Link } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { axiosSession } from '@/lib/utils.ts';
 import { useUser } from '@/hooks/useUser.ts';
-import { AxiosResponse } from 'axios';
-import { getToken } from '@/store/profile.ts';
-import { useGlobalStore } from '@/store/global.ts';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import { useFavoritesPageData } from '@/router/features/favorites/useFavoritesPageData.ts';
 
 export default function FavoritesPage() {
     const { isLoading } = useGlobalStore();
-    const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(true);
 
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const [likes, setLikes] = useState<number[]>([]);
-
-    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
-    const [mashups, setMashups] = useState<Mashup[]>([]);
-
-    useEffect(() => {
-        axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
-            (
-                r: AxiosResponse<{
-                    status: string;
-                    response: number[];
-                }>
-            ) => {
-                setLikes(r.data.response);
-                setIsPlaylistPageLoading(false);
-            }
-        );
-    }, []);
-
-    useEffect(() => {
-        if (likes) {
-            getMashupsByIds(likes).then((r) => setMashups(r));
-        }
-    }, [likes]);
-
     const user = useUser();
+    const { mashups, likes } = useFavoritesPageData();
 
-    if (!getToken()) return;
     if (!user) return;
-    if (isLoading || isPlaylistPageLoading) return <PlaylistPageSkeleton />;
+    if (isLoading) return <PlaylistPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
