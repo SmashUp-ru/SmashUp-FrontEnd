@@ -49,6 +49,8 @@ export function usePlayer() {
         newQueueId: string,
         newQueueIndex: number = 0
     ) {
+        if (newQueue.length === 0) return;
+
         if (newQueueId === queueId) {
             play();
         } else {
