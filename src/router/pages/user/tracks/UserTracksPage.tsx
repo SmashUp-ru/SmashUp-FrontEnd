@@ -10,6 +10,8 @@ import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { cn } from '@/lib/utils.ts';
 
 export default function UserTracksPage() {
     const params = useParams();
@@ -34,17 +36,21 @@ export default function UserTracksPage() {
         }
     }, [user]);
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     if (!params.profileUsername) return;
     if (!user) return;
 
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
-                    alt='radio'
-                    className='w-[216px] h-[216px] rounded-[34px]'
+                    alt={user.username}
+                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                 />
 
                 <div className='flex flex-col gap-y-6'>

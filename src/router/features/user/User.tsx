@@ -10,6 +10,8 @@ import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';
 import { useUserData } from '@/router/features/user/useUserData.ts';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 interface ProfileProps {
     username: string;
@@ -17,8 +19,9 @@ interface ProfileProps {
 
 export default function User({ username }: ProfileProps) {
     const { toast } = useToast();
-
     const { user, mashups, playlists, isLoading } = useUserData(username);
+
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     if (isLoading) return <UserPageSkeleton />;
     if (!user) return null;
@@ -32,11 +35,13 @@ export default function User({ username }: ProfileProps) {
                     'flex items-center gap-x-12'
                 )}
             >
+                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
-                    alt='profile'
-                    className='w-[200px] h-[200px] rounded-full'
+                    alt={user.username}
+                    className={cn('w-[200px] h-[200px] rounded-full', !imageLoaded && 'hidden')}
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                 />
                 <div className='flex flex-col gap-y-4'>
                     <div>

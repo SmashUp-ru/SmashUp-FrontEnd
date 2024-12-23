@@ -8,6 +8,9 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useRecommendationsPageData } from '@/router/features/recommendations/useRecommendationsPageData.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import RecommendationsPageSkeleton from '@/router/pages/recommendations/RecommendationsPageSkeleton.tsx';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { cn } from '@/lib/utils.ts';
 
 export default function RecommendationsPage() {
     const { isPlaying, queueId } = usePlayerStore();
@@ -17,17 +20,21 @@ export default function RecommendationsPage() {
 
     const { currentUser } = useGlobalStore();
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     if (isLoading) return <RecommendationsPageSkeleton />;
     if (!currentUser) return null;
 
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
-                    alt='radio'
-                    className='w-[216px] h-[216px] rounded-[34px]'
+                    alt={currentUser.username}
+                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                 />
 
                 <div className='flex flex-col gap-y-6'>

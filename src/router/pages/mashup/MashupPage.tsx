@@ -11,6 +11,9 @@ import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
 import MashupPageSkeleton from '@/router/pages/mashup/MashupPageSkeleton.tsx';
 import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { cn } from '@/lib/utils.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -18,8 +21,9 @@ export default function MashupPage() {
     const params = useParams();
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
-
     const { mashup, isLoading } = useMashupPageData(params.mashupId);
+
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     if (isLoading) return <MashupPageSkeleton />;
     if (!params.mashupId) return;
@@ -28,11 +32,13 @@ export default function MashupPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`}
-                    alt='radio'
-                    className='w-[216px] h-[216px] rounded-[34px]'
+                    alt={mashup.name}
+                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                 />
 
                 <div className='flex flex-col gap-y-6'>

@@ -11,10 +11,12 @@ import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { axiosSession } from '@/lib/utils.ts';
+import { axiosSession, cn } from '@/lib/utils.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -29,6 +31,8 @@ export default function PlaylistPage() {
         params.playlistId
     );
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;
     if (!playlist) return null;
@@ -36,11 +40,13 @@ export default function PlaylistPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
-                    alt='radio'
-                    className='w-[216px] h-[216px] rounded-[34px]'
+                    alt={playlist.name}
+                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                 />
 
                 <div className='flex flex-col gap-y-6'>
