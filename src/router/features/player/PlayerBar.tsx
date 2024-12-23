@@ -68,7 +68,7 @@ export default function PlayerBar() {
     // if (isLoading) return <Skeleton className='mt-auto mb-4 mr-4 h-[96px] p-4 rounded-[30px]' />;
 
     return (
-        <div className='relative mt-auto mb-4 mr-4 h-[96px] p-4 flex flex-wrap items-center justify-between bg-surface rounded-[30px]'>
+        <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
             <div className='absolute top-0 w-full pr-8'>
                 <Slider
                     min={0}

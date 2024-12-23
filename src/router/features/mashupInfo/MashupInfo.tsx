@@ -40,7 +40,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                'min-w-[237px] w-[237px] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden',
+                'min-w-[237px] w-[237px] h-[calc(100%-148px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden',
                 'flex flex-col gap-y-4 items-start'
             )}
         >

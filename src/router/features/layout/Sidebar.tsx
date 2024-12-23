@@ -17,7 +17,7 @@ export default function Sidebar() {
         );
 
     return (
-        <div className='flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
+        <div className='h-[calc(100%-148px)] flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
                 <LogoIcon color='primary' />

@@ -17,11 +17,12 @@ export default function RootLayout() {
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />
 
-            <main className='w-full flex flex-col'>
+            <main className='w-full flex flex-col pb-[112px]'>
+                {' '}
+                {/* Добавлен отступ снизу */}
                 <div className='w-full flex flex-grow overflow-hidden'>
                     <div className='w-full flex flex-col overflow-hidden'>
                         <Header />
-
                         <div className='flex flex-grow overflow-hidden'>
                             <div className='flex-1 pr-4 pb-4 overflow-x-hidden overflow-y-auto'>
                                 <Outlet />
@@ -29,12 +30,11 @@ export default function RootLayout() {
                             </div>
                         </div>
                     </div>
-
-                    <MashupInfo />
                 </div>
-
-                <PlayerBar />
             </main>
+
+            <PlayerBar />
+            <MashupInfo />
         </div>
     );
 }
