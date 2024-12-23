@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import animate from 'tailwindcss-animate';
 import scrollbar from 'tailwind-scrollbar';
+import typography from '@tailwindcss/typography';
 
 export default {
     darkMode: ['class'],
@@ -38,9 +39,10 @@ export default {
                 vk: 'rgba(0, 119, 255, 1)',
                 sliderBg: 'rgba(29, 29, 29, 1)',
                 error: 'rgba(255, 69, 69, 1)',
-                onError: 'rgba(11, 11, 11, 1)'
+                onError: 'rgba(11, 11, 11, 1)',
+                pink: 'pink'
             }
         }
     },
-    plugins: [animate, scrollbar({ nocompatible: true })]
+    plugins: [animate, scrollbar({ nocompatible: true }), typography]
 };

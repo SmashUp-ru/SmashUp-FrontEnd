@@ -23,6 +23,9 @@ import RegisterEmailPage from '@/router/pages/register/registerEmail/RegisterEma
 import RegisterConfirmPage from '@/router/pages/register/registerConfirm/RegisterConfirmPage.tsx';
 import RestorePasswordSuccessPage from '@/router/pages/recover/recoverPasswordSuccess/RestorePasswordSuccessPage.tsx';
 import { HotkeysProvider } from 'react-hotkeys-hook';
+import PrivacyPolicyPage from '@/router/pages/privacyPolicy/PrivacyPolicyPage.tsx';
+import DMCAPage from '@/router/pages/dmca/DMCAPage.tsx';
+import UserAgreementPage from '@/router/pages/userAgreement/UserAgreement.tsx';
 
 const router = createBrowserRouter([
     {
@@ -40,6 +43,18 @@ const router = createBrowserRouter([
                     {
                         element: <Root />,
                         path: '/'
+                    },
+                    {
+                        element: <PrivacyPolicyPage />,
+                        path: '/privacy_policy'
+                    },
+                    {
+                        element: <DMCAPage />,
+                        path: '/dmca'
+                    },
+                    {
+                        element: <UserAgreementPage />,
+                        path: '/user_agreement'
                     },
                     {
                         element: <FavoritesPage />,

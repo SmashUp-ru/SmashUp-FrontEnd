@@ -183,11 +183,19 @@ export default function RegisterPage() {
                                     </FormControl>
                                     <FormLabel className='text-onSurface font-medium'>
                                         Я принимаю{' '}
-                                        <Link draggable={false} to='#' className='text-primary'>
+                                        <Link
+                                            draggable={false}
+                                            to='/user_agreement'
+                                            className='text-primary'
+                                        >
                                             пользовательское соглашение
                                         </Link>{' '}
                                         и{' '}
-                                        <Link to='#' draggable={false} className='text-primary'>
+                                        <Link
+                                            to='/privacy_policy'
+                                            draggable={false}
+                                            className='text-primary'
+                                        >
                                             политику конфиденциальности
                                         </Link>
                                     </FormLabel>
