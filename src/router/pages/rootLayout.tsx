@@ -19,23 +19,21 @@ export default function RootLayout() {
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />
-
             <main
                 className={`w-full flex flex-col ${queue.length === 0 || queueIndex === null ? '' : 'pb-[112px]'}`}
             >
-                <div className='w-full flex flex-grow overflow-hidden'>
-                    <div className='w-full flex flex-col overflow-hidden'>
-                        <Header />
-                        <div className='flex flex-grow overflow-hidden'>
-                            <div className='flex-1 pr-4 pb-4 overflow-x-hidden overflow-y-auto'>
+                <div className='w-full flex flex-col min-h-full overflow-hidden'>
+                    <Header />
+                    <div className='flex flex-grow overflow-hidden'>
+                        <div className='flex-1 pr-4 pb-4 overflow-x-hidden overflow-y-auto flex flex-col'>
+                            <div className='flex-grow'>
                                 <Outlet />
-                                <Footer />
                             </div>
+                            <Footer />
                         </div>
                     </div>
                 </div>
             </main>
-
             <PlayerBar />
             <MashupInfo />
         </div>
