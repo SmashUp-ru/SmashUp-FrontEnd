@@ -4,7 +4,7 @@ import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
 import { useGlobalStore } from '@/store/global.ts';
 
-export function useUserData(username?: string) {
+export function useUserPageData(username?: string) {
     const { startLoading, updateIsLoading } = useGlobalStore();
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
