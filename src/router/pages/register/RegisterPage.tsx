@@ -20,6 +20,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useProfileStore } from '@/store/profile.ts';
 import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from '@/components/ui/tooltip.tsx';
 
 const formSchema = z.object({
     nickname: z
@@ -205,10 +211,19 @@ export default function RegisterPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <Button className='w-full py-[15px]' variant='outline' disabled>
-                        <VKIcon />
-                        VK ID
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger className='w-full'>
+                                <Button className='w-full py-[15px]' variant='outline' disabled>
+                                    <VKIcon />
+                                    VK ID
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Появится уже совсем скоро!</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
                     {/*Есть аккаунт?*/}
                     <div className='flex items-center gap-x-2.5'>

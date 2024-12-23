@@ -21,6 +21,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { useProfileStore } from '@/store/profile.ts';
 import { LoginResponse } from '@/types/api/login.ts';
 import { useEffect } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
     email: z
@@ -180,10 +181,19 @@ export default function LoginPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <Button className='w-full py-[15px]' variant='outline' disabled>
-                        <VKIcon />
-                        VK ID
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger className='w-full'>
+                                <Button className='w-full py-[15px]' variant='outline' disabled>
+                                    <VKIcon />
+                                    VK ID
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Появится уже совсем скоро!</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
                     {/*Нет аккаунта?*/}
                     <div className='flex items-center gap-x-2.5'>
