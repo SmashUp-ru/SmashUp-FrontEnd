@@ -5,7 +5,6 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { useUser } from '@/hooks/useUser.ts';
 import { useRecommendationsPageData } from '@/router/features/recommendations/useRecommendationsPageData.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import RecommendationsPageSkeleton from '@/router/pages/recommendations/RecommendationsPageSkeleton.tsx';
@@ -17,16 +16,16 @@ export default function RecommendationsPage() {
 
     const { recommendations, recommendationsIds } = useRecommendationsPageData();
 
-    const user = useUser();
+    const { currentUser } = useGlobalStore();
 
     if (isLoading) return <RecommendationsPageSkeleton />;
-    if (!user) return null;
+    if (!currentUser) return null;
 
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
                     alt='radio'
                     className='w-[216px] h-[216px] rounded-[34px]'
                     draggable={false}
@@ -37,8 +36,11 @@ export default function RecommendationsPage() {
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
                         <h1 className='font-bold text-4xl text-onSurface'>
                             Рекомендации{' '}
-                            <Link to={`/profile/${user.username}`} className='text-onSurface'>
-                                {user.username}
+                            <Link
+                                to={`/profile/${currentUser.username}`}
+                                className='text-onSurface'
+                            >
+                                {currentUser.username}
                             </Link>
                         </h1>
                     </div>
@@ -60,7 +62,7 @@ export default function RecommendationsPage() {
                                 onClick={() => {
                                     playQueue(
                                         recommendationsIds,
-                                        `Рекомендации ${user.username}`,
+                                        `Рекомендации ${currentUser.username}`,
                                         `recommendations`
                                     );
                                 }}
@@ -79,7 +81,7 @@ export default function RecommendationsPage() {
                         mashup={mashup}
                         playlist={recommendationsIds}
                         indexInPlaylist={idx}
-                        playlistName={`Рекомендации ${user.username}`}
+                        playlistName={`Рекомендации ${currentUser.username}`}
                         queueId={`recommendations`}
                     />
                 ))}

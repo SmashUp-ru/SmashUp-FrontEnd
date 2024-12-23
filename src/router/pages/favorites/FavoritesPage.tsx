@@ -1,36 +1,30 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { useUser } from '@/hooks/useUser.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useFavoritesPageData } from '@/router/features/favorites/useFavoritesPageData.ts';
 import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton.tsx';
 
 export default function FavoritesPage() {
-    const { isLoading } = useGlobalStore();
-    const navigate = useNavigate();
+    const { currentUser } = useGlobalStore();
 
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const user = useUser();
-    const { mashups, likes } = useFavoritesPageData();
+    const { mashups, likes, isLoading } = useFavoritesPageData();
 
-    if (user === null) {
-        navigate('/');
-        return null;
-    }
+    if (!currentUser) return null;
     if (isLoading) return <FavoritesPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
                     alt='radio'
                     className='w-[216px] h-[216px] rounded-[34px]'
                     draggable={false}
@@ -41,8 +35,8 @@ export default function FavoritesPage() {
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
                         <h1 className='font-bold text-4xl text-onSurface'>
                             Любимое{' '}
-                            <Link to={`/user/${user.username}`} className='text-onSurface'>
-                                {user.username}
+                            <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
+                                {currentUser.username}
                             </Link>
                         </h1>
                     </div>
@@ -62,7 +56,11 @@ export default function FavoritesPage() {
                                 variant='ghost'
                                 size='icon'
                                 onClick={() => {
-                                    playQueue(likes, `Любимое ${user.username}`, `favorites`);
+                                    playQueue(
+                                        likes,
+                                        `Любимое ${currentUser.username}`,
+                                        `favorites`
+                                    );
                                 }}
                             >
                                 <PlayHollowIcon />
@@ -79,7 +77,7 @@ export default function FavoritesPage() {
                         mashup={mashup}
                         playlist={likes}
                         indexInPlaylist={idx}
-                        playlistName={`Любимое ${user.username}`}
+                        playlistName={`Любимое ${currentUser.username}`}
                         queueId={`favorites`}
                     />
                 ))}

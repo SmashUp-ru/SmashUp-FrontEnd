@@ -1,4 +1,3 @@
-import { useUser } from '@/hooks/useUser.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { getToken } from '@/store/profile.ts';
 import { AxiosResponse } from 'axios';
@@ -7,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export function useRecommendations() {
     const { recommendations, updateRecommendations } = useGlobalStore();
-    const user = useUser();
+    const { currentUser } = useGlobalStore();
 
     const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
@@ -16,7 +15,7 @@ export function useRecommendations() {
     }, []);
 
     useEffect(() => {
-        if (user) {
+        if (currentUser) {
             if (recommendations === null) {
                 axiosSession
                     .get(`${import.meta.env.VITE_BACKEND_URL}/recommendations/v1`, {
@@ -35,7 +34,7 @@ export function useRecommendations() {
             }
             setRecommendationsLoading(false);
         }
-    }, [user]);
+    }, [currentUser]);
 
     return {
         isLoading: recommendationsLoading,

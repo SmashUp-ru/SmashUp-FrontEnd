@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { User } from '@/store/entities/user.ts';
 
 interface GlobalState {
     isLoading: boolean;
@@ -11,6 +12,9 @@ interface GlobalState {
 
     recommendations: null | number[];
     updateRecommendations: (newRecommendations: number[]) => void;
+
+    currentUser: User | null;
+    updateCurrentUser: (user: User) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -25,5 +29,8 @@ export const useGlobalStore = create<GlobalState>((set) => ({
 
     recommendations: null,
     updateRecommendations: (newRecommendations: number[]) =>
-        set(() => ({ recommendations: newRecommendations }))
+        set(() => ({ recommendations: newRecommendations })),
+
+    currentUser: null,
+    updateCurrentUser: (user: User) => set(() => ({ currentUser: user }))
 }));

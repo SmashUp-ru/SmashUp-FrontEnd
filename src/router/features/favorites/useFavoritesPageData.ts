@@ -15,36 +15,40 @@ export function useFavoritesPageData() {
 
     useEffect(() => {
         startLoading();
-        setMashupsLoading(true);
         setIsPlaylistPageLoading(true);
     }, []);
 
     useEffect(() => {
-        console.log(mashupsLoading, isPlaylistPageLoading);
         updateIsLoading(mashupsLoading || isPlaylistPageLoading);
     }, [isPlaylistPageLoading, mashupsLoading]);
 
     useEffect(() => {
         if (likes === null) {
-            axiosSession.get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`).then(
-                (
-                    r: AxiosResponse<{
-                        status: string;
-                        response: number[];
-                    }>
-                ) => {
-                    updateLikes(r.data.response);
-                }
-            );
+            axiosSession
+                .get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`)
+                .then(
+                    (
+                        r: AxiosResponse<{
+                            status: string;
+                            response: number[];
+                        }>
+                    ) => {
+                        updateLikes(r.data.response);
+                    }
+                )
+                .finally(() => setIsPlaylistPageLoading(false));
+        } else {
+            setIsPlaylistPageLoading(false);
         }
-        setIsPlaylistPageLoading(false);
     }, []);
 
     useEffect(() => {
         if (likes) {
-            getMashupsByIds(likes).then((r) => setMashups(r));
+            setMashupsLoading(true);
+            getMashupsByIds(likes)
+                .then((r) => setMashups(r))
+                .finally(() => setMashupsLoading(false));
         }
-        setMashupsLoading(false);
     }, [likes]);
 
     return {

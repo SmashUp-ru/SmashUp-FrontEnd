@@ -2,7 +2,6 @@ import { Link, useLocation } from 'react-router-dom';
 import LogoIcon from '@/components/icons/Logo.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { useUser } from '@/hooks/useUser.ts';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -10,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 export default function Sidebar() {
     const location = useLocation();
     const { isLoading } = useGlobalStore();
-    const user = useUser();
+    const { currentUser } = useGlobalStore();
 
     if (isLoading)
         return (
@@ -33,7 +32,7 @@ export default function Sidebar() {
                         />
                     </Link>
 
-                    {user ? (
+                    {currentUser ? (
                         <Link draggable={false} to={'/favorites'}>
                             <LikeOutlineIcon
                                 color={

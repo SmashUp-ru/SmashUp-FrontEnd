@@ -9,20 +9,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import GavelIcon from '@/components/icons/Gavel.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
-import { useUser } from '@/hooks/useUser.ts';
 import { useProfileStore } from '@/store/profile.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function ProfileMenu() {
-    const user = useUser();
+    const { currentUser } = useGlobalStore();
     const { updateToken } = useProfileStore();
     const navigate = useNavigate();
     const { isLoading } = useGlobalStore();
 
     if (isLoading) return <Skeleton className='w-12 h-12 rounded-full' />;
 
-    if (!user)
+    if (!currentUser)
         return (
             <Link to='/login' draggable={false}>
                 <DoorIcon />
@@ -33,12 +32,12 @@ export default function ProfileMenu() {
         <TooltipProvider>
             <Tooltip delayDuration={0}>
                 <TooltipTrigger>
-                    <Link draggable={false} to={`/user/${user.username}`}>
+                    <Link draggable={false} to={`/user/${currentUser.username}`}>
                         <Avatar className='w-12 h-12'>
                             <AvatarImage
-                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
+                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_100x100.png`}
                             />
-                            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>{currentUser.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </Link>
                 </TooltipTrigger>
