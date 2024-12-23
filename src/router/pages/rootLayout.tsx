@@ -5,6 +5,7 @@ import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerBar from '@/router/features/player/PlayerBar.tsx';
 import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 import { useEffect } from 'react';
+import { usePlayerStore } from '@/store/player.ts';
 
 export default function RootLayout() {
     useEffect(() => {
@@ -13,13 +14,15 @@ export default function RootLayout() {
         }
     }, []);
 
+    const { queue, queueIndex } = usePlayerStore();
+
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />
 
-            <main className='w-full flex flex-col pb-[112px]'>
-                {' '}
-                {/* Добавлен отступ снизу */}
+            <main
+                className={`w-full flex flex-col ${queue.length === 0 || queueIndex === null ? '' : 'pb-[112px]'}`}
+            >
                 <div className='w-full flex flex-grow overflow-hidden'>
                     <div className='w-full flex flex-col overflow-hidden'>
                         <Header />

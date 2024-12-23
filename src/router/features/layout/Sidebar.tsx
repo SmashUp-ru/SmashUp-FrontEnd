@@ -5,11 +5,13 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { usePlayerStore } from '@/store/player.ts';
 
 export default function Sidebar() {
     const location = useLocation();
     const { isLoading } = useGlobalStore();
     const { currentUser } = useGlobalStore();
+    const { queue, queueIndex } = usePlayerStore();
 
     if (isLoading)
         return (
@@ -17,7 +19,9 @@ export default function Sidebar() {
         );
 
     return (
-        <div className='h-[calc(100%-148px)] flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4'>
+        <div
+            className={`h-[calc(100%-${queue.length === 0 || queueIndex === null ? '16' : '148'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4`}
+        >
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
                 <LogoIcon color='primary' />

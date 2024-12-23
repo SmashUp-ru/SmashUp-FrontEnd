@@ -40,7 +40,7 @@ export default function PlaylistPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
-                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
+                {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
                     alt={playlist.name}

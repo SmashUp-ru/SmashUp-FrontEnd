@@ -61,7 +61,7 @@ export default function PlayerBar() {
         }
     }, [mashup]);
 
-    if (!queue || queueIndex === null || !mashup) {
+    if (queue.length === 0 || queueIndex === null || !mashup) {
         return;
     }
 
