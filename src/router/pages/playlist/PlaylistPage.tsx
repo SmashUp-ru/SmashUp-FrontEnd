@@ -66,31 +66,32 @@ export default function PlaylistPage() {
                         <h1 className='font-bold text-4xl text-onSurface'>{playlist.name}</h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
-                        {isPlaying && queueId === `playlist/${playlist.id}` ? (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    pause();
-                                }}
-                            >
-                                <PauseHollowIcon />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    playQueue(
-                                        playlist.mashups,
-                                        playlist.name,
-                                        `playlist/${playlist.id}`
-                                    );
-                                }}
-                            >
-                                <PlayHollowIcon />
-                            </Button>
-                        )}
+                        {playlist.mashups.length > 0 &&
+                            (isPlaying && queueId === `playlist/${playlist.id}` ? (
+                                <Button
+                                    variant='ghost'
+                                    size='icon'
+                                    onClick={() => {
+                                        pause();
+                                    }}
+                                >
+                                    <PauseHollowIcon />
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant='ghost'
+                                    size='icon'
+                                    onClick={() => {
+                                        playQueue(
+                                            playlist.mashups,
+                                            playlist.name,
+                                            `playlist/${playlist.id}`
+                                        );
+                                    }}
+                                >
+                                    <PlayHollowIcon />
+                                </Button>
+                            ))}
 
                         {isLiked ? (
                             <Button
@@ -159,6 +160,7 @@ export default function PlaylistPage() {
             </div>
 
             <div className='flex flex-col gap-y-1'>
+                {mashups.length === 0 && <p className='text-additionalText'>Плейлист пустой(</p>}
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}

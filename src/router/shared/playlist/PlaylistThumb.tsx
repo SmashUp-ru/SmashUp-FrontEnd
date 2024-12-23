@@ -29,29 +29,34 @@ export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbPro
                         draggable={false}
                     />
                 </Link>
-                {isPlaying && queueId === `playlist/${playlist.id}` ? (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        onClick={() => {
-                            pause();
-                        }}
-                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
-                    >
-                        <PauseHollowIcon />
-                    </Button>
-                ) : (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        onClick={() => {
-                            playQueue(playlist.mashups, playlist.name, `playlist/${playlist.id}`);
-                        }}
-                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
-                    >
-                        <PlayHollowIcon color='onSurface' hoverColor='primary' />
-                    </Button>
-                )}
+                {playlist.mashups.length > 0 &&
+                    (isPlaying && queueId === `playlist/${playlist.id}` ? (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                pause();
+                            }}
+                            className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                        >
+                            <PauseHollowIcon />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                playQueue(
+                                    playlist.mashups,
+                                    playlist.name,
+                                    `playlist/${playlist.id}`
+                                );
+                            }}
+                            className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                        >
+                            <PlayHollowIcon color='onSurface' hoverColor='primary' />
+                        </Button>
+                    ))}
             </div>
             <div className='flex flex-col'>
                 <Link
