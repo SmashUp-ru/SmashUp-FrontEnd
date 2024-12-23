@@ -43,7 +43,7 @@ export function useSearch(query: string) {
                 .catch((err) => {
                     console.error('Error fetching mashups:', err);
                 })
-                .finally(() => setMashupsFetching(false)); // Устанавливаем состояние в любом случае
+                .finally(() => setMashupsFetching(false));
         }
     }, [query]);
 

@@ -11,15 +11,14 @@ import { Button } from '@/components/ui/button.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
 import { useProfileStore } from '@/store/profile.ts';
 import { useGlobalStore } from '@/store/global.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function ProfileMenu() {
     const { currentUser } = useGlobalStore();
     const { updateToken } = useProfileStore();
     const navigate = useNavigate();
-    const { isLoading } = useGlobalStore();
-
-    if (isLoading) return <Skeleton className='w-12 h-12 rounded-full' />;
+    // const { isLoading } = useGlobalStore();
+    //
+    // if (isLoading) return <Skeleton className='w-12 h-12 rounded-full' />;
 
     if (!currentUser)
         return (

@@ -1,12 +1,11 @@
 import BellIcon from '@/components/icons/Bell.tsx';
 import { useGlobalStore } from '@/store/global.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function NotificationsMenu() {
     const { currentUser } = useGlobalStore();
-    const { isLoading } = useGlobalStore();
-
-    if (isLoading) return <Skeleton className='w-6 h-6 rounded-full' />;
+    // const { isLoading } = useGlobalStore();
+    //
+    // if (isLoading) return <Skeleton className='w-6 h-6 rounded-full' />;
 
     if (!currentUser) return null;
 

@@ -5,13 +5,11 @@ import Section from '@/router/shared/section/Section.tsx';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
-import { useGlobalStore } from '@/store/global.ts';
 
 export default function CrossoverResults() {
-    const { isLoading } = useGlobalStore();
     const { updateType, crossoverArtists, crossoverTracks } = useSearchStore();
 
-    const { mashups } = useCrossover(crossoverTracks, crossoverArtists);
+    const { mashups, isLoading } = useCrossover(crossoverTracks, crossoverArtists);
 
     if (isLoading) return <SearchResultsSkeleton />;
 

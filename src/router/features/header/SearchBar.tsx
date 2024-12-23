@@ -9,11 +9,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CrossoverPopoverContent from '@/router/features/header/CrossoverPopoverContent.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { useGlobalStore } from '@/store/global.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function SearchBar() {
-    const { isLoading } = useGlobalStore();
     const {
         searchValue,
         updateSearchValue,
@@ -35,9 +32,9 @@ export default function SearchBar() {
 
     const [crossoverOpened, setCrossoverOpened] = useState(false);
 
-    if (isLoading) {
-        return <Skeleton className='w-full h-[57px] rounded-2xl' />;
-    }
+    // if (isLoading) {
+    //     return <Skeleton className='w-full h-[57px] rounded-2xl' />;
+    // }
 
     return (
         <Popover open={crossoverOpened && searchValue.length > 0}>

@@ -12,14 +12,12 @@ import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import UserThumb from '@/router/shared/user/UserThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
-import { useGlobalStore } from '@/store/global.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
 
 export default function SearchResults() {
-    const { isLoading } = useGlobalStore();
     const { updateType, searchValue } = useSearchStore();
 
-    const { mashups, playlists, users } = useSearch(searchValue);
+    const { mashups, playlists, users, isLoading } = useSearch(searchValue);
 
     if (isLoading) return <SearchResultsSkeleton />;
 

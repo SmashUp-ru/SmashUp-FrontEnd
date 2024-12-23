@@ -17,7 +17,7 @@ export default function FavoritesPage() {
 
     const { isLoading, mashups, likes } = useFavoritesPageData();
 
-    if (!currentUser) return null;
+    if (!currentUser) return <FavoritesPageSkeleton />;
     if (isLoading) return <FavoritesPageSkeleton />;
 
     return (
