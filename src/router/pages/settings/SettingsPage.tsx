@@ -10,6 +10,7 @@ import VKIcon from '@/components/icons/VK.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
+import { Slider } from '@/components/ui/slider.tsx';
 
 export default function SettingsPage() {
     const { currentUser, settings, isLoading } = useSettingsPageData();
@@ -19,6 +20,7 @@ export default function SettingsPage() {
     const [username, setUsername] = useState('');
     const [allowMultisessions, setAllowMultisessions] = useState(false);
     const [showExplicit, setShowExplicit] = useState(false);
+    const [bitrate, setBitrate] = useState(3);
 
     useEffect(() => {
         if (currentUser) {
@@ -149,9 +151,29 @@ export default function SettingsPage() {
                     </div>
 
                     {/*настройки аккаунта*/}
-                    <div className='w-full flex flex-col gap-y-[30px]'>
+                    <div className='w-full flex flex-col gap-y-[30px] pr-7'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <div className='grid grid-cols-3 gap-x-20'>
+                        <div className='grid grid-cols-3 gap-x-20 items-center'>
+                            <div className='flex items-center gap-x-10'>
+                                <Label className='w-1/2 font-medium text-[18px] text-onSurfaceVariant'>
+                                    Битрейт мэшапов
+                                </Label>
+                                <div className='w-full relative'>
+                                    <Slider
+                                        min={0}
+                                        max={4}
+                                        step={1}
+                                        value={[bitrate]}
+                                        showMarks={true}
+                                        onValueChange={(v) => setBitrate(v[0])}
+                                        className='z-30'
+                                        rangeClassName='bg-primary'
+                                        thumbClassName='bg-onSurface h-[30px] w-2.5 rounded-[2.8px]'
+                                        captions={['64', '96', '128', '160', 'Ориг']}
+                                    />
+                                </div>
+                            </div>
+
                             <div className='flex items-center justify-between'>
                                 <Label className='font-medium text-[18px] text-onSurfaceVariant'>
                                     Разрешить мультисессии
