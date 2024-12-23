@@ -71,7 +71,7 @@ export default function User({ username }: ProfileProps) {
                             onClick={() => {
                                 navigator.clipboard
                                     .writeText(
-                                        `${import.meta.env.VITE_FRONTEND_URL}/profile/${user.username}`
+                                        `${import.meta.env.VITE_FRONTEND_URL}/user/${user.username}`
                                     )
                                     .then(() => {
                                         toast({
