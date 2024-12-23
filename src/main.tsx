@@ -26,6 +26,7 @@ import { HotkeysProvider } from 'react-hotkeys-hook';
 import PrivacyPolicyPage from '@/router/pages/privacyPolicy/PrivacyPolicyPage.tsx';
 import DMCAPage from '@/router/pages/dmca/DMCAPage.tsx';
 import UserAgreementPage from '@/router/pages/userAgreement/UserAgreement.tsx';
+import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
                     {
                         element: <ProfilePage />,
                         path: '/user/:profileUsername'
+                    },
+                    {
+                        element: <SettingsPage />,
+                        path: '/settings'
                     },
                     {
                         element: <ProfileTracksPage />,

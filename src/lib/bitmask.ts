@@ -29,3 +29,11 @@ export function isMashuper(bitmask: number): boolean {
 export function isBanned(bitmask: number): boolean {
     return ((bitmask >> 4) & 1) == 1;
 }
+
+export function explicitAllowed(bitmask: number): boolean {
+    return ((bitmask >> 0) & 1) == 1;
+}
+
+export function multisessionAllowed(bitmask: number): boolean {
+    return ((bitmask >> 1) & 1) == 1;
+}

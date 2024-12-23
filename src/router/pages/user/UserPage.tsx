@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.ts';
 import { useUserPageData } from '@/router/features/user/useUserPageData.ts';
 import { useState } from 'react';
@@ -13,11 +13,13 @@ import Section from '@/router/shared/section/Section.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import SettingsIcon from '@/components/icons/Settings.tsx';
 
 export default function UserPage() {
     const params = useParams();
-
     const { toast } = useToast();
+    const { currentUser } = useGlobalStore();
     const { user, mashups, playlists, isLoading } = useUserPageData(params.profileUsername);
 
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -67,6 +69,12 @@ export default function UserPage() {
                         </div>
                     </div>
                     <div className='flex items-center gap-x-5'>
+                        {currentUser && currentUser.username === params.profileUsername && (
+                            <Link to='/settings'>
+                                <SettingsIcon />
+                            </Link>
+                        )}
+
                         <Button
                             variant='ghost'
                             size='icon'
