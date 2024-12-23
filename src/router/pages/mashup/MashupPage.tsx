@@ -9,20 +9,17 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
-import { useGlobalStore } from '@/store/global.ts';
 import MashupPageSkeleton from '@/router/pages/mashup/MashupPageSkeleton.tsx';
 import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts';
 
 export default function MashupPage() {
-    const { isLoading } = useGlobalStore();
-
     const { toast } = useToast();
 
     const params = useParams();
     const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const { mashup } = useMashupPageData(params.mashupId);
+    const { mashup, isLoading } = useMashupPageData(params.mashupId);
 
     if (isLoading) return <MashupPageSkeleton />;
     if (!params.mashupId) return;

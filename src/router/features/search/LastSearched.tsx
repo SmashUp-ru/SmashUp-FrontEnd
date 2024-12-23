@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useSearchStore } from '@/store/search.ts';
 import { useLastSearchedData } from '@/router/features/search/useLastSearchedData.ts';
-import { useGlobalStore } from '@/store/global.ts';
 import LastSearchedSkeleton from '@/router/features/search/LastSearchedSkeleton.tsx';
 
 export default function LastSearched() {
     const { type, updateType } = useSearchStore();
-    const { isLoading } = useGlobalStore();
 
-    const { searchHistory, searchHistoryObjects } = useLastSearchedData();
+    const { searchHistory, searchHistoryObjects, isLoading } = useLastSearchedData();
 
     if (isLoading) return <LastSearchedSkeleton />;
     if (searchHistory.length === 0) return <div>История пуста!</div>;

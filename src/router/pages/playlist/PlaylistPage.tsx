@@ -14,12 +14,9 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { axiosSession } from '@/lib/utils.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
-import { useGlobalStore } from '@/store/global.ts';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 
 export default function PlaylistPage() {
-    const { isLoading } = useGlobalStore();
-
     const { toast } = useToast();
 
     const params = useParams();
@@ -28,7 +25,9 @@ export default function PlaylistPage() {
 
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
 
-    const { playlist, mashups, isLiked, setIsLiked } = usePlaylistPageData(params.playlistId);
+    const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(
+        params.playlistId
+    );
 
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;

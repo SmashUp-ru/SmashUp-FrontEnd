@@ -1,13 +1,11 @@
 import Section from '@/router/shared/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { useGlobalStore } from '@/store/global.ts';
 import RootPageSkeleton from '@/router/pages/root/RootPageSkeleton.tsx';
 import { useRootPageData } from '@/router/features/root/useRootPageData.ts';
 
 export default function RootPage() {
-    const { isLoading } = useGlobalStore();
-    const { playlists, recommendationsIds, recommendations } = useRootPageData();
+    const { isLoading, playlists, recommendationsIds, recommendations } = useRootPageData();
 
     if (isLoading) return <RootPageSkeleton />;
 

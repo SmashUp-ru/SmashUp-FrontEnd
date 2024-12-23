@@ -10,11 +10,10 @@ import { useGlobalStore } from '@/store/global.ts';
 import RecommendationsPageSkeleton from '@/router/pages/recommendations/RecommendationsPageSkeleton.tsx';
 
 export default function RecommendationsPage() {
-    const { isLoading } = useGlobalStore();
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const { recommendations, recommendationsIds } = useRecommendationsPageData();
+    const { recommendations, recommendationsIds, isLoading } = useRecommendationsPageData();
 
     const { currentUser } = useGlobalStore();
 

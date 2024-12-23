@@ -8,7 +8,6 @@ import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-import { useGlobalStore } from '@/store/global.ts';
 import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';
 import { useUserData } from '@/router/features/user/useUserData.ts';
 
@@ -17,11 +16,9 @@ interface ProfileProps {
 }
 
 export default function User({ username }: ProfileProps) {
-    const { isLoading } = useGlobalStore();
-
     const { toast } = useToast();
 
-    const { user, mashups, playlists } = useUserData(username);
+    const { user, mashups, playlists, isLoading } = useUserData(username);
 
     if (isLoading) return <UserPageSkeleton />;
     if (!user) return null;

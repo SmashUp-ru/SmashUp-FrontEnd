@@ -15,7 +15,7 @@ export default function FavoritesPage() {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
-    const { mashups, likes, isLoading } = useFavoritesPageData();
+    const { isLoading, mashups, likes } = useFavoritesPageData();
 
     if (!currentUser) return null;
     if (isLoading) return <FavoritesPageSkeleton />;
