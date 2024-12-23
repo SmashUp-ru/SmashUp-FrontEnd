@@ -43,7 +43,7 @@ export function useFavoritesPageData() {
         if (likes) {
             getMashupsByIds(likes)
                 .then((r) => setMashups(r))
-                .then(() => setMashupsLoading(false));
+                .finally(() => setMashupsLoading(false));
         }
     }, [likes]);
 

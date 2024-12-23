@@ -1,12 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import { navLinks } from '@/lib/data.tsx';
 import LogoIcon from '@/components/icons/Logo.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { useUser } from '@/hooks/useUser.ts';
+import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import HomeIcon from '@/components/icons/HomeIcon.tsx';
 
 export default function Sidebar() {
     const location = useLocation();
     const { isLoading } = useGlobalStore();
+    const user = useUser();
 
     if (isLoading)
         return (
@@ -23,15 +26,23 @@ export default function Sidebar() {
             <div className='flex flex-col gap-y-12 px-12'>
                 {/* Навигация */}
                 <div className='flex flex-col gap-y-12'>
-                    {navLinks.map((link, idx) => (
-                        <Link key={idx} draggable={false} to={link.link}>
-                            <link.icon
+                    <Link draggable={false} to={'/'}>
+                        <HomeIcon
+                            color={location.pathname === '/' ? 'primary' : 'onSurfaceVariant'}
+                        />
+                    </Link>
+
+                    {user && (
+                        <Link draggable={false} to={'/favorites'}>
+                            <LikeOutlineIcon
                                 color={
-                                    location.pathname === link.link ? 'primary' : 'onSurfaceVariant'
+                                    location.pathname === '/favorites'
+                                        ? 'primary'
+                                        : 'onSurfaceVariant'
                                 }
                             />
                         </Link>
-                    ))}
+                    )}
                 </div>
             </div>
         </div>
