@@ -5,8 +5,12 @@ import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { RegisterResponse } from '@/types/api/register.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import { useUserStore } from '@/store/entities/user.ts';
 
 export default function RegisterConfirmPage() {
+    const { updateCurrentUser } = useGlobalStore();
+    const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
     const { updateToken } = useProfileStore();
     const [searchParams] = useSearchParams();
@@ -20,6 +24,9 @@ export default function RegisterConfirmPage() {
                 .then((r: AxiosResponse<RegisterResponse>) => {
                     updateToken(r.data.response.token);
                     sessionStorage.setItem('smashup_token', r.data.response.token);
+                    getUserByToken('token', r.data.response.token).then((r) => {
+                        updateCurrentUser(r);
+                    });
                     setSuccess(true);
                 })
                 .then(() => navigate('/'))

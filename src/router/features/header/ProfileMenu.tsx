@@ -13,7 +13,7 @@ import { useProfileStore } from '@/store/profile.ts';
 import { useGlobalStore } from '@/store/global.ts';
 
 export default function ProfileMenu() {
-    const { currentUser } = useGlobalStore();
+    const { currentUser, updateCurrentUser } = useGlobalStore();
     const { updateToken } = useProfileStore();
     const navigate = useNavigate();
     // const { isLoading } = useGlobalStore();
@@ -56,6 +56,7 @@ export default function ProfileMenu() {
                             localStorage.removeItem('player-storage');
                             updateToken('');
                             navigate('/');
+                            updateCurrentUser(null);
                         }}
                     >
                         <DoorIcon color='error' />

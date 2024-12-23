@@ -14,7 +14,7 @@ interface GlobalState {
     updateRecommendations: (newRecommendations: number[]) => void;
 
     currentUser: User | null;
-    updateCurrentUser: (user: User) => void;
+    updateCurrentUser: (user: User | null) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -32,5 +32,5 @@ export const useGlobalStore = create<GlobalState>((set) => ({
         set(() => ({ recommendations: newRecommendations })),
 
     currentUser: null,
-    updateCurrentUser: (user: User) => set(() => ({ currentUser: user }))
+    updateCurrentUser: (user: User | null) => set(() => ({ currentUser: user }))
 }));

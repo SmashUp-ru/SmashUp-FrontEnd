@@ -22,6 +22,8 @@ import { useProfileStore } from '@/store/profile.ts';
 import { LoginResponse } from '@/types/api/login.ts';
 import { useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useGlobalStore } from '@/store/global.ts';
+import { useUserStore } from '@/store/entities/user.ts';
 
 const formSchema = z.object({
     email: z
@@ -44,6 +46,8 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
+    const { updateCurrentUser } = useGlobalStore();
+    const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
     const { token, updateToken } = useProfileStore();
 
@@ -66,6 +70,9 @@ export default function LoginPage() {
                 } else {
                     sessionStorage.setItem('smashup_token', r.data.response.token);
                 }
+                getUserByToken('token', r.data.response.token).then((r) => {
+                    updateCurrentUser(r);
+                });
             })
             .then(() => navigate('/'));
     }

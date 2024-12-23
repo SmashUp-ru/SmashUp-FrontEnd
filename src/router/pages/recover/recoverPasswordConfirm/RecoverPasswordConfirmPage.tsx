@@ -14,6 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { axiosSession } from '@/lib/utils.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useProfileStore } from '@/store/profile.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import { useUserStore } from '@/store/entities/user.ts';
 
 const formSchema = z
     .object({
@@ -37,6 +39,9 @@ const formSchema = z
     });
 
 export default function RecoverPasswordConfirmPage() {
+    const { updateCurrentUser } = useGlobalStore();
+    const getUserByToken = useUserStore((state) => state.getOneByStringKey);
+
     const { updateToken } = useProfileStore();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -58,12 +63,12 @@ export default function RecoverPasswordConfirmPage() {
             .then((r) => {
                 updateToken(r.data.response.token);
                 sessionStorage.setItem('smashup_token', r.data.response.token);
+                getUserByToken('token', r.data.response.token).then((r) => {
+                    updateCurrentUser(r);
+                });
             })
             .then(() => {
                 navigate('/restore/password/confirm');
-            })
-            .catch(() => {
-                // TODO: toast with error
             });
     }
 
