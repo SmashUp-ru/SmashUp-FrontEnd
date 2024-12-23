@@ -14,9 +14,9 @@ import { useGlobalStore } from '@/store/global.ts';
 export function useSearch(query: string) {
     const { startLoading, updateIsLoading } = useGlobalStore();
 
-    const [mashupsFetching, setMashupsFetching] = useState(false);
-    const [playlistsFetching, setPlaylistsFetching] = useState(false);
-    const [usersFetching, setUsersFetching] = useState(false);
+    const [mashupsFetching, setMashupsFetching] = useState(query.length >= 4);
+    const [playlistsFetching, setPlaylistsFetching] = useState(query.length >= 4);
+    const [usersFetching, setUsersFetching] = useState(query.length >= 4);
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -24,9 +24,6 @@ export function useSearch(query: string) {
 
     useEffect(() => {
         if (query.length >= 4) {
-            setMashupsFetching(true);
-            setPlaylistsFetching(true);
-            setUsersFetching(true);
             startLoading();
         }
     }, [query]);
