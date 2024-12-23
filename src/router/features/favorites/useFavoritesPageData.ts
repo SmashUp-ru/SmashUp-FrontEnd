@@ -20,6 +20,7 @@ export function useFavoritesPageData() {
     }, []);
 
     useEffect(() => {
+        console.log(mashupsLoading, isPlaylistPageLoading);
         updateIsLoading(mashupsLoading || isPlaylistPageLoading);
     }, [isPlaylistPageLoading, mashupsLoading]);
 
@@ -41,10 +42,9 @@ export function useFavoritesPageData() {
 
     useEffect(() => {
         if (likes) {
-            getMashupsByIds(likes)
-                .then((r) => setMashups(r))
-                .finally(() => setMashupsLoading(false));
+            getMashupsByIds(likes).then((r) => setMashups(r));
         }
+        setMashupsLoading(false);
     }, [likes]);
 
     return {

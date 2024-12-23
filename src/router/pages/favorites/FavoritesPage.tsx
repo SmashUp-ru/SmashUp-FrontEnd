@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -12,6 +12,7 @@ import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton
 
 export default function FavoritesPage() {
     const { isLoading } = useGlobalStore();
+    const navigate = useNavigate();
 
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
@@ -19,7 +20,10 @@ export default function FavoritesPage() {
     const user = useUser();
     const { mashups, likes } = useFavoritesPageData();
 
-    if (!user) return;
+    if (user === null) {
+        navigate('/');
+        return null;
+    }
     if (isLoading) return <FavoritesPageSkeleton />;
 
     return (
