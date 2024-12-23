@@ -9,6 +9,7 @@ export default {
         './src/**/*.{js,ts,jsx,tsx}'
     ],
     safelist: [
+        'text-onSurfaceVariant/50',
         'text-primary',
         'bg-primary',
         'hover:text-primary',
