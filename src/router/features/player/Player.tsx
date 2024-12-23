@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const Player: React.FC = () => {
     const {
+        updatePlaying,
         isPlaying,
         loop,
         volume,
@@ -14,7 +16,7 @@ const Player: React.FC = () => {
         updateSeek,
         changedSeek
     } = usePlayerStore();
-    const { next, play } = usePlayer();
+    const { next, prev, play } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
     const raf = useRef<number | null>(null);
@@ -60,6 +62,11 @@ const Player: React.FC = () => {
         }
     };
 
+    // hotkeys
+    useHotkeys('space', () => updatePlaying(!isPlaying));
+    useHotkeys('ctrl+right', () => next());
+    useHotkeys('ctrl+left', () => prev());
+
     return (
         <ReactHowler
             src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3`}
@@ -72,4 +79,4 @@ const Player: React.FC = () => {
     );
 };
 
-export default React.memo(Player);
+export default Player;

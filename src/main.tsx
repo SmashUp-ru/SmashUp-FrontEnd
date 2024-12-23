@@ -22,6 +22,7 @@ import RecommendationsPage from '@/router/pages/recommendations/RecommendationsP
 import RegisterEmailPage from '@/router/pages/register/registerEmail/RegisterEmailPage.tsx';
 import RegisterConfirmPage from '@/router/pages/register/registerConfirm/RegisterConfirmPage.tsx';
 import RestorePasswordSuccessPage from '@/router/pages/recover/recoverPasswordSuccess/RestorePasswordSuccessPage.tsx';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 
 const router = createBrowserRouter([
     {
@@ -118,5 +119,8 @@ createRoot(document.getElementById('root')!).render(
     // <StrictMode>
     //
     // </StrictMode>
-    <RouterProvider router={router} />
+
+    <HotkeysProvider>
+        <RouterProvider router={router} />
+    </HotkeysProvider>
 );
