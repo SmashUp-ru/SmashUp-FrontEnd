@@ -60,7 +60,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                 >
                     {user.username}
                 </Link>
-                <span className='font-medium text-lg text-onSurfaceVariant'>'Мэшапер</span>
+                <span className='font-medium text-lg text-onSurfaceVariant'>Мэшапер</span>
             </div>
         </div>
     );
