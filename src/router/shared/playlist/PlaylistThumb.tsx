@@ -39,7 +39,7 @@ export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbPro
                             }}
                             className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         >
-                            <PauseHollowIcon />
+                            <PauseHollowIcon color='onSurface' hoverColor='primary' />
                         </Button>
                     ) : (
                         <Button

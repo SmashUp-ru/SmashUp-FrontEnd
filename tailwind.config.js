@@ -10,6 +10,7 @@ export default {
         './src/**/*.{js,ts,jsx,tsx}'
     ],
     safelist: [
+        'text-onSurface',
         'text-onSurfaceVariant/50',
         'text-primary',
         'bg-primary',
