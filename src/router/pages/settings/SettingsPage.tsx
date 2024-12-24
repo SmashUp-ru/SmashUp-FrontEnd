@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
 import { Slider } from '@/components/ui/slider.tsx';
+import SettingsPageSkeleton from '@/router/pages/settings/SettingsPageSkeleton.tsx';
 
 export default function SettingsPage() {
     const { currentUser, settings, isLoading, email } = useSettingsPageData();
@@ -36,7 +37,7 @@ export default function SettingsPage() {
     }, [settings]);
 
     if (!currentUser) return null;
-    if (isLoading) return <div>Loading</div>;
+    if (isLoading) return <SettingsPageSkeleton />;
 
     return (
         <section className='flex flex-col gap-y-6 pr-[35px]'>
