@@ -8,11 +8,16 @@ import { Button } from '@/components/ui/button.tsx';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     startIcon?: React.FC<IconProps>;
+    startIconClassName?: string;
+    endIconClassName?: string;
     endIcon?: React.FC<IconProps>;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, type, startIcon, endIcon, ...props }, ref) => {
+    (
+        { className, type, startIcon, startIconClassName, endIcon, endIconClassName, ...props },
+        ref
+    ) => {
         const StartIcon = startIcon;
         const EndIcon = endIcon;
 
@@ -24,7 +29,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     {type === 'password' ? (
                         <LockIcon size={23} />
                     ) : (
-                        StartIcon && <StartIcon size={23} color='onSurface' />
+                        StartIcon && (
+                            <StartIcon size={23} color='onSurface' className={startIconClassName} />
+                        )
                     )}
                 </div>
 
@@ -52,7 +59,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             <HideIcon size={23} />
                         </Button>
                     ) : (
-                        EndIcon && <EndIcon color='onSurface' size={23} />
+                        EndIcon && (
+                            <EndIcon color='onSurface' size={23} className={endIconClassName} />
+                        )
                     )}
                 </div>
             </div>

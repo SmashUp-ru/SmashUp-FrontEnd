@@ -49,3 +49,16 @@ export function declOfNum(n: number, titles: string[]) {
     const cases = [2, 0, 1, 1, 1, 2];
     return titles[n % 100 > 4 && n % 100 < 20 ? 2 : cases[n % 10 < 5 ? n % 10 : 5]];
 }
+
+export function convertToBase64(file: File): Promise<string | null | ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+            reject(error);
+        };
+    });
+}

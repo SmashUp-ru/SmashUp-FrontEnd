@@ -6,6 +6,7 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePlayerStore } from '@/store/player.ts';
+import AddIcon from '@/components/icons/Add.tsx';
 
 export default function Sidebar() {
     const location = useLocation();
@@ -59,6 +60,36 @@ export default function Sidebar() {
                                 >
                                     <p>
                                         Зарегистрируйся, чтобы иметь возможность сохранять любимые
+                                        мэшапы
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
+
+                    {currentUser ? (
+                        <Link draggable={false} to={'/mashup/upload'}>
+                            <AddIcon
+                                color={
+                                    location.pathname === '/mashup/upload'
+                                        ? 'primary'
+                                        : 'onSurfaceVariant'
+                                }
+                            />
+                        </Link>
+                    ) : (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <AddIcon color='onSurfaceVariant/50' />
+                                </TooltipTrigger>
+                                <TooltipContent
+                                    className='max-w-[300px] text-center'
+                                    side='right'
+                                    sideOffset={64}
+                                >
+                                    <p>
+                                        Зарегистрируйся, чтобы иметь возможность загружать свои
                                         мэшапы
                                     </p>
                                 </TooltipContent>
