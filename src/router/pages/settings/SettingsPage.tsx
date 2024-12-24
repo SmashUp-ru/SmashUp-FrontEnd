@@ -13,7 +13,7 @@ import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 
 export default function SettingsPage() {
-    const { currentUser, settings, isLoading } = useSettingsPageData();
+    const { currentUser, settings, isLoading, email } = useSettingsPageData();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                         <div className='w-full'>
                             <Label className='font-medium text-onSurfaceVariant'>Почта</Label>
                             <Input
-                                value='блять, емаил неоткуда взять'
+                                value={email ? email : ''}
                                 className='p-0 bg-transparent font-bold text-[24px]'
                                 disabled
                             />
