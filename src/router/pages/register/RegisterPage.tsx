@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/form.tsx';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useProfileStore } from '@/store/profile.ts';
 import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import {
@@ -26,6 +25,7 @@ import {
     TooltipProvider,
     TooltipTrigger
 } from '@/components/ui/tooltip.tsx';
+import { useGlobalStore } from '@/store/global.ts';
 
 const formSchema = z.object({
     nickname: z
@@ -56,7 +56,7 @@ const formSchema = z.object({
 
 export default function RegisterPage() {
     const navigate = useNavigate();
-    const { token } = useProfileStore();
+    const { token } = useGlobalStore();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

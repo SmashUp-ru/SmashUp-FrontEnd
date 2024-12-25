@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/form.tsx';
 import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
-import { useProfileStore } from '@/store/profile.ts';
 import { LoginResponse } from '@/types/api/login.ts';
 import { useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -46,10 +45,9 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
-    const { updateCurrentUser } = useGlobalStore();
+    const { updateCurrentUser, token, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
-    const { token, updateToken } = useProfileStore();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

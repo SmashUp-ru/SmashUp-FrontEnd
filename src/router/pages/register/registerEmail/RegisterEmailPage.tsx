@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link, useNavigate } from 'react-router-dom';
-import { useProfileStore } from '@/store/profile.ts';
 import { useEffect } from 'react';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function RegisterEmailPage() {
     const navigate = useNavigate();
-    const { token } = useProfileStore();
+    const { token } = useGlobalStore();
 
     useEffect(() => {
         if (token) {

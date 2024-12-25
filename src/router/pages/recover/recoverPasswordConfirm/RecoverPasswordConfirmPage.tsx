@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { axiosSession } from '@/lib/utils.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useProfileStore } from '@/store/profile.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 
@@ -39,10 +38,9 @@ const formSchema = z
     });
 
 export default function RecoverPasswordConfirmPage() {
-    const { updateCurrentUser } = useGlobalStore();
+    const { updateCurrentUser, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
 
-    const { updateToken } = useProfileStore();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 

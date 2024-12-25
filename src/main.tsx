@@ -18,7 +18,6 @@ import ProfileTracksPage from '@/router/pages/user/tracks/UserTracksPage.tsx';
 import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
 import Layout from '@/router/pages/layout.tsx';
 import FavoritesPage from '@/router/pages/favorites/FavoritesPage.tsx';
-import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 import RegisterEmailPage from '@/router/pages/register/registerEmail/RegisterEmailPage.tsx';
 import RegisterConfirmPage from '@/router/pages/register/registerConfirm/RegisterConfirmPage.tsx';
 import RestorePasswordSuccessPage from '@/router/pages/recover/recoverPasswordSuccess/RestorePasswordSuccessPage.tsx';
@@ -61,10 +60,6 @@ const router = createBrowserRouter([
                     {
                         element: <FavoritesPage />,
                         path: '/favorites'
-                    },
-                    {
-                        element: <RecommendationsPage />,
-                        path: '/recommendations'
                     },
                     {
                         element: <PlaylistPage />,

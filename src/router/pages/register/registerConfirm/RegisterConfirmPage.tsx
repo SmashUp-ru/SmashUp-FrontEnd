@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useProfileStore } from '@/store/profile.ts';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
@@ -9,10 +8,9 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 
 export default function RegisterConfirmPage() {
-    const { updateCurrentUser } = useGlobalStore();
+    const { updateCurrentUser, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
-    const { updateToken } = useProfileStore();
     const [searchParams] = useSearchParams();
 
     const [success, setSuccess] = useState<boolean | null>(null);

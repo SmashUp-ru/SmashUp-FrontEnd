@@ -9,12 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import GavelIcon from '@/components/icons/Gavel.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
-import { useProfileStore } from '@/store/profile.ts';
 import { useGlobalStore } from '@/store/global.ts';
 
 export default function ProfileMenu() {
-    const { currentUser, updateCurrentUser } = useGlobalStore();
-    const { updateToken } = useProfileStore();
+    const { currentUser, updateCurrentUser, updateToken } = useGlobalStore();
     const navigate = useNavigate();
     // const { isLoading } = useGlobalStore();
     //
