@@ -21,7 +21,10 @@ export default {
         'bg-error',
         'hover:text-error',
         'hover:bg-error',
-        'text-vk'
+        'text-vk',
+
+        'h-[calc(100%-148px)]',
+        'h-[calc(100%-16px)]'
     ],
     theme: {
         extend: {
