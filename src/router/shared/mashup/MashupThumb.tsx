@@ -15,7 +15,10 @@ interface MashupThumbProps {
 }
 
 export default function MashupThumb({ mashup, searchMode }: MashupThumbProps) {
-    const { isPlaying, queue, queueIndex } = usePlayerStore();
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+
     const { pause, playMashup } = usePlayer();
 
     return (

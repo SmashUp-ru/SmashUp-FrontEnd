@@ -10,11 +10,21 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Track, useTrackStore } from '@/store/entities/track.ts';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
+import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
+import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 export default function MashupInfo() {
     const { toast } = useToast();
+    const { pause, playMashup } = usePlayer();
 
-    const { queue, queueIndex, queueName, info, updateInfo } = usePlayerStore();
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const queueName = usePlayerStore((state) => state.queueName);
+    const info = usePlayerStore((state) => state.info);
+    const updateInfo = usePlayerStore((state) => state.updateInfo);
     const getMashupById = useMashupStore((state) => state.getOneById);
     const getTracksById = useTrackStore((state) => state.getManyByIds);
 
@@ -40,25 +50,25 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `min-w-[237px] w-[237px] h-[calc(100%-${queue.length === 0 || queueIndex === null ? '16' : '148'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden`,
+                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length === 0 || queueIndex === null ? '16' : '148'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden`,
                 'flex flex-col gap-y-4 items-start'
             )}
         >
             <div className='w-full flex items-center justify-between gap-x-[30px]'>
-                <div className='max-w-[168px] overflow-hidden'>
+                <div className=' overflow-hidden'>
                     <span className='truncate block font-bold text-[18px] text-onSurface'>
                         {queueName}
                     </span>
                 </div>
                 <Button variant='ghost' size='icon' onClick={() => updateInfo(false)}>
-                    <CancelIcon />
+                    <CancelIcon size={24} />
                 </Button>
             </div>
 
             <img
                 src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
                 alt='track name'
-                className='w-[216px] h-[216px] rounded-[30px]'
+                className='w-[350px] h-[350px] rounded-[30px]'
                 draggable={false}
             />
 
@@ -75,27 +85,57 @@ export default function MashupInfo() {
                 ))}
             </div>
 
-            <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => {
-                    navigator.clipboard
-                        .writeText(`${import.meta.env.VITE_FRONTEND_URL}/mashup/${mashup.id}`)
-                        .then(() => {
-                            toast({
-                                element: (
-                                    <CopiedToast
-                                        img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
-                                        name={mashup.name}
-                                    />
-                                ),
-                                duration: 2000
+            <div className='flex items-center gap-x-4'>
+                {queue[queueIndex] === mashup.id && isPlaying ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        className=''
+                        onClick={() => {
+                            pause();
+                        }}
+                    >
+                        <PauseHollowIcon color='primary' />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        className=''
+                        onClick={() => {
+                            playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
+                        }}
+                    >
+                        <PlayHollowIcon color='primary' />
+                    </Button>
+                )}
+
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => {
+                        navigator.clipboard
+                            .writeText(`${import.meta.env.VITE_FRONTEND_URL}/mashup/${mashup.id}`)
+                            .then(() => {
+                                toast({
+                                    element: (
+                                        <CopiedToast
+                                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                            name={mashup.name}
+                                        />
+                                    ),
+                                    duration: 2000
+                                });
                             });
-                        });
-                }}
-            >
-                <ShareIcon />
-            </Button>
+                    }}
+                >
+                    <ShareIcon />
+                </Button>
+
+                <Button variant='ghost' size='icon'>
+                    <MoreHorizontalIcon size={32} />
+                </Button>
+            </div>
 
             <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
                 <span className='font-bold text-[18px] text-onSurfaceVariant'>
@@ -104,9 +144,7 @@ export default function MashupInfo() {
 
                 <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
                     {tracks.map((track) => (
-                        <Link to={track.link} target='_blank' className=''>
-                            <TrackSmallThumb track={track} />
-                        </Link>
+                        <TrackSmallThumb key={track.id} track={track} />
                     ))}
                 </div>
             </div>
