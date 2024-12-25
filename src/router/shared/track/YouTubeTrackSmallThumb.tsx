@@ -1,7 +1,7 @@
 import { cn, removeItem } from '@/lib/utils';
 import {
     areTracksEqual,
-    isSelected,
+    isTrackSelected,
     RenderTrack,
     SelectedTrack,
     YouTubeSelectedTrack
@@ -50,7 +50,7 @@ export default function YouTubeTrackSmallThumb({
         }
     }
 
-    const selected = isSelected(new YouTubeSelectedTrack(track), selectedTracks);
+    const selected = isTrackSelected(new YouTubeSelectedTrack(track), selectedTracks);
 
     return (
         <div

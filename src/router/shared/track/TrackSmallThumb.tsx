@@ -22,7 +22,7 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
             <img
                 src={
                     track.imageUrl.startsWith('https://')
-                        ? `${track.imageUrl}`
+                        ? track.imageUrl
                         : `${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`
                 }
                 alt={track.name}

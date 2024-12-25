@@ -1,6 +1,7 @@
 import { Track } from '@/store/entities/track';
 import { YouTubeTrack } from './youtube';
 import { TrackThumbProps } from '@/router/shared/track/TrackSmallThumb';
+import { User } from '@/store/entities/user';
 
 export interface GenresResponse {
     response: string[];
@@ -59,16 +60,34 @@ export interface RenderTrack extends TrackThumbProps {
     statefulOnClick: (selectedTracks: SelectedTrack[]) => unknown;
 }
 
+export interface RenderUser {
+    user: User;
+    selected: boolean;
+
+    statefulOnClick: (selectedUsers: User[]) => unknown;
+}
+
 export function areTracksEqual(l: SelectedTrack, r: SelectedTrack) {
     return l.constructor.name === r.constructor.name && l.key === r.key;
 }
 
-export function isSelected(track: SelectedTrack, selectedTracks: SelectedTrack[]) {
+export function isTrackSelected(track: SelectedTrack, selectedTracks: SelectedTrack[]) {
     for (const selectedTrack of selectedTracks) {
-        if (
-            selectedTrack.constructor.name === track.constructor.name &&
-            selectedTrack.key === track.key
-        ) {
+        if (areTracksEqual(selectedTrack, track)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+export function areUsersEqual(l: User, r: User) {
+    return l.id === r.id;
+}
+
+export function isUserSelected(user: User, selectedUsers: User[]) {
+    for (const selectedUser of selectedUsers) {
+        if (areUsersEqual(selectedUser, user)) {
             return true;
         }
     }
