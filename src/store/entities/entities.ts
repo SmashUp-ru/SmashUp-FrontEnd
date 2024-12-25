@@ -12,7 +12,7 @@ export function createEntityStore<T extends CachingEntity>(
     type CacheStore = {
         cache: Record<number, T>;
         additionalCache: Record<string, Record<string, number>>;
-        pendingRequests: Record<number | string, Promise<T | T[]>>; // Обновлено для поддержки строковых ключей
+        pendingRequests: Record<number | string, Promise<T | T[]>>;
 
         getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
         getOneById: (id: number) => Promise<T>;
@@ -22,7 +22,6 @@ export function createEntityStore<T extends CachingEntity>(
         fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
         updateOneById: (id: number, updatedData: Partial<T>) => void;
-        updateManyByIds: (ids: number[], updatedData: Partial<T>[]) => void;
     };
 
     return create<CacheStore>((set, get) => ({
@@ -51,7 +50,7 @@ export function createEntityStore<T extends CachingEntity>(
         },
 
         getOneByStringKey: async (keyName: string, key: string): Promise<T> => {
-            const stringKey = `${keyName}:${key}`; // Уникальный идентификатор для строкового ключа
+            const stringKey = `${keyName}:${key}`;
 
             if (get().additionalCache[keyName][key]) {
                 return get().cache[get().additionalCache[keyName][key]];
@@ -72,8 +71,7 @@ export function createEntityStore<T extends CachingEntity>(
             }));
 
             try {
-                const result = await fetchPromise;
-                return result;
+                return await fetchPromise;
             } finally {
                 set((state) => {
                     const newPending = { ...state.pendingRequests };
@@ -224,19 +222,6 @@ export function createEntityStore<T extends CachingEntity>(
                     [id]: newData
                 }
             }));
-        },
-
-        updateManyByIds: (ids: number[], updatedData: Partial<T>[]) => {
-            ids.forEach((id, idx) => {
-                const currentData = get().cache[id];
-                const newData = { ...currentData, ...updatedData[idx] };
-                set((state) => ({
-                    cache: {
-                        ...state.cache,
-                        [id]: newData
-                    }
-                }));
-            });
         }
     }));
 }

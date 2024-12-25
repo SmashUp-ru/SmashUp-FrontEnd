@@ -17,10 +17,13 @@ import { cn } from '@/lib/utils.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
-
     const params = useParams();
-    const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
+
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+
     const { mashup, isLoading } = useMashupPageData(params.mashupId);
 
     const [imageLoaded, setImageLoaded] = useState(false);

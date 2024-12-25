@@ -19,7 +19,8 @@ import SettingsIcon from '@/components/icons/Settings.tsx';
 export default function UserPage() {
     const params = useParams();
     const { toast } = useToast();
-    const { currentUser } = useGlobalStore();
+
+    const currentUser = useGlobalStore((state) => state.currentUser);
     const { user, mashups, playlists, isLoading } = useUserPageData(params.profileUsername);
 
     const [imageLoaded, setImageLoaded] = useState(false);

@@ -12,9 +12,12 @@ import EditIcon from '@/components/icons/Edit.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import SettingsPageSkeleton from '@/router/pages/settings/SettingsPageSkeleton.tsx';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function SettingsPage() {
-    const { currentUser, settings, isLoading, email } = useSettingsPageData();
+    const { settings, isLoading, email } = useSettingsPageData();
+
+    const currentUser = useGlobalStore((state) => state.currentUser);
 
     const [imageLoaded, setImageLoaded] = useState(false);
 

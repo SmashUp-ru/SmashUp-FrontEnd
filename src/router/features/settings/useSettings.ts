@@ -5,7 +5,9 @@ import { AxiosResponse } from 'axios';
 import { GetSettingsResponse } from '@/types/api/settings.ts';
 
 export function useSettings() {
-    const { settings, updateSettings } = useGlobalStore();
+    const settings = useGlobalStore((state) => state.settings);
+    const updateSettings = useGlobalStore((state) => state.updateSettings);
+
     const [isSettingsLoading, setSettingsLoading] = useState(settings === null);
 
     useEffect(() => {

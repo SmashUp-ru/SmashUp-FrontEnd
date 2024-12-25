@@ -20,11 +20,11 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
-
     const params = useParams();
-    const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queueId = usePlayerStore((state) => state.queueId);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
 
     const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(

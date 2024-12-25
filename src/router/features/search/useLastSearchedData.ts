@@ -2,10 +2,8 @@ import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
-import { useGlobalStore } from '@/store/global.ts';
 
 export function useLastSearchedData() {
-    const { startLoading, updateIsLoading } = useGlobalStore();
     const [isHistoryLoading, setIsHistoryLoading] = useState(true);
 
     interface SearchHistoryElement {
@@ -33,22 +31,14 @@ export function useLastSearchedData() {
     );
 
     useEffect(() => {
-        const loadInitialData = async () => {
-            setIsHistoryLoading(true);
-            startLoading();
+        const savedHistory = localStorage.getItem('search_history');
+        const parsedHistory = savedHistory ? JSON.parse(savedHistory) : [];
+        setSearchHistory(parsedHistory);
 
-            const savedHistory = localStorage.getItem('search_history');
-            const parsedHistory = savedHistory ? JSON.parse(savedHistory) : [];
-            setSearchHistory(parsedHistory);
-
-            if (parsedHistory.length === 0) {
-                setIsHistoryLoading(false);
-                updateIsLoading(false);
-                return;
-            }
-        };
-
-        loadInitialData();
+        if (parsedHistory.length === 0) {
+            setIsHistoryLoading(false);
+            return;
+        }
     }, []);
 
     useEffect(() => {
@@ -95,11 +85,8 @@ export function useLastSearchedData() {
 
                 const results = await Promise.all(objectPromises);
                 setSearchHistoryObjects(results.filter(Boolean));
-            } catch (error) {
-                console.error('Error loading history objects:', error);
             } finally {
                 setIsHistoryLoading(false);
-                updateIsLoading(false);
             }
         };
 

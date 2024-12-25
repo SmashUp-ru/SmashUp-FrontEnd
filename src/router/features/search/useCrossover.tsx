@@ -4,26 +4,15 @@ import { axiosSession } from '@/lib/utils.ts';
 import { CrossoverResponse, TrackAuthor } from '@/types/api/search.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Track } from '@/store/entities/track.ts';
-import { useGlobalStore } from '@/store/global.ts';
 
 export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
-    const { startLoading, updateIsLoading } = useGlobalStore();
-
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
     const [mashupsIds, setMashupsIds] = useState<number[]>([]);
-    const [mashupsIdsFetching, setMashupsIdsFetching] = useState(true);
+    const [mashupsIdsFetching, setMashupsIdsFetching] = useState(tracks.length > 0);
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
-    const [mashupsFetching, setMashupsFetching] = useState(true);
-
-    useEffect(() => {
-        startLoading();
-    }, []);
-
-    useEffect(() => {
-        updateIsLoading(mashupsFetching || mashupsIdsFetching);
-    }, [mashupsIdsFetching, mashupsFetching]);
+    const [mashupsFetching, setMashupsFetching] = useState(false);
 
     useEffect(() => {
         if (tracks.length > 0 || trackAuthors.length > 0) {
@@ -38,6 +27,7 @@ export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
 
     useEffect(() => {
         if (mashupsIds.length > 0) {
+            setMashupsFetching(true);
             getMashupsByIds(mashupsIds)
                 .then((r) => setMashups(r))
                 .then(() => setMashupsFetching(false));

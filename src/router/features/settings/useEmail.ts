@@ -5,7 +5,9 @@ import { AxiosResponse } from 'axios';
 import { GetEmailResponse } from '@/types/api/settings.ts';
 
 export function useEmail() {
-    const { email, updateEmail } = useGlobalStore();
+    const email = useGlobalStore((state) => state.email);
+    const updateEmail = useGlobalStore((state) => state.updateEmail);
+
     const [isEmailLoading, setEmailLoading] = useState(email === null);
 
     useEffect(() => {
