@@ -24,7 +24,7 @@ export default {
         'text-vk',
 
         'h-[calc(100%-148px)]',
-        'h-[calc(100%-16px)]'
+        'h-[calc(100%-32px)]'
     ],
     theme: {
         extend: {

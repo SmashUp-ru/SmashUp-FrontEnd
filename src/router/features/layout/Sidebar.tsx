@@ -21,7 +21,7 @@ export default function Sidebar() {
 
     return (
         <div
-            className={`h-[calc(100%-${queue.length === 0 || queueIndex === null ? '16' : '148'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface py-[70px] mr-[30px] my-4`}
+            className={`h-[calc(100%-${queue.length === 0 || queueIndex === null ? '32' : '148'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface pt-[70px] mr-[30px] my-4`}
         >
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
