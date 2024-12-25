@@ -14,6 +14,10 @@ import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
+import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmask.ts';
+import ExplicitIcon from '@/components/icons/Explicit.tsx';
+import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
+import AltIcon from '@/components/icons/Alt.tsx';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -54,7 +58,13 @@ export default function MashupPage() {
                                 </Link>
                             ))}
                         </span>
-                        <h1 className='font-bold text-4xl text-onSurface'>{mashup.name}</h1>
+                        <div className='flex items-center gap-x-2'>
+                            <h1 className='font-bold text-4xl text-onSurface'>{mashup.name}</h1>
+                            {isExplicit(mashup.statuses) && <ExplicitIcon />}
+                            {isTwitchBanned(mashup.statuses) && <>!</>}
+                            {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
+                            {isAlt(mashup.statuses) && <AltIcon />}
+                        </div>
                     </div>
                     <div className='flex items-center gap-x-4'>
                         {queue[queueIndex] === mashup.id && isPlaying ? (

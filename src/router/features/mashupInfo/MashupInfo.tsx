@@ -14,6 +14,10 @@ import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmask.ts';
+import ExplicitIcon from '@/components/icons/Explicit.tsx';
+import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
+import AltIcon from '@/components/icons/Alt.tsx';
 
 export default function MashupInfo() {
     const { toast } = useToast();
@@ -73,7 +77,15 @@ export default function MashupInfo() {
             />
 
             <div className='flex flex-col w-full'>
-                <span className='font-bold text-[18px] text-onSurface truncate'>{mashup.name}</span>
+                <div className='flex items-center gap-x-2'>
+                    <span className='font-bold text-[18px] text-onSurface truncate'>
+                        {mashup.name}
+                    </span>
+                    {isExplicit(mashup.statuses) && <ExplicitIcon />}
+                    {isTwitchBanned(mashup.statuses) && <>!</>}
+                    {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
+                    {isAlt(mashup.statuses) && <AltIcon />}
+                </div>
                 {mashup.authors.map((author) => (
                     <Link
                         draggable={false}
