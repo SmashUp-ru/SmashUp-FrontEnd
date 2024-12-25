@@ -62,3 +62,24 @@ export function convertToBase64(file: File): Promise<string | null | ArrayBuffer
         };
     });
 }
+
+export function trim(str: string) {
+    return str.replace(/^\s+|\s+$/g, '');
+}
+
+export function removeItem<T>(
+    array: T[],
+    item: T,
+    predicate: (item: T, toRemove: T) => unknown = (l, r) => l === r
+): T[] {
+    let index = 0;
+    for (const element of array) {
+        if (predicate(element, item)) {
+            const newArray = [...array];
+            newArray.splice(index, 1);
+            return newArray;
+        }
+        index++;
+    }
+    return array;
+}

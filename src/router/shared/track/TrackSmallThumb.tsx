@@ -1,14 +1,24 @@
 import { Track } from '@/store/entities/track.ts';
 
-interface TrackThumbProps {
+export interface TrackThumbProps {
     track: Track;
+    selected: boolean;
+    onClick?: () => unknown;
 }
 
-export default function TrackSmallThumb({ track }: TrackThumbProps) {
+export default function TrackSmallThumb({ track, selected, onClick }: TrackThumbProps) {
     return (
-        <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl items-center gap-x-4'>
+        <div
+            key={track.id}
+            className={`flex justify-between p-1.5 w-full group ${selected ? 'bg-badge' : 'hover:bg-hover'} rounded-2xl items-center gap-x-4 cursor-pointer`}
+            onClick={onClick}
+        >
             <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`}
+                src={
+                    track.imageUrl.startsWith('https://')
+                        ? `${track.imageUrl}`
+                        : `${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`
+                }
                 alt={track.name}
                 className='w-12 h-12 rounded-xl object-cover'
                 draggable={false}
