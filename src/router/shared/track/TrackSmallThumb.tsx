@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button.tsx';
 
 export interface TrackThumbProps {
     track: Track;
-    selected: boolean;
+    selected?: boolean;
     onClick?: () => unknown;
 }
 
