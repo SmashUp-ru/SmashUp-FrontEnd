@@ -34,12 +34,11 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
 
     likes: null,
     updateLikes: (newLikes: number[]) => set(() => ({ likes: newLikes })),
-
     settings: null,
     updateSettings: (newSettings: number) => set(() => ({ settings: newSettings })),
 
     email: null,
-    updateEmail: (newSettings: string) => set(() => ({ email: newSettings })),
+    updateEmail: (newEmail: string) => set(() => ({ email: newEmail })),
 
     currentUser: null,
     updateCurrentUser: (user: User | null) => set(() => ({ currentUser: user })),
