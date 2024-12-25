@@ -66,12 +66,12 @@ const router = createBrowserRouter([
                         path: '/playlist/:playlistId'
                     },
                     {
-                        element: <MashupPage />,
-                        path: '/mashup/:mashupId'
-                    },
-                    {
                         element: <UploadMashupPage />,
                         path: '/mashup/upload'
+                    },
+                    {
+                        element: <MashupPage />,
+                        path: '/mashup/:mashupId'
                     },
                     {
                         element: <ProfilePage />,

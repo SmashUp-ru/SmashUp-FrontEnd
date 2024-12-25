@@ -86,7 +86,7 @@ export default function SettingsPage() {
                         <div className='w-full'>
                             <Label className='font-medium text-onSurfaceVariant'>Почта</Label>
                             <Input
-                                value={email ? email : ''}
+                                value={email ? email : 'а где'}
                                 className='p-0 bg-transparent font-bold text-[24px]'
                                 disabled
                             />

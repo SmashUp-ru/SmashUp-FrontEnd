@@ -1,39 +1,26 @@
-import { getToken, useGlobalStore } from '@/store/global.ts';
+import { useGlobalStore } from '@/store/global.ts';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
+import { GetSettingsResponse } from '@/types/api/settings.ts';
 
 export function useSettings() {
-    const { currentUser, settings, updateSettings } = useGlobalStore();
-
-    const [settingsLoading, setSettingsLoading] = useState(true);
+    const { settings, updateSettings } = useGlobalStore();
+    const [isSettingsLoading, setSettingsLoading] = useState(settings === null);
 
     useEffect(() => {
-        if (currentUser) {
-            if (settings === null) {
-                axiosSession
-                    .get('/user/get_settings', {
-                        headers: { Authorization: `Bearer ${getToken()}` }
-                    })
-                    .then(
-                        (
-                            r: AxiosResponse<{
-                                status: string;
-                                response: {
-                                    settings: number;
-                                };
-                            }>
-                        ) => {
-                            updateSettings(r.data.response.settings);
-                        }
-                    );
-            }
-            setSettingsLoading(false);
+        if (settings === null) {
+            axiosSession
+                .get('/user/get_settings')
+                .then((response: AxiosResponse<GetSettingsResponse>) =>
+                    updateSettings(response.data.response.settings)
+                )
+                .finally(() => setSettingsLoading(false));
         }
-    }, [currentUser]);
+    }, []);
 
     return {
-        isLoading: settingsLoading,
-        settings: settings === null ? -1 : settings
+        isLoading: isSettingsLoading,
+        settings
     };
 }
