@@ -11,7 +11,8 @@ import { useLastSearchedData } from '@/router/features/search/useLastSearchedDat
 import LastSearchedSkeleton from '@/router/features/search/LastSearchedSkeleton.tsx';
 
 export default function LastSearched() {
-    const { type, updateType } = useSearchStore();
+    const type = useSearchStore((state) => state.type);
+    const updateType = useSearchStore((state) => state.updateType);
 
     const { searchHistory, searchHistoryObjects, isLoading } = useLastSearchedData();
 

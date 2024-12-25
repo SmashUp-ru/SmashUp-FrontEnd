@@ -7,7 +7,9 @@ import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
 
 export default function CrossoverResults() {
-    const { updateType, crossoverArtists, crossoverTracks } = useSearchStore();
+    const updateType = useSearchStore((state) => state.updateType);
+    const crossoverArtists = useSearchStore((state) => state.crossoverArtists);
+    const crossoverTracks = useSearchStore((state) => state.crossoverTracks);
 
     const { mashups, isLoading } = useCrossover(crossoverTracks, crossoverArtists);
 

@@ -5,7 +5,10 @@ import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 
 export function useFavoritesPageData() {
-    const { startLoading, updateIsLoading, likes, updateLikes } = useGlobalStore();
+    const startLoading = useGlobalStore((state) => state.startLoading);
+    const updateIsLoading = useGlobalStore((state) => state.updateIsLoading);
+    const likes = useGlobalStore((state) => state.likes);
+    const updateLikes = useGlobalStore((state) => state.updateLikes);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
     const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(false);

@@ -1,10 +1,8 @@
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { useGlobalStore } from '@/store/global.ts';
 
 export function usePlaylistPageData(playlistId?: string) {
-    const { startLoading, updateIsLoading } = useGlobalStore();
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
 
@@ -12,33 +10,24 @@ export function usePlaylistPageData(playlistId?: string) {
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [isLiked, setIsLiked] = useState(false);
 
-    const [playlistLoading, setPlaylistLoading] = useState(false);
+    const [playlistLoading, setPlaylistLoading] = useState(playlistId !== undefined);
     const [mashupsLoading, setMashupsLoading] = useState(false);
-
-    useEffect(() => {
-        setPlaylistLoading(true);
-        setMashupsLoading(true);
-        startLoading();
-    }, []);
-
-    useEffect(() => {
-        updateIsLoading(playlistLoading || mashupsLoading);
-    }, [playlistLoading, mashupsLoading]);
 
     useEffect(() => {
         if (playlistId) {
             getPlaylistById(parseInt(playlistId))
                 .then((r) => setPlaylist(r))
-                .then(() => setPlaylistLoading(false));
+                .finally(() => setPlaylistLoading(false));
         }
     }, [playlistId]);
 
     useEffect(() => {
         if (playlist) {
+            setMashupsLoading(true);
             setIsLiked(playlist.liked);
             getMashupsByIds(playlist.mashups)
                 .then((r) => setMashups(r))
-                .then(() => setMashupsLoading(false));
+                .finally(() => setMashupsLoading(false));
         }
     }, [playlist]);
 

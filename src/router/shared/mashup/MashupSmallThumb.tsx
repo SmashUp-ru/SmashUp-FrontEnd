@@ -5,13 +5,15 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { isExplicit } from '@/lib/bitmask.ts';
+import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useEffect, useState } from 'react';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
+import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
+import AltIcon from '@/components/icons/Alt.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -84,6 +86,9 @@ export default function MashupSmallThumb({
                     <div className='flex items-center gap-x-2'>
                         <span className='font-bold text-onSurface line-clamp-1'>{mashup.name}</span>
                         {isExplicit(mashup.statuses) && <ExplicitIcon />}
+                        {isTwitchBanned(mashup.statuses) && <>!</>}
+                        {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
+                        {isAlt(mashup.statuses) && <AltIcon />}
                     </div>
                     {mashup.authors.map((author) => (
                         <Link

@@ -27,6 +27,7 @@ import DMCAPage from '@/router/pages/dmca/DMCAPage.tsx';
 import UserAgreementPage from '@/router/pages/userAgreement/UserAgreement.tsx';
 import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 import UploadMashupPage from '@/router/pages/uploadMashup/UploadMashupPage.tsx';
+import { StrictMode } from 'react';
 
 const router = createBrowserRouter([
     {
@@ -136,11 +137,9 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-    // <StrictMode>
-    //
-    // </StrictMode>
-
-    <HotkeysProvider>
-        <RouterProvider router={router} />
-    </HotkeysProvider>
+    <StrictMode>
+        <HotkeysProvider>
+            <RouterProvider router={router} />
+        </HotkeysProvider>
+    </StrictMode>
 );

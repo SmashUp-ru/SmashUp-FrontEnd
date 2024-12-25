@@ -15,11 +15,12 @@ import { cn } from '@/lib/utils.ts';
 
 export default function UserTracksPage() {
     const params = useParams();
-    const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queueId = usePlayerStore((state) => state.queueId);
 
     const [user, setUser] = useState<User | null>(null);
     const [mashups, setMashups] = useState<Mashup[]>([]);

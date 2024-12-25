@@ -13,9 +13,10 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 
 export default function FavoritesPage() {
-    const { currentUser } = useGlobalStore();
+    const currentUser = useGlobalStore((state) => state.currentUser);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queueId = usePlayerStore((state) => state.queueId);
 
-    const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
     const { isLoading, mashups, likes } = useFavoritesPageData();

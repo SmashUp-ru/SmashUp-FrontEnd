@@ -1,4 +1,6 @@
 import { Track } from '@/store/entities/track.ts';
+import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
+import { Button } from '@/components/ui/button.tsx';
 
 export interface TrackThumbProps {
     track: Track;
@@ -29,6 +31,10 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
                     {track.authors.join(', ')}
                 </span>
             </div>
+
+            <Button variant='ghost' size='icon'>
+                <MoreHorizontalIcon />
+            </Button>
         </div>
     );
 }

@@ -2,18 +2,16 @@ import { usePlayerStore } from '@/store/player.ts';
 import { shuffleQueue } from '@/lib/utils.ts';
 
 export function usePlayer() {
-    const {
-        updatePlaying,
-        queue,
-        updateQueue,
-        updateOriginalQueue,
-        queueIndex,
-        updateQueueIndex,
-        updateQueueName,
-        queueId,
-        updateQueueId,
-        shuffle
-    } = usePlayerStore();
+    const updatePlaying = usePlayerStore((state) => state.updatePlaying);
+    const queue = usePlayerStore((state) => state.queue);
+    const updateQueue = usePlayerStore((state) => state.updateQueue);
+    const updateOriginalQueue = usePlayerStore((state) => state.updateOriginalQueue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
+    const updateQueueName = usePlayerStore((state) => state.updateQueueName);
+    const queueId = usePlayerStore((state) => state.queueId);
+    const updateQueueId = usePlayerStore((state) => state.updateQueueId);
+    const shuffle = usePlayerStore((state) => state.shuffle);
 
     function play() {
         updatePlaying(true);

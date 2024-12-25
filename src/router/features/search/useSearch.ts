@@ -9,11 +9,8 @@ import {
     PlaylistsSearchResponse,
     UsersSearchResponse
 } from '@/types/api/search.ts';
-import { useGlobalStore } from '@/store/global.ts';
 
 export function useSearch(query: string) {
-    const { startLoading, updateIsLoading } = useGlobalStore();
-
     const [mashupsFetching, setMashupsFetching] = useState(query.length >= 4);
     const [playlistsFetching, setPlaylistsFetching] = useState(query.length >= 4);
     const [usersFetching, setUsersFetching] = useState(query.length >= 4);
@@ -21,16 +18,6 @@ export function useSearch(query: string) {
     const [mashups, setMashups] = useState<Mashup[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [users, setUsers] = useState<User[]>([]);
-
-    useEffect(() => {
-        if (query.length >= 4) {
-            startLoading();
-        }
-    }, [query]);
-
-    useEffect(() => {
-        updateIsLoading(mashupsFetching || playlistsFetching || usersFetching);
-    }, [playlistsFetching, mashupsFetching, usersFetching]);
 
     useEffect(() => {
         if (query.length >= 4) {

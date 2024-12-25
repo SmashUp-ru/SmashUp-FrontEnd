@@ -15,7 +15,8 @@ import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
 
 export default function SearchResults() {
-    const { updateType, searchValue } = useSearchStore();
+    const updateType = useSearchStore((state) => state.updateType);
+    const searchValue = useSearchStore((state) => state.searchValue);
 
     const { mashups, playlists, users, isLoading } = useSearch(searchValue);
 

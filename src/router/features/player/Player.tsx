@@ -5,17 +5,16 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const Player: React.FC = () => {
-    const {
-        updatePlaying,
-        isPlaying,
-        loop,
-        volume,
-        queue,
-        queueIndex,
-        updateQueueIndex,
-        updateSeek,
-        changedSeek
-    } = usePlayerStore();
+    const updatePlaying = usePlayerStore((state) => state.updatePlaying);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const loop = usePlayerStore((state) => state.loop);
+    const volume = usePlayerStore((state) => state.volume);
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
+    const updateSeek = usePlayerStore((state) => state.updateSeek);
+    const changedSeek = usePlayerStore((state) => state.changedSeek);
+
     const { next, prev, play } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);

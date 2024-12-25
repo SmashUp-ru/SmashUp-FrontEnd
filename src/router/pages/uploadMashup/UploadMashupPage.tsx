@@ -26,6 +26,8 @@ import {
 import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
 
 export default function UploadMashupPage() {
+    // if (isLoading) return <UploadMashupSkeletonPage />;
+
     const [image, setImage] = useState<null | string | ArrayBuffer>(null);
 
     const [name, setName] = useState<string>('');
@@ -279,7 +281,7 @@ export default function UploadMashupPage() {
                                     {Array.from({ length: 15 }).map((_, idx) => (
                                         <div
                                             key={idx}
-                                            className='w-[142px] h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center select-none'
+                                            className='h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center select-none'
                                         >
                                             genre name
                                         </div>
