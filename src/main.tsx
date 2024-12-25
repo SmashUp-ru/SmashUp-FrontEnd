@@ -28,6 +28,7 @@ import UserAgreementPage from '@/router/pages/userAgreement/UserAgreement.tsx';
 import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 import UploadMashupPage from '@/router/pages/uploadMashup/UploadMashupPage.tsx';
 import { StrictMode } from 'react';
+import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
                     {
                         element: <UploadMashupPage />,
                         path: '/mashup/upload'
+                    },
+                    {
+                        element: <ModerationPage />,
+                        path: '/mashup/moderation'
                     },
                     {
                         element: <MashupPage />,

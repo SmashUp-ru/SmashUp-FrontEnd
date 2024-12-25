@@ -42,7 +42,7 @@ export default function ProfileMenu() {
                     sideOffset={18}
                     className='flex flex-col gap-y-7 rounded-3xl bg-surfaceVariant border-none p-2'
                 >
-                    <Link to='/moderation'>
+                    <Link to='/mashup/moderation'>
                         <GavelIcon />
                     </Link>
                     <Button
