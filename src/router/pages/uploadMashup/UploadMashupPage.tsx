@@ -14,6 +14,8 @@ import { Link } from 'react-router-dom';
 export default function UploadMashupPage() {
     const [image, setImage] = useState<null | string | ArrayBuffer>(null);
 
+    // if (isLoading) return <UploadMashupSkeletonPage />;
+
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
             <div className='flex items-center justify-between'>
@@ -136,7 +138,7 @@ export default function UploadMashupPage() {
                                     {Array.from({ length: 15 }).map((_, idx) => (
                                         <div
                                             key={idx}
-                                            className='w-[142px] h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center select-none'
+                                            className='h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center select-none'
                                         >
                                             genre name
                                         </div>
