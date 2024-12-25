@@ -1,4 +1,4 @@
-import { removeItem } from '@/lib/utils';
+import { cn, removeItem } from '@/lib/utils';
 import {
     areTracksEqual,
     isSelected,
@@ -55,7 +55,10 @@ export default function YouTubeTrackSmallThumb({
     return (
         <div
             key={track.link}
-            className={`flex justify-between p-1.5 w-full group ${selected ? 'bg-badge' : 'hover:bg-hover'} rounded-2xl items-center gap-x-4 cursor-pointer`}
+            className={cn(
+                'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
+                selected ? 'bg-badge' : 'hover:bg-hover'
+            )}
             onClick={() => {
                 if (track) {
                     const selectedTrack = new YouTubeSelectedTrack(track);

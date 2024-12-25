@@ -2,6 +2,10 @@ import { Track } from '@/store/entities/track';
 import { YouTubeTrack } from './youtube';
 import { TrackThumbProps } from '@/router/shared/track/TrackSmallThumb';
 
+export interface GenresResponse {
+    response: string[];
+}
+
 export interface UploadMashupRequestBody {
     tracks: number[];
     trackUrls: string[];

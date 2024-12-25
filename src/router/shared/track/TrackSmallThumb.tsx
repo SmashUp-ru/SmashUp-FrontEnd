@@ -1,6 +1,7 @@
 import { Track } from '@/store/entities/track.ts';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import { cn } from '@/lib/utils';
 
 export interface TrackThumbProps {
     track: Track;
@@ -12,7 +13,10 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
     return (
         <div
             key={track.id}
-            className={`flex justify-between p-1.5 w-full group ${selected ? 'bg-badge' : 'hover:bg-hover'} rounded-2xl items-center gap-x-4 cursor-pointer`}
+            className={cn(
+                'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
+                selected ? 'bg-badge' : 'hover:bg-hover'
+            )}
             onClick={onClick}
         >
             <img
@@ -26,8 +30,20 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
                 draggable={false}
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
-                <span className='font-bold text-onSurface truncate'>{track.name}</span>
-                <span className='font-medium text-onSurfaceVariant truncate'>
+                <span
+                    className={cn(
+                        'font-bold truncate',
+                        selected ? 'text-primary' : 'text-onSurface'
+                    )}
+                >
+                    {track.name}
+                </span>
+                <span
+                    className={cn(
+                        'font-medium truncate',
+                        selected ? 'text-primary' : 'text-onSurfaceVariant'
+                    )}
+                >
                     {track.authors.join(', ')}
                 </span>
             </div>

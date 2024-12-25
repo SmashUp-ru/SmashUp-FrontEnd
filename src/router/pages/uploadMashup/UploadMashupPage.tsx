@@ -17,6 +17,7 @@ import { RegEx } from '@/lib/regex';
 import { YouTubeOEmbedResponse, YouTubeTrack } from '@/types/api/youtube';
 import {
     areTracksEqual,
+    GenresResponse,
     isSelected,
     RenderTrack,
     SelectedTrack,
@@ -29,6 +30,14 @@ export default function UploadMashupPage() {
     // if (isLoading) return <UploadMashupSkeletonPage />;
 
     const [image, setImage] = useState<null | string | ArrayBuffer>(null);
+    const [allGenres, setAllGenres] = useState<string[]>([]);
+    const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+        axiosSession
+            .get('/const/genres')
+            .then((r: AxiosResponse<GenresResponse>) => setAllGenres(r.data.response));
+    }, []);
 
     const [name, setName] = useState<string>('');
     const [tracksQuery, setTracksQuery] = useState<string>('');
@@ -278,14 +287,32 @@ export default function UploadMashupPage() {
                                     Выберите жанр
                                 </Label>
                                 <div className='grid grid-cols-3 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
-                                    {Array.from({ length: 15 }).map((_, idx) => (
-                                        <div
-                                            key={idx}
-                                            className='h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center select-none'
-                                        >
-                                            genre name
-                                        </div>
-                                    ))}
+                                    {allGenres?.map((genre) => {
+                                        const selected = selectedGenres.has(genre);
+
+                                        return (
+                                            <div
+                                                key={genre}
+                                                className={cn(
+                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
+                                                    selected ? 'bg-badge text-primary' : ''
+                                                )}
+                                                onClick={() => {
+                                                    const newSelectedGenres = new Set(
+                                                        selectedGenres
+                                                    );
+                                                    if (selected) {
+                                                        newSelectedGenres.delete(genre);
+                                                    } else {
+                                                        newSelectedGenres.add(genre);
+                                                    }
+                                                    setSelectedGenres(newSelectedGenres);
+                                                }}
+                                            >
+                                                {genre}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -347,7 +374,7 @@ export default function UploadMashupPage() {
 
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
-                        <Button className='w-[460px]'>Отправить</Button>
+                        <Button className='w-[460px]'>Опубликовать</Button>
                         <div className='flex items-center gap-x-4'>
                             <Checkbox />
                             <span>
