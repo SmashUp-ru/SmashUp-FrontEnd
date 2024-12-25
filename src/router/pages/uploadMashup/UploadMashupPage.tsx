@@ -1,7 +1,7 @@
-import { cn, convertToBase64 } from '@/lib/utils.ts';
+import { axiosSession, cn, convertToBase64, removeItem, trim } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
@@ -10,11 +10,182 @@ import { Checkbox } from '@/components/ui/checkbox.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
+import { useDebounce } from 'use-debounce';
+import axios, { AxiosResponse } from 'axios';
+import { TrackSearchResponse } from '@/types/api/search';
+import { RegEx } from '@/lib/regex';
+import { YouTubeOEmbedResponse, YouTubeTrack } from '@/types/api/youtube';
+import {
+    areTracksEqual,
+    isSelected,
+    RenderTrack,
+    SelectedTrack,
+    SmashUpSelectedTrack,
+    YouTubeSelectedTrack
+} from '@/types/api/upload';
+import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
 
 export default function UploadMashupPage() {
+    // if (isLoading) return <UploadMashupSkeletonPage />;
+
     const [image, setImage] = useState<null | string | ArrayBuffer>(null);
 
-    // if (isLoading) return <UploadMashupSkeletonPage />;
+    const [name, setName] = useState<string>('');
+    const [tracksQuery, setTracksQuery] = useState<string>('');
+
+    const [debouncedQuery] = useDebounce(tracksQuery, 500);
+
+    const [tracks, setTracks] = useState<Track[]>([]);
+
+    const [youTubeTrackLoading, setYouTubeTrackLoading] = useState<boolean>(false);
+    const [youTubeTrack, setYouTubeTrack] = useState<null | YouTubeTrack>(null);
+
+    const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
+
+    const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
+
+    const searchYouTube = (link: string) => {
+        setYouTubeTrackLoading(true);
+
+        axios
+            .get(`https://www.youtube.com/oembed?format=json&url=${link}`)
+            .then((r: AxiosResponse<YouTubeOEmbedResponse>) => {
+                const title = r.data.title;
+
+                let data: string[] = [];
+                for (const separator of ['-', '–', '—']) {
+                    data = title.split(separator, 2);
+                    if (data.length == 2) {
+                        break;
+                    }
+                }
+
+                if (data.length != 2) {
+                    data = ['???', title];
+                } else {
+                    data = [trim(data[0]), trim(data[1])];
+                }
+
+                setYouTubeTrack({
+                    authors: [data[0]],
+                    name: data[1],
+                    imageUrl: r.data.thumbnail_url,
+                    link: link
+                });
+            })
+            .then(() => setYouTubeTrackLoading(false));
+    };
+
+    useEffect(() => {
+        if (RegEx.YOUTUBE.test(debouncedQuery)) {
+            const link = RegEx.NORMALIZE_YOUTUBE_LINK(debouncedQuery);
+            searchYouTube(link);
+        }
+
+        if (debouncedQuery.length >= 2 && debouncedQuery.length <= 32) {
+            axiosSession
+                .get(`/track/search?query=${debouncedQuery}`)
+                .then((r: AxiosResponse<TrackSearchResponse>) => setTracks(r.data.response));
+        } else {
+            setTracks([]);
+            setYouTubeTrack(null);
+        }
+    }, [debouncedQuery]);
+
+    useEffect(() => {
+        const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
+
+        const statefulOnClick = (track: SelectedTrack, selectedTracks: SelectedTrack[]) => {
+            if (isSelected(track, selectedTracks)) {
+                setSelectedTracks(removeItem(selectedTracks, track, areTracksEqual));
+            } else {
+                setSelectedTracks(selectedTracks.concat([track]));
+            }
+        };
+
+        const renderSelectedTracks = selectedTracks.map((track) => {
+            if (track.constructor.name === 'SmashUpSelectedTrack') {
+                return {
+                    keyType: 'SmashUpSelectedTrack',
+                    key: track.key,
+                    track: (track as SmashUpSelectedTrack).track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        statefulOnClick(track, selectedTracks)
+                };
+            } else if (track.constructor.name === 'YouTubeSelectedTrack') {
+                return {
+                    keyType: 'YouTubeSelectedTrack',
+                    key: track.key,
+                    track: (track as YouTubeSelectedTrack).track as unknown as Track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        statefulOnClick(track, selectedTracks)
+                };
+            } else {
+                throw new Error(`${track.constructor.name} not supported`);
+            }
+        });
+
+        const renderTracks = nonSelectedTracks.map((track) => {
+            return {
+                keyType: 'SmashUpSelectedTrack',
+                key: track.id,
+                track: track,
+                selected: false,
+                statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                    statefulOnClick(new SmashUpSelectedTrack(track), selectedTracks)
+            };
+        });
+
+        setRenderTracks(renderSelectedTracks.concat(renderTracks));
+    }, [tracks]);
+
+    useEffect(() => {
+        const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
+        const newRenderTracks: RenderTrack[] = [];
+        for (const renderTrack of renderTracks) {
+            const keys = selectedTracksKeys.get(renderTrack.keyType);
+
+            const selected = keys !== undefined && keys !== null && keys.has(renderTrack.key);
+
+            newRenderTracks.push({
+                ...renderTrack,
+                selected: selected
+            });
+        }
+
+        setRenderTracks(newRenderTracks);
+    }, [selectedTracks]);
+
+    const calculateSelectedTracksKeys = (selectedTracks: SelectedTrack[]) => {
+        const selectedTracksKeys = new Map<string, Set<unknown>>();
+        for (const selectedTrack of selectedTracks) {
+            const className = selectedTrack.constructor.name;
+
+            let keys = selectedTracksKeys.get(className);
+            if (keys === undefined) {
+                keys = new Set();
+                selectedTracksKeys.set(className, keys);
+            }
+
+            keys.add(selectedTrack.key);
+        }
+        return selectedTracksKeys;
+    };
+
+    const calculateNonSelectedTracks = (
+        tracks: Track[],
+        selectedTracks: SelectedTrack[]
+    ): Track[] => {
+        const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
+
+        const smashUpKeys = selectedTracksKeys.get('SmashUpSelectedTrack');
+        const newNonSelectedTracks = tracks.filter((track) => {
+            return smashUpKeys === undefined || smashUpKeys === null || !smashUpKeys.has(track.id);
+        });
+        return newNonSelectedTracks;
+    };
 
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
@@ -59,65 +230,37 @@ export default function UploadMashupPage() {
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Название мэшапа
                                 </Label>
-                                <Input placeholder='За деньги да' />
+                                <Input value={name} onChange={(e) => setName(e.target.value)} />
                             </div>
 
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Добавьте использованные треки
                                 </Label>
-                                <Input placeholder='Янглин' />
+                                <Input
+                                    placeholder='2-32 символа'
+                                    value={tracksQuery}
+                                    onChange={(e) => setTracksQuery(e.target.value)}
+                                />
 
                                 <div className='flex flex-col gap-y-2.5 max-h-[270px] overflow-y-scroll'>
-                                    <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl items-center gap-x-4'>
-                                        <div className='w-12 h-12 min-w-12 min-h-12 rounded-xl bg-onSurface' />
+                                    <YouTubeTrackSmallThumb
+                                        track={youTubeTrack}
+                                        loading={youTubeTrackLoading}
+                                        selectedTracks={selectedTracks}
+                                        setSelectedTracks={setSelectedTracks}
+                                        renderTracks={renderTracks}
+                                    />
 
-                                        <div className='flex flex-col min-w-0 w-full text-left'>
-                                            <span className='font-bold text-onSurface truncate'>
-                                                Прикрепить трек с YouTube
-                                            </span>
-                                            <span className='font-medium text-onSurfaceVariant truncate'>
-                                                Вставьте ссылку в поиск
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <TrackSmallThumb
-                                        track={
-                                            {
-                                                name: 'КАДЕЛАК',
-                                                imageUrl: '1',
-                                                authors: ['Морген', 'Элджей']
-                                            } as Track
-                                        }
-                                    />
-                                    <TrackSmallThumb
-                                        track={
-                                            {
-                                                name: 'КАДЕЛАК',
-                                                imageUrl: '1',
-                                                authors: ['Морген', 'Элджей']
-                                            } as Track
-                                        }
-                                    />
-                                    <TrackSmallThumb
-                                        track={
-                                            {
-                                                name: 'КАДЕЛАК',
-                                                imageUrl: '1',
-                                                authors: ['Морген', 'Элджей']
-                                            } as Track
-                                        }
-                                    />
-                                    <TrackSmallThumb
-                                        track={
-                                            {
-                                                name: 'КАДЕЛАК',
-                                                imageUrl: '1',
-                                                authors: ['Морген', 'Элджей']
-                                            } as Track
-                                        }
-                                    />
+                                    {renderTracks.map((renderTrack) => (
+                                        <TrackSmallThumb
+                                            track={renderTrack.track}
+                                            selected={renderTrack.selected}
+                                            onClick={() =>
+                                                renderTrack.statefulOnClick(selectedTracks)
+                                            }
+                                        />
+                                    ))}
                                 </div>
 
                                 <Input
@@ -204,7 +347,7 @@ export default function UploadMashupPage() {
 
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
-                        <Button className='w-[460px]'>Сохранить</Button>
+                        <Button className='w-[460px]'>Отправить</Button>
                         <div className='flex items-center gap-x-4'>
                             <Checkbox />
                             <span>

@@ -23,13 +23,14 @@ import { useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { RegEx } from '@/lib/regex';
 
 const formSchema = z.object({
     email: z
         .string()
-        .min(4, { message: 'Электронная почта должна быть длиннее 3 см.' })
-        .max(32, { message: 'Электронная почта должна быть короче 32 символов.' })
-        .regex(/^[^@]+@[^@]+\.[^@]+$|(?=^[а-яА-ЯёЁa-zA-Z0-9_ ]{3,32}$)(?!^\d+$)^.+$/, {
+        .min(4, { message: 'Электронная почта должна быть длиннее 3 символов.' })
+        .max(64, { message: 'Электронная почта должна быть короче 64 символов.' })
+        .regex(RegEx.EMAIL_OR_USERNAME, {
             message:
                 'В электронной почте должны быть только буквы, цифры, а так же специальные символы.'
         }),
@@ -37,7 +38,7 @@ const formSchema = z.object({
         .string()
         .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
         .max(32, { message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).' })
-        .regex(/^[a-zA-Z0-9-_=+()*&^%$#@!]{8,32}/, {
+        .regex(RegEx.PASSWORD, {
             message:
                 'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
         }),
