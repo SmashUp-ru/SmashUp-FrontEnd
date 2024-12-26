@@ -107,7 +107,7 @@ export default function UserPage() {
             <div className='grid grid-cols-2 gap-x-6 gap-y-6'>
                 {mashups.length > 0 && (
                     <Section
-                        title='Популярные треки'
+                        title='Популярные мэшапы'
                         link={
                             user.mashups.length > 5
                                 ? {

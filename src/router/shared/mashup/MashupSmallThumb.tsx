@@ -90,15 +90,23 @@ export default function MashupSmallThumb({
                         {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
                         {isAlt(mashup.statuses) && <AltIcon />}
                     </div>
-                    {mashup.authors.map((author) => (
-                        <Link
-                            key={author}
-                            to={`/user/${author}`}
-                            className='font-medium text-onSurfaceVariant'
-                        >
-                            {author}
-                        </Link>
-                    ))}
+                    <div className='flex-row'>
+                        {mashup.authors.map((author, index) => (
+                            <>
+                                <Link
+                                    key={author}
+                                    to={`/user/${author}`}
+                                    className='font-medium text-onSurfaceVariant'
+                                >
+                                    {author}
+                                </Link>
+
+                                {index !== mashup.authors.length - 1 && (
+                                    <span className='text-onSurfaceVariant'>, </span>
+                                )}
+                            </>
+                        ))}
+                    </div>
                 </div>
             </div>
 
