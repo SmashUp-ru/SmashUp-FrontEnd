@@ -18,3 +18,10 @@ export interface UpdateUserImageResponse {
     status: string;
     response: User;
 }
+
+export interface UpdateUsernameConfirmResponse {
+    status: string;
+    response: {
+        username: string;
+    };
+}

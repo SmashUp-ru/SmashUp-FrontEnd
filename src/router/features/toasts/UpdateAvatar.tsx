@@ -70,6 +70,13 @@ export default function UpdateAvatar() {
                         ),
                         duration: 2000
                     });
+                })
+                .catch(() => {
+                    toast({
+                        element: <ErrorToast field='загрузки аватара' text='Попробуйте снова.' />,
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
                 });
         }
     };

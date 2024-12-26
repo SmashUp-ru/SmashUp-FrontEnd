@@ -3,13 +3,16 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { RegisterResponse } from '@/types/api/register.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { UpdateUsernameConfirmResponse } from '@/types/api/settings.ts';
 
-export default function RegisterConfirmPage() {
-    const { updateCurrentUser, updateToken } = useGlobalStore();
-    const getUserByToken = useUserStore((state) => state.getOneByStringKey);
+export default function ChangeUsernameConfirmPage() {
+    const currentUser = useGlobalStore((state) => state.currentUser);
+    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+    const getUserById = useUserStore((state) => state.getOneById);
+    const updateUserById = useUserStore((state) => state.updateOneById);
+
     const [searchParams] = useSearchParams();
 
     const [success, setSuccess] = useState<boolean | null>(null);
@@ -17,14 +20,13 @@ export default function RegisterConfirmPage() {
     useEffect(() => {
         if (searchParams.has('id')) {
             axiosSession
-                .post(`/register/confirm?id=${searchParams.get('id')}`)
-                .then((r: AxiosResponse<RegisterResponse>) => {
-                    updateToken(r.data.response.token);
-                    sessionStorage.setItem('smashup_token', r.data.response.token);
-                    getUserByToken('token', r.data.response.token).then((r) => {
-                        updateCurrentUser(r);
-                    });
-                    setSuccess(true);
+                .post(`/user/change_username/confirm?id=${searchParams.get('id')}`)
+                .then((r: AxiosResponse<UpdateUsernameConfirmResponse>) => {
+                    if (currentUser) {
+                        updateUserById(currentUser.id, { username: r.data.response.username });
+                        getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                        setSuccess(true);
+                    }
                 })
                 .catch(() => {
                     setSuccess(false);

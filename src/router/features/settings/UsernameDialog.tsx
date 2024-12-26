@@ -16,6 +16,12 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/Cancel.tsx';
+import { axiosSession } from '@/lib/utils.ts';
+import { useToast } from '@/hooks/use-toast.ts';
+import { AxiosError } from 'axios';
+import ErrorToast from '@/router/features/toasts/error.tsx';
+import { useState } from 'react';
+import UsernameDialogSentContent from '@/router/features/settings/UsernameDialogSentContent.tsx';
 
 interface UsernameDialogProps {
     username: string;
@@ -25,19 +31,55 @@ const formSchema = z.object({
     username: z
         .string()
         .min(3, { message: 'минимум 3 бля' })
+        .max(50, { message: 'максимум 50 бля' }),
+    password: z
+        .string()
+        .min(3, { message: 'минимум 3 бля' })
         .max(50, { message: 'максимум 50 бля' })
 });
 
 export default function UsernameDialog({ username }: UsernameDialogProps) {
+    const { toast } = useToast();
+    const [submitted, setSubmitted] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: ''
+            username: '',
+            password: ''
         }
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        axiosSession
+            .post('/user/change_username', {
+                password: values.password,
+                username: values.username
+            })
+            .then(() => {
+                setSubmitted(true);
+            })
+            .catch((e: AxiosError) => {
+                if (e.status === 403) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                field='обновлении юзернейма.'
+                                text='Указанный пароль неправильный.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
+
+                toast({
+                    element: <ErrorToast field='обновлении юзернейма.' text='Попробуйте снова.' />,
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+            });
     }
 
     return (
@@ -62,44 +104,75 @@ export default function UsernameDialog({ username }: UsernameDialogProps) {
                                     </Button>
                                 </DialogClose>
                             </div>
-                            <DialogDescription>
-                                <Form {...form}>
-                                    <form
-                                        onSubmit={form.handleSubmit(onSubmit)}
-                                        className='space-y-8'
-                                    >
-                                        <FormField
-                                            control={form.control}
-                                            name='username'
-                                            render={({ field }) => (
-                                                <FormItem className='flex flex-col gap-y-2.5'>
-                                                    <Label className='font-medium text-onSurfaceVariant'>
-                                                        Псевдоним
-                                                    </Label>
-                                                    <FormControl>
-                                                        <Input
-                                                            error={
-                                                                form.formState.errors.username !==
-                                                                undefined
-                                                            }
-                                                            placeholder='Введите новый Псевдоним...'
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage className='text-onSurface text-[12px]' />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <Button
-                                            type='submit'
-                                            className='w-full'
-                                            disabled={form.getValues('username').length === 0}
+
+                            {submitted ? (
+                                <UsernameDialogSentContent username={username} />
+                            ) : (
+                                <DialogDescription>
+                                    <Form {...form}>
+                                        <form
+                                            onSubmit={form.handleSubmit(onSubmit)}
+                                            className='flex flex-col gap-y-[30px]'
                                         >
-                                            Изменить
-                                        </Button>
-                                    </form>
-                                </Form>
-                            </DialogDescription>
+                                            <FormField
+                                                control={form.control}
+                                                name='username'
+                                                render={({ field }) => (
+                                                    <FormItem className='flex flex-col gap-y-2.5'>
+                                                        <Label className='font-medium text-onSurfaceVariant'>
+                                                            Псевдоним
+                                                        </Label>
+                                                        <FormControl>
+                                                            <Input
+                                                                error={
+                                                                    form.formState.errors
+                                                                        .username !== undefined
+                                                                }
+                                                                placeholder='Введите новый Псевдоним...'
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage className='text-onSurface text-[12px]' />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name='password'
+                                                render={({ field }) => (
+                                                    <FormItem className='flex flex-col gap-y-2.5'>
+                                                        <Label className='font-medium text-onSurfaceVariant'>
+                                                            Пароль
+                                                        </Label>
+                                                        <FormControl>
+                                                            <Input
+                                                                type='password'
+                                                                error={
+                                                                    form.formState.errors
+                                                                        .password !== undefined
+                                                                }
+                                                                placeholder='Введите Пароль...'
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage className='text-onSurface text-[12px]' />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <Button
+                                                type='submit'
+                                                className='w-full'
+                                                disabled={
+                                                    form.getValues('username').length === 0 ||
+                                                    form.getValues('password').length === 0
+                                                }
+                                            >
+                                                Изменить
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                </DialogDescription>
+                            )}
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>

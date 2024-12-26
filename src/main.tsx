@@ -30,6 +30,7 @@ import UploadMashupPage from '@/router/pages/uploadMashup/UploadMashupPage.tsx';
 import { StrictMode } from 'react';
 import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
 import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx';
+import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
                     {
                         element: <ProfilePage />,
                         path: '/user/:profileUsername'
+                    },
+                    {
+                        element: <ChangeUsernameConfirmPage />,
+                        path: '/user/change_username/confirm'
                     },
                     {
                         element: <SettingsPage />,
