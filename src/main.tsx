@@ -29,6 +29,7 @@ import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 import UploadMashupPage from '@/router/pages/uploadMashup/UploadMashupPage.tsx';
 import { StrictMode } from 'react';
 import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
+import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
                     {
                         element: <PlaylistPage />,
                         path: '/playlist/:playlistId'
+                    },
+                    {
+                        element: <UploadMashupSuccessPage />,
+                        path: '/mashup/upload/success'
                     },
                     {
                         element: <UploadMashupPage />,

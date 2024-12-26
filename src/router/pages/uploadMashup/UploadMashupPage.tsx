@@ -9,7 +9,7 @@ import LinkIcon from '@/components/icons/Link.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import axios, { AxiosResponse } from 'axios';
 import { TrackSearchResponse, UsersSearchResponse } from '@/types/api/search';
@@ -29,16 +29,25 @@ import {
 } from '@/types/api/upload';
 import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
 import { User } from '@/store/entities/user';
-import { useUser } from '@/hooks/useUser';
 import { isModerator } from '@/lib/bitmask';
 import { useBase64 } from '@/hooks/useBase64';
+import { useGlobalStore } from '@/store/global.ts';
+import { useToast } from '@/hooks/use-toast.ts';
+import ErrorToast from '@/router/features/toasts/error.tsx';
 
 export default function UploadMashupPage() {
+    const { toast } = useToast();
+    const navigate = useNavigate();
+
     // if (isLoading) return <UploadMashupSkeletonPage />;
 
     // Inputs
 
     const [name, setName] = useState<string>('');
+    const [statusLink, setStatusLink] = useState('');
+    const [explicit, setExplicit] = useState(false);
+    const [banWords, setBanWords] = useState(false);
+    const [agree, setAgree] = useState(false);
 
     // Genre selection
     const [allGenres, setAllGenres] = useState<string[]>([]);
@@ -218,7 +227,7 @@ export default function UploadMashupPage() {
 
     const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
 
-    const loggedUser = useUser();
+    const loggedUser = useGlobalStore((state) => state.currentUser);
 
     useEffect(() => {
         if (
@@ -303,7 +312,7 @@ export default function UploadMashupPage() {
 
     // Mashup file handle
 
-    const [mashupFile, setMashupFile] = useState<File>();
+    const [mashupFile, setMashupFile] = useState<File | null>(null);
     const [mashupFileProgress, setMashupFileProgress] = useState<number>(0);
     const [basedMashupFile, setBasedMashupFile] = useState<string | null>(null);
 
@@ -316,7 +325,7 @@ export default function UploadMashupPage() {
 
     // Image file handle
 
-    const [imageFile, setImageFile] = useState<File>();
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [basedImageFile, setBasedImageFile] = useState<string | null>(null);
 
     useBase64(imageFile, undefined, setBasedImageFile);
@@ -324,41 +333,146 @@ export default function UploadMashupPage() {
     // Send
 
     const uploadMashup = () => {
-        // TODO: popups
-        if (!basedMashupFile) {
+        // TODO: toasts
+        if (!basedMashupFile || !mashupFile) {
+            toast({
+                element: <ErrorToast field='загрузки мэшапа' text='Загрузите .mp3 с мэшапом!' />,
+                duration: 2000,
+                variant: 'destructive'
+            });
+            return;
+        }
+
+        if (mashupFile.size > 20971520) {
+            toast({
+                element: (
+                    <ErrorToast
+                        field='загрузки мэшапа'
+                        text='Мэшап должен весить не более, чем 20мб.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
 
         if (!basedImageFile) {
+            toast({
+                element: <ErrorToast field='загрузки обложки' text='Загрузите обложку мэшапа!' />,
+                duration: 2000,
+                variant: 'destructive'
+            });
+            return;
+        }
+
+        if (!basedImageFile || !imageFile) {
+            toast({
+                element: <ErrorToast field='загрузки обложки' text='Загрузите обложку мэшапа!' />,
+                duration: 2000,
+                variant: 'destructive'
+            });
+            return;
+        }
+
+        const image = new Image();
+        image.src = `data:image/png;base64,${basedImageFile}`;
+        image.onload = () => {
+            if (image.naturalHeight < 800 || image.naturalWidth < 800) {
+                toast({
+                    element: (
+                        <ErrorToast
+                            field='загрузки обложки'
+                            text='Обложка мэшапа должна быть размером больше 800px.'
+                        />
+                    ),
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+                return;
+            }
+        };
+
+        if (imageFile.size > 5242880) {
+            toast({
+                element: (
+                    <ErrorToast
+                        field='загрузки обложки'
+                        text='Обложка мэшапа должна весить не более, чем 5мб.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
 
         if (!RegEx.MASHUP.test(name)) {
+            toast({
+                element: (
+                    <ErrorToast
+                        image={`data:image/png;base64,${basedImageFile}`}
+                        field='названия'
+                        text='Название может быть длиной от 2 до 48 символов из букв, цифр, некоторых специальных символов.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
 
         if (selectedGenres.size === 0) {
+            toast({
+                element: (
+                    <ErrorToast
+                        image={`data:image/png;base64,${basedImageFile}`}
+                        field='жанров'
+                        text='Выберите хотя бы один жанр.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
 
         if (selectedUsers.length === 0) {
+            toast({
+                element: (
+                    <ErrorToast
+                        image={`data:image/png;base64,${basedImageFile}`}
+                        field='авторов'
+                        text='Выберите хотя бы одного автора.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
 
         if (selectedTracks.length < 2) {
+            toast({
+                element: (
+                    <ErrorToast
+                        image={`data:image/png;base64,${basedImageFile}`}
+                        field='сурсов'
+                        text='Выберите хотя бы два трека.'
+                    />
+                ),
+                duration: 2000,
+                variant: 'destructive'
+            });
             return;
         }
-
-        // TODO: check size of mashup file and image file
 
         axiosSession
             .post('/mashup/upload', {
                 name: name,
                 authors: selectedUsers.map((user) => user.id),
-                // TODO: wire explicit
-                explicit: false,
-                // TODO: wire banWords
-                banWords: false,
+                explicit: explicit,
+                banWords: banWords,
                 albumId: -1,
                 tracks: selectedTracks
                     .filter((track) => track.constructor.name === 'SmashUpSelectedTrack')
@@ -366,15 +480,12 @@ export default function UploadMashupPage() {
                 tracksUrls: selectedTracks
                     .filter((track) => track.constructor.name === 'YouTubeSelectedTrack')
                     .map((track) => (track as YouTubeSelectedTrack).key),
-                // TODO: wire status
-                statusesUrls: [],
+                statusesUrls: [statusLink],
                 genres: [...selectedGenres],
                 basedMashupFile: basedMashupFile,
                 basedImageFile: basedImageFile
             })
-            .then(() => {
-                console.log('ok!');
-            });
+            .then(() => navigate('/mashup/upload/success'));
     };
 
     return (
@@ -393,7 +504,7 @@ export default function UploadMashupPage() {
                                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
                                 )}
                                 draggable={false}
-                                alt='uploaded mashup cover'
+                                alt='Обложка загружаемого мэшапа'
                             />
                         ) : (
                             <div className='w-[200px] h-[200px] rounded-[30px] bg-surfaceVariant' />
@@ -414,26 +525,6 @@ export default function UploadMashupPage() {
                             }}
                         />
                     </label>
-
-                    <label>
-                        {/* <Button className='w-full'>Загрузить MP3</Button> */}
-
-                        <Input
-                            type='file'
-                            className='w-[200px]'
-                            accept='.mp3'
-                            onChange={(e) => {
-                                if (e.target.files) {
-                                    setMashupFile(e.target.files[0]);
-                                }
-                            }}
-                        />
-
-                        <div
-                            className='mt-0 h-1 bg-primary'
-                            style={{ width: `${mashupFileProgress}%` }}
-                        ></div>
-                    </label>
                 </div>
 
                 <div className='w-full flex flex-col flex-1'>
@@ -444,7 +535,11 @@ export default function UploadMashupPage() {
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Название мэшапа
                                 </Label>
-                                <Input value={name} onChange={(e) => setName(e.target.value)} />
+                                <Input
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder='Введите название мэшапа'
+                                />
                             </div>
 
                             <div className='flex flex-col gap-y-2.5'>
@@ -482,12 +577,42 @@ export default function UploadMashupPage() {
                                     startIcon={LinkIcon}
                                     startIconClassName='text-onSurfaceVariant'
                                     placeholder='Ссылка на основу / альт (Если есть)'
+                                    value={statusLink}
+                                    onChange={(e) => setStatusLink(e.target.value)}
                                 />
                             </div>
                         </div>
 
                         {/*жанр, банворды*/}
                         <div className='flex flex-col gap-y-[35px]'>
+                            <div className='flex flex-col gap-y-2.5'>
+                                <Label className='font-medium text-onSurfaceVariant'>
+                                    Загрузите ваш мэшап (.mp3)
+                                </Label>
+
+                                <label className='relative'>
+                                    <span className='text-[24px] font-bold text-primary cursor-pointer'>
+                                        {mashupFile === null
+                                            ? 'Нажмите для загрузки'
+                                            : mashupFile.name}
+                                    </span>
+                                    <Input
+                                        type='file'
+                                        className='hidden'
+                                        accept='.mp3'
+                                        onChange={(e) => {
+                                            if (e.target.files) {
+                                                setMashupFile(e.target.files[0]);
+                                            }
+                                        }}
+                                    />
+                                </label>
+
+                                <div
+                                    className='h-1 bg-primary rounded'
+                                    style={{ width: `${mashupFileProgress}%` }}
+                                />
+                            </div>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Выберите жанр
@@ -523,14 +648,24 @@ export default function UploadMashupPage() {
                             </div>
 
                             <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox />
+                                <Checkbox
+                                    checked={explicit}
+                                    onCheckedChange={(v) => {
+                                        if (typeof v === 'boolean') setExplicit(v);
+                                    }}
+                                />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Explicit (Мат)
                                 </Label>
                             </div>
 
                             <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox />
+                                <Checkbox
+                                    checked={banWords}
+                                    onCheckedChange={(v) => {
+                                        if (typeof v === 'boolean') setBanWords(v);
+                                    }}
+                                />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Бан-ворды Twitch
                                 </Label>
@@ -539,17 +674,11 @@ export default function UploadMashupPage() {
 
                         {/*авторы*/}
                         <div className='flex flex-col gap-y-[35px]'>
-                            <div className='w-full'>
+                            <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <Input
-                                    id='newPasswordAgain'
-                                    value=''
-                                    disabled
-                                    placeholder={selectedUsers
-                                        .map((user) => user.username)
-                                        .join(', ')}
-                                    className='p-0 bg-transparent font-bold text-[24px] placeholder:text-onPrimary'
-                                />
+                                <span className='font-bold text-[24px] text-onSurfaceVariant'>
+                                    {selectedUsers.map((user) => user.username).join(', ')}
+                                </span>
                             </div>
 
                             <div className='flex flex-col gap-y-2.5'>
@@ -589,7 +718,7 @@ export default function UploadMashupPage() {
                                                 }}
                                             >
                                                 <img
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${user.imageUrl}_100x100.png`}
+                                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
                                                     alt={user.username}
                                                     className='w-12 h-12 rounded-xl object-cover'
                                                     draggable={false}
@@ -612,11 +741,20 @@ export default function UploadMashupPage() {
 
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
-                        <Button className='w-[460px]' onClick={() => uploadMashup()}>
+                        <Button
+                            className='w-[460px]'
+                            onClick={() => uploadMashup()}
+                            disabled={!agree}
+                        >
                             Опубликовать
                         </Button>
                         <div className='flex items-center gap-x-4'>
-                            <Checkbox />
+                            <Checkbox
+                                checked={agree}
+                                onCheckedChange={(v) => {
+                                    if (typeof v === 'boolean') setAgree(v);
+                                }}
+                            />
                             <span>
                                 Я прочитал(-а) и согласен(-на) с условиями{' '}
                                 <Link

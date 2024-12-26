@@ -1,43 +1,23 @@
-export function isExplicit(bitmask: number): boolean {
-    return ((bitmask >> 0) & 1) == 1;
+function memoize(fn: (bitmask: number) => boolean): (bitmask: number) => boolean {
+    const cache: Record<number, boolean> = {};
+    return (bitmask: number) => {
+        if (bitmask in cache) {
+            return cache[bitmask];
+        }
+        const result = fn(bitmask);
+        cache[bitmask] = result;
+        return result;
+    };
 }
 
-export function isTwitchBanned(bitmask: number): boolean {
-    return ((bitmask >> 1) & 1) == 1;
-}
-
-export function isHashtagMashup(bitmask: number): boolean {
-    return ((bitmask >> 2) & 1) == 1;
-}
-
-export function isAlt(bitmask: number): boolean {
-    return ((bitmask >> 3) & 1) == 1;
-}
-
-export function isAdmin(bitmask: number): boolean {
-    return ((bitmask >> 0) & 1) == 1;
-}
-
-export function isModerator(bitmask: number): boolean {
-    return ((bitmask >> 1) & 1) == 1;
-}
-
-export function isVerified(bitmask: number): boolean {
-    return ((bitmask >> 2) & 1) == 1;
-}
-
-export function isMashuper(bitmask: number): boolean {
-    return ((bitmask >> 3) & 1) == 1;
-}
-
-export function isBanned(bitmask: number): boolean {
-    return ((bitmask >> 4) & 1) == 1;
-}
-
-export function explicitAllowed(bitmask: number): boolean {
-    return ((bitmask >> 0) & 1) == 1;
-}
-
-export function multisessionAllowed(bitmask: number): boolean {
-    return ((bitmask >> 1) & 1) == 1;
-}
+export const isExplicit = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
+export const isTwitchBanned = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);
+export const isHashtagMashup = memoize((bitmask: number) => ((bitmask >> 2) & 1) == 1);
+export const isAlt = memoize((bitmask: number) => ((bitmask >> 3) & 1) == 1);
+export const isAdmin = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
+export const isModerator = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);
+export const isVerified = memoize((bitmask: number) => ((bitmask >> 2) & 1) == 1);
+export const isMashuper = memoize((bitmask: number) => ((bitmask >> 3) & 1) == 1);
+export const isBanned = memoize((bitmask: number) => ((bitmask >> 4) & 1) == 1);
+export const explicitAllowed = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
+export const multisessionAllowed = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);

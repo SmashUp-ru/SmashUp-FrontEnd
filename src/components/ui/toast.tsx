@@ -4,22 +4,31 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 import CancelIcon from '@/components/icons/Cancel.tsx';
+import { usePlayerStore } from '@/store/player.ts';
 
 const ToastProvider = ToastPrimitives.Provider;
 
 const ToastViewport = React.forwardRef<
     React.ElementRef<typeof ToastPrimitives.Viewport>,
     React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
->(({ className, ...props }, ref) => (
-    <ToastPrimitives.Viewport
-        ref={ref}
-        className={cn(
-            'fixed bottom-[116px] left-1/2 transform -translate-x-1/2 z-[100] flex max-h-screen w-fit flex-col-reverse items-center p-2',
-            className
-        )}
-        {...props}
-    />
-));
+>(({ className, ...props }, ref) => {
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+
+    return (
+        <ToastPrimitives.Viewport
+            ref={ref}
+            className={cn(
+                'fixed left-1/2 transform -translate-x-1/2 z-[100] flex max-h-screen w-fit flex-col-reverse items-center p-2',
+                queue.length > 0 && queueIndex >= 0 && queue[queueIndex]
+                    ? 'bottom-[116px]'
+                    : 'bottom-[16px]',
+                className
+            )}
+            {...props}
+        />
+    );
+});
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
@@ -28,8 +37,7 @@ const toastVariants = cva(
         variants: {
             variant: {
                 default: 'rounded-2xl border border-primary bg-background text-onSurface',
-                destructive:
-                    'destructive group border-destructive bg-destructive text-destructive-foreground'
+                destructive: 'rounded-2xl border border-error bg-background text-onSurface'
             }
         },
         defaultVariants: {

@@ -34,7 +34,7 @@ function encode(
 }
 
 export function useBase64(
-    file: File | undefined,
+    file: File | null,
     setProgress?: (processed: number, total: number) => unknown,
     setResult?: (result: string | null) => unknown
 ) {
