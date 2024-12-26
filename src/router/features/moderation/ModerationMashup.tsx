@@ -200,7 +200,7 @@ export default function ModerationMashup() {
                                         });
                                     }}
                                 >
-                                    <div className='bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
+                                    <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
                                         <LinkIcon />
                                         <span className='font-medium text-onSurfaceVariant'>
                                             {link}
