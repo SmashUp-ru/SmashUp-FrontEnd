@@ -333,7 +333,6 @@ export default function UploadMashupPage() {
     // Send
 
     const uploadMashup = () => {
-        // TODO: toasts
         if (!basedMashupFile || !mashupFile) {
             toast({
                 element: <ErrorToast field='загрузки мэшапа' text='Загрузите .mp3 с мэшапом!' />,

@@ -1,14 +1,10 @@
 import { useSettingsPageData } from '@/router/features/settings/useSettingsPageData.ts';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { cn } from '@/lib/utils.ts';
 import { Label } from '@/components/ui/label.tsx';
-import { Input } from '@/components/ui/input.tsx';
 import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
 import { Link } from 'react-router-dom';
 import VKIcon from '@/components/icons/VK.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
-import EditIcon from '@/components/icons/Edit.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import SettingsPageSkeleton from '@/router/pages/settings/SettingsPageSkeleton.tsx';
@@ -16,13 +12,12 @@ import { useGlobalStore } from '@/store/global.ts';
 import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
 import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
+import UpdateAvatar from '@/router/features/toasts/UpdateAvatar.tsx';
 
 export default function SettingsPage() {
     const { settings, isLoading, email } = useSettingsPageData();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
-
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     const [username, setUsername] = useState('');
     const [allowMultisessions, setAllowMultisessions] = useState(false);
@@ -51,27 +46,8 @@ export default function SettingsPage() {
                 <h1 className='font-bold text-4xl text-onSurface'>Настройки</h1>
             </div>
             <div className='w-full flex gap-x-12'>
-                <label className='relative cursor-pointer h-fit'>
-                    {!imageLoaded && (
-                        <Skeleton className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full' />
-                    )}
-                    <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
-                        alt={currentUser.username}
-                        className={cn(
-                            'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full brightness-50',
-                            !imageLoaded && 'hidden'
-                        )}
-                        draggable={false}
-                        onLoad={() => setImageLoaded(true)}
-                    />
-                    <EditIcon
-                        size={70}
-                        className='absolute top-0 right-0 left-0 bottom-0 m-auto'
-                        color='onSurface'
-                    />
-                    <Input type='file' className='hidden' />
-                </label>
+                <UpdateAvatar />
+
                 {/*настройки*/}
                 <div className='w-full flex flex-col gap-y-[75px]'>
                     {/*настройки профиля*/}
@@ -104,7 +80,7 @@ export default function SettingsPage() {
                     {/*настройки аккаунта*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <div className='grid grid-cols-3 gap-x-20 items-center'>
+                        <div className='grid grid-cols-2 2xl:grid-cols-3 gap-x-20 items-center'>
                             <div className='flex items-center gap-x-10'>
                                 <Label className='w-1/2 font-medium text-[18px] text-onSurfaceVariant'>
                                     Битрейт мэшапов
@@ -150,13 +126,6 @@ export default function SettingsPage() {
                             </div>
                         </div>
                     </div>
-
-                    {/*сохранить*/}
-                    {/*<div className="bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6">*/}
-                    {/*    <Button className="w-[460px]">Сохранить</Button>*/}
-                    {/*    <Button*/}
-                    {/*        className="w-[230px] bg-surfaceVariant text-onBackground hover:bg-surfaceVariant/90 hover:text-onBackground/90">Отменить</Button>*/}
-                    {/*</div>*/}
                 </div>
             </div>
         </section>

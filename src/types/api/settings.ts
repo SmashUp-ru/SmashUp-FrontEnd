@@ -1,3 +1,5 @@
+import { User } from '@/store/entities/user.ts';
+
 export interface GetSettingsResponse {
     status: string;
     response: {
@@ -10,4 +12,9 @@ export interface GetEmailResponse {
     response: {
         email: string;
     };
+}
+
+export interface UpdateUserImageResponse {
+    status: string;
+    response: User;
 }
