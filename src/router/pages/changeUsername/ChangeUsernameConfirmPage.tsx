@@ -22,10 +22,10 @@ export default function ChangeUsernameConfirmPage() {
             axiosSession
                 .post(`/user/change_username/confirm?id=${searchParams.get('id')}`)
                 .then((r: AxiosResponse<UpdateUsernameConfirmResponse>) => {
+                    setSuccess(true);
                     if (currentUser) {
                         updateUserById(currentUser.id, { username: r.data.response.username });
                         getUserById(currentUser.id).then((r) => updateCurrentUser(r));
-                        setSuccess(true);
                     }
                 })
                 .catch(() => {
@@ -56,7 +56,7 @@ export default function ChangeUsernameConfirmPage() {
                 </div>
 
                 <Button asChild className='w-full'>
-                    <Link draggable={false} to='/public'>
+                    <Link draggable={false} to='/'>
                         Вернуться на главную
                     </Link>
                 </Button>
