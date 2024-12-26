@@ -36,5 +36,7 @@ export const RegEx = {
         }
 
         return 'https://music.yandex.ru/album/' + match[1] + '/track/' + match[2];
-    }
+    },
+
+    MASHUP: /^[а-яА-ЯёЁa-zA-Z0-9_$.,=+()*&^%$#@!\-?':| ]{2,48}$/
 };

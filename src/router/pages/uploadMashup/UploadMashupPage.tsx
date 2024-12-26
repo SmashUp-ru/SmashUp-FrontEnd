@@ -1,4 +1,4 @@
-import { axiosSession, cn, convertToBase64, removeItem, trim } from '@/lib/utils.ts';
+import { axiosSession, cn, removeItem, trim } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { useEffect, useState } from 'react';
@@ -31,11 +31,16 @@ import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb
 import { User } from '@/store/entities/user';
 import { useUser } from '@/hooks/useUser';
 import { isModerator } from '@/lib/bitmask';
+import { useBase64 } from '@/hooks/useBase64';
 
 export default function UploadMashupPage() {
     // if (isLoading) return <UploadMashupSkeletonPage />;
 
-    const [image, setImage] = useState<null | string | ArrayBuffer>(null);
+    // Inputs
+
+    const [name, setName] = useState<string>('');
+
+    // Genre selection
     const [allGenres, setAllGenres] = useState<string[]>([]);
     const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
 
@@ -45,10 +50,9 @@ export default function UploadMashupPage() {
             .then((r: AxiosResponse<GenresResponse>) => setAllGenres(r.data.response));
     }, []);
 
-    const [name, setName] = useState<string>('');
-    const [tracksQuery, setTracksQuery] = useState<string>('');
-    const [usersQuery, setUsersQuery] = useState<string>('');
+    // Track search
 
+    const [tracksQuery, setTracksQuery] = useState<string>('');
     const [debouncedTracksQuery] = useDebounce(tracksQuery, 500);
 
     const [tracks, setTracks] = useState<Track[]>([]);
@@ -59,17 +63,6 @@ export default function UploadMashupPage() {
     const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
 
     const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
-
-    const [debouncedUserQuery] = useDebounce(usersQuery, 500);
-
-    const [users, setUsers] = useState<User[]>([]);
-    const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-
-    const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
-
-    const loggedUser = useUser();
-
-    // Track search
 
     const searchYouTube = (link: string) => {
         setYouTubeTrackLoading(true);
@@ -217,6 +210,16 @@ export default function UploadMashupPage() {
 
     // User search
 
+    const [usersQuery, setUsersQuery] = useState<string>('');
+    const [debouncedUserQuery] = useDebounce(usersQuery, 500);
+
+    const [users, setUsers] = useState<User[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+
+    const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
+
+    const loggedUser = useUser();
+
     useEffect(() => {
         if (
             loggedUser &&
@@ -298,6 +301,82 @@ export default function UploadMashupPage() {
         return users.filter((user) => !selectedUsersSet.has(user.id));
     };
 
+    // Mashup file handle
+
+    const [mashupFile, setMashupFile] = useState<File>();
+    const [mashupFileProgress, setMashupFileProgress] = useState<number>(0);
+    const [basedMashupFile, setBasedMashupFile] = useState<string | null>(null);
+
+    useBase64(
+        mashupFile,
+        (processed: number, total: number) =>
+            setMashupFileProgress(Math.round((processed / total) * 100)),
+        setBasedMashupFile
+    );
+
+    // Image file handle
+
+    const [imageFile, setImageFile] = useState<File>();
+    const [basedImageFile, setBasedImageFile] = useState<string | null>(null);
+
+    useBase64(imageFile, undefined, setBasedImageFile);
+
+    // Send
+
+    const uploadMashup = () => {
+        // TODO: popups
+        if (!basedMashupFile) {
+            return;
+        }
+
+        if (!basedImageFile) {
+            return;
+        }
+
+        if (!RegEx.MASHUP.test(name)) {
+            return;
+        }
+
+        if (selectedGenres.size === 0) {
+            return;
+        }
+
+        if (selectedUsers.length === 0) {
+            return;
+        }
+
+        if (selectedTracks.length < 2) {
+            return;
+        }
+
+        // TODO: check size of mashup file and image file
+
+        axiosSession
+            .post('/mashup/upload', {
+                name: name,
+                authors: selectedUsers.map((user) => user.id),
+                // TODO: wire explicit
+                explicit: false,
+                // TODO: wire banWords
+                banWords: false,
+                albumId: -1,
+                tracks: selectedTracks
+                    .filter((track) => track.constructor.name === 'SmashUpSelectedTrack')
+                    .map((track) => (track as SmashUpSelectedTrack).key),
+                tracksUrls: selectedTracks
+                    .filter((track) => track.constructor.name === 'YouTubeSelectedTrack')
+                    .map((track) => (track as YouTubeSelectedTrack).key),
+                // TODO: wire status
+                statusesUrls: [],
+                genres: [...selectedGenres],
+                basedMashupFile: basedMashupFile,
+                basedImageFile: basedImageFile
+            })
+            .then(() => {
+                console.log('ok!');
+            });
+    };
+
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
             <div className='flex items-center justify-between'>
@@ -307,9 +386,9 @@ export default function UploadMashupPage() {
                 {/*картинка, mp3*/}
                 <div>
                     <label className='relative cursor-pointer h-fit'>
-                        {image && typeof image === 'string' ? (
+                        {basedImageFile && typeof basedImageFile === 'string' ? (
                             <img
-                                src={image}
+                                src={`data:image/png;base64,${basedImageFile}`}
                                 className={cn(
                                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
                                 )}
@@ -330,7 +409,7 @@ export default function UploadMashupPage() {
                             accept='.png,.jpg,.jpeg'
                             onChange={async (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
-                                    setImage(await convertToBase64(e.target.files[0]));
+                                    setImageFile(e.target.files[0]);
                                 }
                             }}
                         />
@@ -343,12 +422,17 @@ export default function UploadMashupPage() {
                             type='file'
                             className='w-[200px]'
                             accept='.mp3'
-                            onChange={async (e) => {
-                                console.log(e);
+                            onChange={(e) => {
+                                if (e.target.files) {
+                                    setMashupFile(e.target.files[0]);
+                                }
                             }}
                         />
 
-                        <div className='mt-0 z-100 w-10px h-1 bg-primary'></div>
+                        <div
+                            className='mt-0 h-1 bg-primary'
+                            style={{ width: `${mashupFileProgress}%` }}
+                        ></div>
                     </label>
                 </div>
 
@@ -528,7 +612,9 @@ export default function UploadMashupPage() {
 
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
-                        <Button className='w-[460px]'>Опубликовать</Button>
+                        <Button className='w-[460px]' onClick={() => uploadMashup()}>
+                            Опубликовать
+                        </Button>
                         <div className='flex items-center gap-x-4'>
                             <Checkbox />
                             <span>
