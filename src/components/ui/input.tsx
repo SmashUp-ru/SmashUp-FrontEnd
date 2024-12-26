@@ -11,11 +11,22 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     startIconClassName?: string;
     endIconClassName?: string;
     endIcon?: React.FC<IconProps>;
+
+    error?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     (
-        { className, type, startIcon, startIconClassName, endIcon, endIconClassName, ...props },
+        {
+            className,
+            type,
+            startIcon,
+            startIconClassName,
+            endIcon,
+            endIconClassName,
+            error,
+            ...props
+        },
         ref
     ) => {
         const StartIcon = startIcon;
@@ -38,7 +49,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 <input
                     type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
                     className={cn(
-                        'flex w-full rounded-2xl bg-surface font-bold text-onSurface placeholder:text-onSurfaceVariant py-[14.5px] px-[25px] focus:outline focus:outline-primary focus:outline-2',
+                        'flex w-full rounded-2xl bg-surface font-bold text-onSurface placeholder:text-onSurfaceVariant py-[14.5px] px-[25px] focus:outline focus:outline-2',
+                        error ? 'focus:outline-error' : 'focus:outline-primary',
                         startIcon || type === 'password' ? 'pl-[48px]' : '',
                         endIcon || type === 'password' ? 'pr-11' : '',
                         className

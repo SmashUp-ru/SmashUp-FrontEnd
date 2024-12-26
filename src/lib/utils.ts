@@ -83,3 +83,14 @@ export function removeItem<T>(
     }
     return array;
 }
+
+export function maskEmail(email: string): string {
+    const [local, domain] = email.split('@');
+
+    if (local.length <= 2) {
+        return email;
+    }
+
+    const maskedLocal = local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
+    return `${maskedLocal}@${domain}`;
+}

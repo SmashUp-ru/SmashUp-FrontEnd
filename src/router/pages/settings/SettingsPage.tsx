@@ -13,6 +13,9 @@ import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import SettingsPageSkeleton from '@/router/pages/settings/SettingsPageSkeleton.tsx';
 import { useGlobalStore } from '@/store/global.ts';
+import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
+import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
+import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 
 export default function SettingsPage() {
     const { settings, isLoading, email } = useSettingsPageData();
@@ -74,67 +77,11 @@ export default function SettingsPage() {
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <div className='w-full'>
-                            <Label className='font-medium text-onSurfaceVariant'>
-                                Отображаемый никнейм
-                            </Label>
-                            <Input
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className='p-0 bg-transparent font-bold text-[24px]'
-                                disabled
-                            />
-                        </div>
+                        <UsernameDialog username={username} />
 
-                        <div className='w-full'>
-                            <Label className='font-medium text-onSurfaceVariant'>Почта</Label>
-                            <Input
-                                value={email ? email : 'а где'}
-                                className='p-0 bg-transparent font-bold text-[24px]'
-                                disabled
-                            />
-                        </div>
+                        <EmailDialog email={email} />
 
-                        <div className='grid grid-cols-3 gap-x-20'>
-                            <div className='w-full'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Текущий пароль
-                                </Label>
-                                <Input
-                                    id='password'
-                                    value=''
-                                    disabled
-                                    placeholder='Текущий пароль'
-                                    className='p-0 bg-transparent font-bold text-[24px] placeholder:text-onPrimary'
-                                />
-                            </div>
-
-                            <div className='w-full'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Новый пароль
-                                </Label>
-                                <Input
-                                    id='newPassword'
-                                    value=''
-                                    disabled
-                                    placeholder='Новый пароль'
-                                    className='p-0 bg-transparent font-bold text-[24px] placeholder:text-onPrimary'
-                                />
-                            </div>
-
-                            <div className='w-full'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Новый еще раз
-                                </Label>
-                                <Input
-                                    id='newPasswordAgain'
-                                    value=''
-                                    disabled
-                                    placeholder='Новый пароль'
-                                    className='p-0 bg-transparent font-bold text-[24px] placeholder:text-onPrimary'
-                                />
-                            </div>
-                        </div>
+                        <PasswordDialog />
 
                         <div className='grid grid-cols-3 gap-x-20'>
                             <Link to='#' className='flex items-center justify-between'>
