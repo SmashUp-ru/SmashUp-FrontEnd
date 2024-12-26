@@ -32,6 +32,7 @@ import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
 import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx';
 import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx';
 import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx';
+import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
                     {
                         element: <ChangeEmailConfirmPage />,
                         path: '/user/change_email/confirm'
+                    },
+                    {
+                        element: <ChangePasswordConfirmPage />,
+                        path: '/user/change_password/confirm'
                     },
                     {
                         element: <SettingsPage />,

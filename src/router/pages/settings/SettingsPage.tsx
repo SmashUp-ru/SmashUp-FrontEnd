@@ -46,11 +46,11 @@ export default function SettingsPage() {
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <UsernameDialog username={currentUser.username} />
+                        <UsernameDialog username={currentUser.username} email={email} />
 
                         <EmailDialog email={email} />
 
-                        <PasswordDialog />
+                        <PasswordDialog email={email} />
 
                         <div className='grid grid-cols-3 gap-x-20'>
                             <Link to='#' className='flex items-center justify-between'>

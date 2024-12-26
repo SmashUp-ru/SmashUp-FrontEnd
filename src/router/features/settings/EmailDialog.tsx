@@ -104,7 +104,13 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                             </div>
 
                             {submitted ? (
-                                <EmailDialogSentContent email={form.getValues('email')} />
+                                <EmailDialogSentContent
+                                    email={
+                                        email
+                                            ? maskEmail(email)
+                                            : 'почту, привязанную к вашему аккаунту.'
+                                    }
+                                />
                             ) : (
                                 <DialogDescription>
                                     <Form {...form}>

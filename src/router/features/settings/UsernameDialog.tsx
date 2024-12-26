@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/Cancel.tsx';
-import { axiosSession } from '@/lib/utils.ts';
+import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useToast } from '@/hooks/use-toast.ts';
 import { AxiosError } from 'axios';
 import ErrorToast from '@/router/features/toasts/error.tsx';
@@ -24,6 +24,7 @@ import { useState } from 'react';
 import UsernameDialogSentContent from '@/router/features/settings/UsernameDialogSentContent.tsx';
 
 interface UsernameDialogProps {
+    email: string | null;
     username: string;
 }
 
@@ -38,7 +39,7 @@ const formSchema = z.object({
         .max(50, { message: 'максимум 50 бля' })
 });
 
-export default function UsernameDialog({ username }: UsernameDialogProps) {
+export default function UsernameDialog({ username, email }: UsernameDialogProps) {
     const { toast } = useToast();
     const [submitted, setSubmitted] = useState(false);
 
@@ -106,7 +107,13 @@ export default function UsernameDialog({ username }: UsernameDialogProps) {
                             </div>
 
                             {submitted ? (
-                                <UsernameDialogSentContent username={username} />
+                                <UsernameDialogSentContent
+                                    email={
+                                        email
+                                            ? maskEmail(email)
+                                            : 'почту, привязанную к вашему аккаунту.'
+                                    }
+                                />
                             ) : (
                                 <DialogDescription>
                                     <Form {...form}>
