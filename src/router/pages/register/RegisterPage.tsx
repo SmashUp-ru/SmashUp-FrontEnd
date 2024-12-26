@@ -75,7 +75,7 @@ export default function RegisterPage() {
                 email: values.email,
                 password: values.password
             })
-            .then(() => navigate('/register/finish'));
+            .then(() => navigate('/register/email'));
     }
 
     useEffect(() => {
