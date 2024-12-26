@@ -16,9 +16,12 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/Cancel.tsx';
-import { maskEmail } from '@/lib/utils.ts';
+import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useState } from 'react';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
+import { AxiosError } from 'axios';
+import ErrorToast from '@/router/features/toasts/error.tsx';
+import { useToast } from '@/hooks/use-toast.ts';
 
 interface EmailDialogProps {
     email: string | null;
@@ -33,6 +36,8 @@ const formSchema = z.object({
 });
 
 export default function EmailDialog({ email }: EmailDialogProps) {
+    const { toast } = useToast();
+
     const [submitted, setSubmitted] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -44,8 +49,35 @@ export default function EmailDialog({ email }: EmailDialogProps) {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        setSubmitted(true);
+        axiosSession
+            .post('/user/change_email', {
+                password: values.password,
+                email: values.email
+            })
+            .then(() => {
+                setSubmitted(true);
+            })
+            .catch((e: AxiosError) => {
+                if (e.status === 403) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                field='обновлении почты.'
+                                text='Указанный пароль неправильный.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
+
+                toast({
+                    element: <ErrorToast field='обновлении почты.' text='Попробуйте снова.' />,
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+            });
     }
 
     return (
@@ -63,7 +95,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                     <DialogContent className='w-[460px]'>
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
-                                <DialogTitle>Изменение Псевдонима</DialogTitle>
+                                <DialogTitle>Изменение Почты</DialogTitle>
                                 <DialogClose className='pb-7'>
                                     <Button variant='ghost' size='icon'>
                                         <CancelIcon size={18} />

@@ -19,16 +19,9 @@ export default function SettingsPage() {
 
     const currentUser = useGlobalStore((state) => state.currentUser);
 
-    const [username, setUsername] = useState('');
     const [allowMultisessions, setAllowMultisessions] = useState(false);
     const [showExplicit, setShowExplicit] = useState(false);
     const [bitrate, setBitrate] = useState(3);
-
-    useEffect(() => {
-        if (currentUser) {
-            setUsername(currentUser.username);
-        }
-    }, [currentUser]);
 
     useEffect(() => {
         if (settings !== null) {
@@ -53,7 +46,7 @@ export default function SettingsPage() {
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <UsernameDialog username={username} />
+                        <UsernameDialog username={currentUser.username} />
 
                         <EmailDialog email={email} />
 

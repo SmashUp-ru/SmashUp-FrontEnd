@@ -31,6 +31,7 @@ import { StrictMode } from 'react';
 import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
 import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx';
 import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx';
+import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
                     {
                         element: <ChangeUsernameConfirmPage />,
                         path: '/user/change_username/confirm'
+                    },
+                    {
+                        element: <ChangeEmailConfirmPage />,
+                        path: '/user/change_email/confirm'
                     },
                     {
                         element: <SettingsPage />,

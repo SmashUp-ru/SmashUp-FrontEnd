@@ -2,17 +2,8 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
-import { AxiosResponse } from 'axios';
-import { useGlobalStore } from '@/store/global.ts';
-import { useUserStore } from '@/store/entities/user.ts';
-import { UpdateUsernameConfirmResponse } from '@/types/api/settings.ts';
 
-export default function ChangeUsernameConfirmPage() {
-    const currentUser = useGlobalStore((state) => state.currentUser);
-    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
-    const getUserById = useUserStore((state) => state.getOneById);
-    const updateUserById = useUserStore((state) => state.updateOneById);
-
+export default function ChangeEmailConfirmPage() {
     const [searchParams] = useSearchParams();
 
     const [success, setSuccess] = useState<boolean | null>(null);
@@ -20,14 +11,8 @@ export default function ChangeUsernameConfirmPage() {
     useEffect(() => {
         if (searchParams.has('id')) {
             axiosSession
-                .post(`/user/change_username/confirm?id=${searchParams.get('id')}`)
-                .then((r: AxiosResponse<UpdateUsernameConfirmResponse>) => {
-                    setSuccess(true);
-                    if (currentUser) {
-                        updateUserById(currentUser.id, { username: r.data.response.username });
-                        getUserById(currentUser.id).then((r) => updateCurrentUser(r));
-                    }
-                })
+                .post(`/user/change_email/confirm?id=${searchParams.get('id')}`)
+                .then(() => setSuccess(true))
                 .catch(() => {
                     setSuccess(false);
                 });
@@ -48,7 +33,7 @@ export default function ChangeUsernameConfirmPage() {
                     </h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         {success === true
-                            ? 'Юзернейм успешно изменен.'
+                            ? 'Почта успешно изменена.'
                             : success === false
                               ? 'Что-то пошло не так'
                               : ''}

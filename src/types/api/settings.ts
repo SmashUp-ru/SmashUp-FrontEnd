@@ -25,3 +25,10 @@ export interface UpdateUsernameConfirmResponse {
         username: string;
     };
 }
+
+export interface UpdateEmailConfirmResponse {
+    status: string;
+    response: {
+        email: string;
+    };
+}
