@@ -5,6 +5,7 @@ export interface Playlist {
     name: string;
     description: string;
     authors: string[];
+    authorsIds: number[];
     imageUrl: string;
     backgroundColor: number;
     liked: boolean;

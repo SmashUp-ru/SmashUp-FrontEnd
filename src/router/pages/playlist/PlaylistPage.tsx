@@ -16,6 +16,8 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -25,6 +27,7 @@ export default function PlaylistPage() {
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
+    const currentUser = useGlobalStore((state) => state.currentUser);
 
     const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(
         params.playlistId
@@ -151,6 +154,10 @@ export default function PlaylistPage() {
                         >
                             <ShareIcon />
                         </Button>
+
+                        {currentUser && playlist.authorsIds.includes(currentUser.id) && (
+                            <DeletePlaylistDialog playlist={playlist} />
+                        )}
                     </div>
                 </div>
             </div>

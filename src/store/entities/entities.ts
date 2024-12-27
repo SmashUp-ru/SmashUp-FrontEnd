@@ -21,7 +21,7 @@ export function createEntityStore<T extends CachingEntity>(
         fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
         fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
-        updateOneById: (id: number, updatedData: Partial<T>) => void;
+        updateOneById: (id: number, updatedData: Partial<T> | undefined) => void;
     };
 
     return create<CacheStore>((set, get) => ({
@@ -213,7 +213,7 @@ export function createEntityStore<T extends CachingEntity>(
                 });
         },
 
-        updateOneById: (id: number, updatedData: Partial<T>) => {
+        updateOneById: (id: number, updatedData: Partial<T> | undefined) => {
             const currentData = get().cache[id];
             const newData = { ...currentData, ...updatedData };
             set((state) => ({
