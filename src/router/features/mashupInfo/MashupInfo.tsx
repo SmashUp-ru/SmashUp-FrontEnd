@@ -1,13 +1,11 @@
 import { usePlayerStore } from '@/store/player.ts';
-import { cn } from '@/lib/utils.ts';
+import { axiosSession, cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import CancelIcon from '@/components/icons/Cancel.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { Track, useTrackStore } from '@/store/entities/track.ts';
+import { useMashupStore } from '@/store/entities/mashup.ts';
 import { useToast } from '@/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
@@ -18,6 +16,9 @@ import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmas
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
+import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
+import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
 
 export default function MashupInfo() {
     const { toast } = useToast();
@@ -29,23 +30,10 @@ export default function MashupInfo() {
     const queueName = usePlayerStore((state) => state.queueName);
     const info = usePlayerStore((state) => state.info);
     const updateInfo = usePlayerStore((state) => state.updateInfo);
-    const getMashupById = useMashupStore((state) => state.getOneById);
-    const getTracksById = useTrackStore((state) => state.getManyByIds);
 
-    const [mashup, setMashup] = useState<Mashup | null>(null);
-    const [tracks, setTracks] = useState<Track[]>([]);
+    const updateMashupById = useMashupStore((state) => state.updateOneById);
 
-    useEffect(() => {
-        if (queueIndex >= 0 && queue) {
-            getMashupById(queue[queueIndex]).then((r) => setMashup(r));
-        }
-    }, [queue, queueIndex]);
-
-    useEffect(() => {
-        if (mashup) {
-            getTracksById(mashup.tracks).then((r) => setTracks(r));
-        }
-    }, [mashup]);
+    const { mashup, tracks, isLiked, setIsLiked } = useMashupInfoData();
 
     if (!info || !mashup) {
         return;
@@ -119,6 +107,34 @@ export default function MashupInfo() {
                         }}
                     >
                         <PlayHollowIcon color='primary' />
+                    </Button>
+                )}
+
+                {isLiked ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            axiosSession.post(`/mashup/remove_like?id=${mashup.id}`).then(() => {
+                                setIsLiked(false);
+                                updateMashupById(mashup.id, { liked: false });
+                            });
+                        }}
+                    >
+                        <LikeFilledIcon />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => {
+                            axiosSession.post(`/mashup/add_like?id=${mashup.id}`).then(() => {
+                                setIsLiked(true);
+                                updateMashupById(mashup.id, { liked: true });
+                            });
+                        }}
+                    >
+                        <LikeOutlineIcon color='onSurface' />
                     </Button>
                 )}
 
