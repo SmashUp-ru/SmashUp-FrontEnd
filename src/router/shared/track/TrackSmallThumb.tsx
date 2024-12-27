@@ -2,6 +2,7 @@ import { Track } from '@/store/entities/track.ts';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils';
+import TrackMoreDropdown from '@/router/shared/track/TrackMoreDropdown.tsx';
 
 export interface TrackThumbProps {
     track: Track;
@@ -48,9 +49,11 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
                 </span>
             </div>
 
-            <Button variant='ghost' size='icon' className='hidden group-hover:block'>
-                <MoreHorizontalIcon />
-            </Button>
+            <TrackMoreDropdown track={track}>
+                <Button variant='ghost' size='icon' className='w-0 group-hover:w-fit'>
+                    <MoreHorizontalIcon />
+                </Button>
+            </TrackMoreDropdown>
         </div>
     );
 }
