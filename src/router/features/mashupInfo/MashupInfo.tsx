@@ -12,7 +12,7 @@ import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmask.ts';
+import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
@@ -30,7 +30,6 @@ export default function MashupInfo() {
     const queueName = usePlayerStore((state) => state.queueName);
     const info = usePlayerStore((state) => state.info);
     const updateInfo = usePlayerStore((state) => state.updateInfo);
-
     const updateMashupById = useMashupStore((state) => state.updateOneById);
 
     const { mashup, tracks, isLiked, setIsLiked } = useMashupInfoData();
@@ -70,7 +69,6 @@ export default function MashupInfo() {
                         {mashup.name}
                     </span>
                     {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                    {isTwitchBanned(mashup.statuses) && <>!</>}
                     {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
                     {isAlt(mashup.statuses) && <AltIcon />}
                 </div>

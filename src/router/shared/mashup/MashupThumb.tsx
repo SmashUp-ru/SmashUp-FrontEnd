@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import { Mashup } from '@/store/entities/mashup.ts';
-import { isAlt, isExplicit, isHashtagMashup, isTwitchBanned } from '@/lib/bitmask.ts';
+import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
@@ -66,7 +66,6 @@ export default function MashupThumb({ mashup, searchMode }: MashupThumbProps) {
                         {mashup.name}
                     </Link>
                     {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                    {isTwitchBanned(mashup.statuses) && <>!</>}
                     {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
                     {isAlt(mashup.statuses) && <AltIcon />}
                 </div>
