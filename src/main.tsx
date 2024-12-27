@@ -33,6 +33,7 @@ import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuc
 import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx';
 import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx';
 import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
+import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
                     {
                         element: <DebugPage />,
                         path: '/debug'
+                    },
+                    {
+                        element: <LogoutPage />,
+                        path: '/logout'
                     },
                     {
                         element: <Root />,
