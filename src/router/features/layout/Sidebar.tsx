@@ -68,10 +68,10 @@ export default function Sidebar() {
                     )}
 
                     {currentUser ? (
-                        <Link draggable={false} to={'/mashup/upload'}>
+                        <Link draggable={false} to={'/playlist/create'}>
                             <AddIcon
                                 color={
-                                    location.pathname === '/mashup/upload'
+                                    location.pathname === '/playlist/create'
                                         ? 'primary'
                                         : 'onSurfaceVariant'
                                 }
@@ -89,8 +89,7 @@ export default function Sidebar() {
                                     sideOffset={64}
                                 >
                                     <p>
-                                        Зарегистрируйся, чтобы иметь возможность загружать свои
-                                        мэшапы
+                                        Зарегистрируйся, чтобы иметь возможность создавать плейлисты
                                     </p>
                                 </TooltipContent>
                             </Tooltip>

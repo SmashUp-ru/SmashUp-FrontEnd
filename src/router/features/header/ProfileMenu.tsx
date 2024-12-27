@@ -10,6 +10,7 @@ import GavelIcon from '@/components/icons/Gavel.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
 import { useGlobalStore } from '@/store/global.ts';
+import AddMashupIcon from '@/components/icons/AddMashup.tsx';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -45,6 +46,9 @@ export default function ProfileMenu() {
                     sideOffset={18}
                     className='flex flex-col gap-y-7 rounded-3xl bg-surfaceVariant border-none p-2'
                 >
+                    <Link to='/mashup/upload'>
+                        <AddMashupIcon />
+                    </Link>
                     <Link to='/mashup/moderation'>
                         <GavelIcon />
                     </Link>
