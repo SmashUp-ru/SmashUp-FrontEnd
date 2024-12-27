@@ -29,9 +29,10 @@ import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import UpdateToast from '@/router/features/toasts/update.tsx';
 import { useNavigate } from 'react-router-dom';
+import { ErrorResponse } from '@/types/api/default.ts';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
@@ -115,13 +116,27 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
                     navigate(`/playlist/${r.data.response.id}`);
                 }
             })
-            .catch((e: AxiosError) => {
-                if (e.status === 400) {
+            .catch((e: AxiosError<ErrorResponse>) => {
+                if (e.status === 403) {
                     toast({
                         element: (
                             <ErrorToast
                                 field='создании плейлиста'
                                 text='У вас уже есть 10 плейлистов.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
+
+                if (e.status === 400) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                field='создании плейлиста'
+                                text={`Что-то не так с форматом файла: ${e.response && e.response.data.message}`}
                             />
                         ),
                         duration: 2000,

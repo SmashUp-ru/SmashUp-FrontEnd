@@ -21,7 +21,7 @@ import { useState } from 'react';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
 import { AxiosError } from 'axios';
 import ErrorToast from '@/router/features/toasts/error.tsx';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 
 interface EmailDialogProps {
     email: string | null;

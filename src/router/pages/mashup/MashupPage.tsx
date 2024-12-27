@@ -8,7 +8,7 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import MashupPageSkeleton from '@/router/pages/mashup/MashupPageSkeleton.tsx';
 import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts';
 import { useState } from 'react';

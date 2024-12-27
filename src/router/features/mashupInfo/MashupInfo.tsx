@@ -6,7 +6,7 @@ import ShareIcon from '@/components/icons/Share.tsx';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import { useMashupStore } from '@/store/entities/mashup.ts';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';

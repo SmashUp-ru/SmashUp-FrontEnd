@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useUserPageData } from '@/router/features/user/useUserPageData.ts';
 import { useState } from 'react';
 import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';

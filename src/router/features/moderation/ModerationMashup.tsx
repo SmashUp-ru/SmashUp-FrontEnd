@@ -13,7 +13,7 @@ import { Track } from '@/store/entities/track.ts';
 import { cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 // import { UnpublishedMashup } from '@/store/moderation.ts';
 //

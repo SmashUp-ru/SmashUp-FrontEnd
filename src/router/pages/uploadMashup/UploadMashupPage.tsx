@@ -30,9 +30,9 @@ import {
 import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
 import { User } from '@/store/entities/user';
 import { isModerator } from '@/lib/bitmask';
-import { useBase64 } from '@/hooks/useBase64';
+import { useBase64 } from '@/router/shared/hooks/useBase64';
 import { useGlobalStore } from '@/store/global.ts';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 
 export default function UploadMashupPage() {

@@ -7,7 +7,7 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';

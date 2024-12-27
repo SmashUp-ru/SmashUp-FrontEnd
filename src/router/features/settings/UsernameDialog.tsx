@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/Cancel.tsx';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
-import { useToast } from '@/hooks/use-toast.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { AxiosError } from 'axios';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 import { useState } from 'react';
