@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/form.tsx';
 import { AxiosError, AxiosResponse } from 'axios';
 import { CreatePlaylistResponse } from '@/types/api/playlist.ts';
-import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
@@ -37,6 +37,7 @@ import { ErrorResponse } from '@/types/api/default.ts';
 interface AddPlaylistDialogProps {
     redirect?: boolean;
     children: ReactNode;
+    existingPlaylist?: Playlist;
 }
 
 const formSchema = z.object({
@@ -45,7 +46,11 @@ const formSchema = z.object({
     basedImageFile: z.string().optional()
 });
 
-export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDialogProps) {
+export default function AddPlaylistDialog({
+    redirect,
+    children,
+    existingPlaylist
+}: AddPlaylistDialogProps) {
     const { toast } = useToast();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -59,8 +64,8 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            description: '',
+            name: existingPlaylist ? existingPlaylist.name : '',
+            description: existingPlaylist ? existingPlaylist.description : '',
             basedImageFile: ''
         }
     });
@@ -87,7 +92,7 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
         }
 
         axiosSession
-            .post('/playlist/create', {
+            .post(`/playlist/${existingPlaylist ? `edit?id=${existingPlaylist.id}` : 'create'}`, {
                 name: values.name,
                 description: values.description,
                 basedImageFile: values.basedImageFile
@@ -97,10 +102,15 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
             .then((r: AxiosResponse<CreatePlaylistResponse>) => {
                 if (currentUser) {
                     updatePlaylistById(r.data.response.id, r.data.response);
-                    updateUserById(currentUser.id, {
-                        playlists: [...currentUser.playlists, r.data.response.id]
-                    });
-                    getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+
+                    if (!existingPlaylist) {
+                        updateUserById(currentUser.id, {
+                            playlists: [...currentUser.playlists, r.data.response.id]
+                        });
+                        getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                    } else {
+                        window.location.reload();
+                    }
                 }
 
                 toast({

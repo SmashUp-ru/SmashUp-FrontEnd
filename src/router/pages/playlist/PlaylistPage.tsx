@@ -18,6 +18,8 @@ import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
+import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
+import EditIcon from '@/components/icons/Edit.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -157,6 +159,14 @@ export default function PlaylistPage() {
 
                         {currentUser && playlist.authorsIds.includes(currentUser.id) && (
                             <DeletePlaylistDialog playlist={playlist} />
+                        )}
+
+                        {currentUser && playlist.authorsIds.includes(currentUser.id) && (
+                            <AddPlaylistDialog existingPlaylist={playlist}>
+                                <Button variant='ghost' size='icon'>
+                                    <EditIcon />
+                                </Button>
+                            </AddPlaylistDialog>
                         )}
                     </div>
                 </div>
