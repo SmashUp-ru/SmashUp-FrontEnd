@@ -22,6 +22,8 @@ import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import UpdateToast from '@/router/features/toasts/update.tsx';
 import ErrorBaseToast from '@/router/features/toasts/ErrorBase.tsx';
+import BackIcon from '@/components/icons/Back.tsx';
+import CopiedToast from '@/router/features/toasts/copied.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -111,14 +113,36 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                         </DropdownMenuSub>
                     )}
 
-                    <DropdownMenuItem className='flex items-center gap-x-[14.4px]'>
-                        <ShareIcon />
+                    <DropdownMenuItem
+                        className='flex items-center gap-x-[14.4px]'
+                        onClick={() => {}}
+                    >
+                        <BackIcon />
                         <span>Добавить в очередь</span>
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem className='flex items-center gap-x-[14.4px]'>
+                    <DropdownMenuItem
+                        className='flex items-center gap-x-[14.4px]'
+                        onClick={() => {
+                            navigator.clipboard
+                                .writeText(
+                                    `${import.meta.env.VITE_FRONTEND_URL}/mashup/${mashup.id}`
+                                )
+                                .then(() => {
+                                    toast({
+                                        element: (
+                                            <CopiedToast
+                                                img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                                name={mashup.name}
+                                            />
+                                        ),
+                                        duration: 2000
+                                    });
+                                });
+                        }}
+                    >
                         <ShareIcon />
-                        <span>Поделиться {mashup.name}</span>
+                        <span>Поделиться</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

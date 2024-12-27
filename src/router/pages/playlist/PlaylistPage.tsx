@@ -4,7 +4,6 @@ import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
@@ -129,9 +128,6 @@ export default function PlaylistPage() {
                             </Button>
                         )}
 
-                        <Button variant='ghost' size='icon'>
-                            <HideIcon />
-                        </Button>
                         <Button
                             variant='ghost'
                             size='icon'
