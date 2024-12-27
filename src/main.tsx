@@ -72,10 +72,6 @@ const router = createBrowserRouter([
                         path: '/favorites'
                     },
                     {
-                        element: <div>В разработке</div>,
-                        path: '/playlist/create'
-                    },
-                    {
                         element: <PlaylistPage />,
                         path: '/playlist/:playlistId'
                     },

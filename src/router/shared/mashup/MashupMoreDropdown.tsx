@@ -15,6 +15,7 @@ import AddIcon from '@/components/icons/Add.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { ReactNode } from 'react';
+import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -33,9 +34,13 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent sideOffset={8}>
-                                <DropdownMenuItem className='flex items-center gap-x-[14.4px]'>
-                                    <AddIcon color='onSurface' />
-                                    <span>Создать плейлист</span>
+                                <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+                                    <AddPlaylistDialog>
+                                        <div className='flex items-center gap-x-[14.4px]'>
+                                            <AddIcon color='onSurface' />
+                                            <span>Создать плейлист</span>
+                                        </div>
+                                    </AddPlaylistDialog>
                                 </DropdownMenuItem>
 
                                 <DropdownMenuItem className='flex items-center justify-between'>
@@ -60,6 +65,11 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
+
+                    <DropdownMenuItem className='flex items-center gap-x-[14.4px]'>
+                        <ShareIcon />
+                        <span>Добавить в очередь</span>
+                    </DropdownMenuItem>
 
                     <DropdownMenuItem className='flex items-center gap-x-[14.4px]'>
                         <ShareIcon />

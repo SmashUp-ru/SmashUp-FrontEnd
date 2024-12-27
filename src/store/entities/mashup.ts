@@ -16,6 +16,7 @@ export interface Mashup {
     bitrate: number;
     duration: number;
     liked: boolean;
+    inYourPlaylists: number[];
 }
 
 export const useMashupStore = createEntityStore<Mashup>('mashup/get');

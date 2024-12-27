@@ -7,6 +7,7 @@ import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePlayerStore } from '@/store/player.ts';
 import AddIcon from '@/components/icons/Add.tsx';
+import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 
 export default function Sidebar() {
     const location = useLocation();
@@ -68,15 +69,9 @@ export default function Sidebar() {
                     )}
 
                     {currentUser ? (
-                        <Link draggable={false} to={'/playlist/create'}>
-                            <AddIcon
-                                color={
-                                    location.pathname === '/playlist/create'
-                                        ? 'primary'
-                                        : 'onSurfaceVariant'
-                                }
-                            />
-                        </Link>
+                        <AddPlaylistDialog redirect>
+                            <AddIcon color='onSurfaceVariant' />
+                        </AddPlaylistDialog>
                     ) : (
                         <TooltipProvider>
                             <Tooltip>
