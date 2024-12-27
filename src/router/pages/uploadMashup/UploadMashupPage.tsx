@@ -758,7 +758,7 @@ export default function UploadMashupPage() {
                                 Я прочитал(-а) и согласен(-на) с условиями{' '}
                                 <Link
                                     className='text-primary'
-                                    to='/privacy_policy'
+                                    to='/user_agreement'
                                     draggable={false}
                                 >
                                     пользовательского соглашения
