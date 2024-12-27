@@ -7,8 +7,8 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button.tsx';
-import { ReactNode } from 'react';
-import { cn, convertToBase64 } from '@/lib/utils.ts';
+import { ReactNode, useState } from 'react';
+import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
@@ -23,6 +23,15 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form.tsx';
+import { AxiosError, AxiosResponse } from 'axios';
+import { CreatePlaylistResponse } from '@/types/api/playlist.ts';
+import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import { useUserStore } from '@/store/entities/user.ts';
+import { useGlobalStore } from '@/store/global.ts';
+import ErrorToast from '@/router/features/toasts/error.tsx';
+import { useToast } from '@/hooks/use-toast.ts';
+import UpdateToast from '@/router/features/toasts/update.tsx';
+import { useNavigate } from 'react-router-dom';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
@@ -36,6 +45,14 @@ const formSchema = z.object({
 });
 
 export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDialogProps) {
+    const { toast } = useToast();
+    const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
+
+    const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
+    const updateUserById = useUserStore((state) => state.updateOneById);
+    const currentUser = useGlobalStore((state) => state.currentUser);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -46,19 +63,86 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values);
-        if (redirect) {
-            console.log('redirect');
+        if (values.basedImageFile) {
+            const image = new Image();
+            image.src = values.basedImageFile;
+            image.onload = () => {
+                if (image.naturalHeight < 800 || image.naturalWidth < 800) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                field='загрузки обложки'
+                                text='Обложка должна быть размером больше 800px.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
+            };
         }
+
+        axiosSession
+            .post('/playlist/create', {
+                name: values.name,
+                description: values.description,
+                basedImageFile: values.basedImageFile
+                    ? values.basedImageFile.substring(values.basedImageFile.indexOf(',') + 1)
+                    : undefined
+            })
+            .then((r: AxiosResponse<CreatePlaylistResponse>) => {
+                if (currentUser) {
+                    updatePlaylistById(r.data.response.id, r.data.response);
+                    updateUserById(currentUser.id, {
+                        playlists: [...currentUser.playlists, r.data.response.id]
+                    });
+                }
+
+                toast({
+                    element: (
+                        <UpdateToast
+                            image={values.basedImageFile}
+                            field='Плейлист'
+                            text='успешно создан!'
+                        />
+                    ),
+                    duration: 2000
+                });
+
+                setOpen(false);
+                if (redirect) {
+                    navigate(`/playlist/${r.data.response.id}`);
+                }
+            })
+            .catch((e: AxiosError) => {
+                if (e.status === 400) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                field='создании плейлиста'
+                                text='У вас уже есть 10 плейлистов.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
+
+                toast({
+                    element: <ErrorToast field='создании плейлиста' text='Что-то пошло не так.' />,
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+            });
     }
 
     const imageLink = form.watch('basedImageFile');
     const defaultImageLink = 'https://api.smashup.ru/uploads/playlist/default_800x800.png';
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent className='w-fit'>
                 <Form {...form}>

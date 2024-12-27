@@ -11,7 +11,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
 import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
-import UpdateAvatar from '@/router/features/toasts/UpdateAvatar.tsx';
+import UpdateAvatar from '@/router/features/settings/UpdateAvatar.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
 import {
     Tooltip,
