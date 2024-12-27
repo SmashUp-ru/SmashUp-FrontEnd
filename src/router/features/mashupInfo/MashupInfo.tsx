@@ -19,6 +19,9 @@ import AltIcon from '@/components/icons/Alt.tsx';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { useState } from 'react';
+import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 
 export default function MashupInfo() {
     const { toast } = useToast();
@@ -32,11 +35,12 @@ export default function MashupInfo() {
     const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
 
-    const { mashup, tracks, isLiked, setIsLiked } = useMashupInfoData();
+    const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData();
+    const [imageLoaded, setImageLoaded] = useState(false);
 
-    if (!info || !mashup) {
-        return;
-    }
+    if (!info) return null;
+    if (isLoading) return <MashupInfoSkeleton />;
+    if (!mashup) return null;
 
     return (
         <div
@@ -56,11 +60,13 @@ export default function MashupInfo() {
                 </Button>
             </div>
 
+            {!imageLoaded && <Skeleton className='w-[350px] h-[350px] rounded-[30px]' />}
             <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
-                alt='track name'
-                className='w-[350px] h-[350px] rounded-[30px]'
+                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`}
+                alt={mashup.name}
+                className={cn('w-[350px] h-[350px] rounded-[30px]', !imageLoaded && 'hidden')}
                 draggable={false}
+                onLoad={() => setImageLoaded(true)}
             />
 
             <div className='flex flex-col w-full'>
