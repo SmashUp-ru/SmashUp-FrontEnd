@@ -1,4 +1,3 @@
-import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
@@ -21,6 +20,8 @@ import {
     TooltipProvider,
     TooltipTrigger
 } from '@/components/ui/tooltip.tsx';
+import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
+import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -184,9 +185,11 @@ export default function MashupSmallThumb({
                     <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
                         {msToMinutesAndSeconds(mashup.duration)}
                     </span>
-                    <span className='group-hover:block hidden'>
-                        <MoreHorizontalIcon />
-                    </span>
+                    <MashupMoreDropdown mashup={mashup}>
+                        <Button variant='ghost' size='icon' className='w-0 group-hover:w-fit'>
+                            <MoreHorizontalIcon />
+                        </Button>
+                    </MashupMoreDropdown>
                 </div>
             </div>
         </div>

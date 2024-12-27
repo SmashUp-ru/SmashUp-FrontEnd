@@ -22,6 +22,7 @@ import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoDat
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
+import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
 
 export default function MashupInfo() {
     const { toast } = useToast();
@@ -164,9 +165,11 @@ export default function MashupInfo() {
                     <ShareIcon />
                 </Button>
 
-                <Button variant='ghost' size='icon'>
-                    <MoreHorizontalIcon size={32} />
-                </Button>
+                <MashupMoreDropdown mashup={mashup}>
+                    <Button variant='ghost' size='icon' className=''>
+                        <MoreHorizontalIcon size={32} />
+                    </Button>
+                </MashupMoreDropdown>
             </div>
 
             <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
