@@ -53,6 +53,8 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const updateUserById = useUserStore((state) => state.updateOneById);
     const currentUser = useGlobalStore((state) => state.currentUser);
+    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+    const getUserById = useUserStore((state) => state.getOneById);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -98,6 +100,7 @@ export default function AddPlaylistDialog({ redirect, children }: AddPlaylistDia
                     updateUserById(currentUser.id, {
                         playlists: [...currentUser.playlists, r.data.response.id]
                     });
+                    getUserById(currentUser.id).then((r) => updateCurrentUser(r));
                 }
 
                 toast({

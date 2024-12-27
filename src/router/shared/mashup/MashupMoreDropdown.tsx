@@ -45,14 +45,19 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent sideOffset={8}>
-                                    <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                                        <AddPlaylistDialog>
+                                    <AddPlaylistDialog>
+                                        <DropdownMenuItem
+                                            onSelect={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <div className='flex items-center gap-x-[14.4px]'>
                                                 <AddIcon color='onSurface' />
                                                 <span>Создать плейлист</span>
                                             </div>
-                                        </AddPlaylistDialog>
-                                    </DropdownMenuItem>
+                                        </DropdownMenuItem>
+                                    </AddPlaylistDialog>
 
                                     {playlists.map((playlist) => (
                                         <DropdownMenuItem
