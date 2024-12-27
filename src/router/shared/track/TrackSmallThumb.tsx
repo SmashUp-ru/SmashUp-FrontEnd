@@ -15,7 +15,7 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
             key={track.id}
             className={cn(
                 'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
-                selected ? 'bg-badge' : 'hover:bg-hover'
+                selected ? 'bg-badge' : 'hover:bg-onPrimary'
             )}
             onClick={onClick}
         >
@@ -48,7 +48,7 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
                 </span>
             </div>
 
-            <Button variant='ghost' size='icon'>
+            <Button variant='ghost' size='icon' className='hidden group-hover:block'>
                 <MoreHorizontalIcon />
             </Button>
         </div>

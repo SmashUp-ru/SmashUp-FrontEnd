@@ -22,6 +22,9 @@ export default {
         'hover:text-error',
         'hover:bg-error',
         'text-vk',
+		'bg-hover',
+		'hover:bg-hover',
+		'group-hover:bg-hover',
 
         'h-[calc(100%-148px)]',
         'h-[calc(100%-32px)]'
