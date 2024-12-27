@@ -24,6 +24,7 @@ import UpdateToast from '@/router/features/toasts/update.tsx';
 import ErrorBaseToast from '@/router/features/toasts/ErrorBase.tsx';
 import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
+import { usePlaylistStore } from '@/store/entities/playlist.ts';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -33,6 +34,8 @@ interface MashupMoreDropdownProps {
 export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const currentUser = useGlobalStore((state) => state.currentUser);
+    const getPlaylistById = usePlaylistStore((state) => state.getOneById);
+    const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const { playlists } = useCurrentUserPlaylists();
 
     return (
@@ -70,9 +73,29 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                 );
                                                 axiosSession
                                                     .post(
-                                                        `/playlist/${includes ? 'remove' : 'add'}_mashup?playlistId=${playlist.id}&id=${mashup.id}`
+                                                        `/playlist/${includes ? 'remove' : 'add'}_mashup?id=${playlist.id}&mashup=${mashup.id}`
                                                     )
                                                     .then(() => {
+                                                        getPlaylistById(playlist.id).then((r) => {
+                                                            if (includes) {
+                                                                updatePlaylistById(r.id, {
+                                                                    mashups: [
+                                                                        ...r.mashups.filter(
+                                                                            (mashupId) =>
+                                                                                mashupId !==
+                                                                                mashup.id
+                                                                        )
+                                                                    ]
+                                                                });
+                                                            } else {
+                                                                updatePlaylistById(r.id, {
+                                                                    mashups: [
+                                                                        ...r.mashups,
+                                                                        mashup.id
+                                                                    ]
+                                                                });
+                                                            }
+                                                        });
                                                         toast({
                                                             element: (
                                                                 <UpdateToast
