@@ -182,12 +182,15 @@ export default function MashupSmallThumb({
                 )}
 
                 <div className='w-10 flex items-center justify-center'>
-                    <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
-                        {msToMinutesAndSeconds(mashup.duration)}
-                    </span>
                     <MashupMoreDropdown mashup={mashup}>
-                        <Button variant='ghost' size='icon' className='w-0 group-hover:w-fit'>
-                            <MoreHorizontalIcon />
+                        <Button variant='ghost' size='icon'>
+                            <div className='hidden group-hover:block'>
+                                <MoreHorizontalIcon />
+                            </div>
+
+                            <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
+                                {msToMinutesAndSeconds(mashup.duration)}
+                            </span>
                         </Button>
                     </MashupMoreDropdown>
                 </div>

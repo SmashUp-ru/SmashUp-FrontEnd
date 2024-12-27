@@ -50,8 +50,12 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
             </div>
 
             <TrackMoreDropdown track={track}>
-                <Button variant='ghost' size='icon' className='w-0 group-hover:w-fit'>
-                    <MoreHorizontalIcon />
+                <Button variant='ghost' size='icon'>
+                    <div className='hidden group-hover:block'>
+                        <MoreHorizontalIcon />
+                    </div>
+
+                    <div className='group-hover:hidden w-6 h-6 min-w-6 min-h-6 bg-transparent' />
                 </Button>
             </TrackMoreDropdown>
         </div>
