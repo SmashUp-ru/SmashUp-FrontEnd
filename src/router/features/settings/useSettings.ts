@@ -1,12 +1,12 @@
-import { useGlobalStore } from '@/store/global.ts';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { GetSettingsResponse } from '@/types/api/settings.ts';
+import { useSettingsStore } from '@/store/settings.ts';
 
 export function useSettings() {
-    const settings = useGlobalStore((state) => state.settings);
-    const updateSettings = useGlobalStore((state) => state.updateSettings);
+    const settings = useSettingsStore((state) => state.settingsBitmask);
+    const updateSettings = useSettingsStore((state) => state.updateSettingsBitmask);
 
     const [isSettingsLoading, setSettingsLoading] = useState(settings === null);
 

@@ -13,15 +13,18 @@ import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
 import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 import UpdateAvatar from '@/router/features/toasts/UpdateAvatar.tsx';
+import { useSettingsStore } from '@/store/settings.ts';
 
 export default function SettingsPage() {
     const { settings, isLoading, email } = useSettingsPageData();
+
+    const bitrate = useSettingsStore((state) => state.bitrate);
+    const updateBitrate = useSettingsStore((state) => state.updateBitrate);
 
     const currentUser = useGlobalStore((state) => state.currentUser);
 
     const [allowMultisessions, setAllowMultisessions] = useState(false);
     const [showExplicit, setShowExplicit] = useState(false);
-    const [bitrate, setBitrate] = useState(3);
 
     useEffect(() => {
         if (settings !== null) {
@@ -85,7 +88,7 @@ export default function SettingsPage() {
                                         step={1}
                                         value={[bitrate]}
                                         showMarks={true}
-                                        onValueChange={(v) => setBitrate(v[0])}
+                                        onValueChange={(v) => updateBitrate(v[0])}
                                         className='z-30'
                                         rangeClassName='bg-primary'
                                         thumbClassName='bg-onSurface h-[30px] w-2.5 rounded-[2.8px]'

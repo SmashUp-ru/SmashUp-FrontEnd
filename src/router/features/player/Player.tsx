@@ -3,6 +3,7 @@ import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 
 const Player: React.FC = () => {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
@@ -14,6 +15,7 @@ const Player: React.FC = () => {
     const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const changedSeek = usePlayerStore((state) => state.changedSeek);
+    const bitrate = useSettingsStore((state) => state.bitrate);
 
     const { next, prev, play } = usePlayer();
 
@@ -68,7 +70,7 @@ const Player: React.FC = () => {
 
     return (
         <ReactHowler
-            src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3`}
+            src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
             playing={isPlaying}
             onEnd={handleOnEnd}
             loop={loop === 'mashup'}
