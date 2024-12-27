@@ -2,7 +2,6 @@ import { useSettingsPageData } from '@/router/features/settings/useSettingsPageD
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
-import { Link } from 'react-router-dom';
 import VKIcon from '@/components/icons/VK.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
@@ -14,6 +13,12 @@ import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 import UpdateAvatar from '@/router/features/toasts/UpdateAvatar.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from '@/components/ui/tooltip.tsx';
 
 export default function SettingsPage() {
     const { settings, isLoading, email } = useSettingsPageData();
@@ -56,20 +61,32 @@ export default function SettingsPage() {
                         <PasswordDialog email={email} />
 
                         <div className='grid grid-cols-3 gap-x-20'>
-                            <Link to='#' className='flex items-center justify-between'>
-                                <div className='flex gap-x-[25px] items-center'>
-                                    <VKIcon size={32} />
-                                    <div className='flex flex-col'>
-                                        <span className='font-medium text-onSurfaceVariant'>
-                                            Не подключено
-                                        </span>
-                                        <span className='font-bold text-[24px] text-onSurface'>
-                                            VK
-                                        </span>
-                                    </div>
-                                </div>
-                                <ChevronRightIcon width={13} height={23} />
-                            </Link>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <div className='flex items-center justify-between opacity-50'>
+                                            <div className='flex gap-x-[25px] items-center'>
+                                                <VKIcon size={32} />
+                                                <div className='flex flex-col items-start'>
+                                                    <span className='font-medium text-onSurfaceVariant'>
+                                                        Не подключено
+                                                    </span>
+                                                    <span className='font-bold text-[24px] text-onSurface'>
+                                                        VK
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <ChevronRightIcon width={13} height={23} />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                        className='max-w-[300px] text-center'
+                                        side='right'
+                                    >
+                                        <p>Ещё не готово, но скоро будет!</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
 
