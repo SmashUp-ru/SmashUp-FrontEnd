@@ -2,8 +2,12 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function ChangePasswordConfirmPage() {
+    const updateToken = useGlobalStore((state) => state.updateToken);
+    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+
     const [searchParams] = useSearchParams();
 
     const [success, setSuccess] = useState<boolean | null>(null);
@@ -14,6 +18,11 @@ export default function ChangePasswordConfirmPage() {
                 .post(`/user/change_password/confirm?id=${searchParams.get('id')}`)
                 .then(() => {
                     setSuccess(true);
+                    localStorage.removeItem('smashup_token');
+                    sessionStorage.removeItem('smashup_token');
+                    localStorage.removeItem('player-storage');
+                    updateToken('');
+                    updateCurrentUser(null);
                 })
                 .catch(() => {
                     setSuccess(false);
@@ -42,11 +51,19 @@ export default function ChangePasswordConfirmPage() {
                     </span>
                 </div>
 
-                <Button asChild className='w-full'>
-                    <Link draggable={false} to='/'>
-                        Вернуться на главную
-                    </Link>
-                </Button>
+                {success ? (
+                    <Button asChild className='w-full'>
+                        <Link draggable={false} to='/login'>
+                            Авторизоваться заново
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button asChild className='w-full'>
+                        <Link draggable={false} to='/'>
+                            Вернуться на главную
+                        </Link>
+                    </Button>
+                )}
             </div>
         </div>
     );

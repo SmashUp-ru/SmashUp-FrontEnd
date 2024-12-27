@@ -12,7 +12,10 @@ import DoorIcon from '@/components/icons/Door.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 
 export default function ProfileMenu() {
-    const { currentUser, updateCurrentUser, updateToken } = useGlobalStore();
+    const currentUser = useGlobalStore((state) => state.currentUser);
+    const updateToken = useGlobalStore((state) => state.updateToken);
+    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+
     const navigate = useNavigate();
     // const { isLoading } = useGlobalStore();
     //
