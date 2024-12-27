@@ -14,6 +14,13 @@ import { useEffect, useState } from 'react';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
+import { useGlobalStore } from '@/store/global.ts';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from '@/components/ui/tooltip.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -30,9 +37,12 @@ export default function MashupSmallThumb({
     playlistName,
     queueId
 }: MashupThumbProps) {
+    const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
 
-    const { isPlaying, queue, queueIndex } = usePlayerStore();
     const { pause, playMashup } = usePlayer();
 
     const [isLiked, setIsLiked] = useState(false);
@@ -110,40 +120,64 @@ export default function MashupSmallThumb({
             </div>
 
             <div className='flex items-center gap-x-[34px]'>
-                {isLiked ? (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        onClick={() => {
-                            axiosSession
-                                .post(
-                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
-                                )
-                                .then(() => {
-                                    setIsLiked(false);
-                                    updateMashupById(mashup.id, { liked: false });
-                                });
-                        }}
-                    >
-                        <LikeFilledIcon width={20} height={17} />
-                    </Button>
+                {currentUser ? (
+                    isLiked ? (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                axiosSession
+                                    .post(
+                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
+                                    )
+                                    .then(() => {
+                                        setIsLiked(false);
+                                        updateMashupById(mashup.id, { liked: false });
+                                    });
+                            }}
+                        >
+                            <LikeFilledIcon width={20} height={17} />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                axiosSession
+                                    .post(
+                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
+                                    )
+                                    .then(() => {
+                                        setIsLiked(true);
+                                        updateMashupById(mashup.id, { liked: true });
+                                    });
+                            }}
+                        >
+                            <LikeOutlineIcon color='onSurface' width={20} height={17} />
+                        </Button>
+                    )
                 ) : (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        onClick={() => {
-                            axiosSession
-                                .post(
-                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
-                                )
-                                .then(() => {
-                                    setIsLiked(true);
-                                    updateMashupById(mashup.id, { liked: true });
-                                });
-                        }}
-                    >
-                        <LikeOutlineIcon color='onSurface' width={20} height={17} />
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <LikeOutlineIcon
+                                    color='onSurfaceVariant/50'
+                                    width={20}
+                                    height={17}
+                                />
+                            </TooltipTrigger>
+                            <TooltipContent
+                                className='max-w-[300px] text-center'
+                                side='right'
+                                sideOffset={64}
+                            >
+                                <p>
+                                    Зарегистрируйся, чтобы иметь возможность сохранять любимые
+                                    мэшапы
+                                </p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 )}
 
                 <div className='w-10 flex items-center justify-center'>
