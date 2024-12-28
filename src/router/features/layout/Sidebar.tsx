@@ -50,7 +50,7 @@ export default function Sidebar() {
                         </Link>
                     ) : (
                         <TooltipProvider>
-                            <Tooltip>
+                            <Tooltip delayDuration={100}>
                                 <TooltipTrigger>
                                     <LikeOutlineIcon color='onSurfaceVariant/50' />
                                 </TooltipTrigger>
@@ -74,7 +74,7 @@ export default function Sidebar() {
                         </AddPlaylistDialog>
                     ) : (
                         <TooltipProvider>
-                            <Tooltip>
+                            <Tooltip delayDuration={100}>
                                 <TooltipTrigger>
                                     <AddIcon color='onSurfaceVariant/50' />
                                 </TooltipTrigger>
