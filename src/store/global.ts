@@ -23,6 +23,9 @@ interface GlobalState {
     updateToken: (newToken: string | undefined) => void;
 
     getToken: () => string | null;
+
+    allGenres: string[] | null;
+    updateAllGenres: (newAllGenres: string[] | null) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set, get) => ({
@@ -46,7 +49,10 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
     token: sessionStorage.getItem('smashup_token') || localStorage.getItem('smashup_token'),
     updateToken: (newToken: string | undefined) => set(() => ({ token: newToken })),
 
-    getToken: () => get().token
+    getToken: () => get().token,
+
+    allGenres: null,
+    updateAllGenres: (newAllGenres: string[] | null) => set({ allGenres: newAllGenres })
 }));
 
 export function getToken(): string | null {

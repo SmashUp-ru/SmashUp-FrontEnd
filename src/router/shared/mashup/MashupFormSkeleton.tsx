@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import TrackSmallThumbSkeleton from '@/router/shared/track/TrackSmallThumbSkeleton.tsx';
 
-export default function UploadMashupSkeletonPage() {
+export default function MashupFormSkeleton() {
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
             <Skeleton className='w-[308px] h-[38px] rounded-[13px]' />
