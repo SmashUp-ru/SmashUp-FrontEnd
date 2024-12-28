@@ -34,7 +34,7 @@ const Player: React.FC = () => {
                 if (player.current) {
                     updateSeek(player.current.seek() * 1000);
                 }
-            }, 100);
+            }, 500);
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }

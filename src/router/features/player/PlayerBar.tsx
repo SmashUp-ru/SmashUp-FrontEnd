@@ -17,6 +17,7 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
+import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -27,8 +28,7 @@ export default function PlayerBar() {
     const updateLoop = usePlayerStore((state) => state.updateLoop);
     const info = usePlayerStore((state) => state.info);
     const updateInfo = usePlayerStore((state) => state.updateInfo);
-    const seek = usePlayerStore((state) => state.seek);
-    const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
+
     const volume = usePlayerStore((state) => state.volume);
     const updateVolume = usePlayerStore((state) => state.updateVolume);
     const shuffle = usePlayerStore((state) => state.shuffle);
@@ -47,14 +47,6 @@ export default function PlayerBar() {
 
     const [mashup, setMashup] = useState<Mashup | null>(null);
     const [isLiked, setIsLiked] = useState(false);
-
-    const [localSeekChanging, setLocalSeekChanging] = useState(false);
-    const [localSeek, setLocalSeek] = useState(0);
-    useEffect(() => {
-        if (!localSeekChanging) {
-            setLocalSeek(seek);
-        }
-    }, [seek]);
 
     useEffect(() => {
         if (queue && queueIndex !== null && queueIndex >= 0 && queueIndex < queue.length) {
@@ -76,21 +68,7 @@ export default function PlayerBar() {
 
     return (
         <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
-            <div className='absolute top-0 w-full pr-8'>
-                <Slider
-                    min={0}
-                    max={mashup.duration}
-                    value={[localSeek]}
-                    onValueChange={(value) => {
-                        setLocalSeekChanging(true);
-                        setLocalSeek(value[0]);
-                    }}
-                    onValueCommit={(value) => {
-                        updateChangedSeek(value[0]);
-                        setLocalSeekChanging(false);
-                    }}
-                />
-            </div>
+            <MashupSeekSlider mashup={mashup} />
 
             <div className='w-full flex justify-between items-center'>
                 {/*левая часть*/}
