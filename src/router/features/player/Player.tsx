@@ -20,7 +20,7 @@ const Player: React.FC = () => {
     const { next, prev, play } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
-    const raf = useRef<number | null>(null);
+    const intervalRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (player.current) {
@@ -30,26 +30,21 @@ const Player: React.FC = () => {
 
     useEffect(() => {
         if (isPlaying) {
-            const updateTime = () => {
+            intervalRef.current = window.setInterval(() => {
                 if (player.current) {
                     updateSeek(player.current.seek() * 1000);
                 }
-                if (isPlaying) {
-                    raf.current = requestAnimationFrame(updateTime);
-                }
-            };
-
-            raf.current = requestAnimationFrame(updateTime);
-        } else if (raf.current) {
-            cancelAnimationFrame(raf.current);
+            }, 100);
+        } else if (intervalRef.current) {
+            clearInterval(intervalRef.current);
         }
 
         return () => {
-            if (raf.current) {
-                cancelAnimationFrame(raf.current);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
             }
         };
-    }, [isPlaying]);
+    }, [isPlaying, updateSeek]);
 
     const handleOnEnd = () => {
         if (queueIndex === queue.length - 1) {
