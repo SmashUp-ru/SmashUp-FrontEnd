@@ -134,7 +134,13 @@ export default function UserPage() {
 
                 {mashups.length > 0 && mashups[mashups.length - 1] && (
                     <Section title='Недавний релиз'>
-                        <MashupThumb mashup={mashups[mashups.length - 1]} />
+                        <MashupThumb
+                            mashup={mashups[mashups.length - 1]}
+                            playlist={[mashups[mashups.length - 1].id]}
+                            indexInPlaylist={0}
+                            playlistName={`Недавний релиз ${user.username}`}
+                            queueId={`user/${user.username}/tracks/recent`}
+                        />
                     </Section>
                 )}
 
