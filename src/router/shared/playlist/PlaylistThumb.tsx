@@ -5,6 +5,7 @@ import { Playlist } from '@/store/entities/playlist.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
+import { zip } from '@/lib/utils.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -67,15 +68,17 @@ export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbPro
                     {playlist.name}
                 </Link>
                 <div className='flex items-center gap-x-2'>
-                    {playlist.authors.map((author, index) => (
-                        <Link
-                            key={index}
-                            to={`/user/${author}`}
-                            className='font-medium text-lg text-onSurfaceVariant truncate'
-                        >
-                            {author}
-                        </Link>
-                    ))}
+                    {zip([playlist.authorsIds, playlist.authors]).map(
+                        ([authorId, author], index) => (
+                            <Link
+                                key={index}
+                                to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
+                                className='font-medium text-lg text-onSurfaceVariant truncate'
+                            >
+                                {author}
+                            </Link>
+                        )
+                    )}
                 </div>
             </div>
         </div>
