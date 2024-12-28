@@ -76,30 +76,11 @@ export const usePlayerStore = create<PlayerState>()(
         {
             name: 'player-storage',
 
-            partialize: (state) => {
-                const {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    queue,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    originalQueue,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    queueIndex,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    queueName,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    queueId,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    seek,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    changedSeek, // плеер
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    isPlaying,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    info,
-                    ...rest
-                } = state;
-                return rest;
-            }
+            partialize: (state) => ({
+                volume: state.volume,
+                shuffle: state.shuffle,
+                loop: state.loop
+            })
         }
     )
 );

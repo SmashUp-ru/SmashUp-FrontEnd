@@ -30,14 +30,9 @@ export const useSettingsStore = create<SettingsState>()(
         }),
         {
             name: 'settings-storage',
-            partialize: (state) => {
-                const {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    settingsBitmask,
-                    ...rest
-                } = state;
-                return rest;
-            }
+            partialize: (state) => ({
+                bitrate: state.bitrate
+            })
         }
     )
 );
