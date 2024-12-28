@@ -6,16 +6,14 @@ export function Toaster() {
 
     return (
         <ToastProvider>
-            {toasts.map(function ({ element, ...props }) {
-                return (
-                    <Toast {...props}>
-                        <div className='flex items-center gap-x-2.5'>
-                            {element}
-                            <ToastClose />
-                        </div>
-                    </Toast>
-                );
-            })}
+            {toasts.map(({ id, element, ...props }) => (
+                <Toast key={id} {...props}>
+                    <div className='flex items-center gap-x-2.5'>
+                        {element}
+                        <ToastClose />
+                    </div>
+                </Toast>
+            ))}
             <ToastViewport />
         </ToastProvider>
     );
