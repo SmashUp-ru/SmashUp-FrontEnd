@@ -102,7 +102,7 @@ export default function MashupSmallThumb({
                     </div>
                     <div className='flex-row'>
                         {mashup.authors.map((author, index) => (
-                            <>
+                            <div key={index}>
                                 <Link
                                     key={author}
                                     to={`/user/${author}`}
@@ -114,7 +114,7 @@ export default function MashupSmallThumb({
                                 {index !== mashup.authors.length - 1 && (
                                     <span className='text-onSurfaceVariant'>, </span>
                                 )}
-                            </>
+                            </div>
                         ))}
                     </div>
                 </div>
