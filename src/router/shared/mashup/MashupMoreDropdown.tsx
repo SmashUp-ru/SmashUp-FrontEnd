@@ -66,6 +66,7 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
 
                                     {playlists.map((playlist) => (
                                         <DropdownMenuItem
+                                            key={playlist.id}
                                             className='flex items-center justify-between'
                                             onClick={() => {
                                                 const includes = mashup.inYourPlaylists.includes(
