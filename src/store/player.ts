@@ -77,6 +77,15 @@ export const usePlayerStore = create<PlayerState>()(
             name: 'player-storage',
 
             partialize: (state) => ({
+                queue: state.queue,
+                originalQueue: state.originalQueue,
+                queueIndex: state.queueIndex,
+                queueName: state.queueName,
+                queueId: state.queueId,
+                seek: state.seek,
+                changedSeek: state.seek,
+
+                info: state.info,
                 volume: state.volume,
                 shuffle: state.shuffle,
                 loop: state.loop
