@@ -19,28 +19,27 @@ import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 
 export default function PlayerBar() {
-    const {
-        queue,
-        originalQueue,
-        queueIndex,
-        isPlaying,
-        loop,
-        updateLoop,
-        info,
-        updateInfo,
-        seek,
-        updateChangedSeek,
-        volume,
-        updateVolume,
-        shuffle,
-        updateShuffle,
-        updateQueue,
-        queueId,
-        updateQueueId,
-        updateQueueIndex,
-        queueName,
-        updateQueueName
-    } = usePlayerStore();
+    const queue = usePlayerStore((state) => state.queue);
+    const originalQueue = usePlayerStore((state) => state.originalQueue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const loop = usePlayerStore((state) => state.loop);
+    const updateLoop = usePlayerStore((state) => state.updateLoop);
+    const info = usePlayerStore((state) => state.info);
+    const updateInfo = usePlayerStore((state) => state.updateInfo);
+    const seek = usePlayerStore((state) => state.seek);
+    const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
+    const volume = usePlayerStore((state) => state.volume);
+    const updateVolume = usePlayerStore((state) => state.updateVolume);
+    const shuffle = usePlayerStore((state) => state.shuffle);
+    const updateShuffle = usePlayerStore((state) => state.updateShuffle);
+    const updateQueue = usePlayerStore((state) => state.updateQueue);
+    const queueId = usePlayerStore((state) => state.queueId);
+    const updateQueueId = usePlayerStore((state) => state.updateQueueId);
+    const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
+    const queueName = usePlayerStore((state) => state.queueName);
+    const updateQueueName = usePlayerStore((state) => state.updateQueueName);
+
     const { play, pause, next, prev } = usePlayer();
 
     const getMashupById = useMashupStore((state) => state.getOneById);
