@@ -163,9 +163,7 @@ export default function PlaylistPage() {
 
                         {currentUser && playlist.authorsIds.includes(currentUser.id) && (
                             <AddPlaylistDialog existingPlaylist={playlist}>
-                                <Button variant='ghost' size='icon'>
-                                    <EditIcon />
-                                </Button>
+                                <EditIcon />
                             </AddPlaylistDialog>
                         )}
                     </div>

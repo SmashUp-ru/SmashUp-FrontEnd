@@ -36,20 +36,18 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
     return (
         <Dialog>
             <DialogTrigger>
-                <Button variant='ghost' size='icon'>
-                    <CancelIcon />
-                </Button>
+                <CancelIcon />
             </DialogTrigger>
             <DialogContent className='w-[460px]'>
                 <DialogHeader>
                     <DialogTitle className='p-0'>Вы точно хотите удалить плейлист?</DialogTitle>
-                    <DialogDescription className='m-0 text-[18px] text-onSurfaceVariant font-medium'>
+                    <DialogDescription className='m-0 p-0 text-[18px] text-onSurfaceVariant font-medium'>
                         Это действие нельзя отменить.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <Button
-                        variant='outline'
+                        variant='error'
                         onClick={() => {
                             axiosSession.post(`/playlist/delete?id=${playlist.id}`).then(() => {
                                 toast({
@@ -72,14 +70,14 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
                                     ]
                                 });
                                 getUserById(currentUser.id).then((r) => updateCurrentUser(r));
-                                navigate('/');
+                                navigate(`/user/${currentUser.username}`);
                             });
                         }}
                     >
                         Удалить
                     </Button>
                     <DialogClose>
-                        <Button>Отменить</Button>
+                        <Button variant='outline'>Отменить</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
