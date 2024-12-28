@@ -79,8 +79,9 @@ export default function MashupInfo() {
                     {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
                     {isAlt(mashup.statuses) && <AltIcon />}
                 </div>
-                {mashup.authors.map((author) => (
+                {mashup.authors.map((author, idx) => (
                     <Link
+                        key={idx}
                         draggable={false}
                         to={`/user/${author}`}
                         className='font-medium text-onSurfaceVariant truncate'
