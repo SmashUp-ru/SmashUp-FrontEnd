@@ -44,7 +44,7 @@ export default function MashupSmallThumb({
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
 
-    const { pause, playMashup } = usePlayer();
+    const { play, pause, playMashup } = usePlayer();
 
     const [isLiked, setIsLiked] = useState(false);
 
@@ -63,24 +63,37 @@ export default function MashupSmallThumb({
                         alt={mashup.name}
                         className={cn(
                             'w-12 h-12 min-w-12 min-h-12 rounded-xl',
-                            queue[queueIndex] === mashup.id && isPlaying
+                            queue[queueIndex] === mashup.id
                                 ? 'opacity-30'
                                 : 'group-hover:opacity-30'
                         )}
                         draggable={false}
                     />
-                    {queue[queueIndex] === mashup.id && isPlaying ? (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                            onClick={() => {
-                                pause();
-                            }}
-                        >
-                            <PauseHollowIcon color='onSurfaceVariant' size={24} />
-                        </Button>
-                    ) : (
+                    {queue[queueIndex] === mashup.id &&
+                        (isPlaying ? (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                                onClick={() => {
+                                    pause();
+                                }}
+                            >
+                                <PauseHollowIcon color='onSurfaceVariant' size={24} />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                className=' absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                                onClick={() => {
+                                    play();
+                                }}
+                            >
+                                <PlayHollowIcon color='onSurface' size={24} />
+                            </Button>
+                        ))}
+                    {queue[queueIndex] !== mashup.id && (
                         <Button
                             variant='ghost'
                             size='icon'
