@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
@@ -57,7 +57,12 @@ export default function UserTracksPage() {
                 <div className='flex flex-col gap-y-6'>
                     <div>
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
-                        <h1 className='font-bold text-4xl text-onSurface'>{`Мэшапы ${user.username}`}</h1>
+                        <h1 className='font-bold text-4xl text-onSurface'>
+                            Мэшапы{' '}
+                            <Link draggable={false} to={`/user/${user.username}`}>
+                                {user.username}
+                            </Link>
+                        </h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
                         {isPlaying && queueId === `user/${user.username}/tracks` ? (
