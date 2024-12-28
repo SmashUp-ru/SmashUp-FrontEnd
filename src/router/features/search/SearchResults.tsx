@@ -13,12 +13,17 @@ import UserThumb from '@/router/shared/user/UserThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
+import { useCallback } from 'react';
 
 export default function SearchResults() {
     const updateType = useSearchStore((state) => state.updateType);
     const searchValue = useSearchStore((state) => state.searchValue);
 
     const { mashups, playlists, users, isLoading } = useSearch(searchValue);
+
+    const getMashupIds = useCallback(() => {
+        return mashups.map((mashup) => mashup.id);
+    }, [mashups]);
 
     if (isLoading) return <SearchResultsSkeleton />;
 
@@ -59,8 +64,16 @@ export default function SearchResults() {
                 {mashups && mashups.length > 0 && (
                     <Section title='Мэшапы'>
                         <div className='flex flex-wrap items-center'>
-                            {mashups.map((mashup) => (
-                                <MashupThumb mashup={mashup} searchMode key={mashup.id} />
+                            {mashups.map((mashup, idx) => (
+                                <MashupThumb
+                                    key={mashup.id}
+                                    mashup={mashup}
+                                    searchMode
+                                    playlist={getMashupIds()}
+                                    indexInPlaylist={idx}
+                                    playlistName={`Поиск "${searchValue}"`}
+                                    queueId={`search/${searchValue}`}
+                                />
                             ))}
                         </div>
                     </Section>
@@ -92,8 +105,16 @@ export default function SearchResults() {
                 <TabsContent value='мэшапы'>
                     <Section title='Мэшапы'>
                         <div className='flex flex-wrap items-center'>
-                            {mashups.map((mashup) => (
-                                <MashupThumb mashup={mashup} searchMode key={mashup.id} />
+                            {mashups.map((mashup, idx) => (
+                                <MashupThumb
+                                    key={mashup.id}
+                                    mashup={mashup}
+                                    searchMode
+                                    playlist={getMashupIds()}
+                                    indexInPlaylist={idx}
+                                    playlistName={`Поиск "${searchValue}"`}
+                                    queueId={`search/${searchValue}`}
+                                />
                             ))}
                         </div>
                     </Section>

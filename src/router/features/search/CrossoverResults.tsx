@@ -46,8 +46,16 @@ export default function CrossoverResults() {
             <Section title='Мэшапы' className='mt-2'>
                 <div className='flex items-center '>
                     <div className='flex flex-wrap items-center'>
-                        {mashups.map((mashup) => (
-                            <MashupThumb mashup={mashup} searchMode key={mashup.id} />
+                        {mashups.map((mashup, idx) => (
+                            <MashupThumb
+                                mashup={mashup}
+                                searchMode
+                                key={mashup.id}
+                                playlist={mashups.map((mashup) => mashup.id)}
+                                playlistName='Поиск с кроссовером'
+                                queueId={`search/crossover?${crossoverTracks.length > 0 ? `tracks=${crossoverTracks.map((track) => track.id).join(',')}` : ''}${crossoverArtists.length > 0 ? `${crossoverTracks.length > 0 ? '&' : ''}track_authors=${crossoverArtists.map((author) => author.id).join(',')}` : ''}`}
+                                indexInPlaylist={idx}
+                            />
                         ))}
                     </div>
                 </div>

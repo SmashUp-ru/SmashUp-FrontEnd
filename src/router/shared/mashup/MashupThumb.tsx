@@ -13,10 +13,21 @@ import AltIcon from '@/components/icons/Alt.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
+    playlist: number[];
+    indexInPlaylist: number;
+    playlistName: string;
+    queueId: string;
     searchMode?: boolean;
 }
 
-export default function MashupThumb({ mashup, searchMode }: MashupThumbProps) {
+export default function MashupThumb({
+    mashup,
+    playlist,
+    indexInPlaylist,
+    playlistName,
+    queueId,
+    searchMode
+}: MashupThumbProps) {
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
@@ -49,7 +60,7 @@ export default function MashupThumb({ mashup, searchMode }: MashupThumbProps) {
                         size='icon'
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
-                            playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
+                            playMashup(playlist, playlistName, queueId, indexInPlaylist);
                         }}
                     >
                         <PlayHollowIcon color='onSurface' hoverColor='primary' />
