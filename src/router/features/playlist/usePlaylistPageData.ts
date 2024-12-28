@@ -11,7 +11,7 @@ export function usePlaylistPageData(playlistId?: string) {
     const [isLiked, setIsLiked] = useState(false);
 
     const [playlistLoading, setPlaylistLoading] = useState(playlistId !== undefined);
-    const [mashupsLoading, setMashupsLoading] = useState(false);
+    const [mashupsLoading, setMashupsLoading] = useState(playlistId !== undefined);
 
     useEffect(() => {
         if (playlistId) {
@@ -23,7 +23,6 @@ export function usePlaylistPageData(playlistId?: string) {
 
     useEffect(() => {
         if (playlist) {
-            setMashupsLoading(true);
             setIsLiked(playlist.liked);
             getMashupsByIds(playlist.mashups)
                 .then((r) => setMashups(r))
