@@ -4,7 +4,6 @@ import { User, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { usePlayerStore } from '@/store/player.ts';
@@ -12,8 +11,11 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import BaseToast from '@/router/features/toasts/Base.tsx';
 
 export default function UserTracksPage() {
+    const { toast } = useToast();
     const params = useParams();
     const { playQueue, pause } = usePlayer();
 
@@ -90,10 +92,29 @@ export default function UserTracksPage() {
                                 <PlayHollowIcon />
                             </Button>
                         )}
-                        <Button variant='ghost' size='icon'>
-                            <HideIcon />
-                        </Button>
-                        <Button variant='ghost' size='icon'>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(
+                                        `${import.meta.env.VITE_FRONTEND_URL}/user/${user.username}/tracks`
+                                    )
+                                    .then(() => {
+                                        toast({
+                                            element: (
+                                                <BaseToast
+                                                    image={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                                                    before='Ссылка на треки пользователя'
+                                                    field={user.username}
+                                                    after='скопирована в буфер обмена!'
+                                                />
+                                            ),
+                                            duration: 2000
+                                        });
+                                    });
+                            }}
+                        >
                             <ShareIcon />
                         </Button>
                     </div>
