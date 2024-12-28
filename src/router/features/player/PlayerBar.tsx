@@ -48,6 +48,14 @@ export default function PlayerBar() {
     const [mashup, setMashup] = useState<Mashup | null>(null);
     const [isLiked, setIsLiked] = useState(false);
 
+    const [localSeekChanging, setLocalSeekChanging] = useState(false);
+    const [localSeek, setLocalSeek] = useState(0);
+    useEffect(() => {
+        if (!localSeekChanging) {
+            setLocalSeek(seek);
+        }
+    }, [seek]);
+
     useEffect(() => {
         if (queue && queueIndex !== null && queueIndex >= 0 && queueIndex < queue.length) {
             getMashupById(queue[queueIndex]).then((r) => setMashup(r));
@@ -72,9 +80,14 @@ export default function PlayerBar() {
                 <Slider
                     min={0}
                     max={mashup.duration}
-                    value={[seek]}
+                    value={[localSeek]}
                     onValueChange={(value) => {
+                        setLocalSeekChanging(true);
+                        setLocalSeek(value[0]);
+                    }}
+                    onValueCommit={(value) => {
                         updateChangedSeek(value[0]);
+                        setLocalSeekChanging(false);
                     }}
                 />
             </div>

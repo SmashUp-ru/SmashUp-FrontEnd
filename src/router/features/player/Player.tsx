@@ -25,7 +25,6 @@ const Player: React.FC = () => {
     useEffect(() => {
         if (player.current) {
             player.current.seek(changedSeek / 1000);
-            updateSeek(player.current.seek() * 1000);
         }
     }, [changedSeek]);
 
