@@ -64,8 +64,6 @@ export default function PlayerBar() {
         return;
     }
 
-    // if (isLoading) return <Skeleton className='mt-auto mb-4 mr-4 h-[96px] p-4 rounded-[30px]' />;
-
     return (
         <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
             <MashupSeekSlider mashup={mashup} />
@@ -196,7 +194,7 @@ export default function PlayerBar() {
                             play();
                         }}
                     >
-                        <SkipRightIcon />
+                        <SkipRightIcon color='onSurface' />
                     </Button>
 
                     {loop === 'none' && (
