@@ -16,6 +16,9 @@ interface GlobalState {
     currentUser: User | null;
     updateCurrentUser: (user: User | null) => void;
 
+    currentUserPlaylists: number[] | null;
+    updateCurrentUserPlaylists: (newCurrentUserPlaylists: number[] | null) => void;
+
     token: string | null;
     updateToken: (newToken: string | undefined) => void;
 
@@ -40,6 +43,10 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
 
     currentUser: null,
     updateCurrentUser: (user: User | null) => set(() => ({ currentUser: user })),
+
+    currentUserPlaylists: null,
+    updateCurrentUserPlaylists: (newCurrentUserPlaylists: number[] | null) =>
+        set(() => ({ currentUserPlaylists: newCurrentUserPlaylists })),
 
     token: sessionStorage.getItem('smashup_token') || localStorage.getItem('smashup_token'),
     updateToken: (newToken: string | undefined) => set(() => ({ token: newToken })),

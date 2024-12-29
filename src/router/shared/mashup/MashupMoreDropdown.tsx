@@ -13,7 +13,7 @@ import DoneIcon from '@/components/icons/Done.tsx';
 import PlusIcon from '@/components/icons/Plus.tsx';
 import AddIcon from '@/components/icons/Add.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
-import { Mashup } from '@/store/entities/mashup.ts';
+import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { ReactNode } from 'react';
 import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 import { useGlobalStore } from '@/store/global.ts';
@@ -34,8 +34,9 @@ interface MashupMoreDropdownProps {
 export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const getPlaylistById = usePlaylistStore((state) => state.getOneById);
+    const updateMashupById = useMashupStore((state) => state.updateOneById);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
+
     const { playlists } = useCurrentUserPlaylists();
 
     return (
@@ -77,26 +78,38 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                         `/playlist/${includes ? 'remove' : 'add'}_mashup?id=${playlist.id}&mashup=${mashup.id}`
                                                     )
                                                     .then(() => {
-                                                        getPlaylistById(playlist.id).then((r) => {
-                                                            if (includes) {
-                                                                updatePlaylistById(r.id, {
-                                                                    mashups: [
-                                                                        ...r.mashups.filter(
-                                                                            (mashupId) =>
-                                                                                mashupId !==
-                                                                                mashup.id
-                                                                        )
-                                                                    ]
-                                                                });
-                                                            } else {
-                                                                updatePlaylistById(r.id, {
-                                                                    mashups: [
-                                                                        ...r.mashups,
-                                                                        mashup.id
-                                                                    ]
-                                                                });
-                                                            }
-                                                        });
+                                                        if (includes) {
+                                                            updatePlaylistById(playlist.id, {
+                                                                mashups: [
+                                                                    ...playlist.mashups.filter(
+                                                                        (mashupId) =>
+                                                                            mashupId !== mashup.id
+                                                                    )
+                                                                ]
+                                                            });
+                                                            updateMashupById(mashup.id, {
+                                                                inYourPlaylists: [
+                                                                    ...mashup.inYourPlaylists.filter(
+                                                                        (playlistId) =>
+                                                                            playlistId !==
+                                                                            playlist.id
+                                                                    )
+                                                                ]
+                                                            });
+                                                        } else {
+                                                            updatePlaylistById(playlist.id, {
+                                                                mashups: [
+                                                                    ...playlist.mashups,
+                                                                    mashup.id
+                                                                ]
+                                                            });
+                                                            updateMashupById(mashup.id, {
+                                                                inYourPlaylists: [
+                                                                    ...mashup.inYourPlaylists,
+                                                                    playlist.id
+                                                                ]
+                                                            });
+                                                        }
                                                         toast({
                                                             element: (
                                                                 <UpdateToast

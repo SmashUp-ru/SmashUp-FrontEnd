@@ -14,7 +14,8 @@ export default function RootLayout() {
         }
     }, []);
 
-    const { queue, queueIndex } = usePlayerStore();
+    const queue = usePlayerStore((state) => state.queue);
+    const queueIndex = usePlayerStore((state) => state.queueIndex);
 
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>

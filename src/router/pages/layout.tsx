@@ -8,14 +8,17 @@ import { getToken, useGlobalStore } from '@/store/global.ts';
 export default function Layout() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
-    const token = getToken();
     const updateToken = useGlobalStore((state) => state.updateToken);
+    const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
+
+    const token = getToken();
 
     useEffect(() => {
         if (token) {
             getUserByToken('token', token)
                 .then((r) => {
                     updateCurrentUser(r);
+                    updateCurrentUserPlaylists(r.playlists);
                 })
                 .catch(() => {
                     localStorage.removeItem('smashup_token');
