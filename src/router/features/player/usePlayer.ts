@@ -91,6 +91,10 @@ export function usePlayer() {
         } else {
             updateOriginalQueue(newQueue);
 
+            if (shuffle) {
+                [newQueue, newQueueIndex] = shuffleQueue(newQueue, newQueueIndex);
+            }
+
             updateQueueId(newQueueId);
 
             updateQueue([...newQueue]);
