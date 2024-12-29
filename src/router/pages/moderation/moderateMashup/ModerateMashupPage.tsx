@@ -45,7 +45,7 @@ export default function ModerateMashupPage() {
             return;
         }
 
-        userStore.getManyByIds(mashup.authorsIds).then(setUsers);
+        userStore.getManyByIds(mashup.authorsIds, true).then(setUsers);
 
         Promise.all([
             trackStore
