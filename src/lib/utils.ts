@@ -15,10 +15,12 @@ export function msToMinutesAndSeconds(ms: number) {
 }
 
 export const axiosSession = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    headers: {
-        Authorization: `Bearer ${getToken()}`
-    }
+    baseURL: import.meta.env.VITE_BACKEND_URL
+});
+
+axiosSession.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${getToken()}`;
+    return config;
 });
 
 export function shuffleQueue(queue: number[], indexInQueue: number): [number[], number] {
