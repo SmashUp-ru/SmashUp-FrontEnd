@@ -666,7 +666,7 @@ export default function MashupForm({
 
                                     <label className='relative'>
                                         <span className='text-[24px] font-bold text-primary cursor-pointer'>
-                                            {mashupFile === null
+                                            {mashupFile === null || mashupFile === undefined
                                                 ? 'Нажмите для загрузки'
                                                 : mashupFile.name}
                                         </span>
