@@ -58,7 +58,6 @@ export default function ProfileMenu() {
                         onClick={() => {
                             localStorage.removeItem('smashup_token');
                             sessionStorage.removeItem('smashup_token');
-                            localStorage.removeItem('player-storage');
                             updateToken('');
                             navigate('/');
                             updateCurrentUser(null);
