@@ -20,11 +20,11 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import UpdateToast from '@/router/features/toasts/update.tsx';
 import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
+import BaseToast from '@/router/features/toasts/Base.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -112,10 +112,19 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                         }
                                                         toast({
                                                             element: (
-                                                                <UpdateToast
+                                                                <BaseToast
                                                                     image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_100x100.png`}
-                                                                    field='Плейлист'
-                                                                    text='успешно обновлён!'
+                                                                    before='Трек'
+                                                                    field={
+                                                                        includes
+                                                                            ? 'удалён'
+                                                                            : 'добавлен'
+                                                                    }
+                                                                    after={
+                                                                        includes
+                                                                            ? 'из плейлиста!'
+                                                                            : 'в плейлист!'
+                                                                    }
                                                                 />
                                                             ),
                                                             duration: 2000
