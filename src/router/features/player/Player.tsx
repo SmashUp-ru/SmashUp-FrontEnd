@@ -58,9 +58,9 @@ const Player: React.FC = () => {
     };
 
     // hotkeys
-    useHotkeys('space', () => updatePlaying(!isPlaying));
-    useHotkeys('ctrl+right', () => next());
-    useHotkeys('ctrl+left', () => prev());
+    useHotkeys('space', () => updatePlaying(!isPlaying), { preventDefault: true });
+    useHotkeys('ctrl+right', () => next(), { preventDefault: true });
+    useHotkeys('ctrl+left', () => prev(), { preventDefault: true });
 
     return (
         <ReactHowler
