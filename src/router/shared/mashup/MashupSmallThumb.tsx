@@ -109,9 +109,21 @@ export default function MashupSmallThumb({
                 <div className='flex flex-col'>
                     <div className='flex items-center gap-x-2'>
                         <span className='font-bold text-onSurface line-clamp-1'>{mashup.name}</span>
-                        {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                        {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
-                        {isAlt(mashup.statuses) && <AltIcon />}
+                        {isExplicit(mashup.statuses) && (
+                            <div className='w-[17px] h-[17px]'>
+                                <ExplicitIcon />
+                            </div>
+                        )}
+                        {isHashtagMashup(mashup.statuses) && (
+                            <div className='w-[17px] h-[17px]'>
+                                <HashtagMashupIcon />
+                            </div>
+                        )}
+                        {isAlt(mashup.statuses) && (
+                            <div className='w-[17px] h-[17px]'>
+                                <AltIcon />
+                            </div>
+                        )}
                     </div>
                     <div className='flex-row'>
                         {mashup.authors.map((author, index) => (

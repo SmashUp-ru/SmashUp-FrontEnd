@@ -76,9 +76,21 @@ export default function MashupThumb({
                     >
                         {mashup.name}
                     </Link>
-                    {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                    {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
-                    {isAlt(mashup.statuses) && <AltIcon />}
+                    {isExplicit(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <ExplicitIcon />
+                        </div>
+                    )}
+                    {isHashtagMashup(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <HashtagMashupIcon />
+                        </div>
+                    )}
+                    {isAlt(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <AltIcon />
+                        </div>
+                    )}
                 </div>
                 <div className='flex items-center gap-x-2 max-w-[216px]'>
                     {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (

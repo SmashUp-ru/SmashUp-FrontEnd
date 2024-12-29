@@ -71,9 +71,21 @@ export default function MashupInfo() {
                     <span className='font-bold text-[18px] text-onSurface truncate'>
                         {mashup.name}
                     </span>
-                    {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                    {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
-                    {isAlt(mashup.statuses) && <AltIcon />}
+                    {isExplicit(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <ExplicitIcon />
+                        </div>
+                    )}
+                    {isHashtagMashup(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <HashtagMashupIcon />
+                        </div>
+                    )}
+                    {isAlt(mashup.statuses) && (
+                        <div className='w-[17px] h-[17px]'>
+                            <AltIcon />
+                        </div>
+                    )}
                 </div>
                 {mashup.authors.map((author, idx) => (
                     <Link

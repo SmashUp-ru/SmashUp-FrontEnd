@@ -60,9 +60,21 @@ export default function MashupPage() {
                         </span>
                         <div className='flex items-center gap-x-2'>
                             <h1 className='font-bold text-4xl text-onSurface'>{mashup.name}</h1>
-                            {isExplicit(mashup.statuses) && <ExplicitIcon />}
-                            {isHashtagMashup(mashup.statuses) && <HashtagMashupIcon />}
-                            {isAlt(mashup.statuses) && <AltIcon />}
+                            {isExplicit(mashup.statuses) && (
+                                <div className='w-[17px] h-[17px]'>
+                                    <ExplicitIcon />
+                                </div>
+                            )}
+                            {isHashtagMashup(mashup.statuses) && (
+                                <div className='w-[17px] h-[17px]'>
+                                    <HashtagMashupIcon />
+                                </div>
+                            )}
+                            {isAlt(mashup.statuses) && (
+                                <div className='w-[17px] h-[17px]'>
+                                    <AltIcon />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className='flex items-center gap-x-4'>
