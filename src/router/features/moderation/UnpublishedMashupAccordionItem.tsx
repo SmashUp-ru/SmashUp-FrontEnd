@@ -100,15 +100,32 @@ export function UnpublishedMashupAccordionItem({
 
                     <div className='flex items-center gap-x-7'>
                         <div className='flex items-center gap-x-3'>
-                            <Button variant='ghost' size='icon' className=''>
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                className=''
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
+                            >
                                 <PlayHollowIcon color='primary' size={36} />
                             </Button>
 
-                            <Button className='py-[7px] font-bold text-base rounded-xl'>
+                            <Button
+                                className='py-[7px] font-bold text-base rounded-xl'
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
+                            >
                                 Принять
                             </Button>
 
-                            <Button className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                            <Button
+                                className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
+                            >
                                 Отклонить
                             </Button>
                         </div>
