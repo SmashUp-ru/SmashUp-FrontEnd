@@ -19,7 +19,8 @@ export default function NotificationsMenu() {
     const { notifications } = useNotificationsData();
 
     if (!currentUser) return null;
-    if (!notifications) return <BellIcon />;
+    if (!notifications) return null;
+    if (notifications.length === 0) return <BellIcon />;
 
     return (
         <DropdownMenu>

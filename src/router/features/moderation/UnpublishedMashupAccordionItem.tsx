@@ -5,11 +5,11 @@ import EditIcon from '@/components/icons/Edit.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import { Track, useTrackStore } from '@/store/entities/track.ts';
-import { cn } from '@/lib/utils.ts';
+import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
-import { UnpublishedMashup } from '@/store/moderation.ts';
+import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
 import { useEffect, useState } from 'react';
 import {
     SelectedTrack,
@@ -36,6 +36,8 @@ export function UnpublishedMashupAccordionItem({
     value
 }: UnpublishedMashupAccordionItem) {
     const { toast } = useToast();
+    const moderationMashups = useModerationStore((state) => state.unpublishedMashups);
+    const updateModerationMashups = useModerationStore((state) => state.updateUnpublishedMashups);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [tracks, setTracks] = useState<SelectedTrack[]>();
@@ -76,6 +78,8 @@ export function UnpublishedMashupAccordionItem({
     const [image, setImage] = useState<string>();
     const [imageFailed, setImageFailed] = useState<boolean>(false);
 
+    if (!moderationMashups) return null;
+
     return (
         <AccordionItem value={value}>
             <AccordionTrigger>
@@ -115,6 +119,17 @@ export function UnpublishedMashupAccordionItem({
                                 className='py-[7px] font-bold text-base rounded-xl'
                                 onClick={(e) => {
                                     e.preventDefault();
+                                    axiosSession
+                                        .post(
+                                            `/moderation/unpublished_mashup/publish?id=${mashup.id}`
+                                        )
+                                        .then(() => {
+                                            updateModerationMashups([
+                                                ...moderationMashups.filter(
+                                                    (um) => um.id !== mashup.id
+                                                )
+                                            ]);
+                                        });
                                 }}
                             >
                                 Принять
@@ -124,6 +139,19 @@ export function UnpublishedMashupAccordionItem({
                                 className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'
                                 onClick={(e) => {
                                     e.preventDefault();
+                                    axiosSession
+                                        .post(`/moderation/unpublished_mashup/reject`, {
+                                            id: mashup.id,
+                                            // TODO: причина дропдауном
+                                            reason: 'не понравился'
+                                        })
+                                        .then(() => {
+                                            updateModerationMashups([
+                                                ...moderationMashups.filter(
+                                                    (um) => um.id !== mashup.id
+                                                )
+                                            ]);
+                                        });
                                 }}
                             >
                                 Отклонить

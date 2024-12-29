@@ -23,7 +23,7 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
         <div className='flex gap-x-3'>
             {notification.imageUrl && (
                 <img
-                    src={notification.imageUrl}
+                    src={`${import.meta.env.VITE_BACKEND_URL}/${notification.imageUrl}`}
                     alt='Картинка в уведомлении'
                     className='w-10 h-10 rounded-lg'
                 />
