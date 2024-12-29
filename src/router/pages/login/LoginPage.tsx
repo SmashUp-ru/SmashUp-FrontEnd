@@ -4,7 +4,6 @@ import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
 import VKIcon from '@/components/icons/VK.tsx';
-import MailIcon from '@/components/icons/Mail.tsx';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -24,6 +23,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { RegEx } from '@/lib/regex';
+import ProfileIcon from '@/components/icons/Profile.tsx';
 
 const formSchema = z.object({
     email: z
@@ -106,11 +106,12 @@ export default function LoginPage() {
                             render={({ field }) => (
                                 <FormItem className='w-full flex flex-col gap-y-2.5'>
                                     <FormLabel className='font-medium text-onSurfaceVariant'>
-                                        Электронная почта
+                                        Юзернейм или электронная почта
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            startIcon={MailIcon}
+                                            startIcon={ProfileIcon}
+                                            startIconClassName='text-onSurfaceVariant'
                                             className='w-full'
                                             placeholder='sanya@smashup.ru'
                                             {...field}
@@ -188,7 +189,7 @@ export default function LoginPage() {
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
                     <TooltipProvider>
-                        <Tooltip>
+                        <Tooltip delayDuration={100}>
                             <TooltipTrigger className='w-full'>
                                 <Button className='w-full py-[15px]' variant='outline' disabled>
                                     <VKIcon />

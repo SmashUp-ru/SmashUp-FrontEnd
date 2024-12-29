@@ -220,7 +220,7 @@ export default function RegisterPage() {
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
                     <TooltipProvider>
-                        <Tooltip>
+                        <Tooltip delayDuration={100}>
                             <TooltipTrigger className='w-full'>
                                 <Button className='w-full py-[15px]' variant='outline' disabled>
                                     <VKIcon />
