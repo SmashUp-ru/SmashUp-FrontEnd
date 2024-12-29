@@ -33,6 +33,7 @@ import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsern
 import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx';
 import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
+import UploadTrackPage from '@/router/pages/uploadTrack/UploadTrackPage.tsx';
 
 const router = createBrowserRouter(
     [
@@ -75,6 +76,10 @@ const router = createBrowserRouter(
                         {
                             element: <PlaylistPage />,
                             path: '/playlist/:playlistId'
+                        },
+                        {
+                            element: <UploadTrackPage />,
+                            path: '/track/upload'
                         },
                         {
                             element: <UploadMashupSuccessPage />,
