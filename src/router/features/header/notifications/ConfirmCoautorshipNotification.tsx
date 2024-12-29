@@ -1,0 +1,44 @@
+import { ConfirmCoAuthorshipNotificationType } from '@/types/api/notifications.ts';
+import { useConfirmCoAuthorshipNotificationData } from '@/router/features/header/notifications/useConfirmCoAuthorshipNotificationData.ts';
+import { Button } from '@/components/ui/button.tsx';
+
+interface ConfirmCoAuthorshipNotificationProps {
+    notification: ConfirmCoAuthorshipNotificationType;
+}
+
+export default function ConfirmCoAuthorshipNotification({
+    notification
+}: ConfirmCoAuthorshipNotificationProps) {
+    const { mashup, isLoading } = useConfirmCoAuthorshipNotificationData(notification);
+
+    if (isLoading) return <div>Скелет..</div>;
+
+    return (
+        <div className='flex gap-x-3'>
+            {notification.imageUrl && (
+                <img
+                    src={notification.imageUrl}
+                    alt='Картинка в уведомлении'
+                    className='w-10 h-10 rounded-lg'
+                />
+            )}
+            <div className='flex flex-col gap-y-3'>
+                <div className='w-fit'>
+                    <span className='font-bold text-[14px] text-onSurface'>
+                        <span className='text-primary'>{mashup.authors[0]}</span> указал вас
+                        соавтором мэшапа <span className='text-primary'>{mashup.name}</span>
+                    </span>
+                </div>
+
+                <div className='flex items-center gap-x-1'>
+                    <Button className='px-2.5 py-[4.5px] text-[14px] rounded-lg'>
+                        Подтвердить
+                    </Button>
+                    <Button className='px-2.5 py-[4.5px] text-[14px] rounded-lg' variant='ghost'>
+                        Отменить
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}

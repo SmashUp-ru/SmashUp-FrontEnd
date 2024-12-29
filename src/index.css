@@ -29,10 +29,18 @@ html, body, :root, #root {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: theme('colors.surface');
+    background: theme('colors.badge');
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: theme('colors.surface');
+    background: theme('colors.badge');
+}
+
+@layer utilities {
+    .scrollbar-track {
+        &::-webkit-scrollbar-track {
+            @apply mt-3 mb-3;
+        }
+    }
 }
