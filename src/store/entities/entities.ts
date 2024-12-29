@@ -109,72 +109,78 @@ export function createEntityStore<T extends CachingEntity>(
                 return uniqueIds.map((id) => get().cache[id]).filter(Boolean);
             }
 
-            const fetchPromise = axiosSession
-                .get<{ status: string; response: T[] }>(
-                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?id=${toFetchIds.join(',')}`
-                )
-                .then((response) => {
-                    const fetchedData = response.data.response;
+            const chunks = [];
+            for (let i = 0; i < toFetchIds.length; i += 100) {
+                chunks.push(toFetchIds.slice(i, i + 100));
+            }
 
-                    set((state) => ({
-                        cache: {
-                            ...state.cache,
-                            ...fetchedData.reduce(
-                                (acc, obj) => {
-                                    acc[obj.id] = obj;
-                                    return acc;
-                                },
-                                {} as Record<number, T>
-                            )
-                        },
-                        additionalCache: {
-                            ...state.additionalCache,
-                            ...fetchedData.reduce(
-                                (acc, obj) => {
-                                    keyNames.forEach((keyName) => {
-                                        // @ts-expect-error сделано специально, в наличии поля уверен
-                                        if (obj[keyName]) {
-                                            if (!acc[keyName]) {
-                                                acc[keyName] = {};
-                                            }
+            const fetchPromises = chunks.map((chunk) => {
+                const fetchPromise = axiosSession
+                    .get<{ status: string; response: T[] }>(
+                        `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?id=${chunk.join(',')}`
+                    )
+                    .then((response) => {
+                        const fetchedData = response.data.response;
+
+                        set((state) => ({
+                            cache: {
+                                ...state.cache,
+                                ...fetchedData.reduce(
+                                    (acc, obj) => {
+                                        acc[obj.id] = obj;
+                                        return acc;
+                                    },
+                                    {} as Record<number, T>
+                                )
+                            },
+                            additionalCache: {
+                                ...state.additionalCache,
+                                ...fetchedData.reduce(
+                                    (acc, obj) => {
+                                        keyNames.forEach((keyName) => {
                                             // @ts-expect-error сделано специально, в наличии поля уверен
-                                            acc[keyName][obj[keyName]] = obj.id;
-                                        }
-                                    });
-                                    return acc;
-                                },
-                                {} as Record<string, Record<string, number>>
-                            )
+                                            if (obj[keyName]) {
+                                                if (!acc[keyName]) {
+                                                    acc[keyName] = {};
+                                                }
+                                                // @ts-expect-error сделано специально, в наличии поля уверен
+                                                acc[keyName][obj[keyName]] = obj.id;
+                                            }
+                                        });
+                                        return acc;
+                                    },
+                                    {} as Record<string, Record<string, number>>
+                                )
+                            }
+                        }));
+                        return fetchedData;
+                    })
+                    .catch((error) => {
+                        console.error(`Failed to fetch data for chunk: ${chunk}`, error);
+                        throw new Error('Failed to fetch data');
+                    });
+
+                chunk.forEach((id) => {
+                    set((state) => ({
+                        pendingRequests: {
+                            ...state.pendingRequests,
+                            [id]: fetchPromise
                         }
                     }));
-                    return fetchedData;
-                })
-                .catch((error) => {
-                    console.error(`Failed to fetch data for IDs: ${toFetchIds}`, error);
-                    throw new Error('Failed to fetch data');
-                })
-                .finally(() => {
-                    set((state) => {
-                        const newPending = { ...state.pendingRequests };
-                        toFetchIds.forEach((id) => delete newPending[id]);
-                        return { pendingRequests: newPending };
-                    });
                 });
 
-            set((state) => ({
-                pendingRequests: {
-                    ...state.pendingRequests,
-                    ...toFetchIds.reduce(
-                        (acc, id) => {
-                            acc[id] = fetchPromise;
-                            return acc;
-                        },
-                        {} as Record<number, Promise<T[]>>
-                    )
-                }
-            }));
+                return fetchPromise;
+            });
 
-            return fetchPromise;
+            const results = await Promise.all(fetchPromises);
+
+            set((state) => {
+                const newPending = { ...state.pendingRequests };
+                toFetchIds.forEach((id) => delete newPending[id]);
+                return { pendingRequests: newPending };
+            });
+
+            return results.flat();
         },
 
         fetchAndCacheOneByStringKey: async (keyName: string, key: string): Promise<T> => {
