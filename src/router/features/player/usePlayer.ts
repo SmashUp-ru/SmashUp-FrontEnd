@@ -12,6 +12,8 @@ export function usePlayer() {
     const queueId = usePlayerStore((state) => state.queueId);
     const updateQueueId = usePlayerStore((state) => state.updateQueueId);
     const shuffle = usePlayerStore((state) => state.shuffle);
+    const updateSeek = usePlayerStore((state) => state.updateSeek);
+    const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
 
     function play() {
         updatePlaying(true);
@@ -22,6 +24,8 @@ export function usePlayer() {
     }
 
     function next() {
+        updateSeek(0);
+        updateChangedSeek(0);
         if (queueIndex < queue.length - 1) {
             updateQueueIndex(queueIndex + 1);
         }
@@ -32,6 +36,8 @@ export function usePlayer() {
     }
 
     function prev() {
+        updateSeek(0);
+        updateChangedSeek(0);
         if (queueIndex > 0) {
             updateQueueIndex(queueIndex - 1);
         }
