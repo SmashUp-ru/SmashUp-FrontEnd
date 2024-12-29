@@ -24,25 +24,33 @@ export function usePlayer() {
     }
 
     function next() {
+        const currentLoop = usePlayerStore.getState().loop;
         updateSeek(0);
         updateChangedSeek(0);
-        if (queueIndex < queue.length - 1) {
-            updateQueueIndex(queueIndex + 1);
-        }
 
-        if (queueIndex === queue.length - 1) {
+        if (currentLoop === 'mashup') {
+            play();
+        } else if (queueIndex < queue.length - 1) {
+            updateQueueIndex(queueIndex + 1);
+        } else if (currentLoop === 'queue') {
+            updateQueueIndex(0);
+            play();
+        } else if (currentLoop === 'none') {
             pause();
         }
     }
 
     function prev() {
+        const currentLoop = usePlayerStore.getState().loop;
         updateSeek(0);
         updateChangedSeek(0);
+
         if (queueIndex > 0) {
             updateQueueIndex(queueIndex - 1);
-        }
-
-        if (queueIndex === 0) {
+        } else if (currentLoop === 'queue') {
+            updateQueueIndex(queue.length - 1);
+            play();
+        } else {
             pause();
         }
     }

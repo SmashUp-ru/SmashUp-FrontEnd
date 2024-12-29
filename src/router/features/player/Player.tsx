@@ -8,7 +8,6 @@ import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 const Player: React.FC = () => {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
-    const loop = usePlayerStore((state) => state.loop);
     const volume = usePlayerStore((state) => state.volume);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
@@ -17,7 +16,7 @@ const Player: React.FC = () => {
     const changedSeek = usePlayerStore((state) => state.changedSeek);
     const bitrate = useSettingsStore((state) => state.bitrate);
 
-    const { next, prev, play } = usePlayer();
+    const { next, prev, play, pause } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
     const intervalRef = useRef<number | null>(null);
@@ -47,12 +46,18 @@ const Player: React.FC = () => {
     }, [isPlaying, updateSeek]);
 
     const handleOnEnd = () => {
+        const currentLoop = usePlayerStore.getState().loop;
+        const queue = usePlayerStore.getState().queue;
+        const queueIndex = usePlayerStore.getState().queueIndex;
+
         if (queueIndex === queue.length - 1) {
-            if (loop === 'queue') {
+            if (currentLoop === 'queue') {
                 updateQueueIndex(0);
                 play();
+            } else if (currentLoop === 'none') {
+                pause();
             }
-        } else if (loop !== 'mashup') {
+        } else {
             next();
         }
     };
@@ -67,7 +72,7 @@ const Player: React.FC = () => {
             src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
             playing={isPlaying}
             onEnd={handleOnEnd}
-            loop={loop === 'mashup'}
+            loop={usePlayerStore.getState().loop === 'mashup'}
             volume={volume}
             ref={(ref) => (player.current = ref)}
         />
