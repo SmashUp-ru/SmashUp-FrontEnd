@@ -62,8 +62,10 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                     toast({
                         element: (
                             <ErrorToast
-                                field='обновлении почты.'
-                                text='Указанный пароль неправильный.'
+                                icon
+                                before='Ошибка'
+                                field='при обновлении почты.'
+                                after='Указанный пароль неправильный.'
                             />
                         ),
                         duration: 2000,
@@ -73,7 +75,14 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                 }
 
                 toast({
-                    element: <ErrorToast field='обновлении почты.' text='Попробуйте снова.' />,
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Что-то пошло не так'
+                            field='при обновлении почты.'
+                            after='Попробуйте снова.'
+                        />
+                    ),
                     duration: 2000,
                     variant: 'destructive'
                 });

@@ -21,10 +21,10 @@ import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPla
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import UpdateToast from '@/router/features/toasts/update.tsx';
-import ErrorBaseToast from '@/router/features/toasts/ErrorBase.tsx';
 import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import ErrorToast from '@/router/features/toasts/error.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -111,7 +111,10 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                     .catch(() => {
                                                         toast({
                                                             element: (
-                                                                <ErrorBaseToast text='Что-то пошло не так при обновлении плейлиста..' />
+                                                                <ErrorToast
+                                                                    icon
+                                                                    after='Что-то пошло не так при обновлении плейлиста..'
+                                                                />
                                                             ),
                                                             duration: 2000,
                                                             variant: 'destructive'

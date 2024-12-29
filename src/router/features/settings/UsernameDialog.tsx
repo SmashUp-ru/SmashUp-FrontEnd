@@ -65,8 +65,10 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                     toast({
                         element: (
                             <ErrorToast
-                                field='обновлении юзернейма.'
-                                text='Указанный пароль неправильный.'
+                                icon
+                                before='Ошибка'
+                                field='при обновлении юзернейма.'
+                                after='Указанный пароль неправильный.'
                             />
                         ),
                         duration: 2000,
@@ -76,7 +78,14 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                 }
 
                 toast({
-                    element: <ErrorToast field='обновлении юзернейма.' text='Попробуйте снова.' />,
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Что-то пошло не так'
+                            field='при обновлении юзернейма.'
+                            after='Попробуйте снова.'
+                        />
+                    ),
                     duration: 2000,
                     variant: 'destructive'
                 });

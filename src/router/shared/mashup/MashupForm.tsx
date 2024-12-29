@@ -383,7 +383,12 @@ export default function MashupForm({
             if (!basedMashupFile || !mashupFile) {
                 toast({
                     element: (
-                        <ErrorToast field='загрузки мэшапа' text='Загрузите .mp3 с мэшапом!' />
+                        <ErrorToast
+                            icon
+                            before='Ошибка'
+                            field='при загрузке мэшапа.'
+                            after='Загрузите .mp3 с мэшапом!'
+                        />
                     ),
                     duration: 2000,
                     variant: 'destructive'
@@ -395,8 +400,10 @@ export default function MashupForm({
                 toast({
                     element: (
                         <ErrorToast
-                            field='загрузки мэшапа'
-                            text='Мэшап должен весить не более, чем 20мб.'
+                            icon
+                            before='Ошибка'
+                            field='при загрузке мэшапа.'
+                            after='Мэшап должен весить не более, чем 20мб.'
                         />
                     ),
                     duration: 2000,
@@ -410,7 +417,12 @@ export default function MashupForm({
             if (!basedImageFile || !imageFile) {
                 toast({
                     element: (
-                        <ErrorToast field='загрузки обложки' text='Загрузите обложку мэшапа!' />
+                        <ErrorToast
+                            icon
+                            before='Ошибка'
+                            field='при загрузке обложки.'
+                            after='Загрузите обложку мэшапа!'
+                        />
                     ),
                     duration: 2000,
                     variant: 'destructive'
@@ -425,8 +437,10 @@ export default function MashupForm({
                     toast({
                         element: (
                             <ErrorToast
-                                field='загрузки обложки'
-                                text='Обложка мэшапа должна быть размером больше 800px.'
+                                icon
+                                before='Ошибка'
+                                field='при загрузке обложки.'
+                                after='Обложка мэшапа должна быть размером больше 800px.'
                             />
                         ),
                         duration: 2000,
@@ -440,8 +454,10 @@ export default function MashupForm({
                 toast({
                     element: (
                         <ErrorToast
-                            field='загрузки обложки'
-                            text='Обложка мэшапа должна весить не более, чем 5мб.'
+                            icon
+                            before='Ошибка'
+                            field='при загрузке обложки.'
+                            after='Обложка мэшапа должна весить не более, чем 5мб.'
                         />
                     ),
                     duration: 2000,
@@ -456,8 +472,9 @@ export default function MashupForm({
                 element: (
                     <ErrorToast
                         image={`data:image/png;base64,${basedImageFile}`}
-                        field='названия'
-                        text='Название может быть длиной от 2 до 48 символов из букв, цифр, некоторых специальных символов.'
+                        before='Ошибка'
+                        field='при загрузке названия.'
+                        after='Название может быть длиной от 2 до 48 символов из букв, цифр, некоторых специальных символов.'
                     />
                 ),
                 duration: 2000,
@@ -471,8 +488,9 @@ export default function MashupForm({
                 element: (
                     <ErrorToast
                         image={`data:image/png;base64,${basedImageFile}`}
-                        field='жанров'
-                        text='Выберите хотя бы один жанр.'
+                        before='Ошибка'
+                        field='при загрузке жанров.'
+                        after='Выберите хотя бы один жанр.'
                     />
                 ),
                 duration: 2000,
@@ -486,8 +504,9 @@ export default function MashupForm({
                 element: (
                     <ErrorToast
                         image={`data:image/png;base64,${basedImageFile}`}
-                        field='авторов'
-                        text='Выберите хотя бы одного автора.'
+                        before='Ошибка'
+                        field='при загрузке авторов.'
+                        after='Выберите хотя бы одного автора.'
                     />
                 ),
                 duration: 2000,
@@ -501,8 +520,9 @@ export default function MashupForm({
                 element: (
                     <ErrorToast
                         image={`data:image/png;base64,${basedImageFile}`}
-                        field='сурсов'
-                        text='Выберите хотя бы два трека.'
+                        before='Ошибка'
+                        field='при загрузке сурсов.'
+                        after='Выберите хотя бы два трека.'
                     />
                 ),
                 duration: 2000,
@@ -769,8 +789,10 @@ export default function MashupForm({
                                                         toast({
                                                             element: (
                                                                 <ErrorToast
-                                                                    field='авторов'
-                                                                    text='Вы не можете убрать себя!'
+                                                                    icon
+                                                                    before='Ошибка в поле'
+                                                                    field='авторов.'
+                                                                    after='Вы не можете убрать себя!'
                                                                 />
                                                             ),
                                                             duration: 2000,

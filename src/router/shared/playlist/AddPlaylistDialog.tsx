@@ -79,8 +79,10 @@ export default function AddPlaylistDialog({
                     toast({
                         element: (
                             <ErrorToast
-                                field='загрузки обложки'
-                                text='Обложка должна быть размером больше 800px.'
+                                icon
+                                before='Ошибка'
+                                field='при загрузке обложки.'
+                                after='Обложка должна быть размером больше 800px.'
                             />
                         ),
                         duration: 2000,
@@ -134,8 +136,10 @@ export default function AddPlaylistDialog({
                     toast({
                         element: (
                             <ErrorToast
-                                field='создании плейлиста'
-                                text='У вас уже есть 10 плейлистов.'
+                                icon
+                                before='Ошибка'
+                                field='при создании плейлиста.'
+                                after='У вас уже есть 10 плейлистов.'
                             />
                         ),
                         duration: 2000,
@@ -148,8 +152,10 @@ export default function AddPlaylistDialog({
                     toast({
                         element: (
                             <ErrorToast
-                                field='создании плейлиста'
-                                text={`Что-то не так с форматом файла: ${e.response && e.response.data.message}`}
+                                icon
+                                before='Ошибка'
+                                field='при создании плейлиста.'
+                                after={`Что-то не так с форматом файла: ${e.response && e.response.data.message}`}
                             />
                         ),
                         duration: 2000,
@@ -159,7 +165,14 @@ export default function AddPlaylistDialog({
                 }
 
                 toast({
-                    element: <ErrorToast field='создании плейлиста' text='Что-то пошло не так.' />,
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Ошибка'
+                            field='при создании плейлиста.'
+                            after='Что-то пошло не так.'
+                        />
+                    ),
                     duration: 2000,
                     variant: 'destructive'
                 });

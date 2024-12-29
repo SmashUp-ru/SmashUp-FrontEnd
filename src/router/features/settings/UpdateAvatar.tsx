@@ -26,8 +26,10 @@ export default function UpdateAvatar() {
             toast({
                 element: (
                     <ErrorToast
-                        field='загрузки аватара'
-                        text='Аватар должен весить не более, чем 5мб.'
+                        icon
+                        before='Ошибка'
+                        field='при загрузке аватара.'
+                        after='Аватар должен весить не более, чем 5мб.'
                     />
                 ),
                 duration: 2000,
@@ -43,8 +45,10 @@ export default function UpdateAvatar() {
                     toast({
                         element: (
                             <ErrorToast
-                                field='загрузки аватара'
-                                text='Аватар должен быть размером больше 800px.'
+                                icon
+                                before='Ошибка'
+                                field='при загрузке аватара.'
+                                after='Аватар должен быть размером больше 800px.'
                             />
                         ),
                         duration: 2000,
@@ -73,7 +77,14 @@ export default function UpdateAvatar() {
                 })
                 .catch(() => {
                     toast({
-                        element: <ErrorToast field='загрузки аватара' text='Попробуйте снова.' />,
+                        element: (
+                            <ErrorToast
+                                icon
+                                before='Что-то пошло не так'
+                                field='при загрузке аватара.'
+                                after='Попробуйте снова.'
+                            />
+                        ),
                         duration: 2000,
                         variant: 'destructive'
                     });

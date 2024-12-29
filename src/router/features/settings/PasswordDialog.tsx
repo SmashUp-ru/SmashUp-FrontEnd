@@ -68,8 +68,10 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                     toast({
                         element: (
                             <ErrorToast
-                                field='обновлении пароля.'
-                                text='Указанный пароль от аккаунта неправильный.'
+                                icon
+                                before='Ошибка'
+                                field='при обновлении пароля.'
+                                after='Указанный пароль от аккаунта неправильный.'
                             />
                         ),
                         duration: 2000,
@@ -79,7 +81,14 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                 }
 
                 toast({
-                    element: <ErrorToast field='обновлении пароля.' text='Попробуйте снова.' />,
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Что-то пошло не так'
+                            field='при обновлении пароля.'
+                            after='Попробуйте снова.'
+                        />
+                    ),
                     duration: 2000,
                     variant: 'destructive'
                 });
