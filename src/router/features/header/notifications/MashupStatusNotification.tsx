@@ -1,11 +1,24 @@
 import { Button } from '@/components/ui/button.tsx';
 import { MashupStatusNotificationType } from '@/types/api/notifications.ts';
+import { axiosSession } from '@/lib/utils.ts';
+import { useCurrentUserStore } from '@/store/currentUser.ts';
 
 interface MashupStatusNotificationProps {
     notification: MashupStatusNotificationType;
 }
 
 export default function MashupStatusNotification({ notification }: MashupStatusNotificationProps) {
+    const notifications = useCurrentUserStore((state) => state.notifications);
+    const updateNotifications = useCurrentUserStore((state) => state.updateNotifications);
+
+    const handleButtonClick = () => {
+        if (notifications !== null) {
+            axiosSession.post(`/notification/delete?id=${notification.id}`).then(() => {
+                updateNotifications([...notifications.filter((n) => n.id !== notification.id)]);
+            });
+        }
+    };
+
     return (
         <div className='flex gap-x-3'>
             {notification.imageUrl && (
@@ -32,7 +45,12 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
                     </span>
                 </div>
 
-                <Button className='px-2.5 py-[4.5px] text-[14px] rounded-lg w-full'>Понятно</Button>
+                <Button
+                    className='px-2.5 py-[4.5px] text-[14px] rounded-lg w-full'
+                    onClick={() => handleButtonClick()}
+                >
+                    Понятно
+                </Button>
             </div>
         </div>
     );

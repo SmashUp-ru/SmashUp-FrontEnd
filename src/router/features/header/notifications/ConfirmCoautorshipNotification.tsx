@@ -1,6 +1,8 @@
 import { ConfirmCoAuthorshipNotificationType } from '@/types/api/notifications.ts';
 import { useConfirmCoAuthorshipNotificationData } from '@/router/features/header/notifications/useConfirmCoAuthorshipNotificationData.ts';
 import { Button } from '@/components/ui/button.tsx';
+import { axiosSession } from '@/lib/utils.ts';
+import { useCurrentUserStore } from '@/store/currentUser.ts';
 
 interface ConfirmCoAuthorshipNotificationProps {
     notification: ConfirmCoAuthorshipNotificationType;
@@ -9,7 +11,20 @@ interface ConfirmCoAuthorshipNotificationProps {
 export default function ConfirmCoAuthorshipNotification({
     notification
 }: ConfirmCoAuthorshipNotificationProps) {
+    const notifications = useCurrentUserStore((state) => state.notifications);
+    const updateNotifications = useCurrentUserStore((state) => state.updateNotifications);
+
     const { mashup, isLoading } = useConfirmCoAuthorshipNotificationData(notification);
+
+    const handleButtonClick = (accepted: boolean) => {
+        if (notifications !== null) {
+            axiosSession
+                .post(`/notification/interact?id=${notification.id}`, { accepted: accepted })
+                .then(() => {
+                    updateNotifications([...notifications.filter((n) => n.id !== notification.id)]);
+                });
+        }
+    };
 
     if (isLoading) return <div>Скелет..</div>;
 
@@ -31,10 +46,17 @@ export default function ConfirmCoAuthorshipNotification({
                 </div>
 
                 <div className='flex items-center gap-x-1'>
-                    <Button className='px-2.5 py-[4.5px] text-[14px] rounded-lg'>
+                    <Button
+                        className='px-2.5 py-[4.5px] text-[14px] rounded-lg'
+                        onClick={() => handleButtonClick(true)}
+                    >
                         Подтвердить
                     </Button>
-                    <Button className='px-2.5 py-[4.5px] text-[14px] rounded-lg' variant='ghost'>
+                    <Button
+                        className='px-2.5 py-[4.5px] text-[14px] rounded-lg'
+                        variant='ghost'
+                        onClick={() => handleButtonClick(false)}
+                    >
                         Отменить
                     </Button>
                 </div>

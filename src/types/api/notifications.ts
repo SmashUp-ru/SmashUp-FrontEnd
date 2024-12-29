@@ -1,7 +1,9 @@
 export interface NotificationType {
     id: number;
     imageUrl: string | null;
-    meta: Record<string, string | number | boolean>;
+    meta: {
+        type: string;
+    };
 }
 
 export interface ConfirmCoAuthorshipNotificationType extends NotificationType {
@@ -18,4 +20,9 @@ export interface MashupStatusNotificationType extends NotificationType {
         published: boolean;
         reason: string;
     };
+}
+
+export interface GetNotificationsResponse {
+    status: string;
+    response: NotificationType[];
 }
