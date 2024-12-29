@@ -2,12 +2,9 @@ import { usePlayerStore } from '@/store/player.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import CancelIcon from '@/components/icons/Cancel.tsx';
-import ShareIcon from '@/components/icons/Share.tsx';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import { useMashupStore } from '@/store/entities/mashup.ts';
-import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import CopiedToast from '@/router/features/toasts/copied.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -25,7 +22,6 @@ import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.
 import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
 
 export default function MashupInfo() {
-    const { toast } = useToast();
     const { pause, playMashup } = usePlayer();
 
     const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -143,28 +139,6 @@ export default function MashupInfo() {
                         <LikeOutlineIcon color='onSurface' />
                     </Button>
                 )}
-
-                <Button
-                    variant='ghost'
-                    size='icon'
-                    onClick={() => {
-                        navigator.clipboard
-                            .writeText(`${import.meta.env.VITE_FRONTEND_URL}/mashup/${mashup.id}`)
-                            .then(() => {
-                                toast({
-                                    element: (
-                                        <CopiedToast
-                                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
-                                            name={mashup.name}
-                                        />
-                                    ),
-                                    duration: 2000
-                                });
-                            });
-                    }}
-                >
-                    <ShareIcon />
-                </Button>
 
                 <MashupMoreDropdown mashup={mashup}>
                     <Button variant='ghost' size='icon' className=''>
