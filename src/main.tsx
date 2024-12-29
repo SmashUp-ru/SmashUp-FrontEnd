@@ -34,6 +34,7 @@ import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfir
 import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 import UploadTrackPage from '@/router/pages/uploadTrack/UploadTrackPage.tsx';
+import ModerateMashupPage from './router/pages/moderation/moderateMashup/ModerateMashupPage';
 
 const router = createBrowserRouter(
     [
@@ -92,6 +93,10 @@ const router = createBrowserRouter(
                         {
                             element: <ModerationPage />,
                             path: '/mashup/moderation'
+                        },
+                        {
+                            element: <ModerateMashupPage />,
+                            path: '/mashup/moderation/:mashupId'
                         },
                         {
                             element: <MashupPage />,

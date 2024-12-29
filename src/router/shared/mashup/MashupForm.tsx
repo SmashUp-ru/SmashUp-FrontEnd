@@ -1,4 +1,4 @@
-import { axiosSession, cn, removeItem, trim } from '@/lib/utils.ts';
+import { axiosSession, cn, removeItem } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { useEffect, useState } from 'react';
@@ -11,10 +11,10 @@ import SearchIcon from '@/components/icons/Search.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { TrackSearchResponse, UsersSearchResponse } from '@/types/api/search';
 import { RegEx } from '@/lib/regex';
-import { YouTubeOEmbedResponse, YouTubeTrack } from '@/types/api/youtube';
+import { YouTubeTrack } from '@/types/api/youtube';
 import {
     areTracksEqual,
     areUsersEqual,
@@ -35,6 +35,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 import MashupFormSkeleton from './MashupFormSkeleton';
+import { loadOEmbed } from '@/lib/youtube';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -49,8 +50,8 @@ interface MashupFormProps {
 
 interface MashupFormInitialProps {
     name: string;
-    explicit: boolean;
-    banWords: boolean;
+    explicit?: boolean;
+    banWords?: boolean;
     selectedGenres: string[];
     selectedTracks: SelectedTrack[];
     selectedUsers: User[];
@@ -82,13 +83,15 @@ export default function MashupForm({
     const { toast } = useToast();
 
     const hasStatusLink = initial.statusLink !== undefined;
+    const hasExplicit = initial.banWords !== undefined;
+    const hasBanWords = initial.banWords !== undefined;
 
     // Inputs
 
     const [name, setName] = useState<string>(initial.name);
     const [statusLink, setStatusLink] = useState(initial.statusLink || '');
-    const [explicit, setExplicit] = useState(initial.explicit);
-    const [banWords, setBanWords] = useState(initial.banWords);
+    const [explicit, setExplicit] = useState(initial.explicit || false);
+    const [banWords, setBanWords] = useState(initial.banWords || false);
     const [agree, setAgree] = useState(initial.agree);
 
     // Genre selection
@@ -127,32 +130,8 @@ export default function MashupForm({
     const searchYouTube = (link: string) => {
         setYouTubeTrackLoading(true);
 
-        axios
-            .get(`https://www.youtube.com/oembed?format=json&url=${link}`)
-            .then((r: AxiosResponse<YouTubeOEmbedResponse>) => {
-                const title = r.data.title;
-
-                let data: string[] = [];
-                for (const separator of ['-', '–', '—']) {
-                    data = title.split(separator, 2);
-                    if (data.length == 2) {
-                        break;
-                    }
-                }
-
-                if (data.length != 2) {
-                    data = ['???', title];
-                } else {
-                    data = [trim(data[0]), trim(data[1])];
-                }
-
-                setYouTubeTrack({
-                    authors: [data[0]],
-                    name: data[1],
-                    imageUrl: r.data.thumbnail_url,
-                    link: link
-                });
-            })
+        loadOEmbed(link)
+            .then(setYouTubeTrack)
             .then(() => setYouTubeTrackLoading(false));
     };
 
@@ -722,29 +701,33 @@ export default function MashupForm({
                                 </div>
                             </div>
 
-                            <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox
-                                    checked={explicit}
-                                    onCheckedChange={(v) => {
-                                        if (typeof v === 'boolean') setExplicit(v);
-                                    }}
-                                />
-                                <Label className='font-bold text-[18px] text-onSurface'>
-                                    Explicit (Мат)
-                                </Label>
-                            </div>
+                            {hasExplicit && (
+                                <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
+                                    <Checkbox
+                                        checked={explicit}
+                                        onCheckedChange={(v) => {
+                                            if (typeof v === 'boolean') setExplicit(v);
+                                        }}
+                                    />
+                                    <Label className='font-bold text-[18px] text-onSurface'>
+                                        Explicit (Мат)
+                                    </Label>
+                                </div>
+                            )}
 
-                            <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox
-                                    checked={banWords}
-                                    onCheckedChange={(v) => {
-                                        if (typeof v === 'boolean') setBanWords(v);
-                                    }}
-                                />
-                                <Label className='font-bold text-[18px] text-onSurface'>
-                                    Бан-ворды Twitch
-                                </Label>
-                            </div>
+                            {hasBanWords && (
+                                <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
+                                    <Checkbox
+                                        checked={banWords}
+                                        onCheckedChange={(v) => {
+                                            if (typeof v === 'boolean') setBanWords(v);
+                                        }}
+                                    />
+                                    <Label className='font-bold text-[18px] text-onSurface'>
+                                        Бан-ворды Twitch
+                                    </Label>
+                                </div>
+                            )}
                         </div>
 
                         {/*авторы*/}

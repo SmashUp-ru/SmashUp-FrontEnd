@@ -15,17 +15,14 @@ import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-// import { UnpublishedMashup } from '@/store/moderation.ts';
-//
-// interface ModerationMashupProps {
-//     mashup: UnpublishedMashup;
-// }
+import { UnpublishedMashup } from '@/store/moderation.ts';
 
-export default function ModerationMashup() {
+interface ModerationMashupProps {
+    mashup: UnpublishedMashup;
+}
+
+export default function ModerationMashup({ mashup }: ModerationMashupProps) {
     const { toast } = useToast();
-    const image =
-        'https://www.figma.com/file/rRag5NIqwib0N69njQFTbK/image/21cd0c838f6ffbc418f192c6fbf5a1b62c9421fa';
-    const link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
     return (
         <Accordion type='single' collapsible>
@@ -33,7 +30,11 @@ export default function ModerationMashup() {
                 <AccordionTrigger>
                     <div className='w-full flex items-center justify-between py-[6px] pl-[6px]'>
                         <div className='flex items-center gap-x-4'>
-                            <img src={image} alt='a' className='w-12 h-12 rounded-[10px]' />
+                            <img
+                                src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${mashup.id}_800x800.png`}
+                                alt={mashup.name}
+                                className='w-12 h-12 rounded-[10px]'
+                            />
                             <div className='flex flex-col items-start'>
                                 <span className='font-bold text-onSurface'>Грустите на 190кг</span>
                                 <span className='font-medium text-onSurfaceVariant'>warkkaa</span>
@@ -62,7 +63,11 @@ export default function ModerationMashup() {
                     </div>
                 </AccordionTrigger>
                 <AccordionContent className='mt-4 flex gap-x-6'>
-                    <img src={image} alt='жирный' className='w-[216px] h-[216px] rounded-[30px]' />
+                    <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${mashup.id}_800x800.png`}
+                        alt={mashup.name}
+                        className='w-[216px] h-[216px] rounded-[30px]'
+                    />
 
                     <div className='w-full grid grid-cols-4 gap-x-6'>
                         {/*название, авторы*/}

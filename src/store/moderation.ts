@@ -9,15 +9,15 @@ export interface UnpublishedMashup {
     albumId: number;
     tracks: number[];
     tracksUrls: string[];
-    statusesUrls: [];
+    statusesUrls: string[];
     genres: string[];
     publisherId: number;
     publishTime: number;
 }
 
 interface ModerationState {
-    unreviewedMashups: null | UnpublishedMashup[];
-    updateUnreviewedMashups: (newUnreviewedMashups: UnpublishedMashup[]) => void;
+    unpublishedMashups: null | UnpublishedMashup[];
+    updateUnpublishedMashups: (newUnreviewedMashups: UnpublishedMashup[]) => void;
 
     publishedMashups: null | UnpublishedMashup[];
     updatePublishedMashups: (newPublishedMashups: UnpublishedMashup[]) => void;
@@ -26,9 +26,9 @@ interface ModerationState {
 export const useModerationStore = create<ModerationState>()(
     persist(
         (set) => ({
-            unreviewedMashups: null,
-            updateUnreviewedMashups: (newUnreviewedMashups: UnpublishedMashup[]) =>
-                set({ unreviewedMashups: newUnreviewedMashups }),
+            unpublishedMashups: null,
+            updateUnpublishedMashups: (newUnreviewedMashups: UnpublishedMashup[]) =>
+                set({ unpublishedMashups: newUnreviewedMashups }),
 
             publishedMashups: null,
             updatePublishedMashups: (newPublishedMashups: UnpublishedMashup[]) =>
@@ -39,7 +39,7 @@ export const useModerationStore = create<ModerationState>()(
             partialize: (state) => {
                 const {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    unreviewedMashups,
+                    unpublishedMashups: unreviewedMashups,
                     ...rest
                 } = state;
                 return rest;

@@ -1,7 +1,15 @@
 import { TabsSeparated, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs-separated';
 import ModerationMashup from '@/router/features/moderation/ModerationMashup.tsx';
+import { useModeration } from './useModeration';
 
 export default function ModerationPage() {
+    const { unpublishedMashups } = useModeration();
+
+    if (unpublishedMashups === null) {
+        // TODO: скелет
+        return <></>;
+    }
+
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center justify-between'>
@@ -15,9 +23,8 @@ export default function ModerationPage() {
                 </TabsList>
 
                 <TabsContent value='ожидают' className='flex flex-col gap-y-6'>
-                    <ModerationMashup />
-                    <ModerationMashup />
-                    <ModerationMashup />
+                    {unpublishedMashups &&
+                        unpublishedMashups.map((mashup) => <ModerationMashup mashup={mashup} />)}
                 </TabsContent>
                 <TabsContent value='принятые'>Тут ничего нет 👀</TabsContent>
             </TabsSeparated>
