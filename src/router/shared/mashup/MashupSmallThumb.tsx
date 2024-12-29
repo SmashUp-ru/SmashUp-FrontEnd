@@ -9,7 +9,6 @@ import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { useEffect, useState } from 'react';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
@@ -46,13 +45,11 @@ export default function MashupSmallThumb({
 
     const { play, pause, playMashup } = usePlayer();
 
-    const [isLiked, setIsLiked] = useState(false);
-
-    useEffect(() => {
-        if (mashup) {
-            setIsLiked(mashup.liked);
-        }
-    }, [mashup]);
+    const isLiked = mashup?.liked ?? false;
+    const setIsLiked = (liked: boolean) => {
+        if (!mashup) return;
+        useMashupStore.getState().updateOneById(mashup.id, { liked });
+    };
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -158,7 +155,6 @@ export default function MashupSmallThumb({
                                     )
                                     .then(() => {
                                         setIsLiked(false);
-                                        updateMashupById(mashup.id, { liked: false });
                                     });
                             }}
                         >

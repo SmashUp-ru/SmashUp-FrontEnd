@@ -1,40 +1,56 @@
-import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
+import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import { useMashupStore } from '@/store/entities/mashup.ts';
+import { useEffect, useMemo } from 'react';
 
 export function usePlaylistPageData(playlistId?: string) {
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const getPlaylistById = usePlaylistStore((state) => state.getOneById);
 
-    const [playlist, setPlaylist] = useState<Playlist | null>(null);
-    const [mashups, setMashups] = useState<Mashup[]>([]);
-    const [isLiked, setIsLiked] = useState(false);
+    const playlistCache = usePlaylistStore((state) => state.cache);
+    const mashupCache = useMashupStore((state) => state.cache);
 
-    const [playlistLoading, setPlaylistLoading] = useState(playlistId !== undefined);
-    const [mashupsLoading, setMashupsLoading] = useState(playlistId !== undefined);
+    const playlist = useMemo(() => {
+        if (!playlistId) return null;
+        return playlistCache[parseInt(playlistId)];
+    }, [playlistId, playlistCache]);
+
+    const mashups = useMemo(() => {
+        if (!playlist?.mashups) return [];
+        return playlist.mashups.map((id) => mashupCache[id]).filter(Boolean);
+    }, [playlist, mashupCache]);
+
+    const isLiked = useMemo(() => playlist?.liked || false, [playlist]);
+
+    const isLoading = useMemo(
+        () =>
+            (playlistId !== undefined && !playlist) ||
+            (playlist?.mashups?.some((id) => !mashupCache[id]) ?? false),
+        [playlistId, playlist, mashupCache]
+    );
 
     useEffect(() => {
-        if (playlistId) {
-            getPlaylistById(parseInt(playlistId))
-                .then((r) => setPlaylist(r))
-                .finally(() => setPlaylistLoading(false));
+        if (playlistId && !playlist) {
+            getPlaylistById(parseInt(playlistId)).catch(console.error);
         }
-    }, [playlistId]);
+    }, [playlistId, playlist, getPlaylistById]);
 
     useEffect(() => {
-        if (playlist) {
-            setIsLiked(playlist.liked);
-            getMashupsByIds(playlist.mashups)
-                .then((r) => setMashups(r))
-                .finally(() => setMashupsLoading(false));
+        if (playlist?.mashups?.length) {
+            const missingMashupIds = playlist.mashups.filter((id) => !mashupCache[id]);
+            if (missingMashupIds.length > 0) {
+                getMashupsByIds(missingMashupIds).catch(console.error);
+            }
         }
-    }, [playlist]);
+    }, [playlist, mashupCache, getMashupsByIds]);
 
     return {
         playlist,
         mashups,
         isLiked,
-        setIsLiked,
-        isLoading: mashupsLoading || playlistLoading
+        setIsLiked: (liked: boolean) => {
+            if (!playlist) return;
+            usePlaylistStore.getState().updateOneById(playlist.id, { liked });
+        },
+        isLoading
     };
 }

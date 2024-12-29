@@ -1,23 +1,25 @@
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { useEffect, useState } from 'react';
+import { useMashupStore } from '@/store/entities/mashup.ts';
+import { useEffect, useMemo } from 'react';
 
 export function useMashupPageData(mashupId?: string) {
     const getMashupById = useMashupStore((state) => state.getOneById);
+    const mashupCache = useMashupStore((state) => state.cache);
 
-    const [mashupLoading, setMashupLoading] = useState<boolean>(mashupId !== undefined);
+    const mashup = useMemo(() => {
+        if (!mashupId) return null;
+        return mashupCache[parseInt(mashupId)];
+    }, [mashupId, mashupCache]);
 
-    const [mashup, setMashup] = useState<Mashup | null>(null);
+    const isLoading = useMemo(() => mashupId !== undefined && !mashup, [mashupId, mashup]);
 
     useEffect(() => {
-        if (mashupId) {
-            getMashupById(parseInt(mashupId))
-                .then((r) => setMashup(r))
-                .finally(() => setMashupLoading(false));
+        if (mashupId && !mashup) {
+            getMashupById(parseInt(mashupId)).catch(console.error);
         }
-    }, [mashupId]);
+    }, [mashupId, mashup, getMashupById]);
 
     return {
         mashup,
-        isLoading: mashupLoading
+        isLoading
     };
 }

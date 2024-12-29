@@ -33,6 +33,7 @@ export default function MashupInfo() {
     const updateMashupById = useMashupStore((state) => state.updateOneById);
 
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData();
+
     const [imageLoaded, setImageLoaded] = useState(false);
 
     if (!info) return null;
@@ -131,7 +132,6 @@ export default function MashupInfo() {
                         onClick={() => {
                             axiosSession.post(`/mashup/remove_like?id=${mashup.id}`).then(() => {
                                 setIsLiked(false);
-                                updateMashupById(mashup.id, { liked: false });
                             });
                         }}
                     >

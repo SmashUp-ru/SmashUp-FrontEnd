@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { Track, useTrackStore } from '@/store/entities/track.ts';
+import { useEffect, useMemo } from 'react';
+import { useMashupStore } from '@/store/entities/mashup.ts';
+import { useTrackStore } from '@/store/entities/track.ts';
 import { usePlayerStore } from '@/store/player.ts';
 
 export function useMashupInfoData() {
@@ -8,37 +8,42 @@ export function useMashupInfoData() {
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const getMashupById = useMashupStore((state) => state.getOneById);
     const getTracksById = useTrackStore((state) => state.getManyByIds);
+    const mashupCache = useMashupStore((state) => state.cache);
+    const trackCache = useTrackStore((state) => state.cache);
 
-    const [mashup, setMashup] = useState<Mashup | null>(null);
-    const [isLiked, setIsLiked] = useState(false);
-    const [tracks, setTracks] = useState<Track[]>([]);
+    const mashupId = useMemo(
+        () => (queueIndex >= 0 ? queue?.[queueIndex] : null),
+        [queue, queueIndex]
+    );
+    const mashup = mashupId ? mashupCache[mashupId] : null;
 
-    const [mashupLoading, setMashupLoading] = useState(queueIndex >= 0 && queue);
-    const [tracksLoading, setTracksLoading] = useState(false);
+    const tracks = useMemo(() => {
+        if (!mashup) return [];
+        return mashup.tracks.map((id) => trackCache[id]).filter(Boolean);
+    }, [mashup, trackCache]);
+
+    const isLiked = mashup?.liked ?? false;
 
     useEffect(() => {
-        if (queueIndex >= 0 && queue) {
-            getMashupById(queue[queueIndex])
-                .then((r) => setMashup(r))
-                .finally(() => setMashupLoading(false));
+        if (mashupId && !mashup) {
+            getMashupById(mashupId).catch(console.error);
         }
-    }, [queue, queueIndex]);
+    }, [mashupId, mashup, getMashupById]);
 
     useEffect(() => {
-        if (mashup) {
-            setIsLiked(mashup.liked);
-            setTracksLoading(true);
-            getTracksById(mashup.tracks)
-                .then((r) => setTracks(r))
-                .finally(() => setTracksLoading(false));
+        if (mashup && mashup.tracks.some((id) => !trackCache[id])) {
+            getTracksById(mashup.tracks).catch(console.error);
         }
-    }, [mashup]);
+    }, [mashup, trackCache, getTracksById]);
 
     return {
-        isLoading: mashupLoading || tracksLoading,
+        isLoading: !mashup || mashup.tracks.some((id) => !trackCache[id]),
         mashup,
         tracks,
         isLiked,
-        setIsLiked
+        setIsLiked: (liked: boolean) => {
+            if (!mashup) return;
+            useMashupStore.getState().updateOneById(mashup.id, { liked });
+        }
     };
 }

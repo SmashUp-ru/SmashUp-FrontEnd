@@ -11,13 +11,12 @@ import InfoIcon from '@/components/icons/Info.tsx';
 import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { useEffect, useState } from 'react';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
+import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -42,23 +41,7 @@ export default function PlayerBar() {
 
     const { play, pause, next, prev } = usePlayer();
 
-    const getMashupById = useMashupStore((state) => state.getOneById);
-    const updateMashupById = useMashupStore((state) => state.updateOneById);
-
-    const [mashup, setMashup] = useState<Mashup | null>(null);
-    const [isLiked, setIsLiked] = useState(false);
-
-    useEffect(() => {
-        if (queue && queueIndex !== null && queueIndex >= 0 && queueIndex < queue.length) {
-            getMashupById(queue[queueIndex]).then((r) => setMashup(r));
-        }
-    }, [queue, queueIndex]);
-
-    useEffect(() => {
-        if (mashup) {
-            setIsLiked(mashup.liked);
-        }
-    }, [mashup]);
+    const { mashup, isLiked, setIsLiked } = usePlayerBarData();
 
     if (queue.length === 0 || queueIndex === null || !mashup) {
         return;
@@ -105,7 +88,6 @@ export default function PlayerBar() {
                                     )
                                     .then(() => {
                                         setIsLiked(false);
-                                        updateMashupById(mashup.id, { liked: false });
                                     });
                             }}
                         >
@@ -122,7 +104,6 @@ export default function PlayerBar() {
                                     )
                                     .then(() => {
                                         setIsLiked(true);
-                                        updateMashupById(mashup.id, { liked: true });
                                     });
                             }}
                         >
