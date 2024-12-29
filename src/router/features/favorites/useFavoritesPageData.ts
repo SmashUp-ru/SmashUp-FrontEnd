@@ -1,16 +1,15 @@
-import { useGlobalStore } from '@/store/global.ts';
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 
 export function useFavoritesPageData() {
-    const likes = useGlobalStore((state) => state.likes);
-    const updateLikes = useGlobalStore((state) => state.updateLikes);
+    const [likes, setLikes] = useState<number[]>([]);
+
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
-    const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(likes === null);
-    const [mashupsLoading, setMashupsLoading] = useState(likes === null);
+    const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(true);
+    const [mashupsLoading, setMashupsLoading] = useState(true);
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
@@ -24,7 +23,7 @@ export function useFavoritesPageData() {
                         response: number[];
                     }>
                 ) => {
-                    updateLikes(r.data.response);
+                    setLikes(r.data.response);
                 }
             )
             .finally(() => setIsPlaylistPageLoading(false));
@@ -38,7 +37,7 @@ export function useFavoritesPageData() {
 
     return {
         mashups,
-        likes: likes === null ? [] : likes,
+        likes: likes,
         isLoading: mashupsLoading || isPlaylistPageLoading
     };
 }

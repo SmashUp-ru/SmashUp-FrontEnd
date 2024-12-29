@@ -7,9 +7,6 @@ interface GlobalState {
     startLoading: () => void;
     finishLoading: () => void;
 
-    likes: null | number[];
-    updateLikes: (newLikes: number[]) => void;
-
     settings: null | number;
     updateSettings: (newSettings: number) => void;
 
@@ -35,8 +32,6 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
     startLoading: () => set(() => ({ isLoading: true })),
     finishLoading: () => set(() => ({ isLoading: false })),
 
-    likes: null,
-    updateLikes: (newLikes: number[]) => set(() => ({ likes: newLikes })),
     settings: null,
     updateSettings: (newSettings: number) => set(() => ({ settings: newSettings })),
 
