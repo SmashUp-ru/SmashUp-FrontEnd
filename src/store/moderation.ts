@@ -4,7 +4,8 @@ import { persist } from 'zustand/middleware';
 export interface UnpublishedMashup {
     id: number;
     name: string;
-    authors: number[];
+    authors: string[];
+    authorsIds: number[];
     statuses: number;
     albumId: number;
     tracks: number[];

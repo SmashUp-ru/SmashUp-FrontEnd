@@ -4,12 +4,25 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
-import { Track } from '@/store/entities/track.ts';
+import { Track, useTrackStore } from '@/store/entities/track.ts';
 import { cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup } from '@/store/moderation.ts';
+import { useEffect, useState } from 'react';
+import {
+    SelectedTrack,
+    SmashUpSelectedTrack,
+    YandexMusicSelectedTrack,
+    YouTubeSelectedTrack
+} from '@/types/api/upload';
+import { RegEx } from '@/lib/regex';
+import { loadOEmbed } from '@/lib/youtube';
+import { isExplicit, isTwitchBanned } from '@/lib/bitmask';
+import { useToast } from '@/router/shared/hooks/use-toast';
+import ImageWithAuth from '@/router/shared/image/imageWithAuth';
+import { Link } from 'react-router-dom';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -17,20 +30,71 @@ interface UnpublishedMashupAccordionItem {
     mashup: UnpublishedMashup;
 }
 
-export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMashupAccordionItem) {
+export function UnpublishedMashupAccordionItem({
+    mashup,
+    accordionValue,
+    value
+}: UnpublishedMashupAccordionItem) {
+    const { toast } = useToast();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [tracks, setTracks] = useState<SelectedTrack[]>();
+
+    const trackStore = useTrackStore();
+
+    useEffect(() => {
+        if (!loading && accordionValue === value) {
+            setLoading(true);
+
+            Promise.all([
+                trackStore
+                    .getManyByIds(mashup.tracks)
+                    .then((tracks) => tracks.map((track) => new SmashUpSelectedTrack(track))),
+                Promise.all(
+                    mashup.tracksUrls.map(async (url) => {
+                        if (RegEx.YOUTUBE.test(url)) {
+                            return loadOEmbed(url).then((track) => new YouTubeSelectedTrack(track));
+                        } else if (RegEx.YANDEX_MUSIC_TRACK.test(url)) {
+                            return new YandexMusicSelectedTrack(url);
+                        } else {
+                            throw new Error(`${url} is not supported`);
+                        }
+                    })
+                )
+            ]).then((result) => {
+                const [smashUpTracks, foreignTracks] = result;
+
+                setTracks((smashUpTracks as SelectedTrack[]).concat(foreignTracks));
+            });
+        }
+    }, [accordionValue]);
+
+    const statusUrl = mashup.statusesUrls ? mashup.statusesUrls[0] : undefined;
+
+    const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png`;
+
+    const [image, setImage] = useState<string>();
+    const [imageFailed, setImageFailed] = useState<boolean>(false);
+
     return (
         <AccordionItem value={value}>
             <AccordionTrigger>
                 <div className='w-full flex items-center justify-between py-[6px] pl-[6px]'>
                     <div className='flex items-center gap-x-4'>
-                        <img
-                            src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${mashup.id}_800x800.png`}
+                        <ImageWithAuth
+                            src={imageUrl}
                             alt={mashup.name}
                             className='w-12 h-12 rounded-[10px]'
+                            image={image}
+                            setImage={setImage}
+                            failed={imageFailed}
+                            setFailed={setImageFailed}
                         />
                         <div className='flex flex-col items-start'>
-                            <span className='font-bold text-onSurface'>Грустите на 190кг</span>
-                            <span className='font-medium text-onSurfaceVariant'>warkkaa</span>
+                            <span className='font-bold text-onSurface'>{mashup.name}</span>
+                            <span className='font-medium text-onSurfaceVariant'>
+                                {mashup.authors?.join(', ')}
+                            </span>
                         </div>
                     </div>
 
@@ -50,16 +114,22 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                         </div>
 
                         <Button className='mr-7' variant='ghost' size='icon'>
-                            <EditIcon />
+                            <Link to={`/mashup/moderation/${mashup.id}`}>
+                                <EditIcon />
+                            </Link>
                         </Button>
                     </div>
                 </div>
             </AccordionTrigger>
             <AccordionContent className='mt-4 flex gap-x-6'>
-                <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${mashup.id}_800x800.png`}
+                <ImageWithAuth
+                    src={imageUrl}
                     alt={mashup.name}
                     className='w-[216px] h-[216px] rounded-[30px]'
+                    image={image}
+                    setImage={setImage}
+                    failed={imageFailed}
+                    setFailed={setImageFailed}
                 />
 
                 <div className='w-full grid grid-cols-4 gap-x-6'>
@@ -69,12 +139,14 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                             <Label className='font-medium text-onSurfaceVariant'>
                                 Название мэшапа
                             </Label>
-                            <span className='font-bold text-[24px]'>Грустите на 190кг</span>
+                            <span className='font-bold text-[24px]'>{mashup.name}</span>
                         </div>
 
                         <div className='w-full flex flex-col gap-y-2.5'>
                             <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                            <span className='font-bold text-[24px]'>warkkaa</span>
+                            <span className='font-bold text-[24px]'>
+                                {mashup.authors?.join(', ')}
+                            </span>
                         </div>
                     </div>
 
@@ -82,42 +154,23 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                     <div className='w-full'>
                         <Label className='font-medium text-onSurfaceVariant'>Исходники</Label>
                         <div className='w-full max-h-[180px] overflow-y-scroll'>
-                            <TrackSmallThumb
-                                track={
-                                    {
-                                        name: 'КАДЕЛАК',
-                                        imageUrl: '1',
-                                        authors: ['Морген', 'Элджей']
-                                    } as Track
-                                }
-                            />
-                            <TrackSmallThumb
-                                track={
-                                    {
-                                        name: 'КАДЕЛАК',
-                                        imageUrl: '1',
-                                        authors: ['Морген', 'Элджей']
-                                    } as Track
-                                }
-                            />
-                            <TrackSmallThumb
-                                track={
-                                    {
-                                        name: 'КАДЕЛАК',
-                                        imageUrl: '1',
-                                        authors: ['Морген', 'Элджей']
-                                    } as Track
-                                }
-                            />
-                            <TrackSmallThumb
-                                track={
-                                    {
-                                        name: 'КАДЕЛАК',
-                                        imageUrl: '1',
-                                        authors: ['Морген', 'Элджей']
-                                    } as Track
-                                }
-                            />
+                            {tracks &&
+                                tracks.map((selectedTrack) => {
+                                    let track: Track;
+                                    if (selectedTrack.constructor.name === 'SmashUpSelectedTrack') {
+                                        track = (selectedTrack as SmashUpSelectedTrack).track;
+                                    } else if (
+                                        selectedTrack.constructor.name === 'YouTubeSelectedTrack'
+                                    ) {
+                                        track = (selectedTrack as SmashUpSelectedTrack).track;
+                                    } else {
+                                        throw new Error(
+                                            `${selectedTrack.constructor.name} not supported`
+                                        );
+                                    }
+
+                                    return <TrackSmallThumb track={track} />;
+                                })}
                         </div>
                     </div>
 
@@ -125,38 +178,17 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                     <div className='w-full'>
                         <Label className='font-medium text-onSurfaceVariant'>Жанры</Label>
                         <div className='w-full max-h-[180px] overflow-y-scroll flex flex-col gap-y-3'>
-                            <div
-                                className={cn(
-                                    'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                    'font-bold text-[18px] text-onBackground'
-                                )}
-                            >
-                                SoundClown
-                            </div>
-                            <div
-                                className={cn(
-                                    'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                    'font-bold text-[18px] text-onBackground'
-                                )}
-                            >
-                                AI
-                            </div>
-                            <div
-                                className={cn(
-                                    'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                    'font-bold text-[18px] text-onBackground'
-                                )}
-                            >
-                                Электро
-                            </div>
-                            <div
-                                className={cn(
-                                    'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                    'font-bold text-[18px] text-onBackground'
-                                )}
-                            >
-                                Рок
-                            </div>
+                            {mashup.genres &&
+                                mashup.genres.map((genre) => (
+                                    <div
+                                        className={cn(
+                                            'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
+                                            'font-bold text-[18px] text-onBackground'
+                                        )}
+                                    >
+                                        {genre}
+                                    </div>
+                                ))}
                         </div>
                     </div>
 
@@ -165,14 +197,14 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                         <Label className='font-medium text-onSurfaceVariant'>Дополнительно</Label>
                         <div className='w-full flex flex-col gap-y-3'>
                             <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox />
+                                <Checkbox checked={isExplicit(mashup.statuses)} />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Explicit (Мат)
                                 </Label>
                             </div>
 
                             <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox />
+                                <Checkbox checked={isTwitchBanned(mashup.statuses)} />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Бан-ворды Twitch
                                 </Label>
@@ -183,23 +215,25 @@ export function UnpublishedMashupAccordionItem({ mashup, value }: UnpublishedMas
                                 size='icon'
                                 className='cursor-pointer'
                                 onClick={() => {
-                                    navigator.clipboard.writeText(link).then(() => {
-                                        toast({
-                                            element: (
-                                                <CopiedToast
-                                                    img={image}
-                                                    name='Развлекайтесь на 190кг'
-                                                />
-                                            ),
-                                            duration: 2000
+                                    if (statusUrl) {
+                                        navigator.clipboard.writeText(statusUrl).then(() => {
+                                            toast({
+                                                element: (
+                                                    <CopiedToast
+                                                        img={imageUrl}
+                                                        name={mashup.name}
+                                                    />
+                                                ),
+                                                duration: 2000
+                                            });
                                         });
-                                    });
+                                    }
                                 }}
                             >
                                 <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
                                     <LinkIcon />
                                     <span className='font-medium text-onSurfaceVariant'>
-                                        {link}
+                                        {statusUrl || 'Ссылка на основу / альт'}
                                     </span>
                                 </div>
                             </Button>
