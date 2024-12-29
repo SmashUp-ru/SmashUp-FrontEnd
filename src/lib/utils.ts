@@ -96,7 +96,3 @@ export function maskEmail(email: string): string {
     const maskedLocal = local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
     return `${maskedLocal}@${domain}`;
 }
-
-export async function sleep(ms: number): Promise<unknown> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
