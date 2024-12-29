@@ -34,142 +34,153 @@ import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfir
 import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+    [
+        {
+            element: <Layout />,
+            errorElement: <NotFound />,
+            children: [
+                // основное приложение
+                {
+                    element: <RootLayout />,
+                    children: [
+                        {
+                            element: <DebugPage />,
+                            path: '/debug'
+                        },
+                        {
+                            element: <LogoutPage />,
+                            path: '/logout'
+                        },
+                        {
+                            element: <Root />,
+                            path: '/'
+                        },
+                        {
+                            element: <PrivacyPolicyPage />,
+                            path: '/privacy_policy'
+                        },
+                        {
+                            element: <DMCAPage />,
+                            path: '/dmca'
+                        },
+                        {
+                            element: <UserAgreementPage />,
+                            path: '/user_agreement'
+                        },
+                        {
+                            element: <FavoritesPage />,
+                            path: '/favorites'
+                        },
+                        {
+                            element: <PlaylistPage />,
+                            path: '/playlist/:playlistId'
+                        },
+                        {
+                            element: <UploadMashupSuccessPage />,
+                            path: '/mashup/upload/success'
+                        },
+                        {
+                            element: <UploadMashupPage />,
+                            path: '/mashup/upload'
+                        },
+                        {
+                            element: <ModerationPage />,
+                            path: '/mashup/moderation'
+                        },
+                        {
+                            element: <MashupPage />,
+                            path: '/mashup/:mashupId'
+                        },
+                        {
+                            element: <ProfilePage />,
+                            path: '/user/:profileUsername'
+                        },
+                        {
+                            element: <ChangeUsernameConfirmPage />,
+                            path: '/user/change_username/confirm'
+                        },
+                        {
+                            element: <ChangeEmailConfirmPage />,
+                            path: '/user/change_email/confirm'
+                        },
+                        {
+                            element: <ChangePasswordConfirmPage />,
+                            path: '/user/change_password/confirm'
+                        },
+                        {
+                            element: <SettingsPage />,
+                            path: '/settings'
+                        },
+                        {
+                            element: <ProfileTracksPage />,
+                            path: '/user/:profileUsername/tracks'
+                        },
+                        {
+                            element: <SearchPage />,
+                            path: '/search'
+                        }
+                    ]
+                },
+                // страницы входа
+                {
+                    element: <AuthLayout />,
+                    children: [
+                        {
+                            element: <LoginPage />,
+                            path: '/login'
+                        },
+                        // регистрация
+                        {
+                            element: <RegisterPage />,
+                            path: '/register'
+                        },
+                        {
+                            element: <RegisterEmailPage />,
+                            path: '/register/email'
+                        },
+                        {
+                            element: <RegisterConfirmPage />,
+                            path: '/register/confirm'
+                        },
+                        // восстановление
+                        {
+                            element: <RecoverPasswordPage />,
+                            path: '/user/recover_password'
+                        },
+                        {
+                            element: <RecoverPasswordEmailPage />,
+                            path: '/user/recover_password/email'
+                        },
+                        {
+                            element: <RecoverPasswordConfirmPage />,
+                            path: '/user/recover_password/confirm'
+                        },
+                        {
+                            element: <RestorePasswordSuccessPage />,
+                            path: '/user/recover_password/success'
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
     {
-        element: <Layout />,
-        errorElement: <NotFound />,
-        children: [
-            // основное приложение
-            {
-                element: <RootLayout />,
-                children: [
-                    {
-                        element: <DebugPage />,
-                        path: '/debug'
-                    },
-                    {
-                        element: <LogoutPage />,
-                        path: '/logout'
-                    },
-                    {
-                        element: <Root />,
-                        path: '/'
-                    },
-                    {
-                        element: <PrivacyPolicyPage />,
-                        path: '/privacy_policy'
-                    },
-                    {
-                        element: <DMCAPage />,
-                        path: '/dmca'
-                    },
-                    {
-                        element: <UserAgreementPage />,
-                        path: '/user_agreement'
-                    },
-                    {
-                        element: <FavoritesPage />,
-                        path: '/favorites'
-                    },
-                    {
-                        element: <PlaylistPage />,
-                        path: '/playlist/:playlistId'
-                    },
-                    {
-                        element: <UploadMashupSuccessPage />,
-                        path: '/mashup/upload/success'
-                    },
-                    {
-                        element: <UploadMashupPage />,
-                        path: '/mashup/upload'
-                    },
-                    {
-                        element: <ModerationPage />,
-                        path: '/mashup/moderation'
-                    },
-                    {
-                        element: <MashupPage />,
-                        path: '/mashup/:mashupId'
-                    },
-                    {
-                        element: <ProfilePage />,
-                        path: '/user/:profileUsername'
-                    },
-                    {
-                        element: <ChangeUsernameConfirmPage />,
-                        path: '/user/change_username/confirm'
-                    },
-                    {
-                        element: <ChangeEmailConfirmPage />,
-                        path: '/user/change_email/confirm'
-                    },
-                    {
-                        element: <ChangePasswordConfirmPage />,
-                        path: '/user/change_password/confirm'
-                    },
-                    {
-                        element: <SettingsPage />,
-                        path: '/settings'
-                    },
-                    {
-                        element: <ProfileTracksPage />,
-                        path: '/user/:profileUsername/tracks'
-                    },
-                    {
-                        element: <SearchPage />,
-                        path: '/search'
-                    }
-                ]
-            },
-            // страницы входа
-            {
-                element: <AuthLayout />,
-                children: [
-                    {
-                        element: <LoginPage />,
-                        path: '/login'
-                    },
-                    // регистрация
-                    {
-                        element: <RegisterPage />,
-                        path: '/register'
-                    },
-                    {
-                        element: <RegisterEmailPage />,
-                        path: '/register/email'
-                    },
-                    {
-                        element: <RegisterConfirmPage />,
-                        path: '/register/confirm'
-                    },
-                    // восстановление
-                    {
-                        element: <RecoverPasswordPage />,
-                        path: '/user/recover_password'
-                    },
-                    {
-                        element: <RecoverPasswordEmailPage />,
-                        path: '/user/recover_password/email'
-                    },
-                    {
-                        element: <RecoverPasswordConfirmPage />,
-                        path: '/user/recover_password/confirm'
-                    },
-                    {
-                        element: <RestorePasswordSuccessPage />,
-                        path: '/user/recover_password/success'
-                    }
-                ]
-            }
-        ]
+        future: {
+            v7_fetcherPersist: true,
+            v7_normalizeFormMethod: true,
+            v7_partialHydration: true,
+            v7_relativeSplatPath: true,
+            v7_skipActionErrorRevalidation: true
+        }
     }
-]);
+);
 
 createRoot(document.getElementById('root')!).render(
     // <StrictMode>
     //
     // </StrictMode>
     <HotkeysProvider>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
     </HotkeysProvider>
 );
