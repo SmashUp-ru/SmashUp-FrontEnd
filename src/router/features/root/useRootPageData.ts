@@ -1,4 +1,7 @@
+import { axiosSession } from '@/lib/utils';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
+import { GetCompilationsResponse } from '@/types/api/compilations';
+import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 
 export function useRootPageData() {
@@ -8,7 +11,11 @@ export function useRootPageData() {
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     useEffect(() => {
-        getManyPlaylistsByIds([1, 2, 3, 27, 1043])
+        axiosSession
+            .get('/const/compilations')
+            .then((r: AxiosResponse<GetCompilationsResponse>) =>
+                getManyPlaylistsByIds(r.data.response)
+            )
             .then((r) => setPlaylists(r))
             .finally(() => setPlaylistsLoading(false));
     }, []);
