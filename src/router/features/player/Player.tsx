@@ -23,7 +23,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
 
     const [lastId, setLastId] = useState<number | null>(null);
 
-    const { next, prev, play, pause } = usePlayer();
+    const { next, prev, play, pause, closeInfo } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
     const intervalRef = useRef<number | null>(null);
@@ -118,6 +118,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     useHotkeys('space', () => updatePlaying(!isPlaying), { preventDefault: true });
     useHotkeys('ctrl+right', () => next(), { preventDefault: true });
     useHotkeys('ctrl+left', () => prev(), { preventDefault: true });
+    useHotkeys('esc', () => closeInfo(), { preventDefault: true });
 
     return (
         <ReactHowler
