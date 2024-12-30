@@ -4,6 +4,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { BITRATES, useSettingsStore } from '@/store/settings.ts';
+import { axiosSession } from '@/lib/utils.ts';
 
 const Player: React.FC = () => {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
@@ -21,6 +22,40 @@ const Player: React.FC = () => {
     const player = useRef<ReactHowler | null>(null);
     const intervalRef = useRef<number | null>(null);
 
+    const playTimeRef = useRef<number>(0);
+    const playTimeSent = useRef<boolean>(false);
+    const durationSent = useRef<boolean>(false);
+
+    const sendListenedEvent = () => {
+        playTimeSent.current = true;
+
+        const currentTrackId = queue[queueIndex];
+        if (currentTrackId) {
+            axiosSession.post(`/mashup/add_stream?id=${currentTrackId}`).catch(console.error);
+        }
+    };
+
+    const sendListenedDuration = () => {
+        if (playTimeRef.current >= 30) {
+            durationSent.current = true;
+
+            const currentTrackId = queue[queueIndex];
+            if (currentTrackId) {
+                axiosSession
+                    .post(`/mashup/listened?id=${currentTrackId}`, {
+                        duration: playTimeRef.current
+                    })
+                    .catch(console.error);
+            }
+        }
+    };
+
+    const resetPlayTime = () => {
+        playTimeRef.current = 0;
+        playTimeSent.current = false;
+        durationSent.current = false;
+    };
+
     useEffect(() => {
         if (player.current) {
             player.current.seek(changedSeek / 1000);
@@ -32,6 +67,10 @@ const Player: React.FC = () => {
             intervalRef.current = window.setInterval(() => {
                 if (player.current) {
                     updateSeek(player.current.seek() * 1000);
+                    playTimeRef.current += 0.5;
+                    if (playTimeRef.current >= 30 && !playTimeSent.current) {
+                        sendListenedEvent();
+                    }
                 }
             }, 500);
         } else if (intervalRef.current) {
@@ -45,7 +84,14 @@ const Player: React.FC = () => {
         };
     }, [isPlaying, updateSeek]);
 
+    useEffect(() => {
+        sendListenedDuration();
+        resetPlayTime();
+    }, [queueIndex]);
+
     const handleOnEnd = () => {
+        sendListenedDuration();
+        resetPlayTime();
         const currentLoop = usePlayerStore.getState().loop;
         const queue = usePlayerStore.getState().queue;
         const queueIndex = usePlayerStore.getState().queueIndex;
