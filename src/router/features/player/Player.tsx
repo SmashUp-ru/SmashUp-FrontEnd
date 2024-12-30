@@ -119,7 +119,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
 
     return (
         <ReactHowler
-            src={`https://api.smashup.ru/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
+            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
             playing={isPlaying}
             onEnd={handleOnEnd}
             loop={usePlayerStore.getState().loop === 'mashup'}
