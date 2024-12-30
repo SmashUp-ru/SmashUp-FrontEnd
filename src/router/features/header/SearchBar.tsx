@@ -41,6 +41,10 @@ export default function SearchBar() {
             <div className='w-full flex items-center gap-x-2'>
                 <PopoverTrigger className={cn('w-full')}>
                     <Input
+                        disabled={
+                            location.pathname === '/mashup/upload' ||
+                            location.pathname.startsWith('/mashup/moderation/')
+                        }
                         startIcon={SearchIcon}
                         className={cn('font-bold text-lg', 'w-full')}
                         placeholder='Поиск'
