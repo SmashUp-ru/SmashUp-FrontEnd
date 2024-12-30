@@ -26,6 +26,9 @@ interface GlobalState {
 
     allGenres: string[] | null;
     updateAllGenres: (newAllGenres: string[] | null) => void;
+
+    compilations: number[] | null;
+    updateCompilations: (newCompilations: number[]) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set, get) => ({
@@ -54,7 +57,10 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
     getToken: () => get().token,
 
     allGenres: null,
-    updateAllGenres: (newAllGenres: string[] | null) => set({ allGenres: newAllGenres })
+    updateAllGenres: (newAllGenres: string[] | null) => set({ allGenres: newAllGenres }),
+
+    compilations: null,
+    updateCompilations: (newCompilations: number[]) => set({ compilations: newCompilations })
 }));
 
 export function getToken(): string | null {
