@@ -1,4 +1,5 @@
 export interface YouTubeTrack {
+    id: React.Key;
     authors: string[];
     name: string;
     imageUrl: string;
