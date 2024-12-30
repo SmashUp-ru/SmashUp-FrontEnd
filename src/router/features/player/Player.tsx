@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
@@ -21,6 +21,8 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const changedSeek = usePlayerStore((state) => state.changedSeek);
     const bitrate = useSettingsStore((state) => state.bitrate);
 
+    const [lastId, setLastId] = useState<number | null>(null);
+
     const { next, prev, play, pause } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
@@ -39,10 +41,9 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     };
 
     const sendListenedDuration = () => {
-        const currentTrackId = queue[queueIndex];
-        if (currentTrackId && currentUser !== null && playTimeRef.current > 0) {
+        if (lastId && currentUser !== null && playTimeRef.current > 0) {
             axiosSession
-                .post(`/mashup/listened?id=${currentTrackId}&duration=${playTimeRef.current}`)
+                .post(`/mashup/listened?id=${lastId}&duration=${playTimeRef.current}`)
                 .catch(console.error);
         }
     };
@@ -92,6 +93,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
 
     useEffect(() => {
         resetPlayTime();
+        setLastId(queue[queueIndex]);
     }, [queue, queueIndex]);
 
     const handleOnEnd = () => {
