@@ -10,34 +10,29 @@ import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { axiosSession, cn } from '@/lib/utils.ts';
+import { axiosSession } from '@/lib/utils.ts';
 import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
 import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
-import { useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
 import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
-import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
+import ImageWithSkeleton from '@/router/shared/image/ImageWithSkeleton.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
     const params = useParams();
     const { playQueue, pause } = usePlayer();
 
-    const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const currentUser = useGlobalStore((state) => state.currentUser);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
 
     const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(
         params.playlistId
     );
-    const { playlists } = useCurrentUserPlaylists();
-
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;
@@ -46,13 +41,11 @@ export default function PlaylistPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
-                {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
-                <img
+                <ImageWithSkeleton
                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
                     alt={playlist.name}
-                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
+                    className='w-[216px] h-[216px] rounded-[34px]'
+                    skeletonClassName='w-[216px] h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
@@ -177,7 +170,6 @@ export default function PlaylistPage() {
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}
-                        playlists={playlists}
                         mashup={mashup}
                         playlist={playlist.mashups}
                         indexInPlaylist={idx}

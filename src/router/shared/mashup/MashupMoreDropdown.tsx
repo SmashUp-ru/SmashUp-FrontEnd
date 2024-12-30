@@ -21,25 +21,23 @@ import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
+import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 import BaseToast from '@/router/features/toasts/Base.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
     children: ReactNode;
-    playlists: Playlist[];
 }
 
-export default function MashupMoreDropdown({
-    mashup,
-    children,
-    playlists
-}: MashupMoreDropdownProps) {
+export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
+
+    const { playlists } = useCurrentUserPlaylists();
 
     return (
         <DropdownMenu>
