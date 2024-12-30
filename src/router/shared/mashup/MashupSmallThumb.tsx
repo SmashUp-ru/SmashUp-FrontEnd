@@ -53,7 +53,7 @@ export default function MashupSmallThumb({
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
-            <div className='flex items-center gap-x-4'>
+            <div className='flex items-center gap-x-4 w-full'>
                 <div className='relative'>
                     <img
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
@@ -122,7 +122,7 @@ export default function MashupSmallThumb({
                             </div>
                         )}
                     </div>
-                    <div className='flex-row'>
+                    <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                         {mashup.authors.map((author, index) => (
                             <div key={index}>
                                 <Link

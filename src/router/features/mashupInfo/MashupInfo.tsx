@@ -88,16 +88,23 @@ export default function MashupInfo() {
                         </div>
                     )}
                 </div>
-                {mashup.authors.map((author, idx) => (
-                    <Link
-                        key={idx}
-                        draggable={false}
-                        to={`/user/${author}`}
-                        className='font-medium text-onSurfaceVariant truncate'
-                    >
-                        {author}
-                    </Link>
-                ))}
+                <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
+                    {mashup.authors.map((author, index) => (
+                        <div key={index}>
+                            <Link
+                                key={author}
+                                to={`/user/${author}`}
+                                className='font-medium text-onSurfaceVariant'
+                            >
+                                {author}
+                            </Link>
+
+                            {index !== mashup.authors.length - 1 && (
+                                <span className='text-onSurfaceVariant'>, </span>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className='flex items-center gap-x-4'>

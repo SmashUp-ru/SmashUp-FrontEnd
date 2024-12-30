@@ -65,16 +65,23 @@ export default function PlayerBar() {
                         <span className='font-bold text-[18px] text-onSurface truncate'>
                             {mashup.name}
                         </span>
-                        {mashup.authors.map((author) => (
-                            <Link
-                                key={author}
-                                draggable={false}
-                                to={`/user/${author}`}
-                                className='font-medium text-onSurfaceVariant'
-                            >
-                                {author}
-                            </Link>
-                        ))}
+                        <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
+                            {mashup.authors.map((author, index) => (
+                                <div key={index}>
+                                    <Link
+                                        key={author}
+                                        to={`/user/${author}`}
+                                        className='font-medium text-onSurfaceVariant'
+                                    >
+                                        {author}
+                                    </Link>
+
+                                    {index !== mashup.authors.length - 1 && (
+                                        <span className='text-onSurfaceVariant'>, </span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {isLiked ? (

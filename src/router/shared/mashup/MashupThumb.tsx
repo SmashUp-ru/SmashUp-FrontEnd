@@ -94,13 +94,18 @@ export default function MashupThumb({
                 </div>
                 <div className='flex items-center gap-x-2 max-w-[216px]'>
                     {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (
-                        <Link
-                            key={index}
-                            to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                            className='font-medium text-lg text-onSurfaceVariant truncate'
-                        >
-                            {author}
-                        </Link>
+                        <div>
+                            <Link
+                                key={index}
+                                to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
+                                className='font-medium text-lg text-onSurfaceVariant truncate'
+                            >
+                                {author}
+                            </Link>
+                            {index !== mashup.authors.length - 1 && (
+                                <span className='text-onSurfaceVariant'>, </span>
+                            )}
+                        </div>
                     ))}
                 </div>
             </div>
