@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button.tsx';
 import DoorIcon from '@/components/icons/Door.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import AddMashupIcon from '@/components/icons/AddMashup.tsx';
+import { isModerator } from '@/lib/bitmask';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -49,9 +50,11 @@ export default function ProfileMenu() {
                     <Link to='/mashup/upload'>
                         <AddMashupIcon />
                     </Link>
-                    <Link to='/mashup/moderation'>
-                        <GavelIcon />
-                    </Link>
+                    {isModerator(currentUser.permissions) && (
+                        <Link to='/mashup/moderation'>
+                            <GavelIcon />
+                        </Link>
+                    )}
                     <Button
                         variant='ghost'
                         size='icon'
