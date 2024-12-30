@@ -11,7 +11,7 @@ import { RegEx } from '@/lib/regex';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
 import { YandexAlbum, YandexAlbumResponse } from '@/types/api/yandex';
-import { RenderTrack } from '@/types/api/upload';
+import { RenderTrack, TrackType } from '@/types/api/upload';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import ErrorToast from '../toasts/error';
 import UpdateToast from '../toasts/update';
@@ -63,8 +63,8 @@ export default function UploadTrackFromYandexTab() {
 
                         const newTracks = album.tracks.map((track) => {
                             return {
-                                keyType: 'YandexMusicSelectedTrack',
                                 key: track.id,
+                                keyType: TrackType.YandexMusic,
                                 track: {
                                     id: track.id,
                                     name: track.name,

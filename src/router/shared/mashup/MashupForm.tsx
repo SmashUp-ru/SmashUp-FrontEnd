@@ -23,8 +23,11 @@ import {
     isUserSelected,
     RenderTrack,
     RenderUser,
+    SearchTrack,
     SelectedTrack,
     SmashUpSelectedTrack,
+    TrackType,
+    UploadMashupRequestBody,
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
 } from '@/types/api/upload';
@@ -39,6 +42,7 @@ import MashupFormSkeleton from './MashupFormSkeleton';
 import { loadOEmbed } from '@/lib/youtube';
 import YouTubeIcon from '@/components/icons/YouTube';
 import YandexMusicIcon from '@/components/icons/YandexMusic';
+import { YandexTracksResponse } from '@/types/api/yandex';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -131,7 +135,7 @@ export default function MashupForm({
     const [tracksQuery, setTracksQuery] = useState<string>('');
     const [debouncedTracksQuery] = useDebounce(tracksQuery, 500);
 
-    const [tracks, setTracks] = useState<Track[]>([]);
+    const [tracks, setTracks] = useState<SearchTrack[]>([]);
 
     const [youTubeTrackLoading, setYouTubeTrackLoading] = useState<boolean>(false);
     const [youTubeTrack, setYouTubeTrack] = useState<YouTubeTrack | null>(null);
@@ -148,21 +152,21 @@ export default function MashupForm({
             .then(() => setYouTubeTrackLoading(false));
     };
 
-    const renderSelectedTracks = (selectedTracks: SelectedTrack[]) => {
+    function renderSelectedTracks(selectedTracks: SelectedTrack[]): RenderTrack[] {
         return selectedTracks.map((track) => {
-            const name = track.constructor.name;
-            if (name === 'SmashUpSelectedTrack') {
+            const type = track.keyType;
+            if (type === TrackType.SmashUp) {
                 return {
-                    keyType: 'SmashUpSelectedTrack',
+                    keyType: TrackType.SmashUp,
                     key: track.key,
                     track: (track as SmashUpSelectedTrack).track,
                     selected: true,
                     statefulOnClick: (selectedTracks: SelectedTrack[]) =>
                         trackStatefulOnClick(track, selectedTracks)
                 };
-            } else if (name === 'YouTubeSelectedTrack') {
+            } else if (type === TrackType.YouTube) {
                 return {
-                    keyType: 'YouTubeSelectedTrack',
+                    keyType: TrackType.YouTube,
                     key: track.key,
                     icon: <YouTubeIcon />,
                     track: (track as YouTubeSelectedTrack).track as unknown as Track,
@@ -170,9 +174,9 @@ export default function MashupForm({
                     statefulOnClick: (selectedTracks: SelectedTrack[]) =>
                         trackStatefulOnClick(track, selectedTracks)
                 };
-            } else if (name === 'YandexMusicSelectedTrack') {
+            } else if (type === TrackType.YandexMusic) {
                 return {
-                    keyType: 'YandexMusicSelectedTrack',
+                    keyType: TrackType.YandexMusic,
                     key: track.key,
                     icon: <YandexMusicIcon />,
                     track: (track as YandexMusicSelectedTrack).track as unknown as Track,
@@ -184,7 +188,7 @@ export default function MashupForm({
                 throw new Error(`${track.constructor.name} not supported`);
             }
         });
-    };
+    }
 
     useEffect(() => {
         setRenderTracks(renderSelectedTracks(selectedTracks));
@@ -208,9 +212,42 @@ export default function MashupForm({
         }
 
         if (debouncedTracksQuery.length >= 2 && debouncedTracksQuery.length <= 32) {
-            axiosSession
-                .get(`/track/search?query=${debouncedTracksQuery}`)
-                .then((r: AxiosResponse<TrackSearchResponse>) => setTracks(r.data.response));
+            const promises = [
+                axiosSession
+                    .get(`/track/search?query=${debouncedTracksQuery}`)
+                    .then((r: AxiosResponse<TrackSearchResponse>) =>
+                        r.data.response.map((track) => {
+                            return {
+                                key: track.id,
+                                keyType: TrackType.SmashUp,
+                                track: track
+                            };
+                        })
+                    ),
+                handleTracksUrls
+                    ? axiosSession
+                          .get(`/track/search/yandex_music?query=${debouncedTracksQuery}`)
+                          .then((r: AxiosResponse<YandexTracksResponse>) =>
+                              r.data.response.map((track) => {
+                                  return {
+                                      key: -track.id,
+                                      keyType: TrackType.YandexMusic,
+                                      track: {
+                                          id: -track.id,
+                                          name: track.name,
+                                          authors: track.authors.map((author) => author.name),
+                                          imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
+                                          link: `https://music.yandex.net/album/${track.albums[0].id}`
+                                      } as Track
+                                  };
+                              })
+                          )
+                    : Promise.resolve([])
+            ];
+
+            Promise.all(promises).then((result) => {
+                setTracks(result[0].concat(result[1]));
+            });
         } else {
             setTracks([]);
             setYouTubeTrack(null);
@@ -222,12 +259,18 @@ export default function MashupForm({
 
         const renderTracks = nonSelectedTracks.map((track) => {
             return {
-                keyType: 'SmashUpSelectedTrack',
-                key: track.id,
-                track: track,
+                key: track.key,
+                keyType: track.keyType,
+                track: track.track,
                 selected: false,
-                statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                    trackStatefulOnClick(new SmashUpSelectedTrack(track), selectedTracks)
+                statefulOnClick: (selectedTracks: SelectedTrack[]) => {
+                    trackStatefulOnClick(
+                        track.keyType === TrackType.YandexMusic
+                            ? new YandexMusicSelectedTrack(track.track)
+                            : new SmashUpSelectedTrack(track.track),
+                        selectedTracks
+                    );
+                }
             };
         });
 
@@ -260,14 +303,12 @@ export default function MashupForm({
     };
 
     const calculateSelectedTracksKeys = (selectedTracks: SelectedTrack[]) => {
-        const selectedTracksKeys = new Map<string, Set<unknown>>();
+        const selectedTracksKeys = new Map<TrackType, Set<unknown>>();
         for (const selectedTrack of selectedTracks) {
-            const className = selectedTrack.constructor.name;
-
-            let keys = selectedTracksKeys.get(className);
+            let keys = selectedTracksKeys.get(selectedTrack.keyType);
             if (keys === undefined) {
                 keys = new Set();
-                selectedTracksKeys.set(className, keys);
+                selectedTracksKeys.set(selectedTrack.keyType, keys);
             }
 
             keys.add(selectedTrack.key);
@@ -276,14 +317,14 @@ export default function MashupForm({
     };
 
     const calculateNonSelectedTracks = (
-        tracks: Track[],
+        tracks: SearchTrack[],
         selectedTracks: SelectedTrack[]
-    ): Track[] => {
+    ): SearchTrack[] => {
         const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
 
-        const smashUpKeys = selectedTracksKeys.get('SmashUpSelectedTrack');
         const newNonSelectedTracks = tracks.filter((track) => {
-            return smashUpKeys === undefined || smashUpKeys === null || !smashUpKeys.has(track.id);
+            const keys = selectedTracksKeys.get(track.keyType);
+            return keys === undefined || keys === null || !keys.has(track.key);
         });
         return newNonSelectedTracks;
     };
@@ -557,26 +598,20 @@ export default function MashupForm({
             return;
         }
 
+        const bodyPart: UploadMashupRequestBody = {
+            tracks: [],
+            tracksUrls: []
+        };
+
+        selectedTracks.forEach((track) => track.addToBody(bodyPart));
+
         const body: MashupFormBody = {
             name,
             authors: selectedUsers.map((user) => user.id),
             explicit,
             banWords,
-            tracks: selectedTracks
-                .filter((track) => track.constructor.name === 'SmashUpSelectedTrack')
-                .map((track) => (track as SmashUpSelectedTrack).key),
-            tracksUrls: handleTracksUrls
-                ? selectedTracks
-                      .filter((track) => {
-                          const name = track.constructor.name;
-                          return (
-                              name === 'YouTubeSelectedTrack' || name === 'YandexMusicSelectedTrack'
-                          );
-                      })
-                      .map(
-                          (track) => (track as YouTubeSelectedTrack | YandexMusicSelectedTrack).key
-                      )
-                : null,
+            tracks: bodyPart.tracks,
+            tracksUrls: bodyPart.tracksUrls,
             statusesUrls: hasStatusLink ? [statusLink] : null,
             genres: [...selectedGenres],
             basedMashupFile: basedMashupFile,

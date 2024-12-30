@@ -10,20 +10,29 @@ export interface GenresResponse {
 
 export interface UploadMashupRequestBody {
     tracks: number[];
-    trackUrls: string[];
+    tracksUrls: string[];
+}
+
+export enum TrackType {
+    SmashUp,
+    YouTube,
+    YandexMusic
 }
 
 export interface SelectedTrack {
     key: unknown;
+    keyType: TrackType;
     addToBody: (body: UploadMashupRequestBody) => void;
 }
 
 export class SmashUpSelectedTrack implements SelectedTrack {
     track: Track;
     key: number;
+    keyType: TrackType;
     constructor(track: Track) {
         this.track = track;
         this.key = track.id;
+        this.keyType = TrackType.SmashUp;
     }
     public addToBody(body: UploadMashupRequestBody): void {
         body.tracks.push(this.track.id);
@@ -33,38 +42,33 @@ export class SmashUpSelectedTrack implements SelectedTrack {
 export class YouTubeSelectedTrack implements SelectedTrack {
     track: YouTubeTrack;
     key: string;
+    keyType: TrackType;
     constructor(track: YouTubeTrack) {
         this.track = track;
         this.key = track.link;
+        this.keyType = TrackType.YouTube;
     }
     public addToBody(body: UploadMashupRequestBody): void {
-        body.trackUrls.push(this.key);
+        body.tracksUrls.push(this.key);
     }
 }
 
 export class YandexMusicSelectedTrack implements SelectedTrack {
     track: Track;
-    link: string;
-    key: string;
-    constructor(link: string) {
-        this.track = {
-            id: link as unknown,
-            name: link,
-            authors: ['???'],
-            imageUrl:
-                'https://store-images.s-microsoft.com/image/apps.2465.13510798882805719.3f5d017d-a79f-4f62-ad22-aee707e0ebd0.0620b3ee-ff33-447a-b654-eaa47d20d4a6',
-            link: link
-        } as Track;
-        this.link = link;
-        this.key = link;
+    key: number;
+    keyType: TrackType;
+    constructor(track: Track) {
+        this.track = track;
+        this.key = track.id;
+        this.keyType = TrackType.YandexMusic;
     }
     public addToBody(body: UploadMashupRequestBody): void {
-        body.trackUrls.push(this.link);
+        body.tracksUrls.push(this.track.link);
     }
 }
 
 export interface RenderTrack extends TrackThumbProps {
-    keyType: string;
+    keyType: TrackType;
     key: unknown;
 
     icon?: ReactNode;
@@ -79,8 +83,14 @@ export interface RenderUser {
     statefulOnClick: (selectedUsers: User[]) => unknown;
 }
 
+export interface SearchTrack {
+    key: unknown;
+    keyType: TrackType;
+    track: Track;
+}
+
 export function areTracksEqual(l: SelectedTrack, r: SelectedTrack) {
-    return l.constructor.name === r.constructor.name && l.key === r.key;
+    return l.keyType === r.keyType && l.key === r.key;
 }
 
 export function isTrackSelected(track: SelectedTrack, selectedTracks: SelectedTrack[]) {

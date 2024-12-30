@@ -13,6 +13,7 @@ export interface YandexAlbum extends ShortYandexAlbum {
 export interface YandexTrack {
     id: number;
     authors: YandexAuthor[];
+    albums: ShortYandexAlbum[];
     name: string;
 }
 
