@@ -10,18 +10,18 @@ import { Track } from '@/store/entities/track.ts';
 import LinkExternalIcon from '@/components/icons/LinkExternal.tsx';
 import { Link } from 'react-router-dom';
 
-interface MashupMoreDropdownProps {
+interface TrackMoreDropdownProps {
     track: Track;
     children: ReactNode;
 }
 
-export default function TrackMoreDropdown({ track, children }: MashupMoreDropdownProps) {
+export default function TrackMoreDropdown({ track, children }: TrackMoreDropdownProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
                         <Link
                             className='flex items-center gap-x-[14.4px]'
                             to={track.link}
