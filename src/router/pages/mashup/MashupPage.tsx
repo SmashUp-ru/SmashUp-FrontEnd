@@ -18,6 +18,7 @@ import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -29,6 +30,7 @@ export default function MashupPage() {
     const queueIndex = usePlayerStore((state) => state.queueIndex);
 
     const { mashup, isLoading } = useMashupPageData(params.mashupId);
+    const { playlists } = useCurrentUserPlaylists();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -134,7 +136,7 @@ export default function MashupPage() {
 
             <div className='flex flex-col gap-y-1'>
                 <MashupSmallThumb
-                    key={mashup.id}
+                    playlists={playlists}
                     mashup={mashup}
                     playlist={[mashup.id]}
                     indexInPlaylist={0}

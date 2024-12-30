@@ -17,27 +17,29 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { ReactNode } from 'react';
 import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 import { useGlobalStore } from '@/store/global.ts';
-import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-import { usePlaylistStore } from '@/store/entities/playlist.ts';
+import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 import BaseToast from '@/router/features/toasts/Base.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
     children: ReactNode;
+    playlists: Playlist[];
 }
 
-export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
+export default function MashupMoreDropdown({
+    mashup,
+    children,
+    playlists
+}: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
-
-    const { playlists } = useCurrentUserPlaylists();
 
     return (
         <DropdownMenu>
@@ -65,98 +67,101 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                         </DropdownMenuItem>
                                     </AddPlaylistDialog>
 
-                                    {playlists.map((playlist) => (
-                                        <DropdownMenuItem
-                                            key={playlist.id}
-                                            className='flex items-center justify-between'
-                                            onClick={() => {
-                                                const includes = mashup.inYourPlaylists.includes(
-                                                    playlist.id
-                                                );
-                                                axiosSession
-                                                    .post(
-                                                        `/playlist/${includes ? 'remove' : 'add'}_mashup?id=${playlist.id}&mashup=${mashup.id}`
-                                                    )
-                                                    .then(() => {
-                                                        if (includes) {
-                                                            updatePlaylistById(playlist.id, {
-                                                                mashups: [
-                                                                    ...playlist.mashups.filter(
-                                                                        (mashupId) =>
-                                                                            mashupId !== mashup.id
-                                                                    )
-                                                                ]
+                                    {playlists &&
+                                        playlists.map((playlist) => (
+                                            <DropdownMenuItem
+                                                key={playlist.id}
+                                                className='flex items-center justify-between'
+                                                onClick={() => {
+                                                    const includes =
+                                                        mashup.inYourPlaylists.includes(
+                                                            playlist.id
+                                                        );
+                                                    axiosSession
+                                                        .post(
+                                                            `/playlist/${includes ? 'remove' : 'add'}_mashup?id=${playlist.id}&mashup=${mashup.id}`
+                                                        )
+                                                        .then(() => {
+                                                            if (includes) {
+                                                                updatePlaylistById(playlist.id, {
+                                                                    mashups: [
+                                                                        ...playlist.mashups.filter(
+                                                                            (mashupId) =>
+                                                                                mashupId !==
+                                                                                mashup.id
+                                                                        )
+                                                                    ]
+                                                                });
+                                                                updateMashupById(mashup.id, {
+                                                                    inYourPlaylists: [
+                                                                        ...mashup.inYourPlaylists.filter(
+                                                                            (playlistId) =>
+                                                                                playlistId !==
+                                                                                playlist.id
+                                                                        )
+                                                                    ]
+                                                                });
+                                                            } else {
+                                                                updatePlaylistById(playlist.id, {
+                                                                    mashups: [
+                                                                        ...playlist.mashups,
+                                                                        mashup.id
+                                                                    ]
+                                                                });
+                                                                updateMashupById(mashup.id, {
+                                                                    inYourPlaylists: [
+                                                                        ...mashup.inYourPlaylists,
+                                                                        playlist.id
+                                                                    ]
+                                                                });
+                                                            }
+                                                            toast({
+                                                                element: (
+                                                                    <BaseToast
+                                                                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_100x100.png`}
+                                                                        before='Трек'
+                                                                        field={
+                                                                            includes
+                                                                                ? 'удалён'
+                                                                                : 'добавлен'
+                                                                        }
+                                                                        after={
+                                                                            includes
+                                                                                ? 'из плейлиста!'
+                                                                                : 'в плейлист!'
+                                                                        }
+                                                                    />
+                                                                ),
+                                                                duration: 2000
                                                             });
-                                                            updateMashupById(mashup.id, {
-                                                                inYourPlaylists: [
-                                                                    ...mashup.inYourPlaylists.filter(
-                                                                        (playlistId) =>
-                                                                            playlistId !==
-                                                                            playlist.id
-                                                                    )
-                                                                ]
+                                                        })
+                                                        .catch(() => {
+                                                            toast({
+                                                                element: (
+                                                                    <ErrorToast
+                                                                        icon
+                                                                        after='Что-то пошло не так при обновлении плейлиста..'
+                                                                    />
+                                                                ),
+                                                                duration: 2000,
+                                                                variant: 'destructive'
                                                             });
-                                                        } else {
-                                                            updatePlaylistById(playlist.id, {
-                                                                mashups: [
-                                                                    ...playlist.mashups,
-                                                                    mashup.id
-                                                                ]
-                                                            });
-                                                            updateMashupById(mashup.id, {
-                                                                inYourPlaylists: [
-                                                                    ...mashup.inYourPlaylists,
-                                                                    playlist.id
-                                                                ]
-                                                            });
-                                                        }
-                                                        toast({
-                                                            element: (
-                                                                <BaseToast
-                                                                    image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_100x100.png`}
-                                                                    before='Трек'
-                                                                    field={
-                                                                        includes
-                                                                            ? 'удалён'
-                                                                            : 'добавлен'
-                                                                    }
-                                                                    after={
-                                                                        includes
-                                                                            ? 'из плейлиста!'
-                                                                            : 'в плейлист!'
-                                                                    }
-                                                                />
-                                                            ),
-                                                            duration: 2000
                                                         });
-                                                    })
-                                                    .catch(() => {
-                                                        toast({
-                                                            element: (
-                                                                <ErrorToast
-                                                                    icon
-                                                                    after='Что-то пошло не так при обновлении плейлиста..'
-                                                                />
-                                                            ),
-                                                            duration: 2000,
-                                                            variant: 'destructive'
-                                                        });
-                                                    });
-                                            }}
-                                        >
-                                            <span>{playlist.name}</span>
-                                            <DoneIcon
-                                                width={10}
-                                                height={7.5}
-                                                color='onSurface'
-                                                className={
-                                                    mashup.inYourPlaylists.includes(playlist.id)
-                                                        ? ''
-                                                        : 'hidden'
-                                                }
-                                            />
-                                        </DropdownMenuItem>
-                                    ))}
+                                                }}
+                                            >
+                                                <span>{playlist.name}</span>
+                                                <DoneIcon
+                                                    width={10}
+                                                    height={7.5}
+                                                    color='onSurface'
+                                                    className={
+                                                        mashup.inYourPlaylists.includes(playlist.id)
+                                                            ? ''
+                                                            : 'hidden'
+                                                    }
+                                                />
+                                            </DropdownMenuItem>
+                                        ))}
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>

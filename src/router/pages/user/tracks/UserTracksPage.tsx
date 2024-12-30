@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/features/toasts/Base.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
@@ -23,6 +24,7 @@ export default function UserTracksPage() {
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
+    const { playlists } = useCurrentUserPlaylists();
 
     const [user, setUser] = useState<User | null>(null);
     const [mashups, setMashups] = useState<Mashup[]>([]);
@@ -125,6 +127,7 @@ export default function UserTracksPage() {
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}
+                        playlists={playlists}
                         mashup={mashup}
                         playlist={user.mashups}
                         indexInPlaylist={idx}

@@ -20,6 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function MashupInfo() {
     const { pause, playMashup } = usePlayer();
@@ -33,6 +34,7 @@ export default function MashupInfo() {
     const updateMashupById = useMashupStore((state) => state.updateOneById);
 
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData();
+    const { playlists } = useCurrentUserPlaylists();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -159,7 +161,7 @@ export default function MashupInfo() {
                     </Button>
                 )}
 
-                <MashupMoreDropdown mashup={mashup}>
+                <MashupMoreDropdown mashup={mashup} playlists={playlists}>
                     <Button variant='ghost' size='icon' className=''>
                         <MoreHorizontalIcon size={32} />
                     </Button>

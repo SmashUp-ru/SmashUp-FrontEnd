@@ -15,6 +15,7 @@ import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
 import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import SettingsIcon from '@/components/icons/Settings.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function UserPage() {
     const params = useParams();
@@ -22,6 +23,7 @@ export default function UserPage() {
 
     const currentUser = useGlobalStore((state) => state.currentUser);
     const { user, mashups, playlists, isLoading } = useUserPageData(params.profileUsername);
+    const { playlists: currentUserPlaylists } = useCurrentUserPlaylists();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -121,6 +123,7 @@ export default function UserPage() {
                             {mashups.map((mashup, idx) => (
                                 <MashupSmallThumb
                                     key={mashup.id}
+                                    playlists={currentUserPlaylists}
                                     mashup={mashup}
                                     playlist={user.mashups}
                                     indexInPlaylist={idx}

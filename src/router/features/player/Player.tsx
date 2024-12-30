@@ -40,7 +40,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
 
     const sendListenedDuration = () => {
         const currentTrackId = queue[queueIndex];
-        if (currentTrackId && currentUser !== null) {
+        if (currentTrackId && currentUser !== null && playTimeRef.current > 0) {
             axiosSession
                 .post(`/mashup/listened?id=${currentTrackId}?duration=${playTimeRef.current}`)
                 .catch(console.error);
@@ -48,9 +48,8 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     };
 
     const resetPlayTime = () => {
-        if (playTimeRef.current > 0) {
-            sendListenedDuration();
-        }
+        sendListenedDuration();
+
         playTimeRef.current = 0;
         playTimeSent.current = false;
     };

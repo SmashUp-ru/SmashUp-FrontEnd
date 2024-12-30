@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
+import { Playlist } from '@/store/entities/playlist.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -28,6 +29,7 @@ interface MashupThumbProps {
     indexInPlaylist: number;
     playlistName: string;
     queueId: string;
+    playlists: Playlist[];
 }
 
 export default function MashupSmallThumb({
@@ -35,7 +37,8 @@ export default function MashupSmallThumb({
     playlist,
     indexInPlaylist,
     playlistName,
-    queueId
+    queueId,
+    playlists
 }: MashupThumbProps) {
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
@@ -203,7 +206,7 @@ export default function MashupSmallThumb({
                 )}
 
                 <div className='w-10 flex items-center justify-center'>
-                    <MashupMoreDropdown mashup={mashup}>
+                    <MashupMoreDropdown mashup={mashup} playlists={playlists}>
                         <Button variant='ghost' size='icon'>
                             <div className='hidden group-hover:block'>
                                 <MoreHorizontalIcon />

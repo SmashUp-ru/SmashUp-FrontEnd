@@ -20,6 +20,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
 import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -34,6 +35,7 @@ export default function PlaylistPage() {
     const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(
         params.playlistId
     );
+    const { playlists } = useCurrentUserPlaylists();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -175,6 +177,7 @@ export default function PlaylistPage() {
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}
+                        playlists={playlists}
                         mashup={mashup}
                         playlist={playlist.mashups}
                         indexInPlaylist={idx}

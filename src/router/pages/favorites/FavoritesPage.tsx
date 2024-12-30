@@ -11,6 +11,7 @@ import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function FavoritesPage() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -20,6 +21,7 @@ export default function FavoritesPage() {
     const { playQueue, pause } = usePlayer();
 
     const { isLoading, mashups, likes } = useFavoritesPageData();
+    const { playlists } = useCurrentUserPlaylists();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -82,6 +84,7 @@ export default function FavoritesPage() {
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}
+                        playlists={playlists}
                         mashup={mashup}
                         playlist={likes}
                         indexInPlaylist={idx}

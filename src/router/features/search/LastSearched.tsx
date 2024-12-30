@@ -9,12 +9,14 @@ import { cn } from '@/lib/utils.ts';
 import { useSearchStore } from '@/store/search.ts';
 import { useLastSearchedData } from '@/router/features/search/useLastSearchedData.ts';
 import LastSearchedSkeleton from '@/router/features/search/LastSearchedSkeleton.tsx';
+import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function LastSearched() {
     const type = useSearchStore((state) => state.type);
     const updateType = useSearchStore((state) => state.updateType);
 
     const { searchHistory, searchHistoryObjects, isLoading } = useLastSearchedData();
+    const { playlists } = useCurrentUserPlaylists();
 
     if (isLoading) return <LastSearchedSkeleton />;
     if (searchHistory.length === 0) return <div>История пуста!</div>;
@@ -57,6 +59,7 @@ export default function LastSearched() {
                         case 'mashup':
                             return (
                                 <MashupSmallThumb
+                                    playlists={playlists}
                                     mashup={element.object as Mashup}
                                     playlist={[element.object.id]}
                                     indexInPlaylist={0}
