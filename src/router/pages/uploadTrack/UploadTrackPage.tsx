@@ -14,8 +14,8 @@ export default function UploadTrackPage() {
                 className='flex flex-col flex-1 items-start gap-y-4'
             >
                 <TabsList>
-                    <TabsTrigger value='yandex'>Загрузить из Яндекс Музыки</TabsTrigger>
-                    <TabsTrigger value='youtube'>Загрузить из Ютуба</TabsTrigger>
+                    <TabsTrigger value='yandex'>Загрузить из Яндекс.Музыки</TabsTrigger>
+                    <TabsTrigger value='youtube'>Загрузить из YouTube</TabsTrigger>
                 </TabsList>
 
                 <TabsContent
