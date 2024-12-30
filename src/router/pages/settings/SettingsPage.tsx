@@ -93,7 +93,7 @@ export default function SettingsPage() {
                     {/*настройки аккаунта*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <div className='grid grid-cols-2 2xl:grid-cols-3 gap-x-20 items-center'>
+                        <div className='grid grid-cols-2 2xl:grid-cols-3 gap-x-20 gap-y-20 items-center'>
                             <div className='flex items-center gap-x-10'>
                                 <Label className='w-1/2 font-medium text-[18px] text-onSurfaceVariant'>
                                     Битрейт мэшапов
