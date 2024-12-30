@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import MashupForm, { MashupFormBody } from '@/router/shared/mashup/MashupForm';
 import { AxiosResponse } from 'axios';
 import { UploadMashupResponse } from '@/types/api/upload';
+import { axiosCatcher } from '@/router/shared/general/axios';
+import { useToast } from '@/router/shared/hooks/use-toast';
 
 export default function UploadMashupPage() {
     const navigate = useNavigate();
+    const { toast } = useToast();
 
     return (
         <MashupForm
@@ -40,7 +43,8 @@ export default function UploadMashupPage() {
                         navigate(
                             `/mashup/upload/success/${r.data.response !== undefined ? r.data.response.id : '0'}`
                         )
-                    );
+                    )
+                    .catch(axiosCatcher(toast, 'при загрузке мэшапа'));
             }}
         />
     );

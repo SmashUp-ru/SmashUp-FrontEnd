@@ -68,7 +68,7 @@ export default function ModerateMashupPage() {
             trackStore
                 .getManyByIds(mashup.tracks)
                 .then((tracks) => tracks.map((track) => new SmashUpSelectedTrack(track))),
-            yandexTracks
+            yandexTracks && yandexTracks.length > 0
                 ? axiosSession
                       .get(
                           `/track/get/yandex_music?id=${yandexTracks.map((item) => item[1]).join(',')}`
@@ -122,6 +122,7 @@ export default function ModerateMashupPage() {
     }, [mashup]);
 
     if (
+        unpublishedMashups === undefined ||
         mashup === undefined ||
         users === undefined ||
         tracks === undefined ||
@@ -158,14 +159,15 @@ export default function ModerateMashupPage() {
             showTracksIcons={true}
             lockStatusLink={true}
             onClick={(body: MashupFormBody) => {
-                console.log(mashup, body);
                 axiosSession
                     .post('/moderation/unpublished_mashup/edit', {
                         id: mashup.id,
                         ...body,
                         albumId: -1
                     })
-                    .then(() => navigate('/mashup/moderate'));
+                    .then(() => {
+                        navigate('/mashup/moderation');
+                    });
             }}
         />
     );

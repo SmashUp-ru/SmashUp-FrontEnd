@@ -15,6 +15,7 @@ import { RenderTrack, TrackType } from '@/types/api/upload';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import ErrorToast from '@/router/shared/toasts/error';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import { axiosCatcher } from '@/router/shared/general/axios';
 
 export default function UploadTrackFromYandexTab() {
     const { toast } = useToast();
@@ -80,7 +81,8 @@ export default function UploadTrackFromYandexTab() {
                         const newCache = new Map(cache);
                         newCache.set(localLink, newTracks);
                         setCache(newCache);
-                    });
+                    })
+                    .catch(axiosCatcher(toast, 'при загрузке альбома'));
             } else if (cached === true) {
                 setExists(true);
             } else {
@@ -130,20 +132,7 @@ export default function UploadTrackFromYandexTab() {
                 newCache.set(`https://music.yandex.ru/album/${album.id}`, true);
                 setCache(newCache);
             })
-            .catch(() => {
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Ошибка'
-                            field='при загрузке альбома.'
-                            after='Что-то пошло не так...'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
-            });
+            .catch(axiosCatcher(toast, 'при загрузке альбома'));
     };
 
     return (
