@@ -7,7 +7,7 @@ import { cn, declOfNum } from '@/lib/utils.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import CopiedToast from '@/router/features/toasts/copied.tsx';
+import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import Section from '@/router/shared/section/Section.tsx';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';

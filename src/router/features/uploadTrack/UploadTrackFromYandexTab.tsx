@@ -13,8 +13,8 @@ import { AxiosResponse } from 'axios';
 import { YandexAlbum, YandexAlbumResponse } from '@/types/api/yandex';
 import { RenderTrack, TrackType } from '@/types/api/upload';
 import { useToast } from '@/router/shared/hooks/use-toast';
-import ErrorToast from '../toasts/error';
-import UpdateToast from '../toasts/update';
+import ErrorToast from '@/router/shared/toasts/error';
+import BaseToast from '@/router/shared/toasts/base.tsx';
 
 export default function UploadTrackFromYandexTab() {
     const { toast } = useToast();
@@ -115,10 +115,10 @@ export default function UploadTrackFromYandexTab() {
             .then(() => {
                 toast({
                     element: (
-                        <UpdateToast
+                        <BaseToast
                             image={`https://${album.coverUri.replace('%%', '100x100')}`}
                             field={album.title}
-                            text='успешно загружен'
+                            after='успешно загружен'
                         />
                     )
                 });

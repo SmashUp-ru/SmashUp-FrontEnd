@@ -7,7 +7,7 @@ import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import { Track, useTrackStore } from '@/store/entities/track.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
-import CopiedToast from '@/router/features/toasts/copied.tsx';
+import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
 import { useEffect, useState } from 'react';

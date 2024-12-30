@@ -2,13 +2,13 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import ErrorToast from '@/router/features/toasts/error.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { AxiosResponse } from 'axios';
 import { UpdateUserImageResponse } from '@/types/api/settings.ts';
-import UpdateToast from '@/router/features/toasts/update.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import BaseToast from '@/router/shared/toasts/base.tsx';
 
 export default function UpdateAvatar() {
     const { toast } = useToast();
@@ -66,10 +66,10 @@ export default function UpdateAvatar() {
                     updateCurrentUser(res.data.response);
                     toast({
                         element: (
-                            <UpdateToast
+                            <BaseToast
                                 image={basedImageFile}
                                 field='Аватар'
-                                text='успешно обновлён!'
+                                after='успешно обновлён!'
                             />
                         ),
                         duration: 2000

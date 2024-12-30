@@ -20,10 +20,10 @@ import { useGlobalStore } from '@/store/global.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BackIcon from '@/components/icons/Back.tsx';
-import CopiedToast from '@/router/features/toasts/copied.tsx';
+import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
-import ErrorToast from '@/router/features/toasts/error.tsx';
-import BaseToast from '@/router/features/toasts/Base.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
+import BaseToast from '@/router/shared/toasts/base.tsx';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 interface MashupMoreDropdownProps {

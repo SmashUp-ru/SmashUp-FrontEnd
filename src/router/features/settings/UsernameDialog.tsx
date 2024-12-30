@@ -19,7 +19,7 @@ import CancelIcon from '@/components/icons/Cancel.tsx';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { AxiosError } from 'axios';
-import ErrorToast from '@/router/features/toasts/error.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useState } from 'react';
 import UsernameDialogSentContent from '@/router/features/settings/UsernameDialogSentContent.tsx';
 

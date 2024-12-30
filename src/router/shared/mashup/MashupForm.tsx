@@ -47,13 +47,13 @@ import {
 import { useBase64 } from '@/router/shared/hooks/useBase64';
 import { useGlobalStore } from '@/store/global.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import ErrorToast from '@/router/features/toasts/error.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 import MashupFormSkeleton from './MashupFormSkeleton';
 import { loadOEmbed } from '@/lib/youtube';
 import YouTubeIcon from '@/components/icons/YouTube';
 import YandexMusicIcon from '@/components/icons/YandexMusic';
 import { YandexTracksResponse } from '@/types/api/yandex';
-import CopiedToast from '@/router/features/toasts/copied';
+import CopiedToast from '@/router/shared/toasts/copied';
 import ExplicitIcon from '@/components/icons/Explicit';
 import AltIcon from '@/components/icons/Alt';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup';

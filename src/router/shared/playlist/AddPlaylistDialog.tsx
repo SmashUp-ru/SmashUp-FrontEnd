@@ -28,11 +28,11 @@ import { CreatePlaylistResponse } from '@/types/api/playlist.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useGlobalStore } from '@/store/global.ts';
-import ErrorToast from '@/router/features/toasts/error.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import UpdateToast from '@/router/features/toasts/update.tsx';
 import { useNavigate } from 'react-router-dom';
 import { ErrorResponse } from '@/types/api/default.ts';
+import BaseToast from '@/router/shared/toasts/base.tsx';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
@@ -117,10 +117,10 @@ export default function AddPlaylistDialog({
 
                 toast({
                     element: (
-                        <UpdateToast
+                        <BaseToast
                             image={values.basedImageFile}
                             field='Плейлист'
-                            text='успешно создан!'
+                            after='успешно создан!'
                         />
                     ),
                     duration: 2000

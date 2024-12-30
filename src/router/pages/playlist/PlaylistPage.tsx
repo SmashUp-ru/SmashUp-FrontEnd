@@ -4,7 +4,7 @@ import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.t
 import { Button } from '@/components/ui/button.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import CopiedToast from '@/router/features/toasts/copied.tsx';
+import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';

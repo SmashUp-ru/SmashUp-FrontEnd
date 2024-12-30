@@ -20,7 +20,7 @@ import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useState } from 'react';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
 import { AxiosError } from 'axios';
-import ErrorToast from '@/router/features/toasts/error.tsx';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 
 interface EmailDialogProps {
