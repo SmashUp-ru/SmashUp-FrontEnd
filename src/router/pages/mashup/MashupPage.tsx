@@ -2,7 +2,6 @@ import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import HideIcon from '@/components/icons/Hide.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
@@ -106,9 +105,6 @@ export default function MashupPage() {
                             </Button>
                         )}
 
-                        <Button variant='ghost' size='icon'>
-                            <HideIcon />
-                        </Button>
                         <Button
                             variant='ghost'
                             size='icon'
