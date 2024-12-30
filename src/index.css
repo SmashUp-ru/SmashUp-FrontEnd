@@ -19,7 +19,7 @@ html, body, :root, #root {
 }
 
 ::-webkit-scrollbar {
-    width: 3px;
+    width: 6px;
 }
 
 /* TrackSideSheet */
@@ -30,6 +30,7 @@ html, body, :root, #root {
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: theme('colors.badge');
+    border-radius: 16px;
 }
 
 /* Handle on hover */
