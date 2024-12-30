@@ -1,38 +1,26 @@
 import { Link, useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
-import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import CopiedToast from '@/router/features/toasts/copied.tsx';
-import { usePlayerStore } from '@/store/player.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { axiosSession } from '@/lib/utils.ts';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
 import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import ImageWithSkeleton from '@/router/shared/image/ImageWithSkeleton.tsx';
+import PlaylistLikeButton from '@/router/shared/playlist/PlaylistLikeButton.tsx';
+import PlaylistPlayButton from '@/router/shared/playlist/PlaylistPlayButton.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
     const params = useParams();
-    const { playQueue, pause } = usePlayer();
 
-    const queueId = usePlayerStore((state) => state.queueId);
-    const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const isPlaying = usePlayerStore((state) => state.isPlaying);
 
-    const { playlist, mashups, isLiked, setIsLiked, isLoading } = usePlaylistPageData(
-        params.playlistId
-    );
+    const { playlist, mashups, isLoading } = usePlaylistPageData(params.playlistId);
 
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;
@@ -65,68 +53,9 @@ export default function PlaylistPage() {
                         <h1 className='font-bold text-4xl text-onSurface'>{playlist.name}</h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
-                        {playlist.mashups.length > 0 &&
-                            (isPlaying && queueId === `playlist/${playlist.id}` ? (
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => {
-                                        pause();
-                                    }}
-                                >
-                                    <PauseHollowIcon />
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => {
-                                        playQueue(
-                                            playlist.mashups,
-                                            playlist.name,
-                                            `playlist/${playlist.id}`
-                                        );
-                                    }}
-                                >
-                                    <PlayHollowIcon />
-                                </Button>
-                            ))}
+                        <PlaylistPlayButton playlist={playlist} />
 
-                        {isLiked ? (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    axiosSession
-                                        .post(
-                                            `${import.meta.env.VITE_BACKEND_URL}/playlist/remove_like?id=${playlist.id}`
-                                        )
-                                        .then(() => {
-                                            setIsLiked(false);
-                                            updatePlaylistById(playlist.id, { liked: false });
-                                        });
-                                }}
-                            >
-                                <LikeFilledIcon />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    axiosSession
-                                        .post(
-                                            `${import.meta.env.VITE_BACKEND_URL}/playlist/add_like?id=${playlist.id}`
-                                        )
-                                        .then(() => {
-                                            setIsLiked(true);
-                                            updatePlaylistById(playlist.id, { liked: true });
-                                        });
-                                }}
-                            >
-                                <LikeOutlineIcon color='onSurface' />
-                            </Button>
-                        )}
+                        <PlaylistLikeButton playlist={playlist} />
 
                         <Button
                             variant='ghost'

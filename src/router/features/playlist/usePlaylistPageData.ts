@@ -19,8 +19,6 @@ export function usePlaylistPageData(playlistId?: string) {
         return playlist.mashups.map((id) => mashupCache[id]).filter(Boolean);
     }, [playlist, mashupCache]);
 
-    const isLiked = useMemo(() => playlist?.liked || false, [playlist]);
-
     const isLoading = useMemo(
         () =>
             (playlistId !== undefined && !playlist) ||
@@ -46,11 +44,6 @@ export function usePlaylistPageData(playlistId?: string) {
     return {
         playlist,
         mashups,
-        isLiked,
-        setIsLiked: (liked: boolean) => {
-            if (!playlist) return;
-            usePlaylistStore.getState().updateOneById(playlist.id, { liked });
-        },
         isLoading
     };
 }
