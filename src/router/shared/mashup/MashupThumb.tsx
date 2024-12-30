@@ -37,12 +37,17 @@ export default function MashupThumb({
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
-                <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
-                    alt={mashup.name}
-                    className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                <Link
                     draggable={false}
-                />
+                    to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
+                >
+                    <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                        alt={mashup.name}
+                        className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                        draggable={false}
+                    />
+                </Link>
                 {queue[queueIndex] === mashup.id && isPlaying ? (
                     <Button
                         variant='ghost'
