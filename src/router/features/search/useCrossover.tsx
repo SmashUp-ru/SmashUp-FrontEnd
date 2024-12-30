@@ -22,6 +22,9 @@ export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
                 )
                 .then((r: AxiosResponse<CrossoverResponse>) => setMashupsIds(r.data.response))
                 .then(() => setMashupsIdsFetching(false));
+        } else {
+            setMashupsIds([]);
+            setMashups([]);
         }
     }, [tracks, trackAuthors]);
 
@@ -31,6 +34,8 @@ export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
             getMashupsByIds(mashupsIds)
                 .then((r) => setMashups(r))
                 .then(() => setMashupsFetching(false));
+        } else {
+            setMashups([]);
         }
     }, [mashupsIds]);
 
