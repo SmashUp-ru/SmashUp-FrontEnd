@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import {
     SelectedTrack,
     SmashUpSelectedTrack,
+    TrackType,
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
 } from '@/types/api/upload';
@@ -56,8 +57,6 @@ export function UnpublishedMashupAccordionItem({
                     mashup.tracksUrls.map(async (url) => {
                         if (RegEx.YOUTUBE.test(url)) {
                             return loadOEmbed(url).then((track) => new YouTubeSelectedTrack(track));
-                        } else if (RegEx.YANDEX_MUSIC_TRACK.test(url)) {
-                            return new YandexMusicSelectedTrack(url);
                         } else {
                             throw new Error(`${url} is not supported`);
                         }
@@ -201,19 +200,19 @@ export function UnpublishedMashupAccordionItem({
                         <div className='w-full max-h-[180px] overflow-y-scroll'>
                             {tracks &&
                                 tracks.map((selectedTrack) => {
-                                    const name = selectedTrack.constructor.name;
+                                    const type = selectedTrack.keyType;
 
                                     let track: Track;
-                                    if (name === 'SmashUpSelectedTrack') {
+                                    if (type === TrackType.SmashUp) {
                                         track = (selectedTrack as SmashUpSelectedTrack).track;
-                                    } else if (name === 'YouTubeSelectedTrack') {
+                                    } else if (type === TrackType.YouTube) {
                                         track = (selectedTrack as YouTubeSelectedTrack)
                                             .track as unknown as Track;
-                                    } else if (name === 'YandexMusicSelectedTrack') {
+                                    } else if (type === TrackType.YandexMusic) {
                                         track = (selectedTrack as YandexMusicSelectedTrack)
                                             .track as unknown as Track;
                                     } else {
-                                        throw new Error(`${name} not supported`);
+                                        throw new Error(`${type} not supported`);
                                     }
 
                                     return <TrackSmallThumb key={track.id} track={track} />;

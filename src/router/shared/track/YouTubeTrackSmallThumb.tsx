@@ -4,6 +4,7 @@ import {
     isTrackSelected,
     RenderTrack,
     SelectedTrack,
+    TrackType,
     YouTubeSelectedTrack
 } from '@/types/api/upload';
 import { YouTubeTrack } from '@/types/api/youtube';
@@ -45,7 +46,7 @@ export default function YouTubeTrackSmallThumb({
     }
 
     for (const renderTrack of renderTracks) {
-        if (renderTrack.keyType === 'YouTubeSelectedTrack' && renderTrack.key === track.link) {
+        if (renderTrack.keyType === TrackType.YouTube && renderTrack.key === track.link) {
             return <></>;
         }
     }
@@ -83,8 +84,20 @@ export default function YouTubeTrackSmallThumb({
                 draggable={false}
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
-                <span className='font-bold text-onSurface truncate'>{track.name}</span>
-                <span className='font-medium text-onSurfaceVariant truncate'>
+                <span
+                    className={cn(
+                        'font-bold truncate',
+                        selected ? 'text-primary' : 'text-onSurface'
+                    )}
+                >
+                    {track.name}
+                </span>
+                <span
+                    className={cn(
+                        'font-medium truncate',
+                        selected ? 'text-primary' : 'text-onSurface'
+                    )}
+                >
                     {track.authors.join(', ')}
                 </span>
             </div>

@@ -9,7 +9,7 @@ export const RegEx = {
 
     YANDEX_MUSIC: /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)(?:|\/)$/,
     YANDEX_MUSIC_TRACK:
-        /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)\/track\/\d+(?:|\/)$/,
+        /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)\/track\/(\d+)(?:|\/)$/,
 
     NORMALIZE_YOUTUBE_LINK: (link: string) => {
         const match = link.match(RegEx.YOUTUBE);

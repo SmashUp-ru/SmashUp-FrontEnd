@@ -9,13 +9,14 @@ import {
     YouTubeSelectedTrack
 } from '@/types/api/upload';
 import MashupFormSkeleton from '@/router/shared/mashup/MashupFormSkeleton';
-import { useTrackStore } from '@/store/entities/track';
+import { Track, useTrackStore } from '@/store/entities/track';
 import { RegEx } from '@/lib/regex';
 import { loadOEmbed } from '@/lib/youtube';
 import { UnpublishedMashup } from '@/store/moderation';
 import { useModeration } from '../useModeration';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
+import { YandexTracksResponse } from '@/types/api/yandex';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -42,6 +43,7 @@ export default function ModerateMashupPage() {
 
     const userStore = useUserStore();
     const trackStore = useTrackStore();
+    // TODO: create store for Yandex playlists and tracks
 
     useEffect(() => {
         if (mashup === undefined) {
@@ -50,25 +52,60 @@ export default function ModerateMashupPage() {
 
         userStore.getManyByIds(mashup.authorsIds, true).then(setUsers);
 
+        const yandexTracks = mashup.tracksUrls
+            .map((url) => {
+                const match = url.match(RegEx.YANDEX_MUSIC_TRACK);
+                if (match) {
+                    return [url, match[2]];
+                } else {
+                    return undefined;
+                }
+            })
+            .filter((url) => url) as string[][];
+
         Promise.all([
             trackStore
                 .getManyByIds(mashup.tracks)
                 .then((tracks) => tracks.map((track) => new SmashUpSelectedTrack(track))),
+            yandexTracks
+                ? axiosSession
+                      .get(
+                          `/track/get/yandex_music?id=${yandexTracks.map((item) => item[1]).join(',')}`
+                      )
+                      .then((r: AxiosResponse<YandexTracksResponse>) => {
+                          return r.data.response.map(
+                              (track, index) =>
+                                  new YandexMusicSelectedTrack({
+                                      id: -track.id,
+                                      name: track.name,
+                                      authors: track.authors.map((author) => author.name),
+                                      imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
+                                      link: yandexTracks[index][0]
+                                  } as Track)
+                          );
+                      })
+                : Promise.resolve([]),
             Promise.all(
-                mashup.tracksUrls.map(async (url) => {
-                    if (RegEx.YOUTUBE.test(url)) {
-                        return loadOEmbed(url).then((track) => new YouTubeSelectedTrack(track));
-                    } else if (RegEx.YANDEX_MUSIC_TRACK.test(url)) {
-                        return new YandexMusicSelectedTrack(url);
-                    } else {
-                        throw new Error(`${url} is not supported`);
-                    }
-                })
+                mashup.tracksUrls
+                    .map((url) => {
+                        if (RegEx.YOUTUBE.test(url)) {
+                            return loadOEmbed(url).then((track) => new YouTubeSelectedTrack(track));
+                        } else if (RegEx.YANDEX_MUSIC_TRACK.test(url)) {
+                            return null;
+                        } else {
+                            throw new Error(`${url} is not supported`);
+                        }
+                    })
+                    .filter((url) => url !== null)
             )
         ]).then((result) => {
-            const [smashUpTracks, foreignTracks] = result;
+            const [smashUpTracks, yandexTracks, youTubeTracks] = result;
 
-            setTracks((smashUpTracks as SelectedTrack[]).concat(foreignTracks));
+            setTracks(
+                (smashUpTracks as SelectedTrack[])
+                    .concat(yandexTracks)
+                    .concat(youTubeTracks as YouTubeSelectedTrack[])
+            );
         });
 
         axiosSession

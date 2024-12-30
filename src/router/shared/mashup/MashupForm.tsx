@@ -237,7 +237,7 @@ export default function MashupForm({
                                           name: track.name,
                                           authors: track.authors.map((author) => author.name),
                                           imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
-                                          link: `https://music.yandex.net/album/${track.albums[0].id}`
+                                          link: `https://music.yandex.ru/album/${track.albums[0].id}/track/${track.id}`
                                       } as Track
                                   };
                               })
