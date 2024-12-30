@@ -14,7 +14,7 @@ import { YandexAlbum, YandexAlbumResponse } from '@/types/api/yandex';
 import { RenderTrack, TrackType } from '@/types/api/upload';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import ErrorToast from '@/router/shared/toasts/error';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 export default function UploadTrackFromYandexTab() {
     const { toast } = useToast();

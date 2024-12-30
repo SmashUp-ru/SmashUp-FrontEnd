@@ -8,7 +8,7 @@ import { UpdateUserImageResponse } from '@/types/api/settings.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 export default function UpdateAvatar() {
     const { toast } = useToast();

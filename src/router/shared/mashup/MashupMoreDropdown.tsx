@@ -23,7 +23,7 @@ import BackIcon from '@/components/icons/Back.tsx';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 interface MashupMoreDropdownProps {

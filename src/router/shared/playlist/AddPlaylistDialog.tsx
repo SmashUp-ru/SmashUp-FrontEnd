@@ -32,7 +32,7 @@ import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useNavigate } from 'react-router-dom';
 import { ErrorResponse } from '@/types/api/default.ts';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;

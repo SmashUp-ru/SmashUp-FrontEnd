@@ -14,7 +14,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/router/shared/hooks/use-toast.ts';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 

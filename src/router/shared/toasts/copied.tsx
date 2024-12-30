@@ -1,4 +1,4 @@
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 interface CopiedToastProps {
     img: string;

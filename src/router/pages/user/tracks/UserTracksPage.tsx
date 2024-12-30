@@ -12,7 +12,7 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import BaseToast from '@/router/shared/toasts/base.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function UserTracksPage() {
