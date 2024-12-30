@@ -3,14 +3,16 @@ import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils';
 import TrackMoreDropdown from '@/router/shared/track/TrackMoreDropdown.tsx';
+import { ReactNode } from 'react';
 
 export interface TrackThumbProps {
     track: Track;
     selected?: boolean;
+    icon?: ReactNode;
     onClick?: () => unknown;
 }
 
-export default function TrackSmallThumb({ track, selected, onClick }: TrackThumbProps) {
+export default function TrackSmallThumb({ track, selected, icon, onClick }: TrackThumbProps) {
     return (
         <div
             key={track.id}
@@ -48,6 +50,8 @@ export default function TrackSmallThumb({ track, selected, onClick }: TrackThumb
                     {track.authors.join(', ')}
                 </span>
             </div>
+
+            {icon}
 
             <TrackMoreDropdown track={track}>
                 <Button variant='ghost' size='icon'>

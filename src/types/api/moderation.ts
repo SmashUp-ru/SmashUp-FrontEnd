@@ -1,6 +1,6 @@
 import { UnpublishedMashup } from '@/store/moderation.ts';
 
-export interface GenUnpublishedMashupsResponse {
+export interface GetUnpublishedMashupsResponse {
     status: string;
     response: UnpublishedMashup[];
 }

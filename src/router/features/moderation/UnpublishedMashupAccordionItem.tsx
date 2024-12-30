@@ -201,20 +201,22 @@ export function UnpublishedMashupAccordionItem({
                         <div className='w-full max-h-[180px] overflow-y-scroll'>
                             {tracks &&
                                 tracks.map((selectedTrack) => {
+                                    const name = selectedTrack.constructor.name;
+
                                     let track: Track;
-                                    if (selectedTrack.constructor.name === 'SmashUpSelectedTrack') {
+                                    if (name === 'SmashUpSelectedTrack') {
                                         track = (selectedTrack as SmashUpSelectedTrack).track;
-                                    } else if (
-                                        selectedTrack.constructor.name === 'YouTubeSelectedTrack'
-                                    ) {
-                                        track = (selectedTrack as SmashUpSelectedTrack).track;
+                                    } else if (name === 'YouTubeSelectedTrack') {
+                                        track = (selectedTrack as YouTubeSelectedTrack)
+                                            .track as unknown as Track;
+                                    } else if (name === 'YandexMusicSelectedTrack') {
+                                        track = (selectedTrack as YandexMusicSelectedTrack)
+                                            .track as unknown as Track;
                                     } else {
-                                        throw new Error(
-                                            `${selectedTrack.constructor.name} not supported`
-                                        );
+                                        throw new Error(`${name} not supported`);
                                     }
 
-                                    return <TrackSmallThumb track={track} />;
+                                    return <TrackSmallThumb key={track.id} track={track} />;
                                 })}
                         </div>
                     </div>
@@ -226,6 +228,7 @@ export function UnpublishedMashupAccordionItem({
                             {mashup.genres &&
                                 mashup.genres.map((genre) => (
                                     <div
+                                        key={genre}
                                         className={cn(
                                             'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
                                             'font-bold text-[18px] text-onBackground'

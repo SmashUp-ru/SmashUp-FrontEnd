@@ -14,6 +14,8 @@ import { RegEx } from '@/lib/regex';
 import { loadOEmbed } from '@/lib/youtube';
 import { UnpublishedMashup } from '@/store/moderation';
 import { useModeration } from '../useModeration';
+import { axiosSession } from '@/lib/utils';
+import { AxiosResponse } from 'axios';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -36,6 +38,7 @@ export default function ModerateMashupPage() {
 
     const [users, setUsers] = useState<User[]>();
     const [tracks, setTracks] = useState<SelectedTrack[]>();
+    const [image, setImage] = useState<string>();
 
     const userStore = useUserStore();
     const trackStore = useTrackStore();
@@ -67,9 +70,25 @@ export default function ModerateMashupPage() {
 
             setTracks((smashUpTracks as SelectedTrack[]).concat(foreignTracks));
         });
+
+        axiosSession
+            .get(
+                `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png`,
+                {
+                    responseType: 'blob'
+                }
+            )
+            .then((r: AxiosResponse<Blob>) => {
+                setImage(URL.createObjectURL(r.data));
+            });
     }, [mashup]);
 
-    if (mashup === undefined || users === undefined || tracks === undefined) {
+    if (
+        mashup === undefined ||
+        users === undefined ||
+        tracks === undefined ||
+        image === undefined
+    ) {
         return <MashupFormSkeleton />;
     }
 
@@ -83,12 +102,18 @@ export default function ModerateMashupPage() {
                 selectedTracks: tracks,
                 selectedUsers: users,
                 statusLink: mashup.statusesUrls ? mashup.statusesUrls[0] : '',
-                agree: true
+                agree: true,
+                basedImage: image
+            }}
+            text={{
+                title: 'Редактирование неопубликованного мэшапа',
+                button: 'Изменить'
             }}
             handleLoggedUser={false}
             handleTracksUrls={false}
             handleMashupFile={false}
             requireImageFile={false}
+            showTracksIcons={true}
             onClick={(body: MashupFormBody) => {
                 // axiosSession
                 //     .post('/mashup/upload', {

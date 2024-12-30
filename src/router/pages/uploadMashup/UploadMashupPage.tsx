@@ -17,10 +17,15 @@ export default function UploadMashupPage() {
                 statusLink: '',
                 agree: false
             }}
+            text={{
+                title: 'Загрузка мэшапа',
+                button: 'Опубликовать'
+            }}
             handleLoggedUser={true}
             handleTracksUrls={true}
             handleMashupFile={true}
             requireImageFile={true}
+            showTracksIcons={false}
             onClick={(body: MashupFormBody) => {
                 axiosSession
                     .post('/mashup/upload', {

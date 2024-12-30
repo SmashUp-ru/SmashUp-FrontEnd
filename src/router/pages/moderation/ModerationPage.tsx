@@ -24,7 +24,9 @@ export default function ModerationPage() {
 
                 <TabsContent value='ожидают' className='flex flex-col gap-y-6'>
                     {unpublishedMashups &&
-                        unpublishedMashups.map((mashup) => <ModerationMashup mashup={mashup} />)}
+                        unpublishedMashups.map((mashup) => (
+                            <ModerationMashup key={mashup.id} mashup={mashup} />
+                        ))}
                 </TabsContent>
                 <TabsContent value='принятые'>Тут ничего нет 👀</TabsContent>
             </TabsSeparated>

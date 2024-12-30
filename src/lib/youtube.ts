@@ -23,6 +23,7 @@ export async function loadOEmbed(link: string): Promise<YouTubeTrack> {
             }
 
             return {
+                id: link,
                 authors: [data[0]],
                 name: data[1],
                 imageUrl: r.data.thumbnail_url,

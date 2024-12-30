@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useModerationStore } from '@/store/moderation.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { GenUnpublishedMashupsResponse } from '@/types/api/moderation.ts';
+import { GetUnpublishedMashupsResponse } from '@/types/api/moderation.ts';
 
 export function useModeration() {
     const unpublishedMashups = useModerationStore((state) => state.unpublishedMashups);
@@ -14,7 +14,7 @@ export function useModeration() {
         if (unpublishedMashups === null) {
             axiosSession
                 .get('/moderation/unpublished_mashup/get')
-                .then((response: AxiosResponse<GenUnpublishedMashupsResponse>) =>
+                .then((response: AxiosResponse<GetUnpublishedMashupsResponse>) =>
                     updateUnpublishedMashups(response.data.response)
                 )
                 .finally(() => setMashupsLoading(false));

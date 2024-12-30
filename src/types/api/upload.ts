@@ -2,6 +2,7 @@ import { Track } from '@/store/entities/track';
 import { YouTubeTrack } from './youtube';
 import { TrackThumbProps } from '@/router/shared/track/TrackSmallThumb';
 import { User } from '@/store/entities/user';
+import { ReactNode } from 'react';
 
 export interface GenresResponse {
     response: string[];
@@ -42,9 +43,18 @@ export class YouTubeSelectedTrack implements SelectedTrack {
 }
 
 export class YandexMusicSelectedTrack implements SelectedTrack {
+    track: Track;
     link: string;
     key: string;
     constructor(link: string) {
+        this.track = {
+            id: link as unknown,
+            name: link,
+            authors: ['???'],
+            imageUrl:
+                'https://store-images.s-microsoft.com/image/apps.2465.13510798882805719.3f5d017d-a79f-4f62-ad22-aee707e0ebd0.0620b3ee-ff33-447a-b654-eaa47d20d4a6',
+            link: link
+        } as Track;
         this.link = link;
         this.key = link;
     }
@@ -56,6 +66,8 @@ export class YandexMusicSelectedTrack implements SelectedTrack {
 export interface RenderTrack extends TrackThumbProps {
     keyType: string;
     key: unknown;
+
+    icon?: ReactNode;
 
     statefulOnClick: (selectedTracks: SelectedTrack[]) => unknown;
 }

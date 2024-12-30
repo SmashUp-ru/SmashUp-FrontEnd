@@ -25,6 +25,7 @@ import {
     RenderUser,
     SelectedTrack,
     SmashUpSelectedTrack,
+    YandexMusicSelectedTrack,
     YouTubeSelectedTrack
 } from '@/types/api/upload';
 import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
@@ -36,14 +37,18 @@ import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/features/toasts/error.tsx';
 import MashupFormSkeleton from './MashupFormSkeleton';
 import { loadOEmbed } from '@/lib/youtube';
+import YouTubeIcon from '@/components/icons/YouTube';
+import YandexMusicIcon from '@/components/icons/YandexMusic';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
+    text: MashupFormTextProps;
 
     handleLoggedUser: boolean;
     handleTracksUrls: boolean;
     handleMashupFile: boolean;
     requireImageFile: boolean;
+    showTracksIcons: boolean;
 
     onClick(body: MashupFormBody): unknown;
 }
@@ -57,6 +62,7 @@ interface MashupFormInitialProps {
     selectedUsers: User[];
     statusLink?: string;
     agree: boolean;
+    basedImage?: string;
 }
 
 export interface MashupFormBody {
@@ -72,12 +78,19 @@ export interface MashupFormBody {
     basedImageFile: string | null;
 }
 
+interface MashupFormTextProps {
+    title: string;
+    button: string;
+}
+
 export default function MashupForm({
     initial,
+    text,
     handleLoggedUser,
     handleTracksUrls,
     handleMashupFile,
     requireImageFile,
+    showTracksIcons,
     onClick
 }: MashupFormProps) {
     const { toast } = useToast();
@@ -123,7 +136,7 @@ export default function MashupForm({
     const [youTubeTrackLoading, setYouTubeTrackLoading] = useState<boolean>(false);
     const [youTubeTrack, setYouTubeTrack] = useState<YouTubeTrack | null>(null);
 
-    const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
+    const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>(initial.selectedTracks);
 
     const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
 
@@ -134,6 +147,58 @@ export default function MashupForm({
             .then(setYouTubeTrack)
             .then(() => setYouTubeTrackLoading(false));
     };
+
+    const renderSelectedTracks = (selectedTracks: SelectedTrack[]) => {
+        return selectedTracks.map((track) => {
+            const name = track.constructor.name;
+            if (name === 'SmashUpSelectedTrack') {
+                return {
+                    keyType: 'SmashUpSelectedTrack',
+                    key: track.key,
+                    track: (track as SmashUpSelectedTrack).track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        trackStatefulOnClick(track, selectedTracks)
+                };
+            } else if (name === 'YouTubeSelectedTrack') {
+                return {
+                    keyType: 'YouTubeSelectedTrack',
+                    key: track.key,
+                    icon: <YouTubeIcon />,
+                    track: (track as YouTubeSelectedTrack).track as unknown as Track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        trackStatefulOnClick(track, selectedTracks)
+                };
+            } else if (name === 'YandexMusicSelectedTrack') {
+                return {
+                    keyType: 'YandexMusicSelectedTrack',
+                    key: track.key,
+                    icon: <YandexMusicIcon />,
+                    track: (track as YandexMusicSelectedTrack).track as unknown as Track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        trackStatefulOnClick(track, selectedTracks)
+                };
+            } else {
+                throw new Error(`${track.constructor.name} not supported`);
+            }
+        });
+    };
+
+    useEffect(() => {
+        setRenderTracks(renderSelectedTracks(selectedTracks));
+        setRenderUsers(
+            selectedUsers.map((user) => {
+                return {
+                    user: user,
+                    selected: true,
+                    statefulOnClick: (selectedUsers: User[]) =>
+                        userStatefulOnClick(user, selectedUsers)
+                };
+            })
+        );
+    }, []);
 
     useEffect(() => {
         if (handleTracksUrls && RegEx.YOUTUBE.test(debouncedTracksQuery)) {
@@ -155,30 +220,6 @@ export default function MashupForm({
     useEffect(() => {
         const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
 
-        const renderSelectedTracks = selectedTracks.map((track) => {
-            if (track.constructor.name === 'SmashUpSelectedTrack') {
-                return {
-                    keyType: 'SmashUpSelectedTrack',
-                    key: track.key,
-                    track: (track as SmashUpSelectedTrack).track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
-            } else if (track.constructor.name === 'YouTubeSelectedTrack') {
-                return {
-                    keyType: 'YouTubeSelectedTrack',
-                    key: track.key,
-                    track: (track as YouTubeSelectedTrack).track as unknown as Track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
-            } else {
-                throw new Error(`${track.constructor.name} not supported`);
-            }
-        });
-
         const renderTracks = nonSelectedTracks.map((track) => {
             return {
                 keyType: 'SmashUpSelectedTrack',
@@ -190,7 +231,7 @@ export default function MashupForm({
             };
         });
 
-        setRenderTracks(renderSelectedTracks.concat(renderTracks));
+        setRenderTracks(renderSelectedTracks(selectedTracks).concat(renderTracks));
     }, [tracks]);
 
     useEffect(() => {
@@ -351,9 +392,15 @@ export default function MashupForm({
     // Image file handle
 
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const [basedImageFile, setBasedImageFile] = useState<string | null>(null);
+    const [basedImageFile, setBasedImageFile] = useState<string | null>(initial.basedImage || null);
 
     useBase64(imageFile, undefined, setBasedImageFile);
+
+    useEffect(() => {
+        if (!imageFile) {
+            setBasedImageFile(initial.basedImage || null);
+        }
+    }, [imageFile]);
 
     // Send
 
@@ -520,8 +567,15 @@ export default function MashupForm({
                 .map((track) => (track as SmashUpSelectedTrack).key),
             tracksUrls: handleTracksUrls
                 ? selectedTracks
-                      .filter((track) => track.constructor.name === 'YouTubeSelectedTrack')
-                      .map((track) => (track as YouTubeSelectedTrack).key)
+                      .filter((track) => {
+                          const name = track.constructor.name;
+                          return (
+                              name === 'YouTubeSelectedTrack' || name === 'YandexMusicSelectedTrack'
+                          );
+                      })
+                      .map(
+                          (track) => (track as YouTubeSelectedTrack | YandexMusicSelectedTrack).key
+                      )
                 : null,
             statusesUrls: hasStatusLink ? [statusLink] : null,
             genres: [...selectedGenres],
@@ -538,18 +592,24 @@ export default function MashupForm({
 
     if (loading) return <MashupFormSkeleton />;
 
+    const normalizedBasedImageFile = basedImageFile
+        ? basedImageFile.startsWith('blob:')
+            ? basedImageFile
+            : `data:image/png;base64,${basedImageFile}`
+        : null;
+
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-4xl text-onSurface'>Загрузка мэшапа</h1>
+                <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
             </div>
             <div className='w-full flex gap-x-12 flex-1'>
                 {/*картинка, mp3*/}
                 <div>
                     <label className='relative cursor-pointer h-fit'>
-                        {basedImageFile && typeof basedImageFile === 'string' ? (
+                        {normalizedBasedImageFile ? (
                             <img
-                                src={`data:image/png;base64,${basedImageFile}`}
+                                src={normalizedBasedImageFile}
                                 className={cn(
                                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
                                 )}
@@ -569,8 +629,10 @@ export default function MashupForm({
                             className='hidden'
                             accept='.png,.jpg,.jpeg'
                             onChange={async (e) => {
-                                if (e.target.files && e.target.files.length > 0) {
+                                if (e.target.files) {
                                     setImageFile(e.target.files[0]);
+                                } else if (initial.basedImage !== undefined) {
+                                    setImageFile(null);
                                 }
                             }}
                         />
@@ -614,8 +676,10 @@ export default function MashupForm({
 
                                     {renderTracks.map((renderTrack) => (
                                         <TrackSmallThumb
+                                            key={renderTrack.track.id}
                                             track={renderTrack.track}
                                             selected={renderTrack.selected}
+                                            icon={showTracksIcons ? renderTrack.icon : undefined}
                                             onClick={() =>
                                                 renderTrack.statefulOnClick(selectedTracks)
                                             }
@@ -673,7 +737,7 @@ export default function MashupForm({
                                 </Label>
                                 <div className='grid grid-cols-3 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
                                     {allGenres?.map((genre) => {
-                                        const selected = selectedGenres.has(genre);
+                                        const selected = selectedGenres.has(genre.toLowerCase());
 
                                         return (
                                             <div
@@ -687,9 +751,11 @@ export default function MashupForm({
                                                         selectedGenres
                                                     );
                                                     if (selected) {
-                                                        newSelectedGenres.delete(genre);
+                                                        newSelectedGenres.delete(
+                                                            genre.toLowerCase()
+                                                        );
                                                     } else {
-                                                        newSelectedGenres.add(genre);
+                                                        newSelectedGenres.add(genre.toLowerCase());
                                                     }
                                                     setSelectedGenres(newSelectedGenres);
                                                 }}
@@ -811,7 +877,7 @@ export default function MashupForm({
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
                         <Button className='w-[460px]' onClick={() => send()} disabled={!agree}>
-                            Опубликовать
+                            {text.button}
                         </Button>
                         {!initial.agree && (
                             <div className='flex items-center gap-x-4'>

@@ -53,6 +53,16 @@ export function useBase64(
             }
 
             setReader(encode(file, setProgress, setResult));
+        } else {
+            if (setProgress) {
+                setProgress(0, 1);
+            }
+
+            if (setResult) {
+                setResult(null);
+            }
+
+            setReader(undefined);
         }
     }, [file]);
 }
