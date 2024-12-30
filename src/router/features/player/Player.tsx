@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
+import { Mashup } from '@/store/entities/mashup.ts';
 
-const Player: React.FC = () => {
+export default function Player({ mashup }: { mashup: Mashup }) {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const volume = usePlayerStore((state) => state.volume);
@@ -24,7 +25,6 @@ const Player: React.FC = () => {
 
     const playTimeRef = useRef<number>(0);
     const playTimeSent = useRef<boolean>(false);
-    const durationSent = useRef<boolean>(false);
 
     const sendListenedEvent = () => {
         playTimeSent.current = true;
@@ -36,24 +36,20 @@ const Player: React.FC = () => {
     };
 
     const sendListenedDuration = () => {
-        if (playTimeRef.current >= 30) {
-            durationSent.current = true;
-
-            const currentTrackId = queue[queueIndex];
-            if (currentTrackId) {
-                axiosSession
-                    .post(`/mashup/listened?id=${currentTrackId}`, {
-                        duration: playTimeRef.current
-                    })
-                    .catch(console.error);
-            }
+        const currentTrackId = queue[queueIndex];
+        if (currentTrackId) {
+            axiosSession
+                .post(`/mashup/listened?id=${currentTrackId}?duration=${playTimeRef.current}`)
+                .catch(console.error);
         }
     };
 
     const resetPlayTime = () => {
+        if (playTimeRef.current > 0) {
+            sendListenedDuration();
+        }
         playTimeRef.current = 0;
         playTimeSent.current = false;
-        durationSent.current = false;
     };
 
     useEffect(() => {
@@ -68,8 +64,16 @@ const Player: React.FC = () => {
                 if (player.current) {
                     updateSeek(player.current.seek() * 1000);
                     playTimeRef.current += 0.5;
-                    if (playTimeRef.current >= 30 && !playTimeSent.current) {
+                    if (
+                        playTimeRef.current >= Math.min(30, mashup.duration / 2000) &&
+                        !playTimeSent.current
+                    ) {
                         sendListenedEvent();
+                    }
+
+                    if (playTimeRef.current >= 30 * 60) {
+                        sendListenedDuration();
+                        playTimeRef.current = 0;
                     }
                 }
             }, 500);
@@ -85,12 +89,10 @@ const Player: React.FC = () => {
     }, [isPlaying, updateSeek]);
 
     useEffect(() => {
-        sendListenedDuration();
         resetPlayTime();
-    }, [queueIndex]);
+    }, [queue, queueIndex]);
 
     const handleOnEnd = () => {
-        sendListenedDuration();
         resetPlayTime();
         const currentLoop = usePlayerStore.getState().loop;
         const queue = usePlayerStore.getState().queue;
@@ -123,6 +125,4 @@ const Player: React.FC = () => {
             ref={(ref) => (player.current = ref)}
         />
     );
-};
-
-export default Player;
+}

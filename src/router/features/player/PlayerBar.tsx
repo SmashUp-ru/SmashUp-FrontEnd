@@ -225,7 +225,7 @@ export default function PlayerBar() {
                     />
                 </div>
             </div>
-            {queue.length > 0 && queueIndex !== -1 && <Player />}
+            {queue.length > 0 && queueIndex !== -1 && <Player mashup={mashup} />}
         </div>
     );
 }
