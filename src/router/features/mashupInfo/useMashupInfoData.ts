@@ -3,7 +3,7 @@ import { useMashupStore } from '@/store/entities/mashup.ts';
 import { useTrackStore } from '@/store/entities/track.ts';
 import { usePlayerStore } from '@/store/player.ts';
 
-export function useMashupInfoData() {
+export function useMashupInfoData(mId?: number | null) {
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const getMashupById = useMashupStore((state) => state.getOneById);
@@ -12,9 +12,10 @@ export function useMashupInfoData() {
     const trackCache = useTrackStore((state) => state.cache);
 
     const mashupId = useMemo(
-        () => (queueIndex >= 0 ? queue?.[queueIndex] : null),
-        [queue, queueIndex]
+        () => (mId !== null ? mId : queueIndex >= 0 ? queue?.[queueIndex] : null),
+        [mId, queue, queueIndex]
     );
+
     const mashup = mashupId ? mashupCache[mashupId] : null;
 
     const tracks = useMemo(() => {

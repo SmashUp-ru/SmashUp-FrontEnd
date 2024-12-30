@@ -20,27 +20,25 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
-import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 
 export default function MashupInfo() {
-    const { pause, playMashup } = usePlayer();
+    const { pause, playMashup, closeInfo } = usePlayer();
 
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const queueName = usePlayerStore((state) => state.queueName);
-    const info = usePlayerStore((state) => state.info);
-    const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
+    const info = usePlayerStore((state) => state.info);
+    const mashupInfo = usePlayerStore((state) => state.mashupInfo);
 
-    const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData();
-    const { playlists } = useCurrentUserPlaylists();
+    const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    if (!info) return null;
+    if (!info && mashupInfo === null) return null;
     if (isLoading) return <MashupInfoSkeleton />;
-    if (!mashup) return null;
+    if (mashup === null) return null;
 
     return (
         <div
@@ -55,7 +53,7 @@ export default function MashupInfo() {
                         {queueName}
                     </span>
                 </div>
-                <Button variant='ghost' size='icon' onClick={() => updateInfo(false)}>
+                <Button variant='ghost' size='icon' onClick={() => closeInfo()}>
                     <CancelIcon size={24} />
                 </Button>
             </div>
@@ -161,7 +159,7 @@ export default function MashupInfo() {
                     </Button>
                 )}
 
-                <MashupMoreDropdown mashup={mashup} playlists={playlists}>
+                <MashupMoreDropdown mashup={mashup}>
                     <Button variant='ghost' size='icon' className=''>
                         <MoreHorizontalIcon size={32} />
                     </Button>

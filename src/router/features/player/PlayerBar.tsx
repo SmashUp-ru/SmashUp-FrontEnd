@@ -26,7 +26,6 @@ export default function PlayerBar() {
     const loop = usePlayerStore((state) => state.loop);
     const updateLoop = usePlayerStore((state) => state.updateLoop);
     const info = usePlayerStore((state) => state.info);
-    const updateInfo = usePlayerStore((state) => state.updateInfo);
 
     const volume = usePlayerStore((state) => state.volume);
     const updateVolume = usePlayerStore((state) => state.updateVolume);
@@ -39,7 +38,7 @@ export default function PlayerBar() {
     const queueName = usePlayerStore((state) => state.queueName);
     const updateQueueName = usePlayerStore((state) => state.updateQueueName);
 
-    const { play, pause, next, prev } = usePlayer();
+    const { play, pause, next, prev, openInfo, closeInfo } = usePlayer();
 
     const { mashup, isLiked, setIsLiked } = usePlayerBarData();
 
@@ -206,7 +205,11 @@ export default function PlayerBar() {
 
                 {/*правая часть*/}
                 <div className='w-1/3 flex justify-end items-center gap-x-6'>
-                    <Button variant='ghost' size='icon' onClick={() => updateInfo(!info)}>
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => (info ? closeInfo() : openInfo())}
+                    >
                         <InfoIcon color={info ? 'primary' : 'onSurface'} />
                     </Button>
 

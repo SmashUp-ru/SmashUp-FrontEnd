@@ -15,6 +15,9 @@ export function usePlayer() {
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
 
+    const updateInfo = usePlayerStore((state) => state.updateInfo);
+    const updateMashupInfo = usePlayerStore((state) => state.updateMashupInfo);
+
     function play() {
         updatePlaying(true);
     }
@@ -104,12 +107,30 @@ export function usePlayer() {
         }
     }
 
+    function openMashupInfo(mashupId: number) {
+        updateInfo(false);
+        updateMashupInfo(mashupId);
+    }
+
+    function openInfo() {
+        updateInfo(true);
+        updateMashupInfo(null);
+    }
+
+    function closeInfo() {
+        updateInfo(false);
+        updateMashupInfo(null);
+    }
+
     return {
         play,
         pause,
         next,
         prev,
         playQueue,
-        playMashup
+        playMashup,
+        openMashupInfo,
+        openInfo,
+        closeInfo
     };
 }

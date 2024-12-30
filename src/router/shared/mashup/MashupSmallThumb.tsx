@@ -43,7 +43,7 @@ export default function MashupSmallThumb({
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
 
-    const { play, pause, playMashup } = usePlayer();
+    const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
     const isLiked = mashup?.liked ?? false;
     const setIsLiked = (liked: boolean) => {
@@ -105,7 +105,15 @@ export default function MashupSmallThumb({
                 </div>
                 <div className='flex flex-col'>
                     <div className='flex items-center gap-x-2'>
-                        <span className='font-bold text-onSurface line-clamp-1'>{mashup.name}</span>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => openMashupInfo(mashup.id)}
+                        >
+                            <span className='font-bold text-onSurface line-clamp-1'>
+                                {mashup.name}
+                            </span>
+                        </Button>
                         {isExplicit(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
                                 <ExplicitIcon />

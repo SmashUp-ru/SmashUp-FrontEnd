@@ -34,6 +34,9 @@ interface PlayerState {
 
     info: boolean;
     updateInfo: (newInfo: boolean) => void;
+
+    mashupInfo: null | number;
+    updateMashupInfo: (newMashupInfo: null | number) => void;
 }
 
 export const usePlayerStore = create<PlayerState>()(
@@ -71,7 +74,10 @@ export const usePlayerStore = create<PlayerState>()(
             updateChangedSeek: (newChangedSeek: number) => set({ changedSeek: newChangedSeek }),
 
             info: false,
-            updateInfo: (newInfo: boolean) => set({ info: newInfo })
+            updateInfo: (newInfo: boolean) => set({ info: newInfo }),
+
+            mashupInfo: null,
+            updateMashupInfo: (newMashupInfo: null | number) => set({ mashupInfo: newMashupInfo })
         }),
         {
             name: 'player-storage',
@@ -86,6 +92,7 @@ export const usePlayerStore = create<PlayerState>()(
                 changedSeek: state.seek,
 
                 info: state.info,
+                mashupInfo: state.mashupInfo,
                 volume: state.volume,
                 shuffle: state.shuffle,
                 loop: state.loop

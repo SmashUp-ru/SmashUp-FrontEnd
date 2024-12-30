@@ -42,7 +42,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
         const currentTrackId = queue[queueIndex];
         if (currentTrackId && currentUser !== null && playTimeRef.current > 0) {
             axiosSession
-                .post(`/mashup/listened?id=${currentTrackId}?duration=${playTimeRef.current}`)
+                .post(`/mashup/listened?id=${currentTrackId}&duration=${playTimeRef.current}`)
                 .catch(console.error);
         }
     };
