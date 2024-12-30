@@ -33,7 +33,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                             pause();
                         }}
                     >
-                        <PauseHollowIcon color='onSurface' size={24} />
+                        <PauseHollowIcon color='onSurface' />
                     </Button>
                 ) : (
                     <Button
@@ -48,7 +48,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                             );
                         }}
                     >
-                        <PlayHollowIcon color='onSurface' size={24} />
+                        <PlayHollowIcon color='onSurface' />
                     </Button>
                 )}
             </div>
