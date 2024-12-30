@@ -42,6 +42,7 @@ export default function MashupSmallThumb({
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const currentQueueId = usePlayerStore((state) => state.queueId);
 
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
@@ -60,13 +61,14 @@ export default function MashupSmallThumb({
                         alt={mashup.name}
                         className={cn(
                             'w-12 h-12 min-w-12 min-h-12 rounded-xl',
-                            queue[queueIndex] === mashup.id
+                            queue[queueIndex] === mashup.id && currentQueueId === queueId
                                 ? 'opacity-30'
                                 : 'group-hover:opacity-30'
                         )}
                         draggable={false}
                     />
                     {queue[queueIndex] === mashup.id &&
+                        currentQueueId === queueId &&
                         (isPlaying ? (
                             <Button
                                 variant='ghost'
@@ -90,7 +92,7 @@ export default function MashupSmallThumb({
                                 <PlayHollowIcon color='onSurface' size={24} />
                             </Button>
                         ))}
-                    {queue[queueIndex] !== mashup.id && (
+                    {(queue[queueIndex] !== mashup.id || currentQueueId !== queueId) && (
                         <Button
                             variant='ghost'
                             size='icon'

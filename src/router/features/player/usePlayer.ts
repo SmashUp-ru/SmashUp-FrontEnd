@@ -69,6 +69,9 @@ export function usePlayer() {
         if (newQueueId === queueId) {
             play();
         } else {
+            updateSeek(0);
+            updateChangedSeek(0);
+
             updateOriginalQueue(newQueue);
 
             if (shuffle) {
@@ -92,6 +95,9 @@ export function usePlayer() {
         if (newQueueId === queueId && queueIndex === newQueueIndex) {
             play();
         } else {
+            updateSeek(0);
+            updateChangedSeek(0);
+
             updateOriginalQueue(newQueue);
 
             if (shuffle) {
