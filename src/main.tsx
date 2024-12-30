@@ -84,7 +84,7 @@ const router = createBrowserRouter(
                         },
                         {
                             element: <UploadMashupSuccessPage />,
-                            path: '/mashup/upload/success'
+                            path: '/mashup/upload/success/:mashupId'
                         },
                         {
                             element: <UploadMashupPage />,

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MashupForm, { MashupFormBody } from '@/router/shared/mashup/MashupForm';
 import { User, useUserStore } from '@/store/entities/user';
 import { useEffect, useState } from 'react';
@@ -20,6 +20,7 @@ import { YandexTracksResponse } from '@/types/api/yandex';
 
 export default function ModerateMashupPage() {
     const params = useParams();
+    const navigate = useNavigate();
 
     const [mashup, setMashup] = useState<UnpublishedMashup>();
 
@@ -96,7 +97,7 @@ export default function ModerateMashupPage() {
                             throw new Error(`${url} is not supported`);
                         }
                     })
-                    .filter((url) => url !== null)
+                    .filter((track) => track !== null)
             )
         ]).then((result) => {
             const [smashUpTracks, yandexTracks, youTubeTracks] = result;
@@ -135,10 +136,14 @@ export default function ModerateMashupPage() {
                 name: mashup.name,
                 explicit: undefined,
                 banWords: undefined,
+                statuses: mashup.statuses,
                 selectedGenres: mashup.genres,
                 selectedTracks: tracks,
                 selectedUsers: users,
-                statusLink: mashup.statusesUrls ? mashup.statusesUrls[0] : '',
+                statusLink:
+                    mashup.statusesUrls && mashup.statusesUrls.length > 0
+                        ? mashup.statusesUrls[0]
+                        : '',
                 agree: true,
                 basedImage: image
             }}
@@ -151,14 +156,16 @@ export default function ModerateMashupPage() {
             handleMashupFile={false}
             requireImageFile={false}
             showTracksIcons={true}
+            lockStatusLink={true}
             onClick={(body: MashupFormBody) => {
-                // axiosSession
-                //     .post('/mashup/upload', {
-                //         ...body,
-                //         albumId: -1
-                //     })
-                //     .then(() => navigate('/mashup/upload/success'));
-                console.log(body);
+                console.log(mashup, body);
+                axiosSession
+                    .post('/moderation/unpublished_mashup/edit', {
+                        id: mashup.id,
+                        ...body,
+                        albumId: -1
+                    })
+                    .then(() => navigate('/mashup/moderate'));
             }}
         />
     );

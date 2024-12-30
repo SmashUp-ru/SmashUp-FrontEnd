@@ -24,6 +24,8 @@ import { isExplicit, isTwitchBanned } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import ImageWithAuth from '@/router/shared/image/imageWithAuth';
 import { Link } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
+import { YandexTracksResponse } from '@/types/api/yandex';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -45,6 +47,17 @@ export function UnpublishedMashupAccordionItem({
 
     const trackStore = useTrackStore();
 
+    const yandexTracks = mashup.tracksUrls
+        .map((url) => {
+            const match = url.match(RegEx.YANDEX_MUSIC_TRACK);
+            if (match) {
+                return [url, match[2]];
+            } else {
+                return undefined;
+            }
+        })
+        .filter((url) => url) as string[][];
+
     useEffect(() => {
         if (!loading && accordionValue === value) {
             setLoading(true);
@@ -53,19 +66,47 @@ export function UnpublishedMashupAccordionItem({
                 trackStore
                     .getManyByIds(mashup.tracks)
                     .then((tracks) => tracks.map((track) => new SmashUpSelectedTrack(track))),
+                yandexTracks
+                    ? axiosSession
+                          .get(
+                              `/track/get/yandex_music?id=${yandexTracks.map((item) => item[1]).join(',')}`
+                          )
+                          .then((r: AxiosResponse<YandexTracksResponse>) => {
+                              return r.data.response.map(
+                                  (track, index) =>
+                                      new YandexMusicSelectedTrack({
+                                          id: -track.id,
+                                          name: track.name,
+                                          authors: track.authors.map((author) => author.name),
+                                          imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
+                                          link: yandexTracks[index][0]
+                                      } as Track)
+                              );
+                          })
+                    : Promise.resolve([]),
                 Promise.all(
-                    mashup.tracksUrls.map(async (url) => {
-                        if (RegEx.YOUTUBE.test(url)) {
-                            return loadOEmbed(url).then((track) => new YouTubeSelectedTrack(track));
-                        } else {
-                            throw new Error(`${url} is not supported`);
-                        }
-                    })
+                    mashup.tracksUrls
+                        .map((url) => {
+                            if (RegEx.YOUTUBE.test(url)) {
+                                return loadOEmbed(url).then(
+                                    (track) => new YouTubeSelectedTrack(track)
+                                );
+                            } else if (RegEx.YANDEX_MUSIC_TRACK.test(url)) {
+                                return null;
+                            } else {
+                                throw new Error(`${url} is not supported`);
+                            }
+                        })
+                        .filter((track) => track !== null)
                 )
             ]).then((result) => {
-                const [smashUpTracks, foreignTracks] = result;
+                const [smashUpTracks, yandexTracks, youTubeTracks] = result;
 
-                setTracks((smashUpTracks as SelectedTrack[]).concat(foreignTracks));
+                setTracks(
+                    (smashUpTracks as SelectedTrack[])
+                        .concat(yandexTracks)
+                        .concat(youTubeTracks as YouTubeSelectedTrack[])
+                );
             });
         }
     }, [accordionValue]);

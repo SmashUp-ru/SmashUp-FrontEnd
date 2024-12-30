@@ -9,8 +9,11 @@ import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useState } from 'react';
 
 export default function UploadTrackFromYoutubeTab() {
+    const [agree, setAgree] = useState<boolean>(false);
+
     return (
         <section className='flex flex-col gap-y-6 flex-1 overflow-auto pr-[35px]'>
             <div className='w-full flex gap-x-12 flex-1'>
@@ -90,9 +93,16 @@ export default function UploadTrackFromYoutubeTab() {
                     </div>
 
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6 mt-auto'>
-                        <Button className='w-[460px]'>Опубликовать</Button>
+                        <Button className='w-[460px]' disabled={!agree}>
+                            Опубликовать
+                        </Button>
                         <div className='flex items-center gap-x-4'>
-                            <Checkbox />
+                            <Checkbox
+                                checked={agree}
+                                onCheckedChange={(v) => {
+                                    if (typeof v === 'boolean') setAgree(v);
+                                }}
+                            />
                             <span>
                                 Я прочитал(-а) и согласен(-на) с условиями{' '}
                                 <Link

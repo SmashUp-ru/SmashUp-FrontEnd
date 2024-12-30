@@ -53,7 +53,11 @@ export default function MashupPage() {
                         <span className='font-medium text-lg text-additionalText'>
                             Мэшап{' '}
                             {mashup.authors.map((author) => (
-                                <Link to={`/user/${author}`} className='text-onSurface'>
+                                <Link
+                                    key={author}
+                                    to={`/user/${author}`}
+                                    className='text-onSurface'
+                                >
                                     {author}
                                 </Link>
                             ))}

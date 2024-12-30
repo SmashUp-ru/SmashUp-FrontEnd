@@ -3,9 +3,14 @@ import { YouTubeTrack } from './youtube';
 import { TrackThumbProps } from '@/router/shared/track/TrackSmallThumb';
 import { User } from '@/store/entities/user';
 import { ReactNode } from 'react';
+import { Mashup } from '@/store/entities/mashup';
 
 export interface GenresResponse {
     response: string[];
+}
+
+export interface UploadMashupResponse {
+    response?: Mashup;
 }
 
 export interface UploadMashupRequestBody {

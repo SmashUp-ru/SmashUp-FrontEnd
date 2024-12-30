@@ -1,23 +1,28 @@
-function memoize(fn: (bitmask: number) => boolean): (bitmask: number) => boolean {
-    const cache: Record<number, boolean> = {};
-    return (bitmask: number) => {
-        if (bitmask in cache) {
-            return cache[bitmask];
-        }
-        const result = fn(bitmask);
-        cache[bitmask] = result;
-        return result;
-    };
+function handleBitmask(
+    bit: number
+): [(bitmask: number) => boolean, (bitmask: number, value: boolean) => number] {
+    return [
+        (bitmask: number) => ((bitmask >> bit) & 1) == 1,
+        (bitmask: number, value: boolean) => (value ? bitmask | (1 << bit) : bitmask & ~(1 << bit))
+    ];
 }
 
-export const isExplicit = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
-export const isTwitchBanned = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);
-export const isHashtagMashup = memoize((bitmask: number) => ((bitmask >> 2) & 1) == 1);
-export const isAlt = memoize((bitmask: number) => ((bitmask >> 3) & 1) == 1);
-export const isAdmin = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
-export const isModerator = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);
-export const isVerified = memoize((bitmask: number) => ((bitmask >> 2) & 1) == 1);
-export const isMashuper = memoize((bitmask: number) => ((bitmask >> 3) & 1) == 1);
-export const isBanned = memoize((bitmask: number) => ((bitmask >> 4) & 1) == 1);
-export const explicitAllowed = memoize((bitmask: number) => ((bitmask >> 0) & 1) == 1);
-export const multisessionAllowed = memoize((bitmask: number) => ((bitmask >> 1) & 1) == 1);
+export function switchBit(
+    bitmask: number,
+    is: (bitmask: number) => boolean,
+    set: (bitmask: number, value: boolean) => number
+) {
+    set(bitmask, !is(bitmask));
+}
+
+export const [isExplicit, setExplicit] = handleBitmask(0);
+export const [isTwitchBanned, setTwitchBanned] = handleBitmask(1);
+export const [isHashtagMashup, setHashtagMashup] = handleBitmask(2);
+export const [isAlt, setAlt] = handleBitmask(3);
+export const [isAdmin, setAdmin] = handleBitmask(0);
+export const [isModerator, setModerator] = handleBitmask(1);
+export const [isVerified, setVerified] = handleBitmask(2);
+export const [isMashuper, setMashuper] = handleBitmask(3);
+export const [isBanned, setBanned] = handleBitmask(4);
+export const [explicitAllowed, setExplicitAllowed] = handleBitmask(0);
+export const [multisessionAllowed, setMultisessionAllowed] = handleBitmask(1);

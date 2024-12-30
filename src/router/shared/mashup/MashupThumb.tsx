@@ -99,7 +99,7 @@ export default function MashupThumb({
                 </div>
                 <div className='flex items-center gap-x-2 max-w-[216px]'>
                     {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (
-                        <div>
+                        <div key={author}>
                             <Link
                                 key={index}
                                 to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
