@@ -6,8 +6,11 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function Player({ mashup }: { mashup: Mashup }) {
+    const currentUser = useGlobalStore((state) => state.currentUser);
+
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const volume = usePlayerStore((state) => state.volume);
@@ -30,14 +33,14 @@ export default function Player({ mashup }: { mashup: Mashup }) {
         playTimeSent.current = true;
 
         const currentTrackId = queue[queueIndex];
-        if (currentTrackId) {
+        if (currentTrackId && currentUser !== null) {
             axiosSession.post(`/mashup/add_stream?id=${currentTrackId}`).catch(console.error);
         }
     };
 
     const sendListenedDuration = () => {
         const currentTrackId = queue[queueIndex];
-        if (currentTrackId) {
+        if (currentTrackId && currentUser !== null) {
             axiosSession
                 .post(`/mashup/listened?id=${currentTrackId}?duration=${playTimeRef.current}`)
                 .catch(console.error);
