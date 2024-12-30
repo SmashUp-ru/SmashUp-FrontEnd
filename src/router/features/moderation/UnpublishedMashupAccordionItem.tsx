@@ -26,6 +26,9 @@ import ImageWithAuth from '@/router/shared/image/imageWithAuth';
 import { Link } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import { YandexTracksResponse } from '@/types/api/yandex';
+import { axiosCatcher } from '@/router/shared/general/axios';
+import YouTubeIcon from '@/components/icons/YouTube';
+import YandexMusicIcon from '@/components/icons/YandexMusic';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -66,7 +69,7 @@ export function UnpublishedMashupAccordionItem({
                 trackStore
                     .getManyByIds(mashup.tracks)
                     .then((tracks) => tracks.map((track) => new SmashUpSelectedTrack(track))),
-                yandexTracks
+                yandexTracks && yandexTracks.length > 0
                     ? axiosSession
                           .get(
                               `/track/get/yandex_music?id=${yandexTracks.map((item) => item[1]).join(',')}`
@@ -169,7 +172,8 @@ export function UnpublishedMashupAccordionItem({
                                                     (um) => um.id !== mashup.id
                                                 )
                                             ]);
-                                        });
+                                        })
+                                        .catch(axiosCatcher(toast, 'при публикации мэшапа'));
                                 }}
                             >
                                 Принять
@@ -244,19 +248,24 @@ export function UnpublishedMashupAccordionItem({
                                     const type = selectedTrack.keyType;
 
                                     let track: Track;
+                                    let icon;
                                     if (type === TrackType.SmashUp) {
                                         track = (selectedTrack as SmashUpSelectedTrack).track;
                                     } else if (type === TrackType.YouTube) {
                                         track = (selectedTrack as YouTubeSelectedTrack)
                                             .track as unknown as Track;
+                                        icon = <YouTubeIcon />;
                                     } else if (type === TrackType.YandexMusic) {
                                         track = (selectedTrack as YandexMusicSelectedTrack)
                                             .track as unknown as Track;
+                                        icon = <YandexMusicIcon />;
                                     } else {
                                         throw new Error(`${type} not supported`);
                                     }
 
-                                    return <TrackSmallThumb key={track.id} track={track} />;
+                                    return (
+                                        <TrackSmallThumb key={track.id} track={track} icon={icon} />
+                                    );
                                 })}
                         </div>
                     </div>
