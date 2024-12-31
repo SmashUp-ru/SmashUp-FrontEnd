@@ -35,6 +35,7 @@ import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePassw
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 import UploadTrackPage from '@/router/pages/uploadTrack/UploadTrackPage.tsx';
 import ModerateMashupPage from './router/pages/moderation/moderateMashup/ModerateMashupPage';
+import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 
 const router = createBrowserRouter(
     [
@@ -73,6 +74,10 @@ const router = createBrowserRouter(
                         {
                             element: <FavoritesPage />,
                             path: '/favorites'
+                        },
+                        {
+                            element: <RecommendationsPage />,
+                            path: '/recommendations'
                         },
                         {
                             element: <PlaylistPage />,

@@ -51,18 +51,6 @@ export default function RootPage() {
                 </div>
             </Section>
 
-            {currentUserPlaylists && currentUserPlaylists.length > 0 && (
-                <Section title='Ваши плейлисты'>
-                    <div className='flex items-center flex-wrap'>
-                        {currentUserPlaylists
-                            .filter((playlist) => playlist.mashups.length > 0)
-                            .map((playlist) => (
-                                <PlaylistThumb key={playlist.id} playlist={playlist} />
-                            ))}
-                    </div>
-                </Section>
-            )}
-
             {currentUser && recommendationsIds && recommendationsIds.length > 0 && (
                 <Section
                     title='Рекомендации'
@@ -83,14 +71,22 @@ export default function RootPage() {
                 </Section>
             )}
 
+            {currentUserPlaylists && currentUserPlaylists.length > 0 && (
+                <Section title='Ваши плейлисты'>
+                    <div className='flex items-center flex-wrap'>
+                        {currentUserPlaylists.map((playlist) => (
+                            <PlaylistThumb key={playlist.id} playlist={playlist} />
+                        ))}
+                    </div>
+                </Section>
+            )}
+
             {favoritesPlaylists && favoritesPlaylists.length > 0 && (
                 <Section title='Понравившиеся плейлисты других пользователей '>
                     <div className='flex items-center flex-wrap'>
-                        {favoritesPlaylists
-                            .filter((playlist) => playlist.mashups.length > 0)
-                            .map((playlist) => (
-                                <PlaylistThumb key={playlist.id} playlist={playlist} />
-                            ))}
+                        {favoritesPlaylists.map((playlist) => (
+                            <PlaylistThumb key={playlist.id} playlist={playlist} />
+                        ))}
                     </div>
                 </Section>
             )}
