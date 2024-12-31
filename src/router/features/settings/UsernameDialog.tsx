@@ -22,36 +22,26 @@ import { AxiosError } from 'axios';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useState } from 'react';
 import UsernameDialogSentContent from '@/router/features/settings/UsernameDialogSentContent.tsx';
+import { changeUsernameFormSchema } from '@/router/shared/schemas/changeUsername.ts';
 
 interface UsernameDialogProps {
     email: string | null;
     username: string;
 }
 
-const formSchema = z.object({
-    username: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' }),
-    password: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' })
-});
-
 export default function UsernameDialog({ username, email }: UsernameDialogProps) {
     const { toast } = useToast();
     const [submitted, setSubmitted] = useState(false);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof changeUsernameFormSchema>>({
+        resolver: zodResolver(changeUsernameFormSchema),
         defaultValues: {
             username: '',
             password: ''
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof changeUsernameFormSchema>) {
         axiosSession
             .post('/user/change_username', {
                 password: values.password,

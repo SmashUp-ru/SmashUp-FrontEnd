@@ -169,6 +169,7 @@ export default function AddPlaylistDialog({
                                                         color='onSurface'
                                                     />
                                                     <Input
+                                                        accept='.png,.jpg,.jpeg'
                                                         type='file'
                                                         className='hidden'
                                                         onChange={async (e) => {

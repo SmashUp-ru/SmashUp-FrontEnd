@@ -1,10 +1,13 @@
 import { TabsSeparated, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs-separated';
 import ModerationMashup from '@/router/features/moderation/ModerationMashup.tsx';
 import { useModeration } from './useModeration';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function ModerationPage() {
     const { unpublishedMashups } = useModeration();
+    const currentUser = useGlobalStore((state) => state.currentUser);
 
+    if (currentUser === null) return null;
     if (unpublishedMashups === null) {
         // TODO: скелет
         return <></>;

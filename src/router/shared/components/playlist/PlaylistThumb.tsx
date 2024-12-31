@@ -10,9 +10,11 @@ import { zip } from '@/lib/utils.ts';
 interface PlaylistThumbProps {
     playlist: Playlist;
     searchMode?: boolean;
+    image?: string;
+    link?: string;
 }
 
-export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbProps) {
+export default function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
 
@@ -21,10 +23,18 @@ export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbPro
             <div className='relative'>
                 <Link
                     draggable={false}
-                    to={`/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`}
+                    to={
+                        link
+                            ? link
+                            : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
+                    }
                 >
                     <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`}
+                        src={
+                            image
+                                ? image
+                                : `${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`
+                        }
                         alt={playlist.name}
                         className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                         draggable={false}
@@ -61,7 +71,11 @@ export default function PlaylistThumb({ playlist, searchMode }: PlaylistThumbPro
             </div>
             <div className='flex flex-col'>
                 <Link
-                    to={`/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`}
+                    to={
+                        link
+                            ? link
+                            : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
+                    }
                     className='font-bold text-lg text-onSurface truncate w-[216px]'
                     title={playlist.name}
                 >

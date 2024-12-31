@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { useGlobalStore } from '@/store/global.ts';
 
-export function useRootPageData() {
+export function useCompilations() {
     const compilations = useGlobalStore((state) => state.compilations);
     const updateCompilations = useGlobalStore((state) => state.updateCompilations);
     const getManyPlaylistsByIds = usePlaylistStore((state) => state.getManyByIds);

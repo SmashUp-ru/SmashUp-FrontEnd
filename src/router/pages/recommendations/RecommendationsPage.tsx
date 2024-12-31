@@ -6,26 +6,29 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useGlobalStore } from '@/store/global.ts';
-import { useFavoritesPageData } from '@/router/features/favorites/useFavoritesPageData.ts';
 import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton.tsx';
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useRecommendations } from '@/router/features/root/useRecommendations.ts';
 
-export default function FavoritesPage() {
+export default function RecommendationsPage() {
+    const {
+        mashups: recommendations,
+        isLoading: isRecommendationsLoading,
+        recommendations: recommendationsIds
+    } = useRecommendations();
+
     const currentUser = useGlobalStore((state) => state.currentUser);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
 
     const { playQueue, pause } = usePlayer();
 
-    const { isLoading, mashups, likes } = useFavoritesPageData();
-
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    if (currentUser === null) return null;
-
-    if (isLoading) return <FavoritesPageSkeleton />;
+    if (!currentUser || !recommendationsIds || !recommendations) return <FavoritesPageSkeleton />;
+    if (isRecommendationsLoading) return <FavoritesPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
@@ -43,7 +46,7 @@ export default function FavoritesPage() {
                     <div>
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
                         <h1 className='font-bold text-4xl text-onSurface'>
-                            Любимое{' '}
+                            Рекомендации{' '}
                             <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
                                 {currentUser.username}
                             </Link>
@@ -66,9 +69,9 @@ export default function FavoritesPage() {
                                 size='icon'
                                 onClick={() => {
                                     playQueue(
-                                        likes,
-                                        `Любимое ${currentUser.username}`,
-                                        `favorites`
+                                        recommendationsIds,
+                                        `Рекомендации ${currentUser.username}`,
+                                        `recommendations`
                                     );
                                 }}
                             >
@@ -80,14 +83,14 @@ export default function FavoritesPage() {
             </div>
 
             <div className='flex flex-col gap-y-1'>
-                {mashups.map((mashup, idx) => (
+                {recommendations.map((mashup, idx) => (
                     <MashupSmallThumb
-                        key={mashup.id}
+                        key={idx}
                         mashup={mashup}
-                        playlist={likes}
+                        playlist={recommendationsIds}
                         indexInPlaylist={idx}
-                        playlistName={`Любимое ${currentUser.username}`}
-                        queueId={`favorites`}
+                        playlistName='Рекомендации'
+                        queueId='recomendations'
                     />
                 ))}
             </div>

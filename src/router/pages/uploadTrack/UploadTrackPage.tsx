@@ -1,8 +1,12 @@
 import { TabsSeparated, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs-separated';
 import UploadTrackFromYandexTab from '@/router/features/uploadTrack/UploadTrackFromYandexTab.tsx';
 import UploadTrackFromYoutubeTab from '@/router/features/uploadTrack/UploadTrackFromYoutubeTab.tsx';
+import { useGlobalStore } from '@/store/global.ts';
 
 export default function UploadTrackPage() {
+    const currentUser = useGlobalStore((state) => state.currentUser);
+    if (currentUser === null) return null;
+
     return (
         <div className='flex flex-col gap-y-7 h-full'>
             <div className='flex items-center justify-between'>
