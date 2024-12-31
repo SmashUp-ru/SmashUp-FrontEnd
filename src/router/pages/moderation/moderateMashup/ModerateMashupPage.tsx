@@ -9,10 +9,13 @@ import { UnpublishedMashup } from '@/store/moderation';
 import { useModeration } from '../useModeration';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
+import { axiosCatcher } from '@/router/shared/toasts/axios';
+import { useToast } from '@/router/shared/hooks/use-toast';
 
 export default function ModerateMashupPage() {
     const params = useParams();
     const navigate = useNavigate();
+    const { toast } = useToast();
 
     const [mashup, setMashup] = useState<UnpublishedMashup>();
 
@@ -88,7 +91,12 @@ export default function ModerateMashupPage() {
             }}
             text={{
                 title: 'Редактирование неопубликованного мэшапа',
-                button: 'Изменить'
+                button: 'Изменить',
+                toast: {
+                    before: '',
+                    field: 'Мэшап',
+                    after: 'редактируется...'
+                }
             }}
             handleLoggedUser={false}
             handleTracksUrls={false}
@@ -97,7 +105,7 @@ export default function ModerateMashupPage() {
             showTracksIcons={true}
             lockStatusLink={true}
             onClick={(body: MashupFormBody) => {
-                axiosSession
+                return axiosSession
                     .post('/moderation/unpublished_mashup/edit', {
                         id: mashup.id,
                         ...body,
@@ -105,7 +113,8 @@ export default function ModerateMashupPage() {
                     })
                     .then(() => {
                         navigate('/mashup/moderation');
-                    });
+                    })
+                    .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
             }}
         />
     );

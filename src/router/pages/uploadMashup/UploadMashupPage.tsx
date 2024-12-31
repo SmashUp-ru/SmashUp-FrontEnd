@@ -24,7 +24,12 @@ export default function UploadMashupPage() {
             }}
             text={{
                 title: 'Загрузка мэшапа',
-                button: 'Опубликовать'
+                button: 'Опубликовать',
+                toast: {
+                    before: 'Ваш',
+                    field: 'мэшап',
+                    after: 'загружается...'
+                }
             }}
             handleLoggedUser={true}
             handleTracksUrls={true}
@@ -33,7 +38,7 @@ export default function UploadMashupPage() {
             showTracksIcons={false}
             lockStatusLink={false}
             onClick={(body: MashupFormBody) => {
-                axiosSession
+                return axiosSession
                     .post('/mashup/upload', {
                         ...body,
                         albumId: -1

@@ -74,7 +74,7 @@ interface MashupFormProps {
     showTracksIcons: boolean;
     lockStatusLink: boolean;
 
-    onClick(body: MashupFormBody): unknown;
+    onClick(body: MashupFormBody): Promise<unknown>;
 }
 
 interface MashupFormInitialProps {
@@ -107,6 +107,12 @@ export interface MashupFormBody {
 interface MashupFormTextProps {
     title: string;
     button: string;
+
+    toast: {
+        before: string;
+        field: string;
+        after: string;
+    };
 }
 
 export default function MashupForm({
@@ -120,7 +126,7 @@ export default function MashupForm({
     lockStatusLink,
     onClick
 }: MashupFormProps) {
-    const { toast } = useToast();
+    const { toast, dismiss } = useToast();
 
     const hasStatusLink = initial.statusLink !== undefined;
     const hasExplicit = initial.explicit !== undefined;
@@ -716,12 +722,13 @@ export default function MashupForm({
             basedImageFile: basedImageFile
         };
 
-        onClick(body);
+        return onClick(body);
     };
 
     //
 
     const [loading, setLoading] = useState(allGenres.length === 0);
+    const [sending, setSending] = useState(false);
 
     if (loading) return <MashupFormSkeleton />;
 
@@ -891,17 +898,6 @@ export default function MashupForm({
                                             accept='.mp3'
                                             onChange={(e) => {
                                                 if (e.target.files) {
-                                                    toast({
-                                                        element: (
-                                                            <BaseToast
-                                                                icon
-                                                                before='Ваш'
-                                                                field='мэшап'
-                                                                after='загружается.'
-                                                            />
-                                                        ),
-                                                        duration: 2000
-                                                    });
                                                     setMashupFile(e.target.files[0]);
                                                 }
                                             }}
@@ -1132,7 +1128,35 @@ export default function MashupForm({
 
                     {/*сохранить*/}
                     <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
-                        <Button className='w-[460px]' onClick={() => send()} disabled={!agree}>
+                        <Button
+                            className='w-[460px]'
+                            onClick={() => {
+                                toast({
+                                    element: (
+                                        <BaseToast
+                                            icon
+                                            before='Ваш'
+                                            field='мэшап'
+                                            after='загружается...'
+                                        />
+                                    ),
+                                    duration: 60000
+                                });
+
+                                setSending(true);
+
+                                const promise = send();
+                                if (promise) {
+                                    promise.then(() => {
+                                        dismiss();
+                                        setSending(false);
+                                    });
+                                } else {
+                                    setSending(false);
+                                }
+                            }}
+                            disabled={!agree || sending}
+                        >
                             {text.button}
                         </Button>
                         {!initial.agree && (
