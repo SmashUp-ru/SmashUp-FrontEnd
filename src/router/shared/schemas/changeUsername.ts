@@ -4,10 +4,10 @@ import { RegEx } from '@/lib/regex.ts';
 export const changeUsernameFormSchema = z.object({
     username: z
         .string()
-        .min(4, { message: 'Юзернейм должен быть длиннее 3 символов.' })
-        .max(64, { message: 'Юзернейм должен быть короче 64 символов.' })
+        .min(4, { message: 'Никнейм должен быть длиннее 3 символов.' })
+        .max(64, { message: 'Никнейм должен быть короче 64 символов.' })
         .regex(RegEx.USERNAME, {
-            message: 'В юзернейме могут быть только буквы, цифры, а так же специальные символы.'
+            message: 'В никнейме могут быть только буквы, цифры, а так же специальные символы.'
         }),
     password: z
         .string()

@@ -6,7 +6,7 @@ export const recoverFormSchema = z.object({
         .string()
         .min(4, { message: 'Электронная почта должна быть длиннее 4 см.' })
         .max(32, { message: 'Электронная почта должна быть короче 32 символов.' })
-        .regex(RegEx.EMAIL, {
+        .regex(RegEx.EMAIL_OR_USERNAME, {
             message:
                 'В электронной почте должны быть только буквы, цифры, а так же специальные символы.'
         })

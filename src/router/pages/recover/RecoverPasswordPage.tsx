@@ -42,7 +42,8 @@ export default function RecoverPasswordPage() {
                 {/*Заголовок*/}
                 <div className='text-center'>
                     <h1 className='text-primary font-bold text-3xl'>Восстановление пароля</h1>
-                    <span className='font-medium text-onSurfaceVariant'>Чота тут</span>
+                    {/* TODO: normal subheader */}
+                    {/* <span className='font-medium text-onSurfaceVariant'>Чота тут</span> */}
                 </div>
 
                 {/*Форма*/}
@@ -58,7 +59,7 @@ export default function RecoverPasswordPage() {
                             render={({ field }) => (
                                 <FormItem className='w-full flex flex-col gap-y-2.5'>
                                     <FormLabel className='font-medium text-onSurfaceVariant'>
-                                        Электронная почта
+                                        Никнейм или электронная почта
                                     </FormLabel>
                                     <FormControl>
                                         <Input

@@ -84,7 +84,7 @@ export default function RegisterPage() {
                             render={({ field }) => (
                                 <FormItem className='w-full flex flex-col gap-y-2.5'>
                                     <FormLabel className='font-medium text-onSurfaceVariant'>
-                                        Псевдоним
+                                        Никнейм
                                     </FormLabel>
                                     <FormControl>
                                         <Input

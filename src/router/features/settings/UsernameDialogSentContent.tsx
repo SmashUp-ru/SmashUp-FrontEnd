@@ -12,7 +12,7 @@ export default function UsernameDialogSentContent({ email }: UsernameDialogSentC
                 Мы отправили письмо на
                 <span className='font-bold text-primary'>{email}</span>
                 <br />
-                Подтвердите изменение юзернейма, нажав на кнопку внутри письма.
+                Подтвердите изменение никнейма, нажав на кнопку внутри письма.
             </span>
 
             <DialogClose>

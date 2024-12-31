@@ -48,7 +48,7 @@ export default function ChangeUsernameConfirmPage() {
                     </h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         {success === true
-                            ? 'Юзернейм успешно изменен.'
+                            ? 'Никнейм успешно изменен.'
                             : success === false
                               ? 'Что-то пошло не так'
                               : ''}

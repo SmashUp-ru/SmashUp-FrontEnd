@@ -50,7 +50,7 @@ export default function RecoverPasswordConfirmPage() {
                 });
             })
             .then(() => {
-                navigate('/restore/password/confirm');
+                navigate('/user/recover_password/confirm');
             })
             .catch(axiosCatcher(toast, 'при завершении восстановления пароля.'));
     }

@@ -91,7 +91,7 @@ export default function LoginPage() {
                             render={({ field }) => (
                                 <FormItem className='w-full flex flex-col gap-y-2.5'>
                                     <FormLabel className='font-medium text-onSurfaceVariant'>
-                                        Юзернейм или электронная почта
+                                        Никнейм или электронная почта
                                     </FormLabel>
                                     <FormControl>
                                         <Input

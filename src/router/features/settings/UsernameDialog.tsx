@@ -57,7 +57,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                             <ErrorToast
                                 icon
                                 before='Ошибка'
-                                field='при обновлении юзернейма.'
+                                field='при обновлении никнейма.'
                                 after='Указанный пароль неправильный.'
                             />
                         ),
@@ -72,7 +72,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                         <ErrorToast
                             icon
                             before='Что-то пошло не так'
-                            field='при обновлении юзернейма.'
+                            field='при обновлении никнейма.'
                             after='Попробуйте снова.'
                         />
                     ),
