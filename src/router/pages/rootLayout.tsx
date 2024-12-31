@@ -19,11 +19,13 @@ export default function RootLayout() {
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
 
+    console.log(queue, queueIndex);
+
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />
             <main
-                className={`w-full flex flex-col ${queue.length > 0 || queueIndex !== null || moderationSrc !== null ? 'pb-[112px]' : ''}`}
+                className={`w-full flex flex-col ${queue.length > 0 || (queueIndex !== -1 && queueIndex !== null) || moderationSrc !== null ? 'pb-[112px]' : ''}`}
             >
                 <div className='w-full flex flex-col min-h-full overflow-hidden'>
                     <Header />
