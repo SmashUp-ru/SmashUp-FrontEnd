@@ -57,6 +57,7 @@ import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -806,6 +807,17 @@ export default function MashupForm({
                                             accept='.mp3'
                                             onChange={(e) => {
                                                 if (e.target.files) {
+                                                    toast({
+                                                        element: (
+                                                            <BaseToast
+                                                                icon
+                                                                before='Ваш'
+                                                                field='мэшап'
+                                                                after='загружается.'
+                                                            />
+                                                        ),
+                                                        duration: 2000
+                                                    });
                                                     setMashupFile(e.target.files[0]);
                                                 }
                                             }}
