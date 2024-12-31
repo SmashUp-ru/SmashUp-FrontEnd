@@ -21,21 +21,9 @@ import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useState } from 'react';
 import PasswordDialogSentContent from '@/router/features/settings/PasswordDialogSentContent.tsx';
-
-const formSchema = z.object({
-    oldPassword: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' }),
-    newPassword: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' }),
-    newPasswordAgain: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' })
-});
+import { changePasswordFormSchema } from '@/router/shared/schemas/changePassword.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
 
 interface PasswordDialogProps {
     email: string | null;
@@ -45,8 +33,8 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
     const { toast } = useToast();
     const [submitted, setSubmitted] = useState(false);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof changePasswordFormSchema>>({
+        resolver: zodResolver(changePasswordFormSchema),
         defaultValues: {
             oldPassword: '',
             newPassword: '',
@@ -54,7 +42,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof changePasswordFormSchema>) {
         axiosSession
             .post('/user/change_password', {
                 password: values.oldPassword,
@@ -63,7 +51,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosError) => {
+            .catch((e: AxiosError<SmashUpResponse<unknown>>) => {
                 if (e.status === 403) {
                     toast({
                         element: (
@@ -80,18 +68,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                     return;
                 }
 
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Что-то пошло не так'
-                            field='при обновлении пароля.'
-                            after='Попробуйте снова.'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
+                axiosCatcher(toast, 'при обновлении пароля.')(e);
             });
     }
 

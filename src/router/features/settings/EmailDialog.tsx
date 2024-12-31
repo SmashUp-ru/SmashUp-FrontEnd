@@ -22,6 +22,8 @@ import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentCo
 import { AxiosError } from 'axios';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 interface EmailDialogProps {
     email: string | null;
@@ -57,7 +59,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosError) => {
+            .catch((e: AxiosError<SmashUpResponse<unknown>>) => {
                 if (e.status === 403) {
                     toast({
                         element: (
@@ -74,18 +76,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                     return;
                 }
 
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Что-то пошло не так'
-                            field='при обновлении почты.'
-                            after='Попробуйте снова.'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
+                axiosCatcher(toast, 'при обновлении почты.')(e);
             });
     }
 

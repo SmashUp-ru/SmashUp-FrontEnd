@@ -9,6 +9,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 export default function UpdateAvatar() {
     const { toast } = useToast();
@@ -75,20 +76,7 @@ export default function UpdateAvatar() {
                         duration: 2000
                     });
                 })
-                .catch(() => {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Что-то пошло не так'
-                                field='при загрузке аватара.'
-                                after='Попробуйте снова.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
-                });
+                .catch(axiosCatcher(toast, 'при обновлении аватара.'));
         }
     };
 
