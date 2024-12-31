@@ -13,6 +13,7 @@ export function usePlayer() {
     const queueId = usePlayerStore((state) => state.queueId);
     const updateQueueId = usePlayerStore((state) => state.updateQueueId);
     const shuffle = usePlayerStore((state) => state.shuffle);
+    const seek = usePlayerStore((state) => state.seek);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
     const updateModerationSrc = usePlayerStore((state) => state.updateModerationSrc);
@@ -48,16 +49,20 @@ export function usePlayer() {
 
     function prev() {
         const currentLoop = usePlayerStore.getState().loop;
-        updateSeek(0);
-        updateChangedSeek(0);
 
-        if (queueIndex > 0) {
-            updateQueueIndex(queueIndex - 1);
-        } else if (currentLoop === 'queue') {
-            updateQueueIndex(queue.length - 1);
-            play();
-        } else {
+        console.log(seek);
+        if (seek > 1000 * 5) {
             pause();
+            updateSeek(0);
+            updateChangedSeek(0);
+        } else {
+            if (queueIndex > 0) {
+                updateQueueIndex(queueIndex - 1);
+            } else if (currentLoop === 'mashup') {
+                play();
+            } else {
+                pause();
+            }
         }
     }
 
