@@ -23,7 +23,8 @@ export default function FavoritesPage() {
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    if (!currentUser) return <FavoritesPageSkeleton />;
+    if (currentUser === null) return null;
+
     if (isLoading) return <FavoritesPageSkeleton />;
 
     return (
