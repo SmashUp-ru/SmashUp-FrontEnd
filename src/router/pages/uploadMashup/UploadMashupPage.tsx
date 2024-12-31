@@ -33,7 +33,6 @@ export default function UploadMashupPage() {
             showTracksIcons={false}
             lockStatusLink={false}
             onClick={(body: MashupFormBody) => {
-                console.log('authors', body.authors);
                 axiosSession
                     .post('/mashup/upload', {
                         ...body,

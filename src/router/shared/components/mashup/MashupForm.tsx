@@ -26,6 +26,7 @@ import {
     SearchTrack,
     SelectedTrack,
     SmashUpSelectedTrack,
+    SpotifySelectedTrack,
     TrackType,
     UploadMashupRequestBody,
     YandexMusicSelectedTrack,
@@ -57,6 +58,9 @@ import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
+import { SpotifyTracksResponse } from '@/types/api/spotify.ts';
+import SpotifyIcon from '@/components/icons/Spotify.tsx';
+import TrackSmallThumbSkeleton from '../track/TrackSmallThumbSkeleton.tsx';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -156,6 +160,7 @@ export default function MashupForm({
     const [debouncedTracksQuery] = useDebounce(tracksQuery, 500);
 
     const [tracks, setTracks] = useState<SearchTrack[]>([]);
+    const [tracksLoading, setTracksLoading] = useState<boolean>(false);
 
     const [youTubeTrackLoading, setYouTubeTrackLoading] = useState<boolean>(false);
     const [youTubeTrack, setYouTubeTrack] = useState<YouTubeTrack | null>(null);
@@ -200,6 +205,16 @@ export default function MashupForm({
                     key: track.key,
                     icon: <YandexMusicIcon />,
                     track: (track as YandexMusicSelectedTrack).track as unknown as Track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        trackStatefulOnClick(track, selectedTracks)
+                };
+            } else if (type === TrackType.Spotify) {
+                return {
+                    keyType: TrackType.Spotify,
+                    key: track.key,
+                    icon: <SpotifyIcon />,
+                    track: (track as SpotifySelectedTrack).track,
                     selected: true,
                     statefulOnClick: (selectedTracks: SelectedTrack[]) =>
                         trackStatefulOnClick(track, selectedTracks)
@@ -250,10 +265,10 @@ export default function MashupForm({
                           .then((r: AxiosResponse<YandexTracksResponse>) =>
                               r.data.response.map((track) => {
                                   return {
-                                      key: -track.id,
+                                      key: track.id,
                                       keyType: TrackType.YandexMusic,
                                       track: {
-                                          id: -track.id,
+                                          id: track.id,
                                           name: track.name,
                                           authors: track.authors.map((author) => author.name),
                                           imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
@@ -262,14 +277,69 @@ export default function MashupForm({
                                   };
                               })
                           )
+                    : Promise.resolve([]),
+                handleTracksUrls
+                    ? axiosSession
+                          .get(`/track/search/spotify?query=${debouncedTracksQuery}`)
+                          .then((r: AxiosResponse<SpotifyTracksResponse>) =>
+                              r.data.response.map((track) => {
+                                  return {
+                                      key: track.id,
+                                      keyType: TrackType.Spotify,
+                                      track: {
+                                          id: track.id as unknown as number,
+                                          name: track.name,
+                                          authors: track.authors.map((author) => author.name),
+                                          imageUrl: track.album.imageUrl,
+                                          link: track.link
+                                      } as Track
+                                  };
+                              })
+                          )
                     : Promise.resolve([])
             ];
 
+            setTracksLoading(true);
+
             Promise.all(promises).then((result) => {
-                setTracks(result[0].concat(result[1]));
+                // TODO: more complex analyzation for identical tracks, including albums
+                const keys = new Set();
+
+                const trackToKey = (track: SearchTrack) => {
+                    return (
+                        track.track.authors.map((author) => author.trim()).join(', ') +
+                        ' — ' +
+                        track.track.name.trim()
+                    ).toLowerCase();
+                };
+
+                for (const track of result[0]) {
+                    keys.add(trackToKey(track));
+                }
+
+                const filteredYandex: SearchTrack[] = [];
+                for (const track of result[1]) {
+                    const key = trackToKey(track);
+                    if (!keys.has(key)) {
+                        filteredYandex.push(track);
+                    }
+
+                    keys.add(key);
+                }
+
+                const filteredSpotify: SearchTrack[] = [];
+                for (const track of result[2]) {
+                    if (!keys.has(trackToKey(track))) {
+                        filteredSpotify.push(track);
+                    }
+                }
+
+                setTracks((result[0].concat(result[1]) as SearchTrack[]).concat(filteredSpotify));
+                setTracksLoading(false);
             });
         } else {
             setTracks([]);
+            setTracksLoading(false);
             setYouTubeTrack(null);
         }
     }, [debouncedTracksQuery]);
@@ -284,12 +354,18 @@ export default function MashupForm({
                 track: track.track,
                 selected: false,
                 statefulOnClick: (selectedTracks: SelectedTrack[]) => {
-                    trackStatefulOnClick(
-                        track.keyType === TrackType.YandexMusic
-                            ? new YandexMusicSelectedTrack(track.track)
-                            : new SmashUpSelectedTrack(track.track),
-                        selectedTracks
-                    );
+                    if (track.keyType === TrackType.SmashUp) {
+                        trackStatefulOnClick(new SmashUpSelectedTrack(track.track), selectedTracks);
+                    } else if (track.keyType === TrackType.YandexMusic) {
+                        trackStatefulOnClick(
+                            new YandexMusicSelectedTrack(track.track),
+                            selectedTracks
+                        );
+                    } else if (track.keyType === TrackType.Spotify) {
+                        trackStatefulOnClick(new SpotifySelectedTrack(track.track), selectedTracks);
+                    } else {
+                        throw new Error(`${track.constructor.name} not supported`);
+                    }
                 }
             };
         });
@@ -741,6 +817,14 @@ export default function MashupForm({
                                             }
                                         />
                                     ))}
+
+                                    {tracksLoading && (
+                                        <>
+                                            <TrackSmallThumbSkeleton />
+                                            <TrackSmallThumbSkeleton />
+                                            <TrackSmallThumbSkeleton />
+                                        </>
+                                    )}
                                 </div>
 
                                 {hasStatusLink &&

@@ -27,5 +27,7 @@ export function axiosCatcher(
             duration: 2000,
             variant: 'destructive'
         });
+
+        throw r;
     };
 }

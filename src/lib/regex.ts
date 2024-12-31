@@ -7,9 +7,13 @@ export const RegEx = {
     YOUTUBE:
         /^(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})(|.+)$/,
 
-    YANDEX_MUSIC: /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)(?:|\/)$/,
+    YANDEX_MUSIC_ALBUM:
+        /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)(?:|\/)$/,
     YANDEX_MUSIC_TRACK:
         /^(?:https?:\/\/)?(?:www\.)?music\.yandex\.(?:ru|by|kz)\/album\/(\d+)\/track\/(\d+)(?:|\/)$/,
+
+    NORMALIZED_SPOTIFY_ALBUM: /https:\/\/api.spotify.com\/v1\/albums\/([0-9A-Za-z]+)/,
+    NORMALIZED_SPOTIFY_TRACK: /https:\/\/api.spotify.com\/v1\/tracks\/([0-9A-Za-z]+)/,
 
     NORMALIZE_YOUTUBE_LINK: (link: string) => {
         const match = link.match(RegEx.YOUTUBE);
@@ -21,7 +25,7 @@ export const RegEx = {
     },
 
     NORMALIZE_YANDEX_MUSIC_LINK: (link: string) => {
-        const match = link.match(RegEx.YANDEX_MUSIC);
+        const match = link.match(RegEx.YANDEX_MUSIC_ALBUM);
         if (!match) {
             throw new Error('Got wrong Yandex.Music album link!');
         }

@@ -5,26 +5,26 @@ interface CachingEntity {
     id: number;
 }
 
+export type CacheStore<T> = {
+    cache: Record<number, T>;
+    additionalCache: Record<string, Record<string, number>>;
+    pendingRequests: Record<number | string, Promise<T | T[]>>;
+
+    getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
+    getOneById: (id: number) => Promise<T>;
+    getOneByStringKey: (keyName: string, key: string) => Promise<T>;
+
+    fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
+    fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
+
+    updateOneById: (id: number, updatedData: Partial<T> | undefined) => void;
+};
+
 export function createEntityStore<T extends CachingEntity>(
     apiPath: string,
     keyNames: string[] = []
 ) {
-    type CacheStore = {
-        cache: Record<number, T>;
-        additionalCache: Record<string, Record<string, number>>;
-        pendingRequests: Record<number | string, Promise<T | T[]>>;
-
-        getManyByIds: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
-        getOneById: (id: number) => Promise<T>;
-        getOneByStringKey: (keyName: string, key: string) => Promise<T>;
-
-        fetchAndCacheOneByStringKey: (keyName: string, key: string) => Promise<T>;
-        fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
-
-        updateOneById: (id: number, updatedData: Partial<T> | undefined) => void;
-    };
-
-    return create<CacheStore>((set, get) => ({
+    return create<CacheStore<T>>((set, get) => ({
         cache: {},
         additionalCache: keyNames.reduce(
             (acc, key: string) => {

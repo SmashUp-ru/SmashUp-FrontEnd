@@ -39,7 +39,7 @@ export default function UploadTrackFromYandexTab() {
             localLink = 'https://music.yandex.ru/album/' + match[1];
         }
 
-        match = localLink.match(RegEx.YANDEX_MUSIC);
+        match = localLink.match(RegEx.YANDEX_MUSIC_ALBUM);
         if (match) {
             localLink = 'https://music.yandex.ru/album/' + match[1];
 
