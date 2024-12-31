@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { removeItem } from '@/lib/utils';
 
 export default function NavigationTracker() {
     const location = useLocation();
@@ -16,48 +17,45 @@ export default function NavigationTracker() {
         const splitResult = newLocation.slice(1).split('/');
         const resultType = splitResult[0];
 
+        let entity;
+
         switch (resultType) {
             case 'playlist':
-                localStorage.setItem(
-                    'search_history',
-                    JSON.stringify([
-                        {
-                            type: 'playlist',
-                            id: searchId
-                        },
-                        ...JSON.parse(localStorage.getItem('search_history') || '[]')
-                    ])
-                );
+                entity = {
+                    type: 'playlist',
+                    id: searchId
+                };
                 break;
 
             case 'mashup':
-                localStorage.setItem(
-                    'search_history',
-                    JSON.stringify([
-                        {
-                            type: 'mashup',
-                            id: searchId
-                        },
-                        ...JSON.parse(localStorage.getItem('search_history') || '[]')
-                    ])
-                );
+                entity = {
+                    type: 'mashup',
+                    id: searchId
+                };
                 break;
 
             case 'user':
-                localStorage.setItem(
-                    'search_history',
-                    JSON.stringify([
-                        {
-                            type: 'user',
-                            id: searchId
-                        },
-                        ...JSON.parse(localStorage.getItem('search_history') || '[]')
-                    ])
-                );
+                entity = {
+                    type: 'user',
+                    id: searchId
+                };
                 break;
 
             default:
                 break;
+        }
+
+        if (entity) {
+            let history = JSON.parse(localStorage.getItem('search_history') || '[]');
+            history = removeItem(history, entity, (l, r) => l.type === r.type && l.id === r.id);
+
+            history = [entity, ...history];
+
+            if (history.length > 15) {
+                history.pop();
+            }
+
+            localStorage.setItem('search_history', JSON.stringify(history));
         }
     };
 
