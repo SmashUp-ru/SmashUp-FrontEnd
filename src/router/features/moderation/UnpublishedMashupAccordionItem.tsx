@@ -29,6 +29,7 @@ import { YandexTracksResponse } from '@/types/api/yandex';
 import { axiosCatcher } from '@/router/shared/general/axios';
 import YouTubeIcon from '@/components/icons/YouTube';
 import YandexMusicIcon from '@/components/icons/YandexMusic';
+import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -41,6 +42,7 @@ export function UnpublishedMashupAccordionItem({
     accordionValue,
     value
 }: UnpublishedMashupAccordionItem) {
+    const { playModerationMashup } = usePlayer();
     const { toast } = useToast();
     const moderationMashups = useModerationStore((state) => state.unpublishedMashups);
     const updateModerationMashups = useModerationStore((state) => state.updateUnpublishedMashups);
@@ -152,6 +154,7 @@ export function UnpublishedMashupAccordionItem({
                                 size='icon'
                                 className=''
                                 onClick={(e) => {
+                                    playModerationMashup(mashup);
                                     e.preventDefault();
                                 }}
                             >

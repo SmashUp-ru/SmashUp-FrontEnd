@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { UnpublishedMashup } from '@/store/moderation.ts';
 
 interface PlayerState {
     isPlaying: boolean;
@@ -37,6 +38,11 @@ interface PlayerState {
 
     mashupInfo: null | number;
     updateMashupInfo: (newMashupInfo: null | number) => void;
+
+    moderationSrc: UnpublishedMashup | null;
+    updateModerationSrc: (newModerationSrc: null | UnpublishedMashup) => void;
+    moderationIsPlaying: boolean;
+    updateModerationIsPlaying: (newModerationIsPlaying: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState>()(
@@ -77,7 +83,14 @@ export const usePlayerStore = create<PlayerState>()(
             updateInfo: (newInfo: boolean) => set({ info: newInfo }),
 
             mashupInfo: null,
-            updateMashupInfo: (newMashupInfo: null | number) => set({ mashupInfo: newMashupInfo })
+            updateMashupInfo: (newMashupInfo: null | number) => set({ mashupInfo: newMashupInfo }),
+
+            moderationSrc: null,
+            updateModerationSrc: (newModerationSrc: null | UnpublishedMashup) =>
+                set({ moderationSrc: newModerationSrc }),
+            moderationIsPlaying: false,
+            updateModerationIsPlaying: (newModerationIsPlaying: boolean) =>
+                set({ moderationIsPlaying: newModerationIsPlaying })
         }),
         {
             name: 'player-storage',

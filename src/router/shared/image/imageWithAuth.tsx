@@ -10,27 +10,36 @@ interface ImageWithAuthProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     setFailed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ImageWithAuth(props: ImageWithAuthProps) {
+export default function ImageWithAuth({
+    src,
+    alt,
+    className,
+    setImage,
+    setFailed,
+    image,
+    failed,
+    ...props
+}: ImageWithAuthProps) {
     useEffect(() => {
-        if (props.src) {
+        if (src) {
             axiosSession
-                .get(props.src, {
+                .get(src, {
                     responseType: 'blob'
                 })
                 .then((r: AxiosResponse<Blob>) => {
-                    props.setImage(URL.createObjectURL(r.data));
+                    setImage(URL.createObjectURL(r.data));
                 })
-                .catch(() => props.setFailed(true));
+                .catch(() => setFailed(true));
         }
-    }, []);
+    }, [src]);
 
-    if (!props.image) {
-        if (!props.failed) {
-            return <div className={props.className} />;
+    if (!image) {
+        if (!failed) {
+            return <div className={className} />;
         } else {
-            return <img {...props} />;
+            return <img alt={alt} {...props} />;
         }
     }
 
-    return <img {...props} src={props.image} />;
+    return <img src={image} alt={alt} className={className} {...props} />;
 }

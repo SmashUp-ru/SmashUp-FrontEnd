@@ -14,6 +14,7 @@ export interface UnpublishedMashup {
     genres: string[];
     publisherId: number;
     publishTime: number;
+    duration: number;
 }
 
 interface ModerationState {

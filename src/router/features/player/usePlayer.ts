@@ -1,5 +1,6 @@
 import { usePlayerStore } from '@/store/player.ts';
 import { shuffleQueue } from '@/lib/utils.ts';
+import { UnpublishedMashup } from '@/store/moderation.ts';
 
 export function usePlayer() {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
@@ -14,6 +15,8 @@ export function usePlayer() {
     const shuffle = usePlayerStore((state) => state.shuffle);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
+    const updateModerationSrc = usePlayerStore((state) => state.updateModerationSrc);
+    const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
 
     const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupInfo = usePlayerStore((state) => state.updateMashupInfo);
@@ -69,6 +72,9 @@ export function usePlayer() {
         if (newQueueId === queueId) {
             play();
         } else {
+            updateModerationSrc(null);
+            updateModerationIsPlaying(false);
+
             updateSeek(0);
             updateChangedSeek(0);
 
@@ -95,6 +101,9 @@ export function usePlayer() {
         if (newQueueId === queueId && queueIndex === newQueueIndex) {
             play();
         } else {
+            updateModerationSrc(null);
+            updateModerationIsPlaying(false);
+
             updateSeek(0);
             updateChangedSeek(0);
 
@@ -111,6 +120,21 @@ export function usePlayer() {
             updateQueueName(newQueueName);
             play();
         }
+    }
+
+    function playModerationMashup(mashup: UnpublishedMashup) {
+        updateOriginalQueue([]);
+        updateQueueId('');
+        updateQueue([]);
+        updateQueueIndex(-1);
+        updateQueueName('');
+        updateSeek(0);
+        updateChangedSeek(0);
+        updateInfo(false);
+        updateMashupInfo(null);
+
+        updateModerationSrc(mashup);
+        updateModerationIsPlaying(true);
     }
 
     function openMashupInfo(mashupId: number) {
@@ -137,6 +161,7 @@ export function usePlayer() {
         playMashup,
         openMashupInfo,
         openInfo,
-        closeInfo
+        closeInfo,
+        playModerationMashup
     };
 }

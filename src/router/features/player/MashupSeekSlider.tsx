@@ -2,9 +2,10 @@ import { Slider } from '@/components/ui/slider.tsx';
 import { useEffect, useState } from 'react';
 import { usePlayerStore } from '@/store/player.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
+import { UnpublishedMashup } from '@/store/moderation.ts';
 
 interface MashupSeekSliderProps {
-    mashup: Mashup;
+    mashup: Mashup | UnpublishedMashup;
 }
 
 export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
