@@ -23,7 +23,7 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form.tsx';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { CreatePlaylistResponse } from '@/router/shared/types/playlist.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useUserStore } from '@/store/entities/user.ts';
@@ -31,20 +31,15 @@ import { useGlobalStore } from '@/store/global.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useNavigate } from 'react-router-dom';
-import { ErrorResponse } from '@/router/shared/types/default.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { addPlaylistFormSchema } from '@/router/shared/schemas/addPlaylist.ts';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
     children: ReactNode;
     existingPlaylist?: Playlist;
 }
-
-const formSchema = z.object({
-    name: z.string(),
-    description: z.string(),
-    basedImageFile: z.string().optional()
-});
 
 export default function AddPlaylistDialog({
     redirect,
@@ -61,8 +56,8 @@ export default function AddPlaylistDialog({
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const getUserById = useUserStore((state) => state.getOneById);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof addPlaylistFormSchema>>({
+        resolver: zodResolver(addPlaylistFormSchema),
         defaultValues: {
             name: existingPlaylist ? existingPlaylist.name : '',
             description: existingPlaylist ? existingPlaylist.description : '',
@@ -70,7 +65,7 @@ export default function AddPlaylistDialog({
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof addPlaylistFormSchema>) {
         if (values.basedImageFile) {
             const image = new Image();
             image.src = values.basedImageFile;
@@ -120,7 +115,7 @@ export default function AddPlaylistDialog({
                         <BaseToast
                             image={values.basedImageFile}
                             field='Плейлист'
-                            after='успешно создан!'
+                            after={`успешно ${existingPlaylist ? 'обновлён' : 'создан'}!`}
                         />
                     ),
                     duration: 2000
@@ -131,52 +126,12 @@ export default function AddPlaylistDialog({
                     navigate(`/playlist/${r.data.response.id}`);
                 }
             })
-            .catch((e: AxiosError<ErrorResponse>) => {
-                if (e.status === 403) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при создании плейлиста.'
-                                after='У вас уже есть 10 плейлистов.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
-                    return;
-                }
-
-                if (e.status === 400) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при создании плейлиста.'
-                                after={`Что-то не так с форматом файла: ${e.response && e.response.data.message}`}
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
-                    return;
-                }
-
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Ошибка'
-                            field='при создании плейлиста.'
-                            after='Что-то пошло не так.'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
-            });
+            .catch(
+                axiosCatcher(
+                    toast,
+                    `при ${existingPlaylist ? 'обновлении' : 'создании'} плейлиста.`
+                )
+            );
     }
 
     const imageLink = form.watch('basedImageFile');

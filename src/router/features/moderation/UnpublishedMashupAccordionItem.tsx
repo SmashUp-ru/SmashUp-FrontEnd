@@ -30,6 +30,15 @@ import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import YouTubeIcon from '@/components/icons/YouTube';
 import YandexMusicIcon from '@/components/icons/YandexMusic';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea.tsx';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -123,6 +132,23 @@ export function UnpublishedMashupAccordionItem({
     const [image, setImage] = useState<string>();
     const [imageFailed, setImageFailed] = useState<boolean>(false);
 
+    const [rejectionValue, setRejectionValue] = useState('');
+    const rejectMashup = () => {
+        axiosSession
+            .post(`/moderation/unpublished_mashup/reject`, {
+                id: mashup.id,
+                reason: rejectionValue
+            })
+            .then(() => {
+                if (moderationMashups) {
+                    updateModerationMashups([
+                        ...moderationMashups.filter((um) => um.id !== mashup.id)
+                    ]);
+                }
+            })
+            .catch(axiosCatcher(toast, 'при отклонении мэшапа.'));
+    };
+
     if (!moderationMashups) return null;
 
     return (
@@ -182,27 +208,37 @@ export function UnpublishedMashupAccordionItem({
                                 Принять
                             </Button>
 
-                            <Button
-                                className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    axiosSession
-                                        .post(`/moderation/unpublished_mashup/reject`, {
-                                            id: mashup.id,
-                                            // TODO: причина дропдауном
-                                            reason: 'не понравился'
-                                        })
-                                        .then(() => {
-                                            updateModerationMashups([
-                                                ...moderationMashups.filter(
-                                                    (um) => um.id !== mashup.id
-                                                )
-                                            ]);
-                                        });
-                                }}
-                            >
-                                Отклонить
-                            </Button>
+                            <Dialog>
+                                <DialogTrigger
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    <Button className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                                        Отклонить
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent
+                                    className='w-[765px]'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    <DialogHeader>
+                                        <DialogTitle className='pb-0 mb-0'>
+                                            Отклонение мэшапа
+                                        </DialogTitle>
+                                        <DialogDescription className='pt-0 mt-0'>
+                                            <Textarea
+                                                placeholder='Комментарий'
+                                                value={rejectionValue}
+                                                onChange={(e) => setRejectionValue(e.target.value)}
+                                            />
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <Button onClick={() => rejectMashup()}>Сохранить</Button>
+                                </DialogContent>
+                            </Dialog>
                         </div>
 
                         <Button className='mr-7' variant='ghost' size='icon'>
