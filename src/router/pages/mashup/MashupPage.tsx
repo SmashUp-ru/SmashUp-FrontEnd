@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
+import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
-import { CrossoverResponse, TrackAuthor } from '@/types/api/search.ts';
+import { CrossoverResponse, TrackAuthor } from '@/router/shared/types/search.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Track } from '@/store/entities/track.ts';
 

@@ -4,7 +4,7 @@ import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { AxiosResponse } from 'axios';
-import { UpdateUserImageResponse } from '@/types/api/settings.ts';
+import { UpdateUserImageResponse } from '@/router/shared/types/settings.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';

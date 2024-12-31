@@ -1,4 +1,4 @@
-import MashupSmallThumbSkeleton from '@/router/shared/mashup/MashupSmallThumbSkeleton.tsx';
+import MashupSmallThumbSkeleton from '@/router/shared/components/mashup/MashupSmallThumbSkeleton.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function LastSearchedSkeleton() {

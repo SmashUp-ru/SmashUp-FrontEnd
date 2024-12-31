@@ -2,7 +2,7 @@ import { useCurrentUserStore } from '@/store/currentUser.ts';
 import { useLayoutEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { GetNotificationsResponse } from '@/types/api/notifications.ts';
+import { GetNotificationsResponse } from '@/router/shared/types/notifications.ts';
 
 export function useNotificationsData() {
     const notifications = useCurrentUserStore((state) => state.notifications);

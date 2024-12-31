@@ -10,7 +10,7 @@ import ConfirmCoAuthorshipNotification from '@/router/features/header/notificati
 import {
     ConfirmCoAuthorshipNotificationType,
     MashupStatusNotificationType
-} from '@/types/api/notifications.ts';
+} from '@/router/shared/types/notifications.ts';
 import MashupStatusNotification from '@/router/features/header/notifications/MashupStatusNotification.tsx';
 import { useNotificationsData } from '@/router/features/header/notifications/useNotificationsData.ts';
 

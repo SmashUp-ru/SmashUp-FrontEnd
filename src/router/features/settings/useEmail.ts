@@ -2,7 +2,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { GetEmailResponse } from '@/types/api/settings.ts';
+import { GetEmailResponse } from '@/router/shared/types/settings.ts';
 
 export function useEmail() {
     const email = useGlobalStore((state) => state.email);

@@ -1,9 +1,9 @@
-import { Track } from '@/store/entities/track';
-import { YouTubeTrack } from './youtube';
-import { TrackThumbProps } from '@/router/shared/track/TrackSmallThumb';
-import { User } from '@/store/entities/user';
+import { Track } from '@/store/entities/track.ts';
+import { YouTubeTrack } from './youtube.ts';
+import { TrackThumbProps } from '@/router/shared/components/track/TrackSmallThumb.tsx';
+import { User } from '@/store/entities/user.ts';
 import { ReactNode } from 'react';
-import { Mashup } from '@/store/entities/mashup';
+import { Mashup } from '@/store/entities/mashup.ts';
 
 export interface GenresResponse {
     response: string[];

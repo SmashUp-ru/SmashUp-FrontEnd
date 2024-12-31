@@ -6,7 +6,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
-import ImageWithAuth from '@/router/shared/image/imageWithAuth.tsx';
+import ImageWithAuth from '@/router/shared/components/image/imageWithAuth.tsx';
 import { useEffect, useRef, useState } from 'react';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 

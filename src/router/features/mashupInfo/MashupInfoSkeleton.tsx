@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { usePlayerStore } from '@/store/player.ts';
-import TrackSmallThumbSkeleton from '@/router/shared/track/TrackSmallThumbSkeleton.tsx';
+import TrackSmallThumbSkeleton from '@/router/shared/components/track/TrackSmallThumbSkeleton.tsx';
 
 export default function MashupInfoSkeleton() {
     const queue = usePlayerStore((state) => state.queue);

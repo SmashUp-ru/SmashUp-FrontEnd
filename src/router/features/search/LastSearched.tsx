@@ -1,9 +1,9 @@
 import { User } from '@/store/entities/user.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { Playlist } from '@/store/entities/playlist.ts';
-import UserSmallThumb from '@/router/shared/user/UserSmallThumb.tsx';
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import PlaylistSmallThumb from '@/router/shared/playlist/PlaylistSmallThumb.tsx';
+import UserSmallThumb from '@/router/shared/components/user/UserSmallThumb.tsx';
+import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
+import PlaylistSmallThumb from '@/router/shared/components/playlist/PlaylistSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useSearchStore } from '@/store/search.ts';

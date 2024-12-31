@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useModerationStore } from '@/store/moderation.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { GetUnpublishedMashupsResponse } from '@/types/api/moderation.ts';
+import { GetUnpublishedMashupsResponse } from '@/router/shared/types/moderation.ts';
 
 export function useModeration() {
     const unpublishedMashups = useModerationStore((state) => state.unpublishedMashups);

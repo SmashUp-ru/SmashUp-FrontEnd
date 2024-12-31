@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
-import { TrackAuthor, TrackAuthorSearchResponse, TrackSearchResponse } from '@/types/api/search.ts';
+import {
+    TrackAuthor,
+    TrackAuthorSearchResponse,
+    TrackSearchResponse
+} from '@/router/shared/types/search.ts';
 import { Track } from '@/store/entities/track.ts';
 
 export function useCrossoverSearch(query: string) {

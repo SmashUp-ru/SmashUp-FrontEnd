@@ -9,10 +9,10 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
-import Section from '@/router/shared/section/Section.tsx';
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
-import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
-import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import Section from '@/router/shared/components/section/Section.tsx';
+import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
+import MashupThumb from '@/router/shared/components/mashup/MashupThumb.tsx';
+import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import SettingsIcon from '@/components/icons/Settings.tsx';
 

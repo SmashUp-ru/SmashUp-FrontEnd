@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form.tsx';
 import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
-import { LoginResponse } from '@/types/api/login.ts';
+import { LoginResponse } from '@/router/shared/types/login.ts';
 import { useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGlobalStore } from '@/store/global.ts';

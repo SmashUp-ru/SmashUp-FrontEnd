@@ -1,4 +1,4 @@
-import { TrackAuthor } from '@/types/api/search.ts';
+import { TrackAuthor } from '@/router/shared/types/search.ts';
 
 interface TrackAuthorThumbProps {
     trackAuthor: TrackAuthor;

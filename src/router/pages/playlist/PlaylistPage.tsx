@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
+import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
@@ -8,11 +8,11 @@ import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageData.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
-import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
+import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDialog.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
-import ImageWithSkeleton from '@/router/shared/image/ImageWithSkeleton.tsx';
-import PlaylistLikeButton from '@/router/shared/playlist/PlaylistLikeButton.tsx';
-import PlaylistPlayButton from '@/router/shared/playlist/PlaylistPlayButton.tsx';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import PlaylistLikeButton from '@/router/shared/components/playlist/PlaylistLikeButton.tsx';
+import PlaylistPlayButton from '@/router/shared/components/playlist/PlaylistPlayButton.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();

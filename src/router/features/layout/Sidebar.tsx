@@ -6,7 +6,7 @@ import HomeIcon from '@/components/icons/HomeIcon.tsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePlayerStore } from '@/store/player.ts';
 import AddIcon from '@/components/icons/Add.tsx';
-import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
+import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDialog.tsx';
 
 export default function Sidebar() {
     const location = useLocation();

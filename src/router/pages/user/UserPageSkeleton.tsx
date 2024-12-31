@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import PlaylistThumbSkeleton from '@/router/shared/playlist/PlaylistThumbSkeleton.tsx';
+import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
 
 export default function UserPageSkeleton() {
     return (

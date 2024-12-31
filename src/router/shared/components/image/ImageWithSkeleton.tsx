@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 import React, { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 

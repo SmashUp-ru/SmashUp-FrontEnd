@@ -1,6 +1,6 @@
 import { useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useMemo } from 'react';
-import { ConfirmCoAuthorshipNotificationType } from '@/types/api/notifications.ts';
+import { ConfirmCoAuthorshipNotificationType } from '@/router/shared/types/notifications.ts';
 
 export function useConfirmCoAuthorshipNotificationData(
     notification: ConfirmCoAuthorshipNotificationType

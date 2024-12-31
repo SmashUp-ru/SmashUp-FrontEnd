@@ -5,7 +5,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
-import { UpdateUsernameConfirmResponse } from '@/types/api/settings.ts';
+import { UpdateUsernameConfirmResponse } from '@/router/shared/types/settings.ts';
 
 export default function ChangeUsernameConfirmPage() {
     const currentUser = useGlobalStore((state) => state.currentUser);

@@ -1,7 +1,7 @@
 import { useSearchStore } from '@/store/search.ts';
 import { useCrossoverSearch } from '@/router/features/header/useCrossoverSearch.ts';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
-import TrackAuthorSmallThumb from '@/router/shared/track/TrackAuthorSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
+import TrackAuthorSmallThumb from '@/router/shared/components/track/TrackAuthorSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 
 export default function CrossoverPopoverContent() {

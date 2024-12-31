@@ -7,10 +7,10 @@ import {
 } from '@/components/ui/tabs-separated.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
-import Section from '@/router/shared/section/Section.tsx';
-import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
-import UserThumb from '@/router/shared/user/UserThumb.tsx';
-import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import Section from '@/router/shared/components/section/Section.tsx';
+import MashupThumb from '@/router/shared/components/mashup/MashupThumb.tsx';
+import UserThumb from '@/router/shared/components/user/UserThumb.tsx';
+import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
 import { useCallback } from 'react';

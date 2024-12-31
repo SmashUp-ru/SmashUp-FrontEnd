@@ -1,4 +1,4 @@
-import { YouTubeOEmbedResponse, YouTubeTrack } from '@/types/api/youtube';
+import { YouTubeOEmbedResponse, YouTubeTrack } from '@/router/shared/types/youtube';
 import axios, { AxiosResponse } from 'axios';
 import { trim } from './utils';
 

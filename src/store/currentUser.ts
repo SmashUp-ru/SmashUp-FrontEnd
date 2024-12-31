@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { NotificationType } from '@/types/api/notifications.ts';
+import { NotificationType } from '@/router/shared/types/notifications.ts';
 
 interface CurrentUserState {
     notifications: null | NotificationType[];

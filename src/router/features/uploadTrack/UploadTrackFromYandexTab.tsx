@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
 import { useEffect, useState } from 'react';
 import { RegEx } from '@/lib/regex';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
-import { YandexAlbum, YandexAlbumResponse } from '@/types/api/yandex';
-import { RenderTrack, TrackType } from '@/types/api/upload';
+import { YandexAlbum, YandexAlbumResponse } from '@/router/shared/types/yandex';
+import { RenderTrack, TrackType } from '@/router/shared/types/upload';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import ErrorToast from '@/router/shared/toasts/error';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
-import { axiosCatcher } from '@/router/shared/general/axios';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 export default function UploadTrackFromYandexTab() {
     const { toast } = useToast();

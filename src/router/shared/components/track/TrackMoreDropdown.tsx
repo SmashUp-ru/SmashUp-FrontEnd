@@ -4,7 +4,7 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu.tsx';
 import { ReactNode } from 'react';
 import { Track } from '@/store/entities/track.ts';
 import LinkExternalIcon from '@/components/icons/LinkExternal.tsx';

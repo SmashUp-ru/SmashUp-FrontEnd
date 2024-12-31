@@ -1,8 +1,8 @@
 import { Track } from '@/store/entities/track.ts';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { cn } from '@/lib/utils';
-import TrackMoreDropdown from '@/router/shared/track/TrackMoreDropdown.tsx';
+import { cn } from '@/lib/utils.ts';
+import TrackMoreDropdown from '@/router/shared/components/track/TrackMoreDropdown.tsx';
 import { ReactNode } from 'react';
 
 export interface TrackThumbProps {

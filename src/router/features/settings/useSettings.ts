@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
-import { GetSettingsResponse } from '@/types/api/settings.ts';
+import { GetSettingsResponse } from '@/router/shared/types/settings.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 
 export function useSettings() {

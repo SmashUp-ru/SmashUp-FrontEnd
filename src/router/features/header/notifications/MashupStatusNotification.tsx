@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
-import { MashupStatusNotificationType } from '@/types/api/notifications.ts';
+import { MashupStatusNotificationType } from '@/router/shared/types/notifications.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useCurrentUserStore } from '@/store/currentUser.ts';
 

@@ -3,7 +3,7 @@ import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
@@ -12,9 +12,9 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { AxiosResponse } from 'axios';
-import { TrackSearchResponse, UsersSearchResponse } from '@/types/api/search';
-import { RegEx } from '@/lib/regex';
-import { YouTubeTrack } from '@/types/api/youtube';
+import { TrackSearchResponse, UsersSearchResponse } from '@/router/shared/types/search.ts';
+import { RegEx } from '@/lib/regex.ts';
+import { YouTubeTrack } from '@/router/shared/types/youtube.ts';
 import {
     areTracksEqual,
     areUsersEqual,
@@ -30,9 +30,9 @@ import {
     UploadMashupRequestBody,
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
-} from '@/types/api/upload';
-import YouTubeTrackSmallThumb from '@/router/shared/track/YouTubeTrackSmallThumb';
-import { User } from '@/store/entities/user';
+} from '@/router/shared/types/upload.ts';
+import YouTubeTrackSmallThumb from '@/router/shared/components/track/YouTubeTrackSmallThumb.tsx';
+import { User } from '@/store/entities/user.ts';
 import {
     isAlt,
     isExplicit,
@@ -43,20 +43,20 @@ import {
     setTwitchBanned,
     setHashtagMashup,
     setAlt
-} from '@/lib/bitmask';
-import { useBase64 } from '@/router/shared/hooks/useBase64';
+} from '@/lib/bitmask.ts';
+import { useBase64 } from '@/router/shared/hooks/useBase64.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
-import MashupFormSkeleton from './MashupFormSkeleton';
-import { loadOEmbed } from '@/lib/youtube';
-import YouTubeIcon from '@/components/icons/YouTube';
-import YandexMusicIcon from '@/components/icons/YandexMusic';
-import { YandexTracksResponse } from '@/types/api/yandex';
-import CopiedToast from '@/router/shared/toasts/copied';
-import ExplicitIcon from '@/components/icons/Explicit';
-import AltIcon from '@/components/icons/Alt';
-import HashtagMashupIcon from '@/components/icons/HashtagMashup';
+import MashupFormSkeleton from './MashupFormSkeleton.tsx';
+import { loadOEmbed } from '@/lib/youtube.ts';
+import YouTubeIcon from '@/components/icons/YouTube.tsx';
+import YandexMusicIcon from '@/components/icons/YandexMusic.tsx';
+import { YandexTracksResponse } from '@/router/shared/types/yandex.ts';
+import CopiedToast from '@/router/shared/toasts/copied.tsx';
+import ExplicitIcon from '@/components/icons/Explicit.tsx';
+import AltIcon from '@/components/icons/Alt.tsx';
+import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;

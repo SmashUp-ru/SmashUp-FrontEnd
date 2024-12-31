@@ -3,7 +3,7 @@ import { axiosSession, cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import CancelIcon from '@/components/icons/Cancel.tsx';
 import { Link } from 'react-router-dom';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useMashupStore } from '@/store/entities/mashup.ts';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
@@ -19,7 +19,7 @@ import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoDat
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
-import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
+import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();

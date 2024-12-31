@@ -1,8 +1,8 @@
 import { useCrossover } from '@/router/features/search/useCrossover.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
-import Section from '@/router/shared/section/Section.tsx';
-import MashupThumb from '@/router/shared/mashup/MashupThumb.tsx';
+import Section from '@/router/shared/components/section/Section.tsx';
+import MashupThumb from '@/router/shared/components/mashup/MashupThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
 

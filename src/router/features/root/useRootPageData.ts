@@ -1,6 +1,6 @@
 import { axiosSession } from '@/lib/utils';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
-import { GetCompilationsResponse } from '@/types/api/compilations';
+import { GetCompilationsResponse } from '@/router/shared/types/compilations';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { useGlobalStore } from '@/store/global.ts';

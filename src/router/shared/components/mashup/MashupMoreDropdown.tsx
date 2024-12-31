@@ -8,14 +8,14 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu.tsx';
 import DoneIcon from '@/components/icons/Done.tsx';
 import PlusIcon from '@/components/icons/Plus.tsx';
 import AddIcon from '@/components/icons/Add.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { ReactNode } from 'react';
-import AddPlaylistDialog from '@/router/shared/playlist/AddPlaylistDialog.tsx';
+import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDialog.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';

@@ -1,4 +1,4 @@
-import { cn, removeItem } from '@/lib/utils';
+import { cn, removeItem } from '@/lib/utils.ts';
 import {
     areTracksEqual,
     isTrackSelected,
@@ -6,8 +6,8 @@ import {
     SelectedTrack,
     TrackType,
     YouTubeSelectedTrack
-} from '@/types/api/upload';
-import { YouTubeTrack } from '@/types/api/youtube';
+} from '@/router/shared/types/upload.ts';
+import { YouTubeTrack } from '@/router/shared/types/youtube.ts';
 import React from 'react';
 
 export interface YouTubeTrackThumbProps {

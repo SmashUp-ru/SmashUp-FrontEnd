@@ -8,7 +8,7 @@ import {
     MashupsSearchResponse,
     PlaylistsSearchResponse,
     UsersSearchResponse
-} from '@/types/api/search.ts';
+} from '@/router/shared/types/search.ts';
 
 export function useSearch(query: string) {
     const [mashupsFetching, setMashupsFetching] = useState(query.length >= 4);

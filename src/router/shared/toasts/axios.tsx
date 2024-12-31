@@ -1,8 +1,8 @@
 import errorMessages from '@/assets/error_messages.json';
-import { Toast } from '@/router/shared/hooks/use-toast';
-import { SmashUpResponse } from '@/types/api/smashup';
+import { Toast } from '@/router/shared/hooks/use-toast.ts';
+import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
 import { AxiosError } from 'axios';
-import ErrorToast from '../toasts/error';
+import ErrorToast from './error.tsx';
 
 export function axiosCatcher(
     toast: (t: Toast) => unknown,

@@ -1,4 +1,4 @@
-import { axiosSession } from '@/lib/utils';
+import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import React, { useEffect } from 'react';
 

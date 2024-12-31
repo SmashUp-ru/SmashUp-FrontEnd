@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import MashupForm, { MashupFormBody } from '@/router/shared/mashup/MashupForm';
+import MashupForm, { MashupFormBody } from '@/router/shared/components/mashup/MashupForm';
 import { User, useUserStore } from '@/store/entities/user';
 import { useEffect, useState } from 'react';
 import {
@@ -7,8 +7,8 @@ import {
     SmashUpSelectedTrack,
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
-} from '@/types/api/upload';
-import MashupFormSkeleton from '@/router/shared/mashup/MashupFormSkeleton';
+} from '@/router/shared/types/upload';
+import MashupFormSkeleton from '@/router/shared/components/mashup/MashupFormSkeleton';
 import { Track, useTrackStore } from '@/store/entities/track';
 import { RegEx } from '@/lib/regex';
 import { loadOEmbed } from '@/lib/youtube';
@@ -16,7 +16,7 @@ import { UnpublishedMashup } from '@/store/moderation';
 import { useModeration } from '../useModeration';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
-import { YandexTracksResponse } from '@/types/api/yandex';
+import { YandexTracksResponse } from '@/router/shared/types/yandex';
 
 export default function ModerateMashupPage() {
     const params = useParams();

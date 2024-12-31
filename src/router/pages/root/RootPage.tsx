@@ -1,5 +1,5 @@
-import Section from '@/router/shared/section/Section.tsx';
-import PlaylistThumb from '@/router/shared/playlist/PlaylistThumb.tsx';
+import Section from '@/router/shared/components/section/Section.tsx';
+import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import RootPageSkeleton from '@/router/pages/root/RootPageSkeleton.tsx';
 import { useRootPageData } from '@/router/features/root/useRootPageData.ts';
 

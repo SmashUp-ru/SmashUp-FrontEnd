@@ -5,7 +5,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ReactNode, useState } from 'react';
 import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
@@ -24,14 +24,14 @@ import {
     FormMessage
 } from '@/components/ui/form.tsx';
 import { AxiosError, AxiosResponse } from 'axios';
-import { CreatePlaylistResponse } from '@/types/api/playlist.ts';
+import { CreatePlaylistResponse } from '@/router/shared/types/playlist.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useNavigate } from 'react-router-dom';
-import { ErrorResponse } from '@/types/api/default.ts';
+import { ErrorResponse } from '@/router/shared/types/default.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 interface AddPlaylistDialogProps {

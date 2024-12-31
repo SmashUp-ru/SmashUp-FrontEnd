@@ -1,9 +1,9 @@
 import { axiosSession } from '@/lib/utils.ts';
 import { useNavigate } from 'react-router-dom';
-import MashupForm, { MashupFormBody } from '@/router/shared/mashup/MashupForm';
+import MashupForm, { MashupFormBody } from '@/router/shared/components/mashup/MashupForm';
 import { AxiosResponse } from 'axios';
-import { UploadMashupResponse } from '@/types/api/upload';
-import { axiosCatcher } from '@/router/shared/general/axios';
+import { UploadMashupResponse } from '@/router/shared/types/upload';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast';
 
 export default function UploadMashupPage() {

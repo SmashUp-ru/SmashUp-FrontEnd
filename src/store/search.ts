@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Track } from '@/store/entities/track.ts';
-import { TrackAuthor } from '@/types/api/search.ts';
+import { TrackAuthor } from '@/router/shared/types/search.ts';
 
 interface SearchState {
     searchValue: string;

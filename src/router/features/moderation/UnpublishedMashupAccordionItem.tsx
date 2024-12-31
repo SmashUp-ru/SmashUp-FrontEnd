@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Label } from '@/components/ui/label.tsx';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track, useTrackStore } from '@/store/entities/track.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
@@ -17,16 +17,16 @@ import {
     TrackType,
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
-} from '@/types/api/upload';
+} from '@/router/shared/types/upload';
 import { RegEx } from '@/lib/regex';
 import { loadOEmbed } from '@/lib/youtube';
 import { isExplicit, isTwitchBanned } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
-import ImageWithAuth from '@/router/shared/image/imageWithAuth';
+import ImageWithAuth from '@/router/shared/components/image/imageWithAuth';
 import { Link } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import { YandexTracksResponse } from '@/types/api/yandex';
-import { axiosCatcher } from '@/router/shared/general/axios';
+import { YandexTracksResponse } from '@/router/shared/types/yandex';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import YouTubeIcon from '@/components/icons/YouTube';
 import YandexMusicIcon from '@/components/icons/YandexMusic';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';

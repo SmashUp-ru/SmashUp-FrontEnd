@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import PlaylistThumbSkeleton from '@/router/shared/playlist/PlaylistThumbSkeleton.tsx';
-import MashupSmallThumbSkeleton from '@/router/shared/mashup/MashupSmallThumbSkeleton.tsx';
+import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
+import MashupSmallThumbSkeleton from '@/router/shared/components/mashup/MashupSmallThumbSkeleton.tsx';
 
 export default function RootPageSkeleton() {
     return (

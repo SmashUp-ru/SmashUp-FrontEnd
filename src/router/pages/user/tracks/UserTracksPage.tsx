@@ -5,7 +5,7 @@ import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
-import MashupSmallThumb from '@/router/shared/mashup/MashupSmallThumb.tsx';
+import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';

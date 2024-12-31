@@ -1,4 +1,4 @@
-import { ConfirmCoAuthorshipNotificationType } from '@/types/api/notifications.ts';
+import { ConfirmCoAuthorshipNotificationType } from '@/router/shared/types/notifications.ts';
 import { useConfirmCoAuthorshipNotificationData } from '@/router/features/header/notifications/useConfirmCoAuthorshipNotificationData.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { axiosSession } from '@/lib/utils.ts';

@@ -1,6 +1,6 @@
-import MashupThumbSkeleton from '@/router/shared/mashup/MashupThumbSkeleton.tsx';
+import MashupThumbSkeleton from '@/router/shared/components/mashup/MashupThumbSkeleton.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import UserThumbSkeleton from '@/router/shared/user/UserThumbSkeleton.tsx';
+import UserThumbSkeleton from '@/router/shared/components/user/UserThumbSkeleton.tsx';
 
 export default function SearchResultsSkeleton() {
     return (

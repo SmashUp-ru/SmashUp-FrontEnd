@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import TrackSmallThumbSkeleton from '@/router/shared/track/TrackSmallThumbSkeleton.tsx';
+import TrackSmallThumbSkeleton from '@/router/shared/components/track/TrackSmallThumbSkeleton.tsx';
 
 export default function MashupFormSkeleton() {
     return (

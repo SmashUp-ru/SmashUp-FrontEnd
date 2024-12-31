@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { Track } from '@/store/entities/track.ts';
-import TrackSmallThumb from '@/router/shared/track/TrackSmallThumb.tsx';
+import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
 import { cn } from '@/lib/utils.ts';

@@ -19,7 +19,7 @@ import {
     TooltipProvider,
     TooltipTrigger
 } from '@/components/ui/tooltip.tsx';
-import MashupMoreDropdown from '@/router/shared/mashup/MashupMoreDropdown.tsx';
+import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 
 interface MashupThumbProps {
