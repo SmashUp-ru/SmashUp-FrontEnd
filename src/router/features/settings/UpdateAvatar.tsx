@@ -107,6 +107,7 @@ export default function UpdateAvatar() {
                 color='onSurface'
             />
             <Input
+                accept='.png,.jpg,.jpeg'
                 type='file'
                 className='hidden'
                 onChange={(e) => {
