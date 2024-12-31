@@ -132,7 +132,7 @@ export default function PlayerBarModeration() {
             </div>
 
             <ReactHowler
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${moderationSrc.id}.mp3`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${moderationSrc.id}.mp3`}
                 playing={moderationIsPlaying}
                 volume={volume}
                 ref={(ref) => (moderationPlayer.current = ref)}
