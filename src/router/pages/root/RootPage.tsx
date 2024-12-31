@@ -20,9 +20,11 @@ export default function RootPage() {
 
     const currentUser = useGlobalStore((state) => state.currentUser);
     const { playlists: currentUserPlaylists } = useCurrentUserPlaylists();
-    const { playlists: favoritesPlaylists } = useFavoritesPlaylists();
+    const { playlists: favoritesPlaylists, isLoading: favoritesPlaylistsLoading } =
+        useFavoritesPlaylists();
 
-    if (isDataLoading || isRecommendationsLoading) return <RootPageSkeleton />;
+    if (isDataLoading || isRecommendationsLoading || favoritesPlaylistsLoading)
+        return <RootPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-8 pb-12'>
