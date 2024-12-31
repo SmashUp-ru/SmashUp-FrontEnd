@@ -15,44 +15,28 @@ import { axiosSession } from '@/lib/utils.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
-
-const formSchema = z
-    .object({
-        password: z
-            .string()
-            .min(4, { message: 'Пароль должен быть длиннее 4 см.' })
-            .max(32, { message: 'Пароль должен быть короче 32 символов.' }),
-        // TODO: update regex
-        //.regex(/ /, { message: 'В пароле должны быть только буквы, цифры, а так же специальные символы.' })
-
-        confirmPassword: z
-            .string()
-            .min(4, { message: 'Пароль должен быть длиннее 4 см.' })
-            .max(32, { message: 'Пароль должен быть короче 32 символов.' })
-        // TODO: update regex
-        //.regex(/ /, { message: 'В пароле должны быть только буквы, цифры, а так же специальные символы.' })
-    })
-    .refine((schema) => schema.password === schema.confirmPassword, {
-        message: 'Введенные пароли должны совпадать.',
-        path: ['confirmPassword']
-    });
+import { recoverConfirmFormSchema } from '@/router/shared/schemas/recover.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 export default function RecoverPasswordConfirmPage() {
-    const { updateCurrentUser, updateToken } = useGlobalStore();
+    const { toast } = useToast();
+    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+    const updateToken = useGlobalStore((state) => state.updateToken);
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
 
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof recoverConfirmFormSchema>>({
+        resolver: zodResolver(recoverConfirmFormSchema),
         defaultValues: {
             password: '',
             confirmPassword: ''
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof recoverConfirmFormSchema>) {
         axiosSession
             .post(`/user/recover_password/confirm`, {
                 id: searchParams.get('id'),
@@ -67,7 +51,8 @@ export default function RecoverPasswordConfirmPage() {
             })
             .then(() => {
                 navigate('/restore/password/confirm');
-            });
+            })
+            .catch(axiosCatcher(toast, 'при завершении восстановления пароля.'));
     }
 
     if (!searchParams.has('id')) {

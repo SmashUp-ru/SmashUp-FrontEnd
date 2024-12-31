@@ -14,33 +14,26 @@ import {
 } from '@/components/ui/form.tsx';
 import { axiosSession } from '@/lib/utils.ts';
 import { useNavigate } from 'react-router-dom';
-
-const formSchema = z.object({
-    email: z
-        .string()
-        .min(4, { message: 'Электронная почта должна быть длиннее 4 см.' })
-        .max(32, { message: 'Электронная почта должна быть короче 32 символов.' })
-    // TODO: update regex
-    //.regex(/ /, { message: 'В электронной почте должны быть только буквы, цифры, а так же специальные символы.' })
-});
+import { recoverFormSchema } from '@/router/shared/schemas/recover.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 
 export default function RecoverPasswordPage() {
+    const { toast } = useToast();
     const navigate = useNavigate();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof recoverFormSchema>>({
+        resolver: zodResolver(recoverFormSchema),
         defaultValues: {
             email: ''
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof recoverFormSchema>) {
         axiosSession
             .post(`/user/recover_password`, { username: values.email })
             .then(() => navigate('/user/recover_password/email'))
-            .catch(() => {
-                // TODO: toast with error
-            });
+            .catch(axiosCatcher(toast, 'при попытке восстановить пароль.'));
     }
 
     return (
