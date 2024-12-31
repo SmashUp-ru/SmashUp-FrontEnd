@@ -6,8 +6,11 @@ import { AxiosResponse } from 'axios';
 import { RegisterResponse } from '@/router/shared/types/register.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 
 export default function RegisterConfirmPage() {
+    const { toast } = useToast();
     const { updateCurrentUser, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const [searchParams] = useSearchParams();
@@ -26,7 +29,8 @@ export default function RegisterConfirmPage() {
                     });
                     setSuccess(true);
                 })
-                .catch(() => {
+                .catch((e) => {
+                    axiosCatcher(toast, 'при завершении регистрации.')(e);
                     setSuccess(false);
                 });
         }

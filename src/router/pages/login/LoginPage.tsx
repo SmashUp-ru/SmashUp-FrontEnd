@@ -22,36 +22,20 @@ import { useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
-import { RegEx } from '@/lib/regex';
 import ProfileIcon from '@/components/icons/Profile.tsx';
-
-const formSchema = z.object({
-    email: z
-        .string()
-        .min(4, { message: 'Электронная почта должна быть длиннее 3 символов.' })
-        .max(64, { message: 'Электронная почта должна быть короче 64 символов.' })
-        .regex(RegEx.EMAIL_OR_USERNAME, {
-            message:
-                'В электронной почте должны быть только буквы, цифры, а так же специальные символы.'
-        }),
-    password: z
-        .string()
-        .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-        .max(32, { message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).' })
-        .regex(RegEx.PASSWORD, {
-            message:
-                'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-        }),
-    remember: z.boolean()
-});
+import { loginFormSchema } from '@/router/shared/schemas/login.ts';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 export default function LoginPage() {
+    const { toast } = useToast();
+
     const { updateCurrentUser, token, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof loginFormSchema>>({
+        resolver: zodResolver(loginFormSchema),
         defaultValues: {
             email: '',
             password: '',
@@ -59,7 +43,7 @@ export default function LoginPage() {
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof loginFormSchema>) {
         axiosSession
             .post('/login', { username: values.email, password: values.password })
             .then((r: AxiosResponse<LoginResponse>) => {
@@ -73,7 +57,8 @@ export default function LoginPage() {
                     updateCurrentUser(r);
                 });
             })
-            .then(() => navigate('/'));
+            .then(() => navigate('/'))
+            .catch(axiosCatcher(toast, 'при попытке входа.'));
     }
 
     useEffect(() => {

@@ -26,40 +26,17 @@ import {
     TooltipTrigger
 } from '@/components/ui/tooltip.tsx';
 import { useGlobalStore } from '@/store/global.ts';
-
-const formSchema = z.object({
-    nickname: z
-        .string()
-        .min(3, { message: 'Никнейм должен быть длиннее 4 см.' })
-        .max(32, { message: 'Никнейм должен быть короче 32 символов.' })
-        .regex(/(?=^[а-яА-ЯёЁa-zA-Z0-9_ ]{4,32}$)(?!^\d+$)^.+$/, {
-            message: 'В никнейме должны быть только буквы, цифры, а так же специальные символы.'
-        }),
-    email: z
-        .string()
-        .min(4, { message: 'Электронная почта должна быть длиннее 4 см.' })
-        .max(32, { message: 'Электронная почта должна быть короче 32 символов.' })
-        .regex(/^[^@]+@[^@]+\.[^@]+$/, {
-            message:
-                'В электронной почте должны быть только буквы, цифры, а так же специальные символы.'
-        }),
-    password: z
-        .string()
-        .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-        .max(32, { message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).' })
-        .regex(/^[a-zA-Z0-9-_=+()*&^%$#@!]{8,32}/, {
-            message:
-                'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-        }),
-    accept: z.boolean()
-});
+import { registerFormSchema } from '@/router/shared/schemas/register.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
 
 export default function RegisterPage() {
+    const { toast } = useToast();
     const navigate = useNavigate();
-    const { token } = useGlobalStore();
+    const token = useGlobalStore((state) => state.token);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof registerFormSchema>>({
+        resolver: zodResolver(registerFormSchema),
         defaultValues: {
             nickname: '',
             email: '',
@@ -68,14 +45,15 @@ export default function RegisterPage() {
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof registerFormSchema>) {
         axiosSession
             .post('/register', {
                 username: values.nickname,
                 email: values.email,
                 password: values.password
             })
-            .then(() => navigate('/register/email'));
+            .then(() => navigate('/register/email'))
+            .catch(axiosCatcher(toast, 'при попытке регистрации.'));
     }
 
     useEffect(() => {
