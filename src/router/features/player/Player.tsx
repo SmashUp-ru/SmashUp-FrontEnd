@@ -128,6 +128,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
             loop={usePlayerStore.getState().loop === 'mashup'}
             volume={volume}
             ref={(ref) => (player.current = ref)}
+            html5={true}
         />
     );
 }

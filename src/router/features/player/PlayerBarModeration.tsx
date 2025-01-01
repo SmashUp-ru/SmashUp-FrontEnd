@@ -129,6 +129,7 @@ export default function PlayerBarModeration() {
                 playing={moderationIsPlaying}
                 volume={volume}
                 ref={(ref) => (moderationPlayer.current = ref)}
+                html5={true}
             />
         </div>
     );
