@@ -21,7 +21,9 @@ export default function UserPage() {
     const { toast } = useToast();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const { user, mashups, playlists, isLoading } = useUserPageData(params.profileUsername);
+    const { user, mashups, latestMashup, playlists, isLoading } = useUserPageData(
+        params.profileUsername
+    );
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -132,11 +134,11 @@ export default function UserPage() {
                     </Section>
                 )}
 
-                {mashups.length > 0 && mashups[mashups.length - 1] && (
+                {latestMashup && (
                     <Section title='Недавний релиз'>
                         <MashupThumb
-                            mashup={mashups[mashups.length - 1]}
-                            playlist={[mashups[mashups.length - 1].id]}
+                            mashup={latestMashup}
+                            playlist={[latestMashup.id]}
                             indexInPlaylist={0}
                             playlistName={`Недавний релиз ${user.username}`}
                             queueId={`user/${user.username}/tracks/recent`}

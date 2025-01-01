@@ -10,6 +10,7 @@ export function useUserPageData(username?: string) {
 
     const [user, setUser] = useState<UserType | null>(null);
     const [mashups, setMashups] = useState<Mashup[]>([]);
+    const [latestMashup, setLatestMashup] = useState<Mashup | null>(null);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     const [userLoading, setUserLoading] = useState<boolean>(true);
@@ -26,8 +27,11 @@ export function useUserPageData(username?: string) {
 
     useEffect(() => {
         if (user) {
-            getMashupsByIds(user.mashups.slice(0, 5))
-                .then((r) => setMashups(r))
+            getMashupsByIds(user.mashups.slice(0, 5).concat(user.mashups[user.mashups.length - 1]))
+                .then((r) => {
+                    setMashups(r.slice(0, 5));
+                    setLatestMashup(r[5]);
+                })
                 .finally(() => setMashupsLoading(false));
             getManyPlaylistsByIds(user.playlists)
                 .then((r) => setPlaylists(r))
@@ -39,6 +43,7 @@ export function useUserPageData(username?: string) {
         isLoading: userLoading || mashupsLoading || playlistsLoading,
         user,
         mashups,
+        latestMashup,
         playlists
     };
 }
