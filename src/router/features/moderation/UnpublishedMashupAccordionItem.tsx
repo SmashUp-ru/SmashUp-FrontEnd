@@ -22,7 +22,6 @@ import {
 } from '@/router/shared/types/upload';
 import { isExplicit, isTwitchBanned } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
-import ImageWithAuth from '@/router/shared/components/image/imageWithAuth';
 import { Link } from 'react-router-dom';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import YouTubeIcon from '@/components/icons/YouTube';
@@ -38,6 +37,7 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import SpotifyIcon from '@/components/icons/Spotify';
+import { getToken } from '@/store/global';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -70,10 +70,7 @@ export function UnpublishedMashupAccordionItem({
 
     const statusUrl = mashup.statusesUrls ? mashup.statusesUrls[0] : undefined;
 
-    const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png`;
-
-    const [image, setImage] = useState<string>();
-    const [imageFailed, setImageFailed] = useState<boolean>(false);
+    const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`;
 
     const [rejectionValue, setRejectionValue] = useState('');
     const rejectMashup = () => {
@@ -99,14 +96,10 @@ export function UnpublishedMashupAccordionItem({
             <AccordionTrigger>
                 <div className='w-full flex items-center justify-between py-[6px] pl-[6px]'>
                     <div className='flex items-center gap-x-4'>
-                        <ImageWithAuth
+                        <img
                             src={imageUrl}
                             alt={mashup.name}
                             className='w-12 h-12 rounded-[10px]'
-                            image={image}
-                            setImage={setImage}
-                            failed={imageFailed}
-                            setFailed={setImageFailed}
                         />
                         <div className='flex flex-col items-start'>
                             <span className='font-bold text-onSurface'>{mashup.name}</span>
@@ -193,14 +186,10 @@ export function UnpublishedMashupAccordionItem({
                 </div>
             </AccordionTrigger>
             <AccordionContent className='mt-4 flex gap-x-6'>
-                <ImageWithAuth
+                <img
                     src={imageUrl}
                     alt={mashup.name}
                     className='w-[216px] h-[216px] rounded-[30px]'
-                    image={image}
-                    setImage={setImage}
-                    failed={imageFailed}
-                    setFailed={setImageFailed}
                 />
 
                 <div className='w-full grid grid-cols-4 gap-x-6'>

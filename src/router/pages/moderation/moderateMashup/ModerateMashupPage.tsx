@@ -11,6 +11,7 @@ import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useToast } from '@/router/shared/hooks/use-toast';
+import { getToken } from '@/store/global';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -52,7 +53,7 @@ export default function ModerateMashupPage() {
 
         axiosSession
             .get(
-                `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png`,
+                `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`,
                 {
                     responseType: 'blob'
                 }

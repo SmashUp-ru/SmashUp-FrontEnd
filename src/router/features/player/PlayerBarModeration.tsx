@@ -6,9 +6,9 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
-import ImageWithAuth from '@/router/shared/components/image/imageWithAuth.tsx';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
+import { getToken } from '@/store/global';
 
 export default function PlayerBarModeration() {
     const volume = usePlayerStore((state) => state.volume);
@@ -18,9 +18,6 @@ export default function PlayerBarModeration() {
     const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
     const changedSeek = usePlayerStore((state) => state.changedSeek);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
-
-    const [image, setImage] = useState<string>();
-    const [imageFailed, setImageFailed] = useState<boolean>(false);
 
     const moderationPlayer = useRef<ReactHowler | null>(null);
     const moderationIntervalRef = useRef<number | null>(null);
@@ -58,14 +55,10 @@ export default function PlayerBarModeration() {
             <div className='w-full flex justify-between items-center'>
                 {/*левая часть*/}
                 <div className='w-1/3 flex items-center gap-x-6'>
-                    <ImageWithAuth
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}_800x800.png`}
+                    <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}_800x800.png?token=${getToken()}`}
                         alt={moderationSrc.name}
                         className='w-12 h-12 rounded-[10px]'
-                        image={image}
-                        setImage={setImage}
-                        failed={imageFailed}
-                        setFailed={setImageFailed}
                     />
 
                     <div className='flex flex-col min-w-0'>
@@ -132,7 +125,7 @@ export default function PlayerBarModeration() {
             </div>
 
             <ReactHowler
-                src={`${import.meta.env.VITE_BACKEND_URL}/moderation/mashup/${moderationSrc.id}.mp3`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}.mp3?token=${getToken()}`}
                 playing={moderationIsPlaying}
                 volume={volume}
                 ref={(ref) => (moderationPlayer.current = ref)}
