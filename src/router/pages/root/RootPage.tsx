@@ -2,13 +2,15 @@ import Section from '@/router/shared/components/section/Section.tsx';
 import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import RootPageSkeleton from '@/router/pages/root/RootPageSkeleton.tsx';
 import { useCompilations } from '@/router/features/root/useCompilations.ts';
-import { Playlist } from '@/store/entities/playlist.ts';
+import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import FavoritesCover from '@/assets/favorites.png';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 import { useRecommendations } from '@/router/features/root/useRecommendations.ts';
 import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import { useFavoritesPlaylists } from '@/router/features/root/useFavoritesPlaylists.ts';
+import { useEffect, useState } from 'react';
+import { Mashup, useMashupStore } from '@/store/entities/mashup';
 
 export default function RootPage() {
     const { isLoading: isDataLoading, playlists } = useCompilations();
@@ -23,7 +25,26 @@ export default function RootPage() {
     const { playlists: favoritesPlaylists, isLoading: favoritesPlaylistsLoading } =
         useFavoritesPlaylists();
 
-    if (isDataLoading || isRecommendationsLoading || favoritesPlaylistsLoading)
+    const playlistStore = usePlaylistStore();
+    const mashupStore = useMashupStore();
+    const [premierePlaylist, setPremierePlaylist] = useState<Playlist>();
+    const [premiere, setPremiere] = useState<Mashup[]>();
+    const [isPremiereLoading, setPremiereLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        playlistStore
+            .getOneById(1)
+            .then((playlist) => {
+                setPremierePlaylist(playlist);
+                return mashupStore.getManyByIds(playlist.mashups);
+            })
+            .then(setPremiere)
+            .finally(() => {
+                setPremiereLoading(false);
+            });
+    }, []);
+
+    if (isDataLoading || isRecommendationsLoading || favoritesPlaylistsLoading || isPremiereLoading)
         return <RootPageSkeleton />;
 
     return (
@@ -52,6 +73,23 @@ export default function RootPage() {
                         ))}
                 </div>
             </Section>
+
+            {premierePlaylist && premiere && premiere.length > 0 && (
+                <Section title='Премьера!' link={{ href: 'playlist/1', title: 'ПОКАЗАТЬ ВСЕ' }}>
+                    <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
+                        {premiere.slice(0, 6).map((mashup, idx) => (
+                            <MashupSmallThumb
+                                key={idx}
+                                mashup={mashup}
+                                playlist={premierePlaylist.mashups}
+                                indexInPlaylist={idx}
+                                playlistName={premierePlaylist.name}
+                                queueId={`playlist/${premierePlaylist.id}`}
+                            />
+                        ))}
+                    </div>
+                </Section>
+            )}
 
             {currentUser && recommendationsIds && recommendationsIds.length > 0 && (
                 <Section
