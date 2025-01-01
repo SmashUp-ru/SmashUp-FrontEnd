@@ -62,7 +62,13 @@ export default function PlayerBar() {
 
                     <div className='flex flex-col min-w-0'>
                         <span className='font-bold text-[18px] text-onSurface truncate'>
-                            {mashup.name}
+                            <Button
+                                variant='ghost'
+                                size='icon'
+                                onClick={() => (info ? closeInfo() : openInfo())}
+                            >
+                                {mashup.name}
+                            </Button>
                         </span>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                             {mashup.authors.map((author, index) => (
