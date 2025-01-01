@@ -104,7 +104,7 @@ export default function ModerateMashupPage() {
             handleMashupFile={false}
             requireImageFile={false}
             showTracksIcons={true}
-            lockStatusLink={true}
+            lockStatusLink={false}
             onClick={(body: MashupFormBody) => {
                 return axiosSession
                     .post('/moderation/unpublished_mashup/edit', {
