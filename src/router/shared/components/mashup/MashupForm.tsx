@@ -1158,7 +1158,7 @@ export default function MashupForm({
 
                                 const promise = send();
                                 if (promise) {
-                                    promise.then(() => {
+                                    promise.finally(() => {
                                         dismiss();
                                         setSending(false);
                                     });
