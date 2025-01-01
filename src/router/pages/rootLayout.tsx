@@ -19,8 +19,6 @@ export default function RootLayout() {
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
 
-    console.log(queue, queueIndex);
-
     return (
         <div className='flex h-screen pl-4 bg-background text-onBackground'>
             <Sidebar />

@@ -355,9 +355,20 @@ export default function MashupForm({
         const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
 
         const renderTracks = nonSelectedTracks.map((track) => {
+            let icon;
+            const type = track.keyType;
+            if (type === TrackType.YouTube) {
+                icon = <YouTubeIcon />;
+            } else if (type === TrackType.YandexMusic) {
+                icon = <YandexMusicIcon />;
+            } else if (type === TrackType.Spotify) {
+                icon = <SpotifyIcon />;
+            }
+
             return {
                 key: track.key,
                 keyType: track.keyType,
+                icon: icon,
                 track: track.track,
                 selected: false,
                 statefulOnClick: (selectedTracks: SelectedTrack[]) => {

@@ -137,9 +137,13 @@ export default function MashupInfo() {
                         variant='ghost'
                         size='icon'
                         onClick={() => {
-                            axiosSession.post(`/mashup/remove_like?id=${mashup.id}`).then(() => {
-                                setIsLiked(false);
-                            });
+                            axiosSession
+                                .post(
+                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
+                                )
+                                .then(() => {
+                                    setIsLiked(false);
+                                });
                         }}
                     >
                         <LikeFilledIcon />
@@ -149,10 +153,14 @@ export default function MashupInfo() {
                         variant='ghost'
                         size='icon'
                         onClick={() => {
-                            axiosSession.post(`/mashup/add_like?id=${mashup.id}`).then(() => {
-                                setIsLiked(true);
-                                updateMashupById(mashup.id, { liked: true });
-                            });
+                            axiosSession
+                                .post(
+                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
+                                )
+                                .then(() => {
+                                    setIsLiked(true);
+                                    updateMashupById(mashup.id, { liked: true });
+                                });
                         }}
                     >
                         <LikeOutlineIcon color='onSurface' />

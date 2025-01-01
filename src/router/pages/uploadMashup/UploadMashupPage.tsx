@@ -35,7 +35,7 @@ export default function UploadMashupPage() {
             handleTracksUrls={true}
             handleMashupFile={true}
             requireImageFile={true}
-            showTracksIcons={false}
+            showTracksIcons={true}
             lockStatusLink={false}
             onClick={(body: MashupFormBody) => {
                 return axiosSession

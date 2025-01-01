@@ -99,7 +99,7 @@ export default function ModerateMashupPage() {
                 }
             }}
             handleLoggedUser={false}
-            handleTracksUrls={false}
+            handleTracksUrls={true}
             handleMashupFile={false}
             requireImageFile={false}
             showTracksIcons={true}
