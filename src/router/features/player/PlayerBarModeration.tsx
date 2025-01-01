@@ -44,7 +44,7 @@ export default function PlayerBarModeration() {
                 clearInterval(moderationIntervalRef.current);
             }
         };
-    }, [moderationPlayer, updateSeek]);
+    }, [moderationIsPlaying, updateSeek]);
 
     if (!moderationSrc) return null;
 
