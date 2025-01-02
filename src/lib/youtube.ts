@@ -29,5 +29,14 @@ export async function loadOEmbed(link: string): Promise<YouTubeTrack> {
                 imageUrl: r.data.thumbnail_url,
                 link: link
             };
+        })
+        .catch(() => {
+            return {
+                id: link,
+                authors: ['???'],
+                name: link,
+                imageUrl: '',
+                link: link
+            };
         });
 }
