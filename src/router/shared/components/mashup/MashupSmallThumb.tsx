@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
+import MashupSmallThumbSkeleton from './MashupSmallThumbSkeleton';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -51,6 +52,10 @@ export default function MashupSmallThumb({
         if (!mashup) return;
         useMashupStore.getState().updateOneById(mashup.id, { liked });
     };
+
+    if (!mashup) {
+        return <MashupSmallThumbSkeleton />;
+    }
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
