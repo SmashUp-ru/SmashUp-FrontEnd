@@ -58,7 +58,7 @@ export default function MashupSmallThumb({
     }
 
     return (
-        <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
+        <div className='flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl'>
             <div className='flex items-center gap-x-4 w-full'>
                 <div className='relative'>
                     <img
@@ -112,15 +112,13 @@ export default function MashupSmallThumb({
                 </div>
                 <div className='flex flex-col'>
                     <div className='flex items-center gap-x-2'>
-                        <Button
-                            variant='ghost'
-                            size='icon'
+                        <div
+                            role='button'
                             onClick={() => openMashupInfo(mashup.id)}
+                            className='font-bold text-onSurface line-clamp-1 cursor-pointer'
                         >
-                            <span className='font-bold text-onSurface line-clamp-1'>
-                                {mashup.name}
-                            </span>
-                        </Button>
+                            {mashup.name}
+                        </div>
                         {isExplicit(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
                                 <ExplicitIcon />
