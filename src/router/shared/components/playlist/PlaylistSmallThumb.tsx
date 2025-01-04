@@ -7,14 +7,25 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
 import { cn } from '@/lib/utils.ts';
+import { useSettingsStore } from '@/store/settings.ts';
+import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 
 interface ProfileThumbProps {
     playlist: Playlist;
 }
 
 export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
+
+    const { mashups, isLoading } = usePlaylistMashups(playlist.mashups);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+
+    // TODO: skeleton
+    if (isLoading) return null;
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -49,7 +60,11 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={() => {
                                 playQueue(
-                                    playlist.mashups,
+                                    hideExplicit
+                                        ? mashups
+                                              .filter((mashup) => !isExplicit(mashup.statuses))
+                                              .map((mashup) => mashup.id)
+                                        : playlist.mashups,
                                     playlist.name,
                                     `playlist/${playlist.id}`
                                 );

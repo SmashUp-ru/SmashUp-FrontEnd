@@ -6,6 +6,10 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import { zip } from '@/lib/utils.ts';
+import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
+import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { useSettingsStore } from '@/store/settings.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -15,8 +19,15 @@ interface PlaylistThumbProps {
 }
 
 export default function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
+
+    const { mashups, isLoading } = usePlaylistMashups(playlist.mashups);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+
+    if (isLoading) return <PlaylistThumbSkeleton />;
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
@@ -58,7 +69,11 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             size='icon'
                             onClick={() => {
                                 playQueue(
-                                    playlist.mashups,
+                                    hideExplicit
+                                        ? mashups
+                                              .filter((mashup) => !isExplicit(mashup.statuses))
+                                              .map((mashup) => mashup.id)
+                                        : playlist.mashups,
                                     playlist.name,
                                     `playlist/${playlist.id}`
                                 );

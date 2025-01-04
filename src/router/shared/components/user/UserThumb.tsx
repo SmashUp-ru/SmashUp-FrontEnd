@@ -5,6 +5,9 @@ import { User } from '@/store/entities/user.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
+import { useSettingsStore } from '@/store/settings.ts';
+import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 
 interface ProfileThumbProps {
     user: User;
@@ -12,8 +15,16 @@ interface ProfileThumbProps {
 }
 
 export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
     const { isPlaying, queueId } = usePlayerStore();
     const { playQueue, pause } = usePlayer();
+
+    const { mashups, isLoading } = usePlaylistMashups(user.mashups);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+
+    // TODO: skeleton
+    if (isLoading) return null;
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
@@ -42,7 +53,11 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                         className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                         onClick={() => {
                             playQueue(
-                                user.mashups,
+                                hideExplicit
+                                    ? mashups
+                                          .filter((mashup) => !isExplicit(mashup.statuses))
+                                          .map((mashup) => mashup.id)
+                                    : user.mashups,
                                 `Мэшапы ${user.username}`,
                                 `user/${user.username}/tracks`
                             );

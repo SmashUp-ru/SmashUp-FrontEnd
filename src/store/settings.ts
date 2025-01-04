@@ -14,19 +14,22 @@ interface SettingsState {
     updateBitrate: (newBitrate: keyof typeof BITRATES) => void;
 
     settingsBitmask: null | number;
+    getSettingsBitmask: () => number | null;
     updateSettingsBitmask: (newSettingsBitmask: number | null) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             bitrate: 4,
             updateBitrate: (newBitrate: keyof typeof BITRATES) =>
                 set(() => ({ bitrate: newBitrate })),
 
             settingsBitmask: null,
             updateSettingsBitmask: (newSettingsBitmask: number | null) =>
-                set(() => ({ settingsBitmask: newSettingsBitmask }))
+                set(() => ({ settingsBitmask: newSettingsBitmask })),
+
+            getSettingsBitmask: () => get().settingsBitmask
         }),
         {
             name: 'settings-storage',
@@ -36,3 +39,8 @@ export const useSettingsStore = create<SettingsState>()(
         }
     )
 );
+
+export function getSettingsBitmask(): number | null {
+    const state = useSettingsStore.getState();
+    return state.getSettingsBitmask();
+}
