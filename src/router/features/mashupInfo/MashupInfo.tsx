@@ -31,6 +31,7 @@ export default function MashupInfo() {
     const updateMashupById = useMashupStore((state) => state.updateOneById);
     const info = usePlayerStore((state) => state.info);
     const mashupInfo = usePlayerStore((state) => state.mashupInfo);
+    const moderationSrc = usePlayerStore((state) => state.moderationSrc);
 
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
 
@@ -43,7 +44,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length === 0 || queueIndex === null ? '16' : '148'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden`,
+                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden`,
                 'flex flex-col gap-y-4 items-start'
             )}
         >

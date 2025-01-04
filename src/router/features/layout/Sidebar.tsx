@@ -20,9 +20,11 @@ export default function Sidebar() {
     //         <Skeleton className='rounded-[30px] min-w-[123px] w-[123px] py-[70px] mr-[30px] my-4' />
     //     );
 
+    console.log('a: ', queue.length, queueIndex, moderationSrc);
+
     return (
         <div
-            className={`h-[calc(100%-${queue.length > 0 || queueIndex !== null || moderationSrc !== null ? '148' : '32'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface pt-[70px] mr-[30px] my-4`}
+            className={`h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface pt-[70px] mr-[30px] my-4`}
         >
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
