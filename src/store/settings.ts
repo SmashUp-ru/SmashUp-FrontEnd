@@ -14,7 +14,7 @@ interface SettingsState {
     updateBitrate: (newBitrate: keyof typeof BITRATES) => void;
 
     settingsBitmask: null | number;
-    updateSettingsBitmask: (newSettingsBitmask: number) => void;
+    updateSettingsBitmask: (newSettingsBitmask: number | null) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -25,7 +25,7 @@ export const useSettingsStore = create<SettingsState>()(
                 set(() => ({ bitrate: newBitrate })),
 
             settingsBitmask: null,
-            updateSettingsBitmask: (newSettingsBitmask: number) =>
+            updateSettingsBitmask: (newSettingsBitmask: number | null) =>
                 set(() => ({ settingsBitmask: newSettingsBitmask }))
         }),
         {

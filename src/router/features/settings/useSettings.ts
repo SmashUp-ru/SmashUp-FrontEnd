@@ -19,7 +19,7 @@ export function useSettings() {
                 )
                 .finally(() => setSettingsLoading(false));
         }
-    }, []);
+    }, [settings]);
 
     return {
         isLoading: isSettingsLoading,

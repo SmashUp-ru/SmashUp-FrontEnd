@@ -19,12 +19,18 @@ import {
     TooltipProvider,
     TooltipTrigger
 } from '@/components/ui/tooltip.tsx';
+import { axiosSession } from '@/lib/utils.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import BaseToast from '@/router/shared/toasts/Base.tsx';
 
 export default function SettingsPage() {
+    const { toast } = useToast();
     const { settings, isLoading, email } = useSettingsPageData();
 
     const bitrate = useSettingsStore((state) => state.bitrate);
     const updateBitrate = useSettingsStore((state) => state.updateBitrate);
+    const updateSettings = useSettingsStore((state) => state.updateSettingsBitmask);
 
     const currentUser = useGlobalStore((state) => state.currentUser);
 
@@ -120,7 +126,26 @@ export default function SettingsPage() {
                                 </Label>
                                 <Switch
                                     checked={allowMultisessions}
-                                    onCheckedChange={(v) => setAllowMultisessions(v)}
+                                    onCheckedChange={(v) => {
+                                        setAllowMultisessions(v);
+                                        axiosSession
+                                            .post(
+                                                `/user/change_setting?bit=1&value=${v ? '1' : '0'}`
+                                            )
+                                            .then(() => {
+                                                toast({
+                                                    element: (
+                                                        <BaseToast
+                                                            icon
+                                                            field='Настройки'
+                                                            after='успешно изменены!'
+                                                        />
+                                                    )
+                                                });
+                                                updateSettings(null);
+                                            })
+                                            .catch(axiosCatcher(toast, 'при обновлении настроек.'));
+                                    }}
                                     className='h-8 w-16 '
                                     thumbClassName='h-8 w-8 data-[state=checked]:translate-x-7'
                                 />
@@ -133,7 +158,26 @@ export default function SettingsPage() {
                                 <Switch
                                     className='h-8 w-16 '
                                     checked={showExplicit}
-                                    onCheckedChange={(v) => setShowExplicit(v)}
+                                    onCheckedChange={(v) => {
+                                        setShowExplicit(v);
+                                        axiosSession
+                                            .post(
+                                                `/user/change_setting?bit=0&value=${v ? '1' : '0'}`
+                                            )
+                                            .then(() => {
+                                                toast({
+                                                    element: (
+                                                        <BaseToast
+                                                            icon
+                                                            field='Настройки'
+                                                            after='успешно изменены!'
+                                                        />
+                                                    )
+                                                });
+                                                updateSettings(null);
+                                            })
+                                            .catch(axiosCatcher(toast, 'при обновлении настроек.'));
+                                    }}
                                     thumbClassName='h-8 w-8 data-[state=checked]:translate-x-7'
                                 />
                             </div>
