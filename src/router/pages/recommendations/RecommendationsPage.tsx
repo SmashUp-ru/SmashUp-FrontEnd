@@ -11,6 +11,8 @@ import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useRecommendations } from '@/router/features/root/useRecommendations.ts';
+import { useSettingsStore } from '@/store/settings.ts';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 
 export default function RecommendationsPage() {
     const {
@@ -22,6 +24,10 @@ export default function RecommendationsPage() {
     const currentUser = useGlobalStore((state) => state.currentUser);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
+
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     const { playQueue, pause } = usePlayer();
 
@@ -69,7 +75,11 @@ export default function RecommendationsPage() {
                                 size='icon'
                                 onClick={() => {
                                     playQueue(
-                                        recommendationsIds,
+                                        hideExplicit
+                                            ? recommendations
+                                                  .filter((mashup) => !isExplicit(mashup.statuses))
+                                                  .map((mashup) => mashup.id)
+                                            : recommendationsIds,
                                         `Рекомендации ${currentUser.username}`,
                                         `recommendations`
                                     );

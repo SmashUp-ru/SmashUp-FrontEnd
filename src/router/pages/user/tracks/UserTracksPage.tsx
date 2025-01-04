@@ -1,7 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
@@ -13,6 +12,9 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
+import { useSettingsStore } from '@/store/settings.ts';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
@@ -20,12 +22,10 @@ export default function UserTracksPage() {
     const { playQueue, pause } = usePlayer();
 
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
-    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
 
     const [user, setUser] = useState<User | null>(null);
-    const [mashups, setMashups] = useState<Mashup[]>([]);
 
     useEffect(() => {
         if (params.profileUsername) {
@@ -33,13 +33,16 @@ export default function UserTracksPage() {
         }
     }, [params.profileUsername]);
 
-    useEffect(() => {
-        if (user) {
-            getMashupsByIds(user.mashups).then((r) => setMashups(r));
-        }
-    }, [user]);
-
     const [imageLoaded, setImageLoaded] = useState(false);
+
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+
+    const { mashups, isLoading } = usePlaylistMashups(user ? user.mashups : []);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+
+    // TODO: skeleton
+    if (isLoading) return null;
 
     if (!params.profileUsername) return;
     if (!user) return;
@@ -83,7 +86,11 @@ export default function UserTracksPage() {
                                 size='icon'
                                 onClick={() => {
                                     playQueue(
-                                        user.mashups,
+                                        hideExplicit
+                                            ? mashups
+                                                  .filter((mashup) => !isExplicit(mashup.statuses))
+                                                  .map((mashup) => mashup.id)
+                                            : user.mashups,
                                         `Мэшапы ${user.username}`,
                                         `user/${user.username}/tracks`
                                     );

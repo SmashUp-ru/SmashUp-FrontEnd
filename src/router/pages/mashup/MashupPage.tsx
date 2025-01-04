@@ -13,10 +13,11 @@ import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
-import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
+import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
+import { useSettingsStore } from '@/store/settings.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -26,6 +27,10 @@ export default function MashupPage() {
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
+
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     const { mashup, isLoading } = useMashupPageData(params.mashupId);
 
@@ -98,7 +103,11 @@ export default function MashupPage() {
                                 size='icon'
                                 className=''
                                 onClick={() =>
-                                    playQueue([mashup.id], mashup.name, `mashup/${mashup.id}`)
+                                    playQueue(
+                                        hideExplicit ? [] : [mashup.id],
+                                        mashup.name,
+                                        `mashup/${mashup.id}`
+                                    )
                                 }
                             >
                                 <PlayHollowIcon color='primary' />

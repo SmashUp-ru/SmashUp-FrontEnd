@@ -11,11 +11,17 @@ import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
+import { useSettingsStore } from '@/store/settings.ts';
+import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 
 export default function FavoritesPage() {
     const currentUser = useGlobalStore((state) => state.currentUser);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
+
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     const { playQueue, pause } = usePlayer();
 
@@ -66,7 +72,11 @@ export default function FavoritesPage() {
                                 size='icon'
                                 onClick={() => {
                                     playQueue(
-                                        likes,
+                                        hideExplicit
+                                            ? mashups
+                                                  .filter((mashup) => !isExplicit(mashup.statuses))
+                                                  .map((mashup) => mashup.id)
+                                            : likes,
                                         `Любимое ${currentUser.username}`,
                                         `favorites`
                                     );
