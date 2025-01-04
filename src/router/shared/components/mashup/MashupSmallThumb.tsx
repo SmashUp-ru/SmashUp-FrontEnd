@@ -24,6 +24,7 @@ import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import MashupSmallThumbSkeleton from './MashupSmallThumbSkeleton';
 import { useSettingsStore } from '@/store/settings.ts';
 import MashupSmallThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupSmallThumbExplicitDisallowed.tsx';
+import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -48,6 +49,8 @@ export default function MashupSmallThumb({
     const currentQueueId = usePlayerStore((state) => state.queueId);
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
 
+    const { mashups, isLoading } = usePlaylistMashups(playlist);
+
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
     const isLiked = mashup?.liked ?? false;
@@ -56,16 +59,13 @@ export default function MashupSmallThumb({
         useMashupStore.getState().updateOneById(mashup.id, { liked });
     };
 
-    if (!mashup) {
+    if (!mashup || isLoading) {
         return <MashupSmallThumbSkeleton />;
     }
 
-    const hideExplicit =
-        settingsBitmask !== null &&
-        !explicitAllowed(settingsBitmask) &&
-        isExplicit(mashup.statuses);
+    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
-    if (hideExplicit)
+    if (hideExplicit && isExplicit(mashup.statuses))
         return <MashupSmallThumbExplicitDisallowed mashup={mashup} isLiked={isLiked} />;
 
     return (
@@ -114,7 +114,20 @@ export default function MashupSmallThumb({
                             size='icon'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={() => {
-                                playMashup(playlist, playlistName, queueId, indexInPlaylist);
+                                const filteredMashups = hideExplicit
+                                    ? mashups
+                                          .filter((mashup) => !isExplicit(mashup.statuses))
+                                          .map((mashup) => mashup.id)
+                                    : playlist;
+
+                                const adjustedIndex =
+                                    hideExplicit && filteredMashups.length > 0
+                                        ? filteredMashups.findIndex(
+                                              (id) => id === playlist[indexInPlaylist]
+                                          )
+                                        : indexInPlaylist;
+
+                                playMashup(filteredMashups, playlistName, queueId, adjustedIndex);
                             }}
                         >
                             <PlayHollowIcon color='onSurface' size={24} />
