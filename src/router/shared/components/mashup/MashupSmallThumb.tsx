@@ -4,7 +4,7 @@ import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
 import { Link } from 'react-router-dom';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
-import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
+import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
@@ -22,6 +22,8 @@ import {
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import MashupSmallThumbSkeleton from './MashupSmallThumbSkeleton';
+import { useSettingsStore } from '@/store/settings.ts';
+import MashupSmallThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupSmallThumbExplicitDisallowed.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -44,6 +46,7 @@ export default function MashupSmallThumb({
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const currentQueueId = usePlayerStore((state) => state.queueId);
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
 
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
@@ -56,6 +59,14 @@ export default function MashupSmallThumb({
     if (!mashup) {
         return <MashupSmallThumbSkeleton />;
     }
+
+    const hideExplicit =
+        settingsBitmask !== null &&
+        !explicitAllowed(settingsBitmask) &&
+        isExplicit(mashup.statuses);
+
+    if (hideExplicit)
+        return <MashupSmallThumbExplicitDisallowed mashup={mashup} isLiked={isLiked} />;
 
     return (
         <div className='flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl'>

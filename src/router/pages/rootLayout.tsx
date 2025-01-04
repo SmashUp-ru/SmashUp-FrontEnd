@@ -7,8 +7,11 @@ import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
 import { useEffect } from 'react';
 import { usePlayerStore } from '@/store/player.ts';
 import PlayerBarModeration from '@/router/features/player/PlayerBarModeration.tsx';
+import { useSettings } from '@/router/features/settings/useSettings.ts';
 
 export default function RootLayout() {
+    useSettings();
+
     useEffect(() => {
         if (!localStorage.getItem('search_history')) {
             localStorage.setItem('search_history', JSON.stringify([]));

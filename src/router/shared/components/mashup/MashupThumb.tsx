@@ -3,13 +3,15 @@ import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ExplicitIcon from '@/components/icons/Explicit.tsx';
 import { Mashup } from '@/store/entities/mashup.ts';
-import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
+import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { zip } from '@/lib/utils.ts';
 import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
 import AltIcon from '@/components/icons/Alt.tsx';
+import MashupThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupThumbExplicitDisallowed.tsx';
+import { useSettingsStore } from '@/store/settings.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -31,8 +33,17 @@ export default function MashupThumb({
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
+    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
 
     const { pause, playMashup } = usePlayer();
+
+    const hideExplicit =
+        settingsBitmask !== null &&
+        !explicitAllowed(settingsBitmask) &&
+        isExplicit(mashup.statuses);
+
+    if (hideExplicit)
+        return <MashupThumbExplicitDisallowed mashup={mashup} searchMode={searchMode} />;
 
     return (
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
