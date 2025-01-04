@@ -15,6 +15,14 @@ export function axiosCatcher(
             humanMessage = message;
         }
 
+        if (humanMessage === undefined) {
+            if (r.status === 502) {
+                humanMessage = 'Сервис недоступен, попробуйте чуть позже';
+            } else {
+                humanMessage = r.status?.toString();
+            }
+        }
+
         toast({
             element: (
                 <ErrorToast
