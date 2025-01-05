@@ -14,8 +14,10 @@
 
 
 html, body, :root, #root {
+    min-height: fit-content;
     height: 100%;
     font-family: "Manrope", sans-serif;
+    min-width: fit-content;
 }
 
 ::-webkit-scrollbar {

@@ -6,17 +6,18 @@ import { useUserStore } from '@/store/entities/user.ts';
 import { getToken, useGlobalStore } from '@/store/global.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { MobileNotAllowed } from '@/router/features/mobileNotAllowed/MobileNotAllowed.tsx';
+import { useMobileStore } from '@/store/mobile.ts';
 
 export default function Layout() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const updateToken = useGlobalStore((state) => state.updateToken);
     const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
+    const agreedMobile = useMobileStore((state) => state.agreed);
 
     const token = getToken();
 
     const isMobile = useIsMobile();
-    console.log(`i: ${isMobile}`);
 
     useEffect(() => {
         if (token) {
@@ -34,7 +35,7 @@ export default function Layout() {
         }
     }, [token]);
 
-    if (isMobile) return <MobileNotAllowed />;
+    if (isMobile && !agreedMobile) return <MobileNotAllowed />;
 
     return (
         <>

@@ -47,7 +47,7 @@ export default function PlayerBar() {
     }
 
     return (
-        <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
+        <div className='absolute min-w-fit bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
             <MashupSeekSlider mashup={mashup} />
 
             <div className='w-full flex justify-between items-center'>
