@@ -14,8 +14,8 @@
 1. Склонируйте репозиторий и перейдите в него
 
 ```shell
-git clone https://github.com/SmashUp-ru/SmashUp-FrontEnd-New2.git
-cd SmashUp-FrontEnd-New2
+git clone https://github.com/SmashUp-ru/SmashUp-FrontEnd.git
+cd SmashUp-FrontEnd
 ```
 
 2. Установите зависимости
