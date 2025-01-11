@@ -27,12 +27,21 @@ export function useUserPageData(username?: string) {
 
     useEffect(() => {
         if (user) {
-            getMashupsByIds(user.mashups.slice(0, 5).concat(user.mashups[user.mashups.length - 1]))
-                .then((r) => {
-                    setMashups(r.slice(0, 5));
-                    setLatestMashup(r[5]);
-                })
-                .finally(() => setMashupsLoading(false));
+            if (user.mashups.length <= 5) {
+                getMashupsByIds(user.mashups)
+                    .then((r) => {
+                        setMashups(r);
+                        setLatestMashup(r[r.length - 1]);
+                    })
+                    .finally(() => setMashupsLoading(false));
+            } else {
+                getMashupsByIds(user.mashups.concat(user.mashups[user.mashups.length - 1]))
+                    .then((r) => {
+                        setMashups(r.slice(0, 5));
+                        setLatestMashup(r[5]);
+                    })
+                    .finally(() => setMashupsLoading(false));
+            }
             getManyPlaylistsByIds(user.playlists)
                 .then((r) => setPlaylists(r))
                 .finally(() => setPlaylistsLoading(false));
