@@ -254,9 +254,10 @@ export default function MashupForm({
         }
 
         if (debouncedTracksQuery.length >= 2 && debouncedTracksQuery.length <= 32) {
+            const encodedQuery = encodeURI(debouncedTracksQuery);
             const promises = [
                 axiosSession
-                    .get(`/track/search?query=${debouncedTracksQuery}`)
+                    .get(`/track/search?query=${encodedQuery}`)
                     .then((r: AxiosResponse<TrackSearchResponse>) =>
                         r.data.response.map((track) => {
                             return {
@@ -268,7 +269,7 @@ export default function MashupForm({
                     ),
                 handleTracksUrls
                     ? axiosSession
-                          .get(`/track/search/yandex_music?query=${debouncedTracksQuery}`)
+                          .get(`/track/search/yandex_music?query=${encodedQuery}`)
                           .then((r: AxiosResponse<YandexTracksResponse>) =>
                               r.data.response.map((track) => {
                                   return {
@@ -287,7 +288,7 @@ export default function MashupForm({
                     : Promise.resolve([]),
                 handleTracksUrls
                     ? axiosSession
-                          .get(`/track/search/spotify?query=${debouncedTracksQuery}`)
+                          .get(`/track/search/spotify?query=${encodedQuery}`)
                           .then((r: AxiosResponse<SpotifyTracksResponse>) =>
                               r.data.response.map((track) => {
                                   return {

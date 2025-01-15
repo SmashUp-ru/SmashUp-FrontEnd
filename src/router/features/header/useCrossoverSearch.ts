@@ -16,15 +16,14 @@ export function useCrossoverSearch(query: string) {
     const [trackAuthors, setTrackAuthors] = useState<TrackAuthor[]>([]);
 
     useEffect(() => {
+        const encodedQuery = encodeURI(query);
         axiosSession
-            .get(`/track/search?query=${query}`)
+            .get(`/track/search?query=${encodedQuery}`)
             .then((r: AxiosResponse<TrackSearchResponse>) => setTracks(r.data.response))
             .then(() => setTracksFetching(false));
-    }, [query]);
 
-    useEffect(() => {
         axiosSession
-            .get(`/track_author/search?query=${query}`)
+            .get(`/track_author/search?query=${encodedQuery}`)
             .then((r: AxiosResponse<TrackAuthorSearchResponse>) => setTrackAuthors(r.data.response))
             .then(() => setTrackAuthorsFetching(false));
     }, [query]);
