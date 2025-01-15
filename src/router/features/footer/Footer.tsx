@@ -1,5 +1,7 @@
 import { useGlobalStore } from '@/store/global.ts';
 import { Link } from 'react-router-dom';
+import VKMPIcon from '@/components/icons/VKMP.tsx';
+import TelegramIcon from '@/components/icons/Telegram.tsx';
 
 export default function Footer() {
     const { isLoading } = useGlobalStore();
@@ -13,6 +15,13 @@ export default function Footer() {
                     <Link to='/privacy_policy'>Политика Конфиденциальности</Link>
                     <Link to='/user_agreement'>Пользовательское соглашение</Link>
                     <Link to='/dmca'>Правообладателям</Link>
+                    <Link to='https://t.me/fkng_smashup' target='_blank' className='flex gap-2'>
+                        <TelegramIcon /> Наш телеграм-канал
+                    </Link>
+                    <Link to='https://vk.com/smashupru' target='_blank' className='flex gap-2'>
+                        <VKMPIcon />
+                        Наша группа в ВК
+                    </Link>
                 </div>
                 <span className='text-primary font-bold'>2024 SmashUp</span>
             </div>
