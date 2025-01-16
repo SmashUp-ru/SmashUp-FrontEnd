@@ -11,8 +11,8 @@ export function switchBit(
     bitmask: number,
     is: (bitmask: number) => boolean,
     set: (bitmask: number, value: boolean) => number
-) {
-    set(bitmask, !is(bitmask));
+): number {
+    return set(bitmask, !is(bitmask));
 }
 
 export const [isExplicit, setExplicit] = handleBitmask(0);

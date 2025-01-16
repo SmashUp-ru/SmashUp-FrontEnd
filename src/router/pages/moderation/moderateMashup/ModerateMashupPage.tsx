@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { getToken } from '@/store/global';
-import { loadUnpublishedMashups } from '../useModeration';
+import { SmashUpResponse } from '@/router/shared/types/smashup';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -66,6 +66,7 @@ export default function ModerateMashupPage() {
 
     if (
         unpublishedMashups === undefined ||
+        unpublishedMashups === null ||
         mashup === undefined ||
         users === undefined ||
         tracks === undefined ||
@@ -113,10 +114,16 @@ export default function ModerateMashupPage() {
                         ...body,
                         albumId: -1
                     })
-                    .then(() => {
-                        loadUnpublishedMashups()
-                            .then(updateUnpublishedMashups)
-                            .finally(() => navigate('/mashup/moderation'));
+                    .then((r: AxiosResponse<SmashUpResponse<UnpublishedMashup>>) => {
+                        const newMashup = r.data.response;
+
+                        updateUnpublishedMashups(
+                            unpublishedMashups.map((mashup) =>
+                                mashup.id === newMashup.id ? newMashup : mashup
+                            )
+                        );
+
+                        navigate('/mashup/moderation');
                     })
                     .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
             }}

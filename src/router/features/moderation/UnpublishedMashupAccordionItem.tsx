@@ -9,7 +9,7 @@ import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     loadSelectedTracks,
     SelectedTrack,
@@ -19,7 +19,7 @@ import {
     YandexMusicSelectedTrack,
     YouTubeSelectedTrack
 } from '@/router/shared/types/upload';
-import { isExplicit, isTwitchBanned } from '@/lib/bitmask';
+import { isExplicit, isTwitchBanned, setExplicit, setTwitchBanned, switchBit } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
@@ -42,6 +42,8 @@ import WarningIcon from '@/components/icons/Warning';
 import { RegEx } from '@/lib/regex';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipContent } from '@/components/ui/tooltip';
+import { AxiosResponse } from 'axios';
+import { SmashUpResponse } from '@/router/shared/types/smashup';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -56,8 +58,8 @@ export function UnpublishedMashupAccordionItem({
 }: UnpublishedMashupAccordionItem) {
     const { playModerationMashup } = usePlayer();
     const { toast } = useToast();
-    const moderationMashups = useModerationStore((state) => state.unpublishedMashups);
-    const updateModerationMashups = useModerationStore((state) => state.updateUnpublishedMashups);
+    const unpublishedMashups = useModerationStore((state) => state.unpublishedMashups);
+    const updateUnpublishedMashups = useModerationStore((state) => state.updateUnpublishedMashups);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [tracks, setTracks] = useState<SelectedTrack[]>();
@@ -84,24 +86,62 @@ export function UnpublishedMashupAccordionItem({
                 reason: rejectionValue
             })
             .then(() => {
-                if (moderationMashups) {
-                    updateModerationMashups([
-                        ...moderationMashups.filter((um) => um.id !== mashup.id)
+                if (unpublishedMashups) {
+                    updateUnpublishedMashups([
+                        ...unpublishedMashups.filter((um) => um.id !== mashup.id)
                     ]);
                 }
             })
             .catch(axiosCatcher(toast, 'при отклонении мэшапа.'));
     };
 
-    if (!moderationMashups) return null;
+    const [hasYouTube, setHasYoutube] = useState(false);
 
-    let hasYouTube = false;
-    for (const trackUrl of mashup.tracksUrls) {
-        if (RegEx.YOUTUBE.test(trackUrl)) {
-            hasYouTube = true;
-            break;
+    useEffect(() => {
+        let hasYouTube = false;
+        for (const trackUrl of mashup.tracksUrls) {
+            if (RegEx.YOUTUBE.test(trackUrl)) {
+                hasYouTube = true;
+                break;
+            }
         }
-    }
+
+        setHasYoutube(hasYouTube);
+    }, [mashup]);
+
+    const [switchingExplicit, setSwitchingExplicit] = useState<boolean>(false);
+    const [switchingBanWords, setSwitchingBanWords] = useState<boolean>(false);
+
+    if (!unpublishedMashups) return null;
+
+    const switchStatus = (
+        isSwitching: boolean,
+        setSwitching: (s: boolean) => unknown,
+        isStatus: (b: number) => boolean,
+        setStatus: (b: number, s: boolean) => number
+    ) => {
+        if (isSwitching) {
+            return;
+        }
+
+        setSwitching(true);
+
+        axiosSession
+            .post('/moderation/unpublished_mashup/edit', {
+                id: mashup.id,
+                statuses: switchBit(mashup.statuses, isStatus, setStatus)
+            })
+            .then((r: AxiosResponse<SmashUpResponse<UnpublishedMashup>>) => {
+                const newMashup = r.data.response;
+
+                updateUnpublishedMashups(
+                    unpublishedMashups.map((mashup) =>
+                        mashup.id === newMashup.id ? newMashup : mashup
+                    )
+                );
+            })
+            .finally(() => setSwitching(false));
+    };
 
     return (
         <AccordionItem value={value}>
@@ -165,8 +205,8 @@ export function UnpublishedMashupAccordionItem({
                                             `/moderation/unpublished_mashup/publish?id=${mashup.id}`
                                         )
                                         .then(() => {
-                                            updateModerationMashups([
-                                                ...moderationMashups.filter(
+                                            updateUnpublishedMashups([
+                                                ...unpublishedMashups.filter(
                                                     (um) => um.id !== mashup.id
                                                 )
                                             ]);
@@ -300,14 +340,34 @@ export function UnpublishedMashupAccordionItem({
                         <Label className='font-medium text-onSurfaceVariant'>Дополнительно</Label>
                         <div className='w-full flex flex-col gap-y-3'>
                             <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox checked={isExplicit(mashup.statuses)} />
+                                <Checkbox
+                                    checked={isExplicit(mashup.statuses)}
+                                    onClick={() => {
+                                        switchStatus(
+                                            switchingExplicit,
+                                            setSwitchingExplicit,
+                                            isExplicit,
+                                            setExplicit
+                                        );
+                                    }}
+                                />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Explicit (Мат)
                                 </Label>
                             </div>
 
                             <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox checked={isTwitchBanned(mashup.statuses)} />
+                                <Checkbox
+                                    checked={isTwitchBanned(mashup.statuses)}
+                                    onClick={() => {
+                                        switchStatus(
+                                            switchingBanWords,
+                                            setSwitchingBanWords,
+                                            isTwitchBanned,
+                                            setTwitchBanned
+                                        );
+                                    }}
+                                />
                                 <Label className='font-bold text-[18px] text-onSurface'>
                                     Бан-ворды Twitch
                                 </Label>
