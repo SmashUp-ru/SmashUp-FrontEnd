@@ -15,7 +15,7 @@ export default function Footer() {
                     <Link to='/privacy_policy'>Политика Конфиденциальности</Link>
                     <Link to='/user_agreement'>Пользовательское соглашение</Link>
                     <Link to='/dmca'>Правообладателям</Link>
-                    <Link to='https://t.me/fkng_smashup' target='_blank' className='flex gap-2'>
+                    <Link to='https://t.me/smashup_ru' target='_blank' className='flex gap-2'>
                         <TelegramIcon /> Наш телеграм-канал
                     </Link>
                     <Link to='https://vk.com/smashupru' target='_blank' className='flex gap-2'>
