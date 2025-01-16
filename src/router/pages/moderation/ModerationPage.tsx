@@ -19,19 +19,34 @@ export default function ModerationPage() {
                 <h1 className='font-bold text-4xl text-onSurface'>Модерация</h1>
             </div>
 
-            <TabsSeparated defaultValue='ожидают' className='flex flex-col gap-y-6'>
+            <TabsSeparated defaultValue='все' className='flex flex-col gap-y-6'>
                 <TabsList className='justify-start'>
-                    <TabsTrigger value='ожидают'>Ожидает проверки</TabsTrigger>
+                    <TabsTrigger value='все'>Все мэшапы</TabsTrigger>
+                    <TabsTrigger value='ссылка'>С ссылкой на VK</TabsTrigger>
                     <TabsTrigger value='принятые'>Принятые</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value='ожидают' className='flex flex-col gap-y-6'>
+                <TabsContent
+                    value='все'
+                    className='flex flex-col gap-y-6 data-[state=inactive]:hidden'
+                >
                     {unpublishedMashups &&
                         unpublishedMashups.map((mashup) => (
                             <ModerationMashup key={mashup.id} mashup={mashup} />
                         ))}
                 </TabsContent>
-                <TabsContent value='принятые'>Тут ничего нет 👀</TabsContent>
+                <TabsContent
+                    value='ссылка'
+                    className='flex flex-col gap-y-6 data-[state=inactive]:hidden'
+                >
+                    {unpublishedMashups &&
+                        unpublishedMashups
+                            .filter((mashup) => mashup.statusesUrls.length > 0)
+                            .map((mashup) => <ModerationMashup key={mashup.id} mashup={mashup} />)}
+                </TabsContent>
+                <TabsContent value='принятые' className='data-[state=inactive]:hidden'>
+                    Тут ничего нет 👀
+                </TabsContent>
             </TabsSeparated>
         </div>
     );
