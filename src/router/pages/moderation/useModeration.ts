@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModerationStore } from '@/store/moderation.ts';
+import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { GetUnpublishedMashupsResponse } from '@/router/shared/types/moderation.ts';
@@ -12,11 +12,8 @@ export function useModeration() {
 
     useEffect(() => {
         if (unpublishedMashups === null) {
-            axiosSession
-                .get('/moderation/unpublished_mashup/get')
-                .then((response: AxiosResponse<GetUnpublishedMashupsResponse>) =>
-                    updateUnpublishedMashups(response.data.response)
-                )
+            loadUnpublishedMashups()
+                .then(updateUnpublishedMashups)
                 .finally(() => setMashupsLoading(false));
         }
     }, []);
@@ -25,4 +22,10 @@ export function useModeration() {
         isLoading: mashupsLoading,
         unpublishedMashups
     };
+}
+
+export async function loadUnpublishedMashups(): Promise<UnpublishedMashup[]> {
+    return axiosSession
+        .get('/moderation/unpublished_mashup/get')
+        .then((response: AxiosResponse<GetUnpublishedMashupsResponse>) => response.data.response);
 }

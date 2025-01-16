@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 import { loadSelectedTracks, SelectedTrack } from '@/router/shared/types/upload';
 import MashupFormSkeleton from '@/router/shared/components/mashup/MashupFormSkeleton';
 import { useTrackStore } from '@/store/entities/track';
-import { UnpublishedMashup } from '@/store/moderation';
-import { useModeration } from '../useModeration';
+import { UnpublishedMashup, useModerationStore } from '@/store/moderation';
 import { axiosSession } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { getToken } from '@/store/global';
+import { loadUnpublishedMashups } from '../useModeration';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -20,7 +20,8 @@ export default function ModerateMashupPage() {
 
     const [mashup, setMashup] = useState<UnpublishedMashup>();
 
-    const { unpublishedMashups } = useModeration();
+    const unpublishedMashups = useModerationStore((state) => state.unpublishedMashups);
+    const updateUnpublishedMashups = useModerationStore((state) => state.updateUnpublishedMashups);
 
     useEffect(() => {
         if (unpublishedMashups !== null) {
@@ -113,7 +114,9 @@ export default function ModerateMashupPage() {
                         albumId: -1
                     })
                     .then(() => {
-                        navigate('/mashup/moderation');
+                        loadUnpublishedMashups()
+                            .then(updateUnpublishedMashups)
+                            .finally(() => navigate('/mashup/moderation'));
                     })
                     .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
             }}
