@@ -79,7 +79,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
                         playTimeRef.current = 0;
                     }
                 }
-            }, 500);
+            });
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
