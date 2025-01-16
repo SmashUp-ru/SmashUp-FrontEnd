@@ -48,6 +48,8 @@ export default function MashupSmallThumb({
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const currentQueueId = usePlayerStore((state) => state.queueId);
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+    const isThisMash = queue[queueIndex] === mashup.id && currentQueueId === queueId;
+    const isActiveTrack = isPlaying && isThisMash;
 
     const { mashups, isLoading } = usePlaylistMashups(playlist);
 
@@ -69,7 +71,9 @@ export default function MashupSmallThumb({
         return <MashupSmallThumbExplicitDisallowed mashup={mashup} isLiked={isLiked} />;
 
     return (
-        <div className='flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl'>
+        <div
+            className={`flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl ${isActiveTrack && 'bg-primary/[0.35]'}`}
+        >
             <div className='flex items-center gap-x-4 w-full'>
                 <div className='relative'>
                     <img
@@ -77,14 +81,11 @@ export default function MashupSmallThumb({
                         alt={mashup.name}
                         className={cn(
                             'w-12 h-12 min-w-12 min-h-12 rounded-xl',
-                            queue[queueIndex] === mashup.id && currentQueueId === queueId
-                                ? 'opacity-30'
-                                : 'group-hover:opacity-30'
+                            isThisMash ? 'opacity-30' : 'group-hover:opacity-30'
                         )}
                         draggable={false}
                     />
-                    {queue[queueIndex] === mashup.id &&
-                        currentQueueId === queueId &&
+                    {isThisMash &&
                         (isPlaying ? (
                             <Button
                                 variant='ghost'
@@ -94,7 +95,7 @@ export default function MashupSmallThumb({
                                     pause();
                                 }}
                             >
-                                <PauseHollowIcon color='onSurfaceVariant' size={24} />
+                                <PauseHollowIcon color='primary' size={24} />
                             </Button>
                         ) : (
                             <Button
@@ -139,23 +140,23 @@ export default function MashupSmallThumb({
                         <div
                             role='button'
                             onClick={() => openMashupInfo(mashup.id)}
-                            className='font-bold text-onSurface line-clamp-1 cursor-pointer'
+                            className={`font-bold ${isActiveTrack ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer`}
                         >
                             {mashup.name}
                         </div>
                         {isExplicit(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <ExplicitIcon />
+                                <ExplicitIcon color={isActiveTrack ? 'primary' : ''} />
                             </div>
                         )}
                         {isHashtagMashup(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <HashtagMashupIcon />
+                                <HashtagMashupIcon color={isActiveTrack ? 'primary' : ''} />
                             </div>
                         )}
                         {isAlt(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <AltIcon />
+                                <AltIcon color={isActiveTrack ? 'primary' : ''} />
                             </div>
                         )}
                     </div>
@@ -165,7 +166,7 @@ export default function MashupSmallThumb({
                                 <Link
                                     key={author}
                                     to={`/user/${author}`}
-                                    className='font-medium text-onSurfaceVariant'
+                                    className={`font-medium ${isActiveTrack ? 'text-primary' : 'text-onSurfaceVariant'}`}
                                 >
                                     {author}
                                 </Link>
@@ -195,7 +196,11 @@ export default function MashupSmallThumb({
                                     });
                             }}
                         >
-                            <LikeFilledIcon width={20} height={17} />
+                            <LikeFilledIcon
+                                width={20}
+                                height={17}
+                                color={isActiveTrack ? 'primary' : ''}
+                            />
                         </Button>
                     ) : (
                         <Button
@@ -212,7 +217,11 @@ export default function MashupSmallThumb({
                                     });
                             }}
                         >
-                            <LikeOutlineIcon color='onSurface' width={20} height={17} />
+                            <LikeOutlineIcon
+                                color={isActiveTrack ? 'primary' : 'onSurface'}
+                                width={20}
+                                height={17}
+                            />
                         </Button>
                     )
                 ) : (
