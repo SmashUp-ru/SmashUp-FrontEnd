@@ -793,7 +793,7 @@ export default function MashupForm({
 
                 <div className='w-full flex flex-col flex-1'>
                     <div className='w-full grid grid-cols-3 gap-x-10 flex-grow'>
-                        {/*название, использованные треки*/}
+                        {/*использованные треки*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
@@ -843,7 +843,7 @@ export default function MashupForm({
                             </div>
                         </div>
 
-                        {/*жанр, банворды*/}
+                        {/*название, mp3, жанр*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
@@ -964,7 +964,7 @@ export default function MashupForm({
                             </div>
                         </div>
 
-                        {/*авторы*/}
+                        {/*авторы, статусы*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>

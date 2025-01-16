@@ -10,13 +10,8 @@ export default function MashupFormSkeleton() {
 
                 <div className='w-full flex flex-col flex-1'>
                     <div className='w-full grid grid-cols-3 gap-x-10 flex-grow'>
-                        {/*название, использованные треки*/}
+                        {/*использованные треки*/}
                         <div className='flex flex-col gap-y-[35px]'>
-                            <div className='flex flex-col gap-y-2.5'>
-                                <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
-                                <Skeleton className='w-[114px] h-[20px] rounded-[9px]' />
-                            </div>
-
                             <div className='flex flex-col gap-y-2.5'>
                                 <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
                                 <Skeleton className='h-[50px] rounded-2xl' />
@@ -26,17 +21,22 @@ export default function MashupFormSkeleton() {
                                         <TrackSmallThumbSkeleton key={idx} />
                                     ))}
                                 </div>
-
-                                <Skeleton className='h-[50px] rounded-2xl' />
                             </div>
                         </div>
 
-                        {/*mp3, жанр, банворды*/}
+                        {/*название, mp3, ссылка, жанр*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
                                 <Skeleton className='w-[114px] h-[20px] rounded-[9px]' />
                             </div>
+
+                            <div className='flex flex-col gap-y-2.5'>
+                                <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
+                                <Skeleton className='w-[114px] h-[20px] rounded-[9px]' />
+                            </div>
+
+                            <Skeleton className='h-[50px] rounded-2xl' />
 
                             <div className='flex flex-col gap-y-2.5'>
                                 <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
@@ -46,12 +46,9 @@ export default function MashupFormSkeleton() {
                                     ))}
                                 </div>
                             </div>
-
-                            <Skeleton className='h-[50px] rounded-2xl' />
-                            <Skeleton className='h-[50px] rounded-2xl' />
                         </div>
 
-                        {/*авторы*/}
+                        {/*авторы, статусы*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Skeleton className='w-[268px] h-[20px] rounded-[9px]' />
@@ -73,6 +70,11 @@ export default function MashupFormSkeleton() {
                                         <Skeleton className='w-[221px] h-[19px] rounded-[10px]' />
                                     </div>
                                 ))}
+                            </div>
+
+                            <div className='flex flex-col gap-y-2.5'>
+                                <Skeleton className='h-[50px] rounded-2xl' />
+                                <Skeleton className='h-[50px] rounded-2xl' />
                             </div>
                         </div>
                     </div>
