@@ -26,9 +26,22 @@ export default function ProfileMenu() {
 
     if (!currentUser)
         return (
-            <Link to='/login' draggable={false}>
-                <DoorIcon />
-            </Link>
+            <div className='flex gap-2.5'>
+                <Link
+                    to='/login'
+                    className='bg-primary text-surface rounded-2xl px-6 py-3.5 text-xl font-bold'
+                    draggable={false}
+                >
+                    Войти
+                </Link>
+                <Link
+                    to='/register'
+                    className='bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold'
+                    draggable={false}
+                >
+                    Зарегистрироваться
+                </Link>
+            </div>
         );
 
     return (
