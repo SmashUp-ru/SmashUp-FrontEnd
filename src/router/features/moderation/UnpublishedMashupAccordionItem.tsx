@@ -7,7 +7,6 @@ import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.ts
 import { Track, useTrackStore } from '@/store/entities/track.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
-import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
 import { useEffect, useState } from 'react';
@@ -289,17 +288,7 @@ export function UnpublishedMashupAccordionItem({
                                 className='cursor-pointer'
                                 onClick={() => {
                                     if (statusUrl) {
-                                        navigator.clipboard.writeText(statusUrl).then(() => {
-                                            toast({
-                                                element: (
-                                                    <CopiedToast
-                                                        img={imageUrl}
-                                                        name={mashup.name}
-                                                    />
-                                                ),
-                                                duration: 2000
-                                            });
-                                        });
+                                        window.open(statusUrl, '_blank');
                                     }
                                 }}
                             >
