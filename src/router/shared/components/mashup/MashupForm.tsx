@@ -268,7 +268,8 @@ export default function MashupForm({
                             return {
                                 key: track.id,
                                 keyType: TrackType.SmashUp,
-                                track: track
+                                track: track,
+                                albums: []
                             };
                         })
                     ),
@@ -286,7 +287,8 @@ export default function MashupForm({
                                           authors: track.authors.map((author) => author.name),
                                           imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
                                           link: `https://music.yandex.ru/album/${track.albums[0].id}/track/${track.id}`
-                                      } as Track
+                                      } as Track,
+                                      albums: track.albums.map((album) => album.title)
                                   };
                               })
                           )
@@ -305,7 +307,8 @@ export default function MashupForm({
                                           authors: track.authors.map((author) => author.name),
                                           imageUrl: track.album.imageUrl,
                                           link: track.link
-                                      } as Track
+                                      } as Track,
+                                      albums: [track.album.name]
                                   };
                               })
                           )
@@ -315,8 +318,9 @@ export default function MashupForm({
             setTracksLoading(true);
 
             Promise.all(promises).then((result) => {
-                // TODO: more complex analyzation for identical tracks, including albums
+                // TODO: more complex analyzation for identical tracks
                 const keys = new Set();
+                const albumKeys = new Set();
 
                 const trackToKey = (track: SearchTrack) => {
                     return (
@@ -338,11 +342,12 @@ export default function MashupForm({
                     }
 
                     keys.add(key);
+                    track.albums.forEach((album) => albumKeys.add(album));
                 }
 
                 const filteredSpotify: SearchTrack[] = [];
                 for (const track of result[2]) {
-                    if (!keys.has(trackToKey(track))) {
+                    if (!keys.has(trackToKey(track)) && !albumKeys.has(track.albums[0])) {
                         filteredSpotify.push(track);
                     }
                 }
