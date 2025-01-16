@@ -843,7 +843,7 @@ export default function MashupForm({
                             </div>
                         </div>
 
-                        {/*название, mp3, жанр*/}
+                        {/*название, mp3, ссылка, жанр*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
@@ -880,58 +880,61 @@ export default function MashupForm({
                                         />
                                     </label>
 
-                                    {hasStatusLink &&
-                                        (!lockStatusLink ? (
-                                            <Input
-                                                startIcon={LinkIcon}
-                                                startIconClassName='text-onSurfaceVariant'
-                                                placeholder='Ссылка на основу / альт (Если есть)'
-                                                value={statusLink}
-                                                onChange={(e) => setStatusLink(e.target.value)}
-                                            />
-                                        ) : (
-                                            <Button
-                                                variant='ghost'
-                                                size='icon'
-                                                className='cursor-pointer'
-                                                onClick={() => {
-                                                    if (statusLink) {
-                                                        navigator.clipboard
-                                                            .writeText(statusLink)
-                                                            .then(() => {
-                                                                toast({
-                                                                    element: (
-                                                                        <CopiedToast
-                                                                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`}
-                                                                            name={'undefined'}
-                                                                        />
-                                                                    ),
-                                                                    duration: 2000
-                                                                });
-                                                            });
-                                                    }
-                                                }}
-                                            >
-                                                <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
-                                                    <LinkIcon />
-                                                    <span className='font-medium text-onSurfaceVariant'>
-                                                        {statusLink || 'Ссылка на основу / альт'}
-                                                    </span>
-                                                </div>
-                                            </Button>
-                                        ))}
-
-                                    <div
-                                        className='h-1 bg-primary rounded'
-                                        style={{ width: `${mashupFileProgress}%` }}
-                                    />
+                                    {mashupFileProgress > 0 && (
+                                        <div
+                                            className='h-1 bg-primary rounded'
+                                            style={{ width: `${mashupFileProgress}%` }}
+                                        />
+                                    )}
                                 </div>
                             )}
+
+                            {hasStatusLink &&
+                                (!lockStatusLink ? (
+                                    <Input
+                                        startIcon={LinkIcon}
+                                        startIconClassName='text-onSurfaceVariant'
+                                        placeholder='Ссылка на основу / альт (Если есть)'
+                                        value={statusLink}
+                                        onChange={(e) => setStatusLink(e.target.value)}
+                                    />
+                                ) : (
+                                    <Button
+                                        variant='ghost'
+                                        size='icon'
+                                        className='cursor-pointer'
+                                        onClick={() => {
+                                            if (statusLink) {
+                                                navigator.clipboard
+                                                    .writeText(statusLink)
+                                                    .then(() => {
+                                                        toast({
+                                                            element: (
+                                                                <CopiedToast
+                                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`}
+                                                                    name={'undefined'}
+                                                                />
+                                                            ),
+                                                            duration: 2000
+                                                        });
+                                                    });
+                                            }
+                                        }}
+                                    >
+                                        <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
+                                            <LinkIcon />
+                                            <span className='font-medium text-onSurfaceVariant'>
+                                                {statusLink || 'Ссылка на основу / альт'}
+                                            </span>
+                                        </div>
+                                    </Button>
+                                ))}
+
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Выберите жанр
                                 </Label>
-                                <div className='grid grid-cols-3 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
+                                <div className='grid grid-cols-3 gap-x-2.5 gap-y-3 max-h-[189px] overflow-y-scroll'>
                                     {allGenres?.map((genre) => {
                                         const selected = selectedGenres.has(genre.toLowerCase());
 
