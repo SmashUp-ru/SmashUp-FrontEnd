@@ -818,6 +818,13 @@ export default function MashupForm({
                                 />
 
                                 <div className='flex flex-col gap-y-2.5 max-h-[270px] overflow-y-scroll'>
+                                    <div className='font-medium text-onSurfaceVariant flex flex-row items-center'>
+                                        <YouTubeIcon />
+                                        <Label className='ml-1'>
+                                            Для трека с YouTube вставьте ссылку в поиск
+                                        </Label>
+                                    </div>
+
                                     <YouTubeTrackSmallThumb
                                         track={youTubeTrack}
                                         loading={youTubeTrackLoading}

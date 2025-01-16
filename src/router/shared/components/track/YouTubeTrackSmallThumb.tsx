@@ -26,19 +26,20 @@ export default function YouTubeTrackSmallThumb({
     renderTracks
 }: YouTubeTrackThumbProps) {
     if (!track) {
+        if (!loading) {
+            return <></>;
+        }
+
         return (
             <div
-                key={`youtube-${loading ? 'loading' : 'empty'}`}
+                key='youtube-loading'
                 className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl items-center gap-x-4 cursor-pointer'
             >
                 <div className='w-12 h-12 min-w-12 min-h-12 rounded-xl bg-onSurface' />
 
                 <div className='flex flex-col min-w-0 w-full text-left'>
                     <span className='font-bold text-onSurface truncate'>
-                        Прикрепить трек с YouTube
-                    </span>
-                    <span className='font-medium text-onSurfaceVariant truncate'>
-                        {loading ? 'Загружаем информацию...' : 'Вставьте ссылку в поиск'}
+                        'Загружаем информацию...'
                     </span>
                 </div>
             </div>
