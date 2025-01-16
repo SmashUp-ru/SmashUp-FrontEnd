@@ -797,17 +797,6 @@ export default function MashupForm({
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Название мэшапа
-                                </Label>
-                                <Input
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder='Введите название мэшапа'
-                                />
-                            </div>
-
-                            <div className='flex flex-col gap-y-2.5'>
-                                <Label className='font-medium text-onSurfaceVariant'>
                                     Добавьте использованные треки
                                 </Label>
                                 <Input
@@ -817,12 +806,10 @@ export default function MashupForm({
                                     onChange={(e) => setTracksQuery(e.target.value)}
                                 />
 
-                                <div className='flex flex-col gap-y-2.5 max-h-[270px] overflow-y-scroll'>
-                                    <div className='font-medium text-onSurfaceVariant flex flex-row items-center'>
+                                <div className='flex flex-col gap-y-2.5 max-h-[470px] overflow-y-scroll'>
+                                    <div className='font-medium text-onSurfaceVariant flex flex-row items-center gap-1'>
                                         <YouTubeIcon />
-                                        <Label className='ml-1'>
-                                            Для трека с YouTube вставьте ссылку в поиск
-                                        </Label>
+                                        <Label>Для трека с YouTube вставьте ссылку в поиск</Label>
                                     </div>
 
                                     <YouTubeTrackSmallThumb
@@ -853,52 +840,22 @@ export default function MashupForm({
                                         </>
                                     )}
                                 </div>
-
-                                {hasStatusLink &&
-                                    (!lockStatusLink ? (
-                                        <Input
-                                            startIcon={LinkIcon}
-                                            startIconClassName='text-onSurfaceVariant'
-                                            placeholder='Ссылка на основу / альт (Если есть)'
-                                            value={statusLink}
-                                            onChange={(e) => setStatusLink(e.target.value)}
-                                        />
-                                    ) : (
-                                        <Button
-                                            variant='ghost'
-                                            size='icon'
-                                            className='cursor-pointer'
-                                            onClick={() => {
-                                                if (statusLink) {
-                                                    navigator.clipboard
-                                                        .writeText(statusLink)
-                                                        .then(() => {
-                                                            toast({
-                                                                element: (
-                                                                    <CopiedToast
-                                                                        img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`}
-                                                                        name={'undefined'}
-                                                                    />
-                                                                ),
-                                                                duration: 2000
-                                                            });
-                                                        });
-                                                }
-                                            }}
-                                        >
-                                            <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
-                                                <LinkIcon />
-                                                <span className='font-medium text-onSurfaceVariant'>
-                                                    {statusLink || 'Ссылка на основу / альт'}
-                                                </span>
-                                            </div>
-                                        </Button>
-                                    ))}
                             </div>
                         </div>
 
                         {/*жанр, банворды*/}
                         <div className='flex flex-col gap-y-[35px]'>
+                            <div className='flex flex-col gap-y-2.5'>
+                                <Label className='font-medium text-onSurfaceVariant'>
+                                    Название мэшапа
+                                </Label>
+                                <Input
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder='Введите название мэшапа'
+                                />
+                            </div>
+
                             {handleMashupFile && (
                                 <div className='flex flex-col gap-y-2.5'>
                                     <Label className='font-medium text-onSurfaceVariant'>
@@ -922,6 +879,47 @@ export default function MashupForm({
                                             }}
                                         />
                                     </label>
+
+                                    {hasStatusLink &&
+                                        (!lockStatusLink ? (
+                                            <Input
+                                                startIcon={LinkIcon}
+                                                startIconClassName='text-onSurfaceVariant'
+                                                placeholder='Ссылка на основу / альт (Если есть)'
+                                                value={statusLink}
+                                                onChange={(e) => setStatusLink(e.target.value)}
+                                            />
+                                        ) : (
+                                            <Button
+                                                variant='ghost'
+                                                size='icon'
+                                                className='cursor-pointer'
+                                                onClick={() => {
+                                                    if (statusLink) {
+                                                        navigator.clipboard
+                                                            .writeText(statusLink)
+                                                            .then(() => {
+                                                                toast({
+                                                                    element: (
+                                                                        <CopiedToast
+                                                                            img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`}
+                                                                            name={'undefined'}
+                                                                        />
+                                                                    ),
+                                                                    duration: 2000
+                                                                });
+                                                            });
+                                                    }
+                                                }}
+                                            >
+                                                <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
+                                                    <LinkIcon />
+                                                    <span className='font-medium text-onSurfaceVariant'>
+                                                        {statusLink || 'Ссылка на основу / альт'}
+                                                    </span>
+                                                </div>
+                                            </Button>
+                                        ))}
 
                                     <div
                                         className='h-1 bg-primary rounded'
@@ -964,107 +962,6 @@ export default function MashupForm({
                                     })}
                                 </div>
                             </div>
-
-                            {hasExplicit && (
-                                <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                    <Checkbox
-                                        checked={explicit}
-                                        onCheckedChange={(v) => {
-                                            if (typeof v === 'boolean') setExplicit(v);
-                                        }}
-                                    />
-                                    <Label className='font-bold text-[18px] text-onSurface'>
-                                        Explicit (Мат)
-                                    </Label>
-                                </div>
-                            )}
-
-                            {hasBanWords && (
-                                <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                    <Checkbox
-                                        checked={banWords}
-                                        onCheckedChange={(v) => {
-                                            if (typeof v === 'boolean') setBanWords(v);
-                                        }}
-                                    />
-                                    <Label className='font-bold text-[18px] text-onSurface'>
-                                        Бан-ворды Twitch
-                                    </Label>
-                                </div>
-                            )}
-
-                            {hasStatuses && (
-                                <div className='flex flex-col gap-y-2.5'>
-                                    <Label className='font-medium text-onSurfaceVariant'>
-                                        Выберите статусы
-                                    </Label>
-                                    <div className='grid grid-cols-4 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
-                                        <div
-                                            className={cn(
-                                                'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
-                                                isExplicit(statuses) ? 'bg-badge text-primary' : ''
-                                            )}
-                                            onClick={() =>
-                                                setStatuses(
-                                                    setIsExplicit(statuses, !isExplicit(statuses))
-                                                )
-                                            }
-                                        >
-                                            <ExplicitIcon />
-                                        </div>
-
-                                        <div
-                                            className={cn(
-                                                'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
-                                                isTwitchBanned(statuses)
-                                                    ? 'bg-badge text-primary'
-                                                    : ''
-                                            )}
-                                            onClick={() =>
-                                                setStatuses(
-                                                    setTwitchBanned(
-                                                        statuses,
-                                                        !isTwitchBanned(statuses)
-                                                    )
-                                                )
-                                            }
-                                        >
-                                            B
-                                        </div>
-
-                                        <div
-                                            className={cn(
-                                                'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
-                                                isHashtagMashup(statuses)
-                                                    ? 'bg-badge text-primary'
-                                                    : ''
-                                            )}
-                                            onClick={() =>
-                                                setStatuses(
-                                                    setHashtagMashup(
-                                                        statuses,
-                                                        !isHashtagMashup(statuses)
-                                                    )
-                                                )
-                                            }
-                                        >
-                                            <HashtagMashupIcon />
-                                        </div>
-
-                                        <div
-                                            className={cn(
-                                                'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
-                                                isAlt(statuses) ? 'bg-badge text-primary' : ''
-                                            )}
-                                            onClick={() =>
-                                                setStatuses(setAlt(statuses, !isAlt(statuses)))
-                                            }
-                                        >
-                                            <AltIcon />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
                         {/*авторы*/}
@@ -1141,6 +1038,114 @@ export default function MashupForm({
                                         );
                                     })}
                                 </div>
+                            </div>
+
+                            <div className='flex flex-col gap-y-2.5'>
+                                {hasExplicit && (
+                                    <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
+                                        <Checkbox
+                                            checked={explicit}
+                                            onCheckedChange={(v) => {
+                                                if (typeof v === 'boolean') setExplicit(v);
+                                            }}
+                                        />
+                                        <Label className='font-bold text-[18px] text-onSurface'>
+                                            Explicit (Мат)
+                                        </Label>
+                                    </div>
+                                )}
+
+                                {hasBanWords && (
+                                    <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
+                                        <Checkbox
+                                            checked={banWords}
+                                            onCheckedChange={(v) => {
+                                                if (typeof v === 'boolean') setBanWords(v);
+                                            }}
+                                        />
+                                        <Label className='font-bold text-[18px] text-onSurface'>
+                                            Бан-ворды Twitch
+                                        </Label>
+                                    </div>
+                                )}
+
+                                {hasStatuses && (
+                                    <div className='flex flex-col gap-y-2.5'>
+                                        <Label className='font-medium text-onSurfaceVariant'>
+                                            Выберите статусы
+                                        </Label>
+                                        <div className='grid grid-cols-4 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
+                                            <div
+                                                className={cn(
+                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
+                                                    isExplicit(statuses)
+                                                        ? 'bg-badge text-primary'
+                                                        : ''
+                                                )}
+                                                onClick={() =>
+                                                    setStatuses(
+                                                        setIsExplicit(
+                                                            statuses,
+                                                            !isExplicit(statuses)
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <ExplicitIcon />
+                                            </div>
+
+                                            <div
+                                                className={cn(
+                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
+                                                    isTwitchBanned(statuses)
+                                                        ? 'bg-badge text-primary'
+                                                        : ''
+                                                )}
+                                                onClick={() =>
+                                                    setStatuses(
+                                                        setTwitchBanned(
+                                                            statuses,
+                                                            !isTwitchBanned(statuses)
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                B
+                                            </div>
+
+                                            <div
+                                                className={cn(
+                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
+                                                    isHashtagMashup(statuses)
+                                                        ? 'bg-badge text-primary'
+                                                        : ''
+                                                )}
+                                                onClick={() =>
+                                                    setStatuses(
+                                                        setHashtagMashup(
+                                                            statuses,
+                                                            !isHashtagMashup(statuses)
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <HashtagMashupIcon />
+                                            </div>
+
+                                            <div
+                                                className={cn(
+                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
+                                                    isAlt(statuses) ? 'bg-badge text-primary' : ''
+                                                )}
+                                                onClick={() =>
+                                                    setStatuses(setAlt(statuses, !isAlt(statuses)))
+                                                }
+                                            >
+                                                <AltIcon />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
