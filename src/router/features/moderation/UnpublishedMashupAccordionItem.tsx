@@ -9,7 +9,7 @@ import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     loadSelectedTracks,
     SelectedTrack,
