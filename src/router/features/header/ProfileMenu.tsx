@@ -12,6 +12,7 @@ import DoorIcon from '@/components/icons/Door.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import AddMashupIcon from '@/components/icons/AddMashup.tsx';
 import { isModerator } from '@/lib/bitmask';
+import SettingsIcon from '@/components/icons/Settings';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -55,6 +56,9 @@ export default function ProfileMenu() {
                             <GavelIcon />
                         </Link>
                     )}
+                    <Link to='/settings'>
+                        <SettingsIcon />
+                    </Link>
                     <Button
                         variant='ghost'
                         size='icon'
