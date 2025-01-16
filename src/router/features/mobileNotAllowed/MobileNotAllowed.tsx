@@ -26,7 +26,7 @@ export function MobileNotAllowed() {
                     </Link>
                     !
                 </h1>
-                <Button onClick={() => updateAgreedMobile(true)}>Я понимаю</Button>
+                <Button onClick={() => updateAgreedMobile(true)}>Всё равно открыть</Button>
             </div>
         </div>
     );
