@@ -38,6 +38,10 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import SpotifyIcon from '@/components/icons/Spotify';
 import { getToken } from '@/store/global';
 import { format } from 'date-fns';
+import WarningIcon from '@/components/icons/Warning';
+import { RegEx } from '@/lib/regex';
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
+import { TooltipContent } from '@/components/ui/tooltip';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -91,6 +95,14 @@ export function UnpublishedMashupAccordionItem({
 
     if (!moderationMashups) return null;
 
+    let hasYouTube = false;
+    for (const trackUrl of mashup.tracksUrls) {
+        if (RegEx.YOUTUBE.test(trackUrl)) {
+            hasYouTube = true;
+            break;
+        }
+    }
+
     return (
         <AccordionItem value={value}>
             <AccordionTrigger>
@@ -111,7 +123,26 @@ export function UnpublishedMashupAccordionItem({
 
                     <div className='flex items-center gap-x-7'>
                         <div className='flex items-center gap-x-3'>
-                            {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
+                            {hasYouTube && (
+                                <TooltipProvider>
+                                    <Tooltip delayDuration={100}>
+                                        <TooltipTrigger>
+                                            <WarningIcon />
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                            className='max-w-[300px] text-center'
+                                            side='top'
+                                            sideOffset={16}
+                                        >
+                                            <p>В треках есть непривязанная ссылка с YouTube</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+
+                            <div className='flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
+                                {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
+                            </div>
 
                             <Button
                                 variant='ghost'
