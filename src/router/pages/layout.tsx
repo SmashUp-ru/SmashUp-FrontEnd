@@ -7,6 +7,7 @@ import { getToken, useGlobalStore } from '@/store/global.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { MobileNotAllowed } from '@/router/features/mobileNotAllowed/MobileNotAllowed.tsx';
 import { useMobileStore } from '@/store/mobile.ts';
+import { AxiosError } from 'axios';
 
 export default function Layout() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
@@ -26,11 +27,13 @@ export default function Layout() {
                     updateCurrentUser(r);
                     updateCurrentUserPlaylists(r.playlists);
                 })
-                .catch(() => {
-                    localStorage.removeItem('smashup_token');
-                    sessionStorage.removeItem('smashup_token');
-                    updateToken('');
-                    updateCurrentUser(null);
+                .catch((e: AxiosError) => {
+                    if (e.status === 404) {
+                        localStorage.removeItem('smashup_token');
+                        sessionStorage.removeItem('smashup_token');
+                        updateToken('');
+                        updateCurrentUser(null);
+                    }
                 });
         }
     }, [token]);
