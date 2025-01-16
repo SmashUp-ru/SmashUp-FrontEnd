@@ -38,6 +38,7 @@ import {
 import { Textarea } from '@/components/ui/textarea.tsx';
 import SpotifyIcon from '@/components/icons/Spotify';
 import { getToken } from '@/store/global';
+import { format } from 'date-fns';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -111,6 +112,8 @@ export function UnpublishedMashupAccordionItem({
 
                     <div className='flex items-center gap-x-7'>
                         <div className='flex items-center gap-x-3'>
+                            {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
+
                             <Button
                                 variant='ghost'
                                 size='icon'
