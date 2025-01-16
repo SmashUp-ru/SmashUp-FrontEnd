@@ -15,7 +15,7 @@ export default function Footer() {
                     <Link to='/privacy_policy'>Политика Конфиденциальности</Link>
                     <Link to='/user_agreement'>Пользовательское соглашение</Link>
                     <Link to='/dmca'>Правообладателям</Link>
-                    <Link to='https://t.me/fkng_smashup' target='_blank' className='flex gap-2'>
+                    <Link to='https://t.me/smashup_ru' target='_blank' className='flex gap-2'>
                         <TelegramIcon /> Наш телеграм-канал
                     </Link>
                     <Link to='https://vk.com/smashupru' target='_blank' className='flex gap-2'>
@@ -23,7 +23,7 @@ export default function Footer() {
                         Наша группа в ВК
                     </Link>
                 </div>
-                <span className='text-primary font-bold'>2024 SmashUp</span>
+                <span className='text-primary font-bold'>2025 SmashUp</span>
             </div>
             <span className='font-medium text-onSurfaceVariant'>
                 Сервис <Link to='https://smashup.ru' /> может содержать информацию, не
