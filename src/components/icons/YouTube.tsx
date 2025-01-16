@@ -32,8 +32,8 @@ export default function YouTubeIcon({
             <defs>
                 <clipPath id='clip0_7326_4557'>
                     <rect
-                        width='24'
-                        height='24'
+                        width={size ? size : width}
+                        height={size ? size : height}
                         fill='white'
                         transform='translate(0.421875 0.805664)'
                     />

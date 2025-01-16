@@ -1,7 +1,7 @@
 import { axiosSession, cn, removeItem } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
@@ -62,6 +62,7 @@ import { SpotifyTracksResponse } from '@/types/api/spotify.ts';
 import SpotifyIcon from '@/components/icons/Spotify.tsx';
 import TrackSmallThumbSkeleton from '../track/TrackSmallThumbSkeleton.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import { SmashUpIcon } from '@/components/icons/SmashUp.tsx';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -175,6 +176,9 @@ export default function MashupForm({
     const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>(initial.selectedTracks);
 
     const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
+    const [startSelectedTracksLength, setStartSelectedTracksLength] = useState<number>(0);
+    const [renderTracksNodes, setRenderTracksNodes] = useState<ReactNode[]>([]);
+    const [showMoreCategories, setShowMoreCategories] = useState<TrackType[]>([]);
 
     const searchYouTube = (link: string) => {
         setYouTubeTrackLoading(true);
@@ -191,6 +195,7 @@ export default function MashupForm({
                 return {
                     keyType: TrackType.SmashUp,
                     key: track.key,
+                    icon: <SmashUpIcon />,
                     track: (track as SmashUpSelectedTrack).track,
                     selected: true,
                     statefulOnClick: (selectedTracks: SelectedTrack[]) =>
@@ -358,7 +363,9 @@ export default function MashupForm({
         const renderTracks = nonSelectedTracks.map((track) => {
             let icon;
             const type = track.keyType;
-            if (type === TrackType.YouTube) {
+            if (type === TrackType.SmashUp) {
+                icon = <SmashUpIcon />;
+            } else if (type === TrackType.YouTube) {
                 icon = <YouTubeIcon />;
             } else if (type === TrackType.YandexMusic) {
                 icon = <YandexMusicIcon />;
@@ -390,6 +397,7 @@ export default function MashupForm({
         });
 
         setRenderTracks(renderSelectedTracks(selectedTracks).concat(renderTracks));
+        setStartSelectedTracksLength(selectedTracks.length);
     }, [tracks]);
 
     useEffect(() => {
@@ -408,6 +416,89 @@ export default function MashupForm({
 
         setRenderTracks(newRenderTracks);
     }, [selectedTracks]);
+
+    useEffect(() => {
+        const renderTracksNodes: ReactNode[] = [];
+
+        const renderedAmount: Map<TrackType, number> = new Map();
+
+        let index = -1;
+        for (const renderTrack of renderTracks) {
+            index++;
+
+            const keyType = renderTracks[index].keyType;
+            const showLess = showMoreCategories.indexOf(keyType) < 0;
+            if (
+                index === startSelectedTracksLength ||
+                (index > startSelectedTracksLength && renderTracks[index - 1].keyType !== keyType)
+            ) {
+                let name;
+                if (keyType === TrackType.SmashUp) {
+                    name = 'SmashUp';
+                } else if (keyType === TrackType.YandexMusic) {
+                    name = 'Яндекс.Музыке';
+                } else if (keyType === TrackType.Spotify) {
+                    name = 'Spotify';
+                } else {
+                    name = keyType.toString();
+                }
+
+                renderTracksNodes.push(
+                    <div className='flex flex-row items-center justify-between text-onSurfaceVariant mt-1'>
+                        <div className='flex flex-row items-center gap-1'>
+                            {renderTrack.icon}
+                            <Label>
+                                Лучшие результаты в <span className='font-bold'>{name}</span>
+                            </Label>
+                        </div>
+
+                        <Label
+                            className='font-bold mr-1 cursor-pointer'
+                            onClick={() => {
+                                if (showLess) {
+                                    setShowMoreCategories(showMoreCategories.concat([keyType]));
+                                } else {
+                                    setShowMoreCategories(removeItem(showMoreCategories, keyType));
+                                }
+                            }}
+                        >
+                            {showLess ? 'ПОКАЗАТЬ ЕЩЁ' : 'НЕ ПОКАЗЫВАТЬ ЕЩЁ'}
+                        </Label>
+                    </div>
+                );
+            }
+
+            if (index >= startSelectedTracksLength && showLess) {
+                let rendered = renderedAmount.get(keyType);
+                if (rendered === undefined) {
+                    rendered = 0;
+                }
+                if (rendered < 2) {
+                    renderedAmount.set(keyType, rendered + 1);
+                } else {
+                    continue;
+                }
+            }
+
+            const thumb = (
+                <TrackSmallThumb
+                    key={renderTrack.track.id}
+                    track={renderTrack.track}
+                    selected={renderTrack.selected}
+                    icon={
+                        showTracksIcons && keyType !== TrackType.SmashUp
+                            ? renderTrack.icon
+                            : undefined
+                    }
+                    onClick={() => renderTrack.statefulOnClick(selectedTracks)}
+                />
+            );
+
+            renderTracksNodes.push(thumb);
+        }
+
+        setRenderTracksNodes(renderTracksNodes);
+    }, [renderTracks, showMoreCategories]);
 
     const trackStatefulOnClick = (track: SelectedTrack, selectedTracks: SelectedTrack[]) => {
         if (isTrackSelected(track, selectedTracks)) {
@@ -825,20 +916,12 @@ export default function MashupForm({
                                         renderTracks={renderTracks}
                                     />
 
-                                    {renderTracks.map((renderTrack) => (
-                                        <TrackSmallThumb
-                                            key={renderTrack.track.id}
-                                            track={renderTrack.track}
-                                            selected={renderTrack.selected}
-                                            icon={showTracksIcons ? renderTrack.icon : undefined}
-                                            onClick={() =>
-                                                renderTrack.statefulOnClick(selectedTracks)
-                                            }
-                                        />
-                                    ))}
+                                    {renderTracksNodes}
 
                                     {tracksLoading && (
                                         <>
+                                            <TrackSmallThumbSkeleton />
+                                            <TrackSmallThumbSkeleton />
                                             <TrackSmallThumbSkeleton />
                                             <TrackSmallThumbSkeleton />
                                             <TrackSmallThumbSkeleton />
