@@ -756,8 +756,8 @@ export default function MashupForm({
                 <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
             </div>
             <div className='w-full flex gap-x-12 flex-1'>
-                {/*картинка, mp3*/}
-                <div>
+                {/*картинка*/}
+                <div className='flex flex-col gap-y-2.5'>
                     <label className='relative cursor-pointer h-fit'>
                         {normalizedBasedImageFile ? (
                             <img
@@ -789,6 +789,11 @@ export default function MashupForm({
                             }}
                         />
                     </label>
+
+                    <div className='max-w-[200px] text-onSurfaceVariant'>
+                        Обложка должна быть в формате <b>.png</b> или <b>.jpg</b> и быть равной или
+                        больше <b>800x800px</b>
+                    </div>
                 </div>
 
                 <div className='w-full flex flex-col flex-1'>
