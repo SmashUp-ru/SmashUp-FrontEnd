@@ -402,6 +402,7 @@ export default function MashupForm({
         });
 
         setRenderTracks(renderSelectedTracks(selectedTracks).concat(renderTracks));
+        setShowMoreCategories([]);
         setStartSelectedTracksLength(selectedTracks.length);
     }, [tracks]);
 
