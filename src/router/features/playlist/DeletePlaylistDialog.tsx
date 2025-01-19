@@ -30,6 +30,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
     const updateUserById = useUserStore((state) => state.updateOneById);
     const getUserById = useUserStore((state) => state.getOneById);
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+    const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
 
     if (!currentUser) return null;
 
@@ -69,7 +70,10 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
                                         )
                                     ]
                                 });
-                                getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                                getUserById(currentUser.id).then((r) => {
+                                    updateCurrentUser(r);
+                                    updateCurrentUserPlaylists(r.playlists);
+                                });
                                 navigate(`/user/${currentUser.username}`);
                             });
                         }}

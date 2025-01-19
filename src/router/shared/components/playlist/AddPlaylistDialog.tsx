@@ -55,6 +55,7 @@ export default function AddPlaylistDialog({
     const updateUserById = useUserStore((state) => state.updateOneById);
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
+    const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
     const getUserById = useUserStore((state) => state.getOneById);
     const userCache = useUserStore((state) => state.cache);
 
@@ -71,6 +72,8 @@ export default function AddPlaylistDialog({
         if (sent) {
             return;
         }
+
+        setSent(true);
 
         if (values.basedImageFile) {
             const image = new Image();
@@ -95,8 +98,6 @@ export default function AddPlaylistDialog({
             };
         }
 
-        setSent(true);
-
         axiosSession
             .post(`/playlist/${existingPlaylist ? `edit?id=${existingPlaylist.id}` : 'create'}`, {
                 name: values.name,
@@ -114,7 +115,10 @@ export default function AddPlaylistDialog({
                             updateUserById(currentUser.id, {
                                 playlists: [...currentUser.playlists, r.data.response.id]
                             });
-                            getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                            getUserById(currentUser.id).then((r) => {
+                                updateCurrentUser(r);
+                                updateCurrentUserPlaylists(r.playlists);
+                            });
                         }
                     } else {
                         window.location.reload();
@@ -254,7 +258,7 @@ export default function AddPlaylistDialog({
                                     />
                                 </div>
                             </DialogDescription>
-                            <Button type='submit' className='w-full'>
+                            <Button type='submit' className='w-full' disabled={sent}>
                                 {existingPlaylist ? 'Сохранить' : 'Создать'}
                             </Button>
                         </DialogHeader>
