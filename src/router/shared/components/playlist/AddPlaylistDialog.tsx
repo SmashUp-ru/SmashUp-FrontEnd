@@ -49,12 +49,14 @@ export default function AddPlaylistDialog({
     const { toast } = useToast();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [sent, setSent] = useState(false);
 
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const updateUserById = useUserStore((state) => state.updateOneById);
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const getUserById = useUserStore((state) => state.getOneById);
+    const userCache = useUserStore((state) => state.cache);
 
     const form = useForm<z.infer<typeof addPlaylistFormSchema>>({
         resolver: zodResolver(addPlaylistFormSchema),
@@ -66,6 +68,10 @@ export default function AddPlaylistDialog({
     });
 
     function onSubmit(values: z.infer<typeof addPlaylistFormSchema>) {
+        if (sent) {
+            return;
+        }
+
         if (values.basedImageFile) {
             const image = new Image();
             image.src = values.basedImageFile;
@@ -83,10 +89,13 @@ export default function AddPlaylistDialog({
                         duration: 2000,
                         variant: 'destructive'
                     });
+                    // TODO: это же не завершит выполнение метода
                     return;
                 }
             };
         }
+
+        setSent(true);
 
         axiosSession
             .post(`/playlist/${existingPlaylist ? `edit?id=${existingPlaylist.id}` : 'create'}`, {
@@ -101,10 +110,12 @@ export default function AddPlaylistDialog({
                     updatePlaylistById(r.data.response.id, r.data.response);
 
                     if (!existingPlaylist) {
-                        updateUserById(currentUser.id, {
-                            playlists: [...currentUser.playlists, r.data.response.id]
-                        });
-                        getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                        if (userCache[currentUser.id]) {
+                            updateUserById(currentUser.id, {
+                                playlists: [...currentUser.playlists, r.data.response.id]
+                            });
+                            getUserById(currentUser.id).then((r) => updateCurrentUser(r));
+                        }
                     } else {
                         window.location.reload();
                     }
@@ -131,7 +142,8 @@ export default function AddPlaylistDialog({
                     toast,
                     `при ${existingPlaylist ? 'обновлении' : 'создании'} плейлиста.`
                 )
-            );
+            )
+            .finally(() => setSent(false));
     }
 
     const imageLink = form.watch('basedImageFile');
@@ -144,7 +156,9 @@ export default function AddPlaylistDialog({
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
                         <DialogHeader className='gap-y-5'>
-                            <DialogTitle className='pb-0'>Добавление плейлиста</DialogTitle>
+                            <DialogTitle className='pb-0'>
+                                {existingPlaylist ? 'Редактирование ' : 'Добавление '} плейлиста
+                            </DialogTitle>
                             <DialogDescription className='pt-0 mt-0 flex items-center gap-x-[33px]'>
                                 <FormField
                                     control={form.control}
@@ -241,7 +255,7 @@ export default function AddPlaylistDialog({
                                 </div>
                             </DialogDescription>
                             <Button type='submit' className='w-full'>
-                                Сохранить
+                                {existingPlaylist ? 'Сохранить' : 'Создать'}
                             </Button>
                         </DialogHeader>
                     </form>
