@@ -77,7 +77,7 @@ export default function RegisterPage() {
                         onSubmit={form.handleSubmit(onSubmit)}
                         className='w-full flex flex-col gap-y-6'
                     >
-                        {/*Псевдоним*/}
+                        {/*Никнейм*/}
                         <FormField
                             control={form.control}
                             name='nickname'

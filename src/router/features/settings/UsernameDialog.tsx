@@ -97,7 +97,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                     <DialogContent className='w-[460px]'>
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
-                                <DialogTitle>Изменение Псевдонима</DialogTitle>
+                                <DialogTitle>Изменение никнейма</DialogTitle>
                                 <DialogClose className='pb-7'>
                                     <Button variant='ghost' size='icon'>
                                         <CancelIcon size={18} />
@@ -126,7 +126,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                                 render={({ field }) => (
                                                     <FormItem className='flex flex-col gap-y-2.5'>
                                                         <Label className='font-medium text-onSurfaceVariant'>
-                                                            Псевдоним
+                                                            Никнейм
                                                         </Label>
                                                         <FormControl>
                                                             <Input
@@ -134,7 +134,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                                                     form.formState.errors
                                                                         .username !== undefined
                                                                 }
-                                                                placeholder='Введите новый Псевдоним...'
+                                                                placeholder='Введите новый никнейм...'
                                                                 {...field}
                                                             />
                                                         </FormControl>
@@ -157,7 +157,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                                                     form.formState.errors
                                                                         .password !== undefined
                                                                 }
-                                                                placeholder='Введите Пароль...'
+                                                                placeholder='Введите пароль...'
                                                                 {...field}
                                                             />
                                                         </FormControl>
