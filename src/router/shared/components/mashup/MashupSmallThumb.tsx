@@ -48,8 +48,6 @@ export default function MashupSmallThumb({
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const currentQueueId = usePlayerStore((state) => state.queueId);
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
-    const isThisMash = queue[queueIndex] === mashup.id && currentQueueId === queueId;
-    const isActiveTrack = isPlaying && isThisMash;
 
     const { mashups, isLoading } = usePlaylistMashups(playlist);
 
@@ -65,6 +63,8 @@ export default function MashupSmallThumb({
         return <MashupSmallThumbSkeleton />;
     }
 
+    const isThisMash = queue[queueIndex] === mashup.id && currentQueueId === queueId;
+    const isActiveTrack = isPlaying && isThisMash;
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     if (hideExplicit && isExplicit(mashup.statuses))
