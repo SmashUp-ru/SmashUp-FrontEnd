@@ -16,6 +16,5 @@ export const changeUsernameFormSchema = z.object({
         .regex(RegEx.PASSWORD, {
             message:
                 'В пароле могут быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-        }),
-    remember: z.boolean()
+        })
 });
