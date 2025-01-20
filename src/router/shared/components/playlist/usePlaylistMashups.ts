@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 
-export function usePlaylistMashups(playlist: number[]) {
+export function usePlaylistMashups(playlist: number[], dependencies: unknown[] = []) {
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
     const [mashups, setMashups] = useState<Mashup[]>([]);
@@ -11,7 +11,7 @@ export function usePlaylistMashups(playlist: number[]) {
         getMashupsByIds(playlist)
             .then((r) => setMashups(r))
             .finally(() => setIsLoading(false));
-    }, []);
+    }, dependencies);
 
     return {
         mashups,

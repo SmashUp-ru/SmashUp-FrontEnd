@@ -37,7 +37,7 @@ export default function UserTracksPage() {
 
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
 
-    const { mashups, isLoading } = usePlaylistMashups(user ? user.mashups : []);
+    const { mashups, isLoading } = usePlaylistMashups(user ? user.mashups : [], [user]);
 
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
