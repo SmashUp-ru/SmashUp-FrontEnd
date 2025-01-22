@@ -26,7 +26,7 @@ export default function Sidebar() {
         >
             {/* Логотип */}
             <Link draggable={false} className='px-7 mb-[70px]' to='/'>
-                <LogoIcon color='primary' />
+                <LogoIcon color='primary' hoverColor='hoverPrimary' />
             </Link>
 
             <div className='flex flex-col gap-y-12 px-12'>
@@ -35,6 +35,7 @@ export default function Sidebar() {
                     <Link draggable={false} to={'/'}>
                         <HomeIcon
                             color={location.pathname === '/' ? 'primary' : 'onSurfaceVariant'}
+                            hoverColor={location.pathname === '/' ? 'hoverPrimary' : 'onSurface'}
                         />
                     </Link>
 
@@ -45,6 +46,11 @@ export default function Sidebar() {
                                     location.pathname === '/favorites'
                                         ? 'primary'
                                         : 'onSurfaceVariant'
+                                }
+                                hoverColor={
+                                    location.pathname === '/favorites'
+                                        ? 'hoverPrimary'
+                                        : 'onSurface'
                                 }
                             />
                         </Link>
@@ -70,7 +76,7 @@ export default function Sidebar() {
 
                     {currentUser ? (
                         <AddPlaylistDialog redirect>
-                            <AddIcon color='onSurfaceVariant' />
+                            <AddIcon color='onSurfaceVariant' hoverColor='onSurface' />
                         </AddPlaylistDialog>
                     ) : (
                         <TooltipProvider>

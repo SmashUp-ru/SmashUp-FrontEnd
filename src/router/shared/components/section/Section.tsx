@@ -23,7 +23,7 @@ export default function Section({ children, title, link, className }: SectionPro
                         to={link.href}
                         className='font-bold text-additionalText'
                     >
-                        {link.title}
+                        <span className='hover:text-onSurface'>{link.title}</span>
                     </Link>
                 )}
             </div>

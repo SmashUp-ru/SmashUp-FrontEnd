@@ -25,7 +25,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     <DropdownMenuPrimitive.SubTrigger
         ref={ref}
         className={cn(
-            'flex cursor-default gap-2 select-none items-center rounded-[18px] px-4 py-[13px] font-medium outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none',
+            'flex cursor-default gap-2 select-none items-center rounded-[18px] px-4 py-[13px] font-medium outline-none focus:bg-accent data-[state=open]:bg-accent',
             inset && 'pl-8',
             className
         )}
@@ -79,7 +79,7 @@ const DropdownMenuItem = React.forwardRef<
     <DropdownMenuPrimitive.Item
         ref={ref}
         className={cn(
-            'relative flex cursor-default select-none items-center gap-2 rounded-[18px] px-4 py-[13px] font-medium outline-none transition-colors focus:bg-badge data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none ',
+            'relative flex cursor-default select-none items-center gap-2 rounded-[18px] px-4 py-[13px] font-medium outline-none transition-colors focus:bg-badge data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
             inset && 'pl-8',
             className
         )}

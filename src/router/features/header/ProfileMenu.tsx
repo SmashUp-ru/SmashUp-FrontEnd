@@ -29,14 +29,14 @@ export default function ProfileMenu() {
             <div className='flex gap-2.5'>
                 <Link
                     to='/login'
-                    className='bg-primary text-surface rounded-2xl px-6 py-3.5 text-xl font-bold'
+                    className='bg-primary text-surface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary'
                     draggable={false}
                 >
                     Войти
                 </Link>
                 <Link
                     to='/register'
-                    className='bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold'
+                    className='bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary/[0.2] hover:text-primary'
                     draggable={false}
                 >
                     Зарегистрироваться

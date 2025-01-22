@@ -46,8 +46,13 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                 <DropdownMenuGroup>
                     {currentUser && (
                         <DropdownMenuSub>
-                            <DropdownMenuSubTrigger className='flex items-center gap-x-[14.4px]'>
-                                <PlusIcon color='onSurface' />В плейлист
+                            <DropdownMenuSubTrigger className='flex items-center gap-x-[14.4px] hover:text-primary hover:bg-primary/[0.2] group'>
+                                <PlusIcon
+                                    className='group-hover:text-primary'
+                                    color='onSurface'
+                                    hoverColor='primary'
+                                />{' '}
+                                В плейлист
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent sideOffset={8}>
@@ -57,9 +62,14 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                             }}
+                                            className='hover:text-primary hover:bg-primary/[0.2]'
                                         >
-                                            <div className='flex items-center gap-x-[14.4px]'>
-                                                <AddIcon color='onSurface' />
+                                            <div className='flex items-center gap-x-[14.4px] group'>
+                                                <AddIcon
+                                                    className='group-hover:text-primary'
+                                                    color='onSurface'
+                                                    hoverColor='primary'
+                                                />
                                                 <span>Создать плейлист</span>
                                             </div>
                                         </DropdownMenuItem>
@@ -166,15 +176,15 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                     )}
 
                     <DropdownMenuItem
-                        className='flex items-center gap-x-[14.4px]'
+                        className='flex items-center gap-x-[14.4px] hover:text-primary hover:bg-primary/[0.2] group'
                         onClick={() => {}}
                     >
-                        <BackIcon />
+                        <BackIcon className='group-hover:text-primary' hoverColor='primary' />
                         <span>Добавить в очередь</span>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                        className='flex items-center gap-x-[14.4px]'
+                        className='flex items-center gap-x-[14.4px] hover:text-primary hover:bg-primary/[0.2] group'
                         onClick={() => {
                             navigator.clipboard
                                 .writeText(
@@ -193,7 +203,7 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                 });
                         }}
                     >
-                        <ShareIcon />
+                        <ShareIcon className='group-hover:text-primary' hoverColor='primary' />
                         <span>Поделиться</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

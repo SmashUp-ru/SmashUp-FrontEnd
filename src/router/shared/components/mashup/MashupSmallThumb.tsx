@@ -72,7 +72,7 @@ export default function MashupSmallThumb({
 
     return (
         <div
-            className={`flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl ${isActiveTrack && 'bg-primary/[0.35]'}`}
+            className={`flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl ${isActiveTrack && 'bg-primary/[0.35] hover:bg-hoverPrimary/[0.35]'}`}
         >
             <div className='flex items-center gap-x-4 w-full'>
                 <div className='relative'>
@@ -229,7 +229,7 @@ export default function MashupSmallThumb({
                         <Tooltip>
                             <TooltipTrigger>
                                 <LikeOutlineIcon
-                                    color='onSurfaceVariant/50'
+                                    color={isActiveTrack ? 'primary' : 'onSurface'}
                                     width={20}
                                     height={17}
                                 />
@@ -252,7 +252,9 @@ export default function MashupSmallThumb({
                     <MashupMoreDropdown mashup={mashup}>
                         <Button variant='ghost' size='icon'>
                             <div className='hidden group-hover:block'>
-                                <MoreHorizontalIcon />
+                                <MoreHorizontalIcon
+                                    color={isActiveTrack ? 'primary' : 'onSurface'}
+                                />
                             </div>
 
                             <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>

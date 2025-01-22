@@ -5,7 +5,7 @@ import { Playlist } from '@/store/entities/playlist.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
-import { zip } from '@/lib/utils.ts';
+import { cn, zip } from '@/lib/utils.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
@@ -59,9 +59,12 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             onClick={() => {
                                 pause();
                             }}
-                            className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                            className={cn(
+                                'hidden group-hover:block absolute bottom-3 right-3 z-20',
+                                isPlaying ? 'block' : ''
+                            )}
                         >
-                            <PauseHollowIcon color='onSurface' hoverColor='primary' />
+                            <PauseHollowIcon color='primary' hoverColor='hoverPrimary' />
                         </Button>
                     ) : (
                         <Button
@@ -80,7 +83,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             }}
                             className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         >
-                            <PlayHollowIcon color='onSurface' hoverColor='primary' />
+                            <PlayHollowIcon color='onSurface' hoverColor='onSurfaceVariant' />
                         </Button>
                     ))}
             </div>
