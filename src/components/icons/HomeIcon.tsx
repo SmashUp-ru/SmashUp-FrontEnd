@@ -4,6 +4,7 @@ import { IconProps } from '@/components/icons/props.tsx';
 export default function HomeIcon({
     className,
     color = 'onSurfaceVariant',
+    hoverColor,
     size = 25,
     height,
     width
@@ -14,7 +15,7 @@ export default function HomeIcon({
             height={size ? size : height}
             viewBox='0 0 25 25'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color}`, 'fill-current', className)}
+            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
         >
             <path
                 fillRule='evenodd'
