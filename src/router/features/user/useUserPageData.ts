@@ -35,7 +35,9 @@ export function useUserPageData(username?: string) {
                     })
                     .finally(() => setMashupsLoading(false));
             } else {
-                getMashupsByIds(user.mashups.concat(user.mashups[user.mashups.length - 1]))
+                getMashupsByIds(
+                    user.mashups.slice(0, 5).concat(user.mashups[user.mashups.length - 1])
+                )
                     .then((r) => {
                         setMashups(r.slice(0, 5));
                         setLatestMashup(r[5]);
