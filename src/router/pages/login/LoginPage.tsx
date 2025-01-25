@@ -26,11 +26,12 @@ import ProfileIcon from '@/components/icons/Profile.tsx';
 import { loginFormSchema } from '@/router/shared/schemas/login.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import BaseToast from '@/router/shared/toasts/Base';
 
 export default function LoginPage() {
     const { toast } = useToast();
 
-    const { updateCurrentUser, token, updateToken } = useGlobalStore();
+    const { currentUser, updateCurrentUser, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const navigate = useNavigate();
 
@@ -62,10 +63,19 @@ export default function LoginPage() {
     }
 
     useEffect(() => {
-        if (token) {
+        if (currentUser) {
             navigate('/');
+            toast({
+                element: (
+                    <BaseToast
+                        before={'Вы уже'}
+                        field={`авторизованы как ${currentUser.username}`}
+                    />
+                ),
+                duration: 4000
+            });
         }
-    }, [token]);
+    }, [currentUser]);
 
     return (
         <div className='flex justify-center items-center h-full'>
