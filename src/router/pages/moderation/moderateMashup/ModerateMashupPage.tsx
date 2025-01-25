@@ -37,7 +37,6 @@ export default function ModerateMashupPage() {
 
     const [users, setUsers] = useState<User[]>();
     const [tracks, setTracks] = useState<SelectedTrack[]>();
-    const [image, setImage] = useState<string>();
 
     const userStore = useUserStore();
     const trackStore = useTrackStore();
@@ -51,17 +50,6 @@ export default function ModerateMashupPage() {
         userStore.getManyByIds(mashup.authorsIds, true).then(setUsers);
 
         loadSelectedTracks(mashup, trackStore).then(setTracks);
-
-        axiosSession
-            .get(
-                `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`,
-                {
-                    responseType: 'blob'
-                }
-            )
-            .then((r: AxiosResponse<Blob>) => {
-                setImage(URL.createObjectURL(r.data));
-            });
     }, [mashup]);
 
     if (
@@ -69,8 +57,7 @@ export default function ModerateMashupPage() {
         unpublishedMashups === null ||
         mashup === undefined ||
         users === undefined ||
-        tracks === undefined ||
-        image === undefined
+        tracks === undefined
     ) {
         return <MashupFormSkeleton />;
     }
@@ -90,7 +77,7 @@ export default function ModerateMashupPage() {
                         ? mashup.statusesUrls[0]
                         : '',
                 agree: true,
-                basedImage: image
+                basedImage: `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`
             }}
             text={{
                 title: 'Редактирование неопубликованного мэшапа',
