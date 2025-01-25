@@ -6,12 +6,12 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu.tsx';
 import { ReactNode } from 'react';
-import { Track } from '@/store/entities/track.ts';
+import { TrackLike } from '@/store/entities/track.ts';
 import LinkExternalIcon from '@/components/icons/LinkExternal.tsx';
 import { Link } from 'react-router-dom';
 
 interface TrackMoreDropdownProps {
-    track: Track;
+    track: TrackLike;
     children: ReactNode;
 }
 

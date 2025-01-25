@@ -1,6 +1,14 @@
 import { createEntityStore } from '@/store/entities/entities.ts';
 
-export interface Track {
+export interface TrackLike {
+    id: React.Key;
+    authors: string[];
+    name: string;
+    imageUrl: string;
+    link: string;
+}
+
+export interface Track extends TrackLike {
     id: number;
     name: string;
     authors: string[];

@@ -1,7 +1,7 @@
 import { axiosSession, cn, removeItem } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
@@ -29,8 +29,7 @@ import {
     SpotifySelectedTrack,
     TrackType,
     UploadMashupRequestBody,
-    YandexMusicSelectedTrack,
-    YouTubeSelectedTrack
+    YandexMusicSelectedTrack
 } from '@/router/shared/types/upload.ts';
 import YouTubeTrackSmallThumb from '@/router/shared/components/track/YouTubeTrackSmallThumb.tsx';
 import { User } from '@/store/entities/user.ts';
@@ -190,50 +189,29 @@ export default function MashupForm({
 
     function renderSelectedTracks(selectedTracks: SelectedTrack[]): RenderTrack[] {
         return selectedTracks.map((track) => {
+            let icon;
             const type = track.keyType;
             if (type === TrackType.SmashUp) {
-                return {
-                    keyType: TrackType.SmashUp,
-                    key: track.key,
-                    icon: <SmashUpIcon />,
-                    track: (track as SmashUpSelectedTrack).track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
+                icon = <SmashUpIcon />;
             } else if (type === TrackType.YouTube) {
-                return {
-                    keyType: TrackType.YouTube,
-                    key: track.key,
-                    icon: <YouTubeIcon />,
-                    track: (track as YouTubeSelectedTrack).track as unknown as Track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
+                icon = <YouTubeIcon />;
             } else if (type === TrackType.YandexMusic) {
-                return {
-                    keyType: TrackType.YandexMusic,
-                    key: track.key,
-                    icon: <YandexMusicIcon />,
-                    track: (track as YandexMusicSelectedTrack).track as unknown as Track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
+                icon = <YandexMusicIcon />;
             } else if (type === TrackType.Spotify) {
-                return {
-                    keyType: TrackType.Spotify,
-                    key: track.key,
-                    icon: <SpotifyIcon />,
-                    track: (track as SpotifySelectedTrack).track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
+                icon = <SpotifyIcon />;
             } else {
                 throw new Error(`${track.constructor.name} not supported`);
             }
+
+            return {
+                keyType: type,
+                key: track.key,
+                icon: icon,
+                track: track.track,
+                selected: true,
+                statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                    trackStatefulOnClick(track, selectedTracks)
+            };
         });
     }
 
@@ -655,6 +633,18 @@ export default function MashupForm({
         }
     }, [imageFile]);
 
+    const imageSrc = useMemo(() => {
+        if (!basedImageFile) {
+            return null;
+        }
+
+        if (basedImageFile.startsWith('http') || basedImageFile.startsWith('blob:')) {
+            return basedImageFile;
+        } else {
+            return `data:image/png;base64,${basedImageFile}`;
+        }
+    }, [basedImageFile]);
+
     // Send
 
     const send = () => {
@@ -693,7 +683,7 @@ export default function MashupForm({
         }
 
         if (requireImageFile) {
-            if (!basedImageFile || !imageFile) {
+            if (!basedImageFile || !imageFile || !imageSrc) {
                 toast({
                     element: (
                         <ErrorToast
@@ -710,7 +700,7 @@ export default function MashupForm({
             }
 
             const image = new Image();
-            image.src = `data:image/png;base64,${basedImageFile}`;
+            image.src = imageSrc;
             image.onload = () => {
                 if (image.naturalHeight < 800 || image.naturalWidth < 800) {
                     toast({
@@ -750,7 +740,7 @@ export default function MashupForm({
             toast({
                 element: (
                     <ErrorToast
-                        image={`data:image/png;base64,${basedImageFile}`}
+                        image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке названия.'
                         after='Название может быть длиной от 2 до 48 символов из букв, цифр, некоторых специальных символов.'
@@ -766,7 +756,7 @@ export default function MashupForm({
             toast({
                 element: (
                     <ErrorToast
-                        image={`data:image/png;base64,${basedImageFile}`}
+                        image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке жанров.'
                         after='Выберите хотя бы один жанр.'
@@ -782,7 +772,7 @@ export default function MashupForm({
             toast({
                 element: (
                     <ErrorToast
-                        image={`data:image/png;base64,${basedImageFile}`}
+                        image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке авторов.'
                         after='Выберите хотя бы одного автора.'
@@ -798,7 +788,7 @@ export default function MashupForm({
             toast({
                 element: (
                     <ErrorToast
-                        image={`data:image/png;base64,${basedImageFile}`}
+                        image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке сурсов.'
                         after='Выберите хотя бы два трека.'
@@ -841,12 +831,6 @@ export default function MashupForm({
 
     if (loading) return <MashupFormSkeleton />;
 
-    const normalizedBasedImageFile = basedImageFile
-        ? basedImageFile.startsWith('blob:')
-            ? basedImageFile
-            : `data:image/png;base64,${basedImageFile}`
-        : null;
-
     return (
         <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
             <div className='flex items-center justify-between'>
@@ -856,9 +840,9 @@ export default function MashupForm({
                 {/*картинка*/}
                 <div className='flex flex-col gap-y-2.5'>
                     <label className='relative cursor-pointer h-fit'>
-                        {normalizedBasedImageFile ? (
+                        {imageSrc ? (
                             <img
-                                src={normalizedBasedImageFile}
+                                src={imageSrc}
                                 className={cn(
                                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
                                 )}

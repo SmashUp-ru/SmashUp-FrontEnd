@@ -1,8 +1,8 @@
-import { Track } from '@/store/entities/track.ts';
+import { Track, TrackLike } from '@/store/entities/track.ts';
 import { YouTubeTrack } from './youtube.ts';
 import { TrackThumbProps } from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { User } from '@/store/entities/user.ts';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
 import { RegEx } from '@/lib/regex.ts';
@@ -34,9 +34,9 @@ export enum TrackType {
 }
 
 export interface SelectedTrack {
-    // TODO: TrackLike entity
     key: unknown;
     keyType: TrackType;
+    track: TrackLike;
     addToBody: (body: UploadMashupRequestBody) => void;
 }
 
@@ -69,10 +69,10 @@ export class YouTubeSelectedTrack implements SelectedTrack {
 }
 
 export class YandexMusicSelectedTrack implements SelectedTrack {
-    track: Track;
-    key: number;
+    track: TrackLike;
+    key: React.Key;
     keyType: TrackType;
-    constructor(track: Track) {
+    constructor(track: TrackLike) {
         this.track = track;
         this.key = track.id;
         this.keyType = TrackType.YandexMusic;
@@ -83,10 +83,10 @@ export class YandexMusicSelectedTrack implements SelectedTrack {
 }
 
 export class SpotifySelectedTrack implements SelectedTrack {
-    track: Track;
-    key: number;
+    track: TrackLike;
+    key: React.Key;
     keyType: TrackType;
-    constructor(track: Track) {
+    constructor(track: TrackLike) {
         this.track = track;
         this.key = track.id;
         this.keyType = TrackType.Spotify;

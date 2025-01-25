@@ -4,21 +4,13 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import EditIcon from '@/components/icons/Edit.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
-import { Track, useTrackStore } from '@/store/entities/track.ts';
+import { useTrackStore } from '@/store/entities/track.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
 import { useEffect, useState } from 'react';
-import {
-    loadSelectedTracks,
-    SelectedTrack,
-    SmashUpSelectedTrack,
-    SpotifySelectedTrack,
-    TrackType,
-    YandexMusicSelectedTrack,
-    YouTubeSelectedTrack
-} from '@/router/shared/types/upload';
+import { loadSelectedTracks, SelectedTrack, TrackType } from '@/router/shared/types/upload';
 import { isExplicit, isTwitchBanned, setExplicit, setTwitchBanned, switchBit } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -44,6 +36,7 @@ import { Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-toolti
 import { TooltipContent } from '@/components/ui/tooltip';
 import { AxiosResponse } from 'axios';
 import { SmashUpResponse } from '@/router/shared/types/smashup';
+import { SmashUpIcon } from '@/components/icons/SmashUp';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -291,24 +284,20 @@ export function UnpublishedMashupAccordionItem({
                                 tracks.map((selectedTrack) => {
                                     const type = selectedTrack.keyType;
 
-                                    let track: Track;
                                     let icon;
                                     if (type === TrackType.SmashUp) {
-                                        track = (selectedTrack as SmashUpSelectedTrack).track;
+                                        icon = <SmashUpIcon />;
                                     } else if (type === TrackType.YouTube) {
-                                        track = (selectedTrack as YouTubeSelectedTrack)
-                                            .track as unknown as Track;
                                         icon = <YouTubeIcon />;
                                     } else if (type === TrackType.YandexMusic) {
-                                        track = (selectedTrack as YandexMusicSelectedTrack).track;
                                         icon = <YandexMusicIcon />;
                                     } else if (type === TrackType.Spotify) {
-                                        track = (selectedTrack as SpotifySelectedTrack).track;
                                         icon = <SpotifyIcon />;
                                     } else {
                                         throw new Error(`${type} not supported`);
                                     }
 
+                                    const track = selectedTrack.track;
                                     return (
                                         <TrackSmallThumb key={track.id} track={track} icon={icon} />
                                     );
