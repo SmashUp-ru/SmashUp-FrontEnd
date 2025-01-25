@@ -10,15 +10,23 @@ export interface TrackThumbProps {
     selected?: boolean;
     icon?: ReactNode;
     onClick?: () => unknown;
+    className?: string;
 }
 
-export default function TrackSmallThumb({ track, selected, icon, onClick }: TrackThumbProps) {
+export default function TrackSmallThumb({
+    track,
+    selected,
+    icon,
+    onClick,
+    className
+}: TrackThumbProps) {
     return (
         <div
             key={track.id}
             className={cn(
                 'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
-                selected ? 'bg-badge' : 'hover:bg-onPrimary'
+                selected ? 'bg-badge' : 'hover:bg-onPrimary',
+                className
             )}
             onClick={onClick}
         >

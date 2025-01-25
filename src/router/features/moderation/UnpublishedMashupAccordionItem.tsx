@@ -37,6 +37,9 @@ import { TooltipContent } from '@/components/ui/tooltip';
 import { AxiosResponse } from 'axios';
 import { SmashUpResponse } from '@/router/shared/types/smashup';
 import { SmashUpIcon } from '@/components/icons/SmashUp';
+import { UploadYouTubeTrackDialog } from '@/router/shared/components/track/UploadYouTubeTrackDialog';
+import BaseToast from '@/router/shared/toasts/Base';
+import { Mashup } from '@/store/entities/mashup';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -66,6 +69,12 @@ export function UnpublishedMashupAccordionItem({
             loadSelectedTracks(mashup, trackStore).then(setTracks);
         }
     }, [accordionValue]);
+
+    useEffect(() => {
+        if (accordionValue === value) {
+            loadSelectedTracks(mashup, trackStore).then(setTracks);
+        }
+    }, [mashup]);
 
     const statusUrl = mashup.statusesUrls ? mashup.statusesUrls[0] : undefined;
 
@@ -197,12 +206,26 @@ export function UnpublishedMashupAccordionItem({
                                         .post(
                                             `/moderation/unpublished_mashup/publish?id=${mashup.id}`
                                         )
-                                        .then(() => {
+                                        .then((r: AxiosResponse<SmashUpResponse<Mashup>>) => {
                                             updateUnpublishedMashups([
                                                 ...unpublishedMashups.filter(
                                                     (um) => um.id !== mashup.id
                                                 )
                                             ]);
+
+                                            const uploadedMashup = r.data.response;
+
+                                            toast({
+                                                element: (
+                                                    <BaseToast
+                                                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${uploadedMashup.imageUrl}_100x100.png`}
+                                                        before='Мэшап'
+                                                        field={`${uploadedMashup.authors.join(', ')} — ${uploadedMashup.name}`}
+                                                        after='успешно загружен!'
+                                                    />
+                                                ),
+                                                duration: 2000
+                                            });
                                         })
                                         .catch(axiosCatcher(toast, 'при публикации мэшапа'));
                                 }}
@@ -298,9 +321,23 @@ export function UnpublishedMashupAccordionItem({
                                     }
 
                                     const track = selectedTrack.track;
-                                    return (
+                                    const thumb = (
                                         <TrackSmallThumb key={track.id} track={track} icon={icon} />
                                     );
+
+                                    if (type === TrackType.YouTube) {
+                                        return (
+                                            <UploadYouTubeTrackDialog
+                                                mashup={mashup}
+                                                track={track}
+                                                className='w-full'
+                                            >
+                                                {thumb}
+                                            </UploadYouTubeTrackDialog>
+                                        );
+                                    }
+
+                                    return thumb;
                                 })}
                         </div>
                     </div>

@@ -9,4 +9,5 @@ export interface YouTubeTrack {
 export interface YouTubeOEmbedResponse {
     title: string;
     thumbnail_url: string;
+    author_name: string;
 }

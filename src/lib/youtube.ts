@@ -1,6 +1,5 @@
 import { YouTubeOEmbedResponse, YouTubeTrack } from '@/router/shared/types/youtube';
 import axios, { AxiosResponse } from 'axios';
-import { trim } from './utils';
 
 export async function loadOEmbed(link: string): Promise<YouTubeTrack> {
     return axios
@@ -17,9 +16,13 @@ export async function loadOEmbed(link: string): Promise<YouTubeTrack> {
             }
 
             if (data.length != 2) {
-                data = ['???', title];
+                let author = r.data.author_name;
+                if (author.endsWith(' - Topic')) {
+                    author = author.slice(0, -' - Topic'.length);
+                }
+                data = [author.trim(), title.trim()];
             } else {
-                data = [trim(data[0]), trim(data[1])];
+                data = [data[0].trim(), data[1].trim()];
             }
 
             return {
