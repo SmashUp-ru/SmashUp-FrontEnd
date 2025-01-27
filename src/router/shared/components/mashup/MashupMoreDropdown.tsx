@@ -62,9 +62,9 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                             }}
-                                            className='hover:text-primary hover:bg-primary/[0.2]'
+                                            className='hover:text-primary hover:bg-primary/[0.2] group'
                                         >
-                                            <div className='flex items-center gap-x-[14.4px] group'>
+                                            <div className='flex items-center gap-x-[14.4px]'>
                                                 <AddIcon
                                                     className='group-hover:text-primary'
                                                     color='onSurface'

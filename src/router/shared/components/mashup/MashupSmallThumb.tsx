@@ -64,7 +64,6 @@ export default function MashupSmallThumb({
     }
 
     const isThisMash = queue[queueIndex] === mashup.id && currentQueueId === queueId;
-    const isActiveTrack = isPlaying && isThisMash;
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     if (hideExplicit && isExplicit(mashup.statuses))
@@ -72,7 +71,10 @@ export default function MashupSmallThumb({
 
     return (
         <div
-            className={`flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl ${isActiveTrack && 'bg-primary/[0.35] hover:bg-hoverPrimary/[0.35]'}`}
+            className={cn(
+                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary/[0.3] rounded-2xl',
+                isThisMash && 'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3]'
+            )}
         >
             <div className='flex items-center gap-x-4 w-full'>
                 <div className='relative'>
@@ -106,7 +108,11 @@ export default function MashupSmallThumb({
                                     play();
                                 }}
                             >
-                                <PlayHollowIcon color='onSurface' size={24} />
+                                <PlayHollowIcon
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'hoverPrimary' : 'primary'}
+                                    size={24}
+                                />
                             </Button>
                         ))}
                     {(queue[queueIndex] !== mashup.id || currentQueueId !== queueId) && (
@@ -131,7 +137,11 @@ export default function MashupSmallThumb({
                                 playMashup(filteredMashups, playlistName, queueId, adjustedIndex);
                             }}
                         >
-                            <PlayHollowIcon color='onSurface' size={24} />
+                            <PlayHollowIcon
+                                color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                hoverColor={isThisMash ? 'primary' : 'primary'}
+                                size={24}
+                            />
                         </Button>
                     )}
                 </div>
@@ -140,23 +150,32 @@ export default function MashupSmallThumb({
                         <div
                             role='button'
                             onClick={() => openMashupInfo(mashup.id)}
-                            className={`font-bold ${isActiveTrack ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer`}
+                            className={`font-bold ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer`}
                         >
                             {mashup.name}
                         </div>
                         {isExplicit(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <ExplicitIcon color={isActiveTrack ? 'primary' : ''} />
+                                <ExplicitIcon
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'primary' : 'primary'}
+                                />
                             </div>
                         )}
                         {isHashtagMashup(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <HashtagMashupIcon color={isActiveTrack ? 'primary' : ''} />
+                                <HashtagMashupIcon
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'primary' : 'primary'}
+                                />
                             </div>
                         )}
                         {isAlt(mashup.statuses) && (
                             <div className='w-[17px] h-[17px]'>
-                                <AltIcon color={isActiveTrack ? 'primary' : ''} />
+                                <AltIcon
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'primary' : 'primary'}
+                                />
                             </div>
                         )}
                     </div>
@@ -166,7 +185,7 @@ export default function MashupSmallThumb({
                                 <Link
                                     key={author}
                                     to={`/user/${author}`}
-                                    className={`font-medium ${isActiveTrack ? 'text-primary' : 'text-onSurfaceVariant'}`}
+                                    className={`font-medium ${isThisMash ? 'text-primary' : 'text-onSurfaceVariant'}`}
                                 >
                                     {author}
                                 </Link>
@@ -199,7 +218,8 @@ export default function MashupSmallThumb({
                             <LikeFilledIcon
                                 width={20}
                                 height={17}
-                                color={isActiveTrack ? 'primary' : ''}
+                                color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                hoverColor={isThisMash ? 'primary' : 'onSurface'}
                             />
                         </Button>
                     ) : (
@@ -218,7 +238,8 @@ export default function MashupSmallThumb({
                             }}
                         >
                             <LikeOutlineIcon
-                                color={isActiveTrack ? 'primary' : 'onSurface'}
+                                color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                hoverColor={isThisMash ? 'primary' : 'onSurface'}
                                 width={20}
                                 height={17}
                             />
@@ -229,7 +250,7 @@ export default function MashupSmallThumb({
                         <Tooltip>
                             <TooltipTrigger>
                                 <LikeOutlineIcon
-                                    color={isActiveTrack ? 'primary' : 'onSurface'}
+                                    color={isThisMash ? 'primary' : 'onSurface'}
                                     width={20}
                                     height={17}
                                 />
@@ -253,11 +274,14 @@ export default function MashupSmallThumb({
                         <Button variant='ghost' size='icon'>
                             <div className='hidden group-hover:block'>
                                 <MoreHorizontalIcon
-                                    color={isActiveTrack ? 'primary' : 'onSurface'}
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'primary' : 'onSurface'}
                                 />
                             </div>
 
-                            <span className='font-semibold text-[18px] text-additionalText group-hover:hidden'>
+                            <span
+                                className={`font-semibold text-[18px] text-additionalText group-hover:hidden ${isThisMash && 'text-primary'}`}
+                            >
                                 {msToMinutesAndSeconds(mashup.duration)}
                             </span>
                         </Button>

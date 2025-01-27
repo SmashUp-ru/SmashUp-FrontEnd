@@ -34,7 +34,7 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
                         });
                 }}
             >
-                <LikeFilledIcon />
+                <LikeFilledIcon color='primary' hoverColor='hoverPrimary' />
             </Button>
         );
     }
@@ -52,7 +52,7 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
                     });
             }}
         >
-            <LikeOutlineIcon color='onSurface' />
+            <LikeOutlineIcon color='onSurfaceVariant' hoverColor='onSurface' />
         </Button>
     );
 }
