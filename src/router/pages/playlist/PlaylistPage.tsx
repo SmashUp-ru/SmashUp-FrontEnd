@@ -78,7 +78,7 @@ export default function PlaylistPage() {
                                     });
                             }}
                         >
-                            <ShareIcon />
+                            <ShareIcon color='onSurfaceVariant' hoverColor='onSurface' />
                         </Button>
 
                         {currentUser && playlist.authorsIds.includes(currentUser.id) && (

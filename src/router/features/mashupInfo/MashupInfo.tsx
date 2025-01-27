@@ -129,7 +129,7 @@ export default function MashupInfo() {
                             playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
                         }}
                     >
-                        <PlayHollowIcon color='primary' />
+                        <PlayHollowIcon color='primary' hoverColor='hoverPrimary' />
                     </Button>
                 )}
 

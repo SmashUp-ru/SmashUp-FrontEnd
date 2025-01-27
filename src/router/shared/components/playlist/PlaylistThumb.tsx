@@ -30,7 +30,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
     if (isLoading) return <PlaylistThumbSkeleton />;
 
     return (
-        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <Link
                     draggable={false}
@@ -83,7 +83,16 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             }}
                             className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         >
-                            <PlayHollowIcon color='onSurface' hoverColor='onSurfaceVariant' />
+                            <PlayHollowIcon
+                                color={
+                                    queueId === `playlist/${playlist.id}` ? 'primary' : 'onSurface'
+                                }
+                                hoverColor={
+                                    queueId === `playlist/${playlist.id}`
+                                        ? 'hoverPrimary'
+                                        : 'onSurfaceVariant'
+                                }
+                            />
                         </Button>
                     ))}
             </div>
