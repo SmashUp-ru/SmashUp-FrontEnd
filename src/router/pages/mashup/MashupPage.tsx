@@ -14,9 +14,9 @@ import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
-import ExplicitIcon from '@/components/icons/Explicit.tsx';
-import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
-import AltIcon from '@/components/icons/Alt.tsx';
+import ExplicitIcon from '@/components/icons/explicit/Explicit24';
+import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
+import AltIcon from '@/components/icons/alt/Alt24';
 import { useSettingsStore } from '@/store/settings.ts';
 
 export default function MashupPage() {
@@ -66,23 +66,25 @@ export default function MashupPage() {
                                 </Link>
                             ))}
                         </span>
-                        <div className='flex items-center gap-x-2'>
+                        <div className='flex items-center gap-x-1'>
                             <h1 className='font-bold text-4xl text-onSurface'>{mashup.name}</h1>
-                            {isExplicit(mashup.statuses) && (
-                                <div className='w-[17px] h-[17px]'>
-                                    <ExplicitIcon />
-                                </div>
-                            )}
-                            {isHashtagMashup(mashup.statuses) && (
-                                <div className='w-[17px] h-[17px]'>
-                                    <HashtagMashupIcon />
-                                </div>
-                            )}
-                            {isAlt(mashup.statuses) && (
-                                <div className='w-[17px] h-[17px]'>
-                                    <AltIcon />
-                                </div>
-                            )}
+                            <div className='flex items-center gap-x-0'>
+                                {isExplicit(mashup.statuses) && (
+                                    <div className='w-[24px] h-[24px]'>
+                                        <ExplicitIcon />
+                                    </div>
+                                )}
+                                {isHashtagMashup(mashup.statuses) && (
+                                    <div className='w-[24px] h-[24px]'>
+                                        <HashtagMashupIcon />
+                                    </div>
+                                )}
+                                {isAlt(mashup.statuses) && (
+                                    <div className='w-[24px] h-[24px]'>
+                                        <AltIcon />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className='flex items-center gap-x-4'>

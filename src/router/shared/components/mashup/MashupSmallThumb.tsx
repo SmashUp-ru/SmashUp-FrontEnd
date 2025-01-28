@@ -1,17 +1,17 @@
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Link } from 'react-router-dom';
-import ExplicitIcon from '@/components/icons/Explicit.tsx';
+import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
-import AltIcon from '@/components/icons/Alt.tsx';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
+import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
+import AltIcon from '@/components/icons/alt/Alt24';
 import { useGlobalStore } from '@/store/global.ts';
 import {
     Tooltip,
@@ -146,7 +146,7 @@ export default function MashupSmallThumb({
                     )}
                 </div>
                 <div className='flex flex-col'>
-                    <div className='flex items-center gap-x-2'>
+                    <div className='flex items-center gap-x-1'>
                         <div
                             role='button'
                             onClick={() => openMashupInfo(mashup.id)}
@@ -154,30 +154,32 @@ export default function MashupSmallThumb({
                         >
                             {mashup.name}
                         </div>
-                        {isExplicit(mashup.statuses) && (
-                            <div className='w-[17px] h-[17px]'>
-                                <ExplicitIcon
-                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                    hoverColor={isThisMash ? 'primary' : 'primary'}
-                                />
-                            </div>
-                        )}
-                        {isHashtagMashup(mashup.statuses) && (
-                            <div className='w-[17px] h-[17px]'>
-                                <HashtagMashupIcon
-                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                    hoverColor={isThisMash ? 'primary' : 'primary'}
-                                />
-                            </div>
-                        )}
-                        {isAlt(mashup.statuses) && (
-                            <div className='w-[17px] h-[17px]'>
-                                <AltIcon
-                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                    hoverColor={isThisMash ? 'primary' : 'primary'}
-                                />
-                            </div>
-                        )}
+                        <div className='flex items-center gap-x-0'>
+                            {isExplicit(mashup.statuses) && (
+                                <div className='w-[24px] h-[24px]'>
+                                    <ExplicitIcon
+                                        color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                        hoverColor={isThisMash ? 'primary' : 'primary'}
+                                    />
+                                </div>
+                            )}
+                            {isHashtagMashup(mashup.statuses) && (
+                                <div className='w-[24px] h-[24px]'>
+                                    <HashtagMashupIcon
+                                        color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                        hoverColor={isThisMash ? 'primary' : 'primary'}
+                                    />
+                                </div>
+                            )}
+                            {isAlt(mashup.statuses) && (
+                                <div className='w-[24px] h-[24px]'>
+                                    <AltIcon
+                                        color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                        hoverColor={isThisMash ? 'primary' : 'primary'}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                         {mashup.authors.map((author, index) => (

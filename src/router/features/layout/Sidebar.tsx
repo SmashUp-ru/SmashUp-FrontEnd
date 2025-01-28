@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import LogoIcon from '@/components/icons/Logo.tsx';
 import { useGlobalStore } from '@/store/global.ts';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
-import HomeIcon from '@/components/icons/HomeIcon.tsx';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
+import HomeIcon from '@/components/icons/home/Home32';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePlayerStore } from '@/store/player.ts';
-import AddIcon from '@/components/icons/Add.tsx';
+import AddIcon from '@/components/icons/add/Add32';
 import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDialog.tsx';
 
 export default function Sidebar() {
@@ -29,7 +29,7 @@ export default function Sidebar() {
                 <LogoIcon color='primary' hoverColor='hoverPrimary' />
             </Link>
 
-            <div className='flex flex-col gap-y-12 px-12'>
+            <div className='flex flex-col gap-y-12 w-full items-center'>
                 {/* Навигация */}
                 <div className='flex flex-col gap-y-12'>
                     <Link draggable={false} to={'/'}>
@@ -86,7 +86,7 @@ export default function Sidebar() {
                                 </TooltipTrigger>
                                 <TooltipContent
                                     className='max-w-[300px] text-center'
-                                    side='right'
+                                    // side='right'
                                     sideOffset={64}
                                 >
                                     <p>

@@ -9,9 +9,9 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu.tsx';
-import DoneIcon from '@/components/icons/Done.tsx';
+import DoneIcon from '@/components/icons/done/Done16';
 import PlusIcon from '@/components/icons/Plus.tsx';
-import AddIcon from '@/components/icons/Add.tsx';
+import AddIcon from '@/components/icons/add/Add24';
 import ShareIcon from '@/components/icons/Share.tsx';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { ReactNode } from 'react';
@@ -19,7 +19,7 @@ import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDi
 import { useGlobalStore } from '@/store/global.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import BackIcon from '@/components/icons/Back.tsx';
+import BackIcon from '@/components/icons/back/Back24';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';

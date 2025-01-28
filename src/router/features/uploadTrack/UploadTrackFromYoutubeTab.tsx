@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { Track } from '@/store/entities/track.ts';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit32';
 import SearchIcon from '@/components/icons/Search.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ export default function UploadTrackFromYoutubeTab() {
                         <label className='relative cursor-pointer w-[200px] h-[200px] min-w-[200px] min-h-[200px]'>
                             <div className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[35px] bg-surfaceVariant' />
                             <EditIcon
-                                size={70}
+                                size={89}
                                 className='absolute top-0 right-0 left-0 bottom-0 m-auto'
                                 color='onSurface'
                             />

@@ -1,6 +1,6 @@
 import Player from '@/router/features/player/Player.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { Link } from 'react-router-dom';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
 import SkipLeftIcon from '@/components/icons/SkipLeft.tsx';
@@ -13,7 +13,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { Slider } from '@/components/ui/slider.tsx';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';

@@ -8,14 +8,14 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label.tsx';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit24';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import CancelIcon from '@/components/icons/Cancel.tsx';
+import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useState } from 'react';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
@@ -89,16 +89,16 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                 <Dialog>
                     <DialogTrigger>
                         <Button variant='ghost' size='icon' disabled={email === null}>
-                            <EditIcon size={24} color='onSurface' />
+                            <EditIcon color='onSurface' />
                         </Button>
                     </DialogTrigger>
                     <DialogContent className='w-[460px]'>
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
                                 <DialogTitle>Изменение Почты</DialogTitle>
-                                <DialogClose className='pb-7'>
+                                <DialogClose className='pb-5 '>
                                     <Button variant='ghost' size='icon'>
-                                        <CancelIcon size={18} />
+                                        <CancelIcon />
                                     </Button>
                                 </DialogClose>
                             </div>

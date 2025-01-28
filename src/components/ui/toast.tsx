@@ -3,7 +3,7 @@ import * as ToastPrimitives from '@radix-ui/react-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
-import CancelIcon from '@/components/icons/Cancel.tsx';
+import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { usePlayerStore } from '@/store/player.ts';
 
 const ToastProvider = ToastPrimitives.Provider;

@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button.tsx';
 import { ReactNode, useState } from 'react';
 import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit32';
 import { Input } from '@/components/ui/input.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { z } from 'zod';
@@ -182,7 +182,7 @@ export default function AddPlaylistDialog({
                                                         draggable={false}
                                                     />
                                                     <EditIcon
-                                                        size={70}
+                                                        size={89}
                                                         className='absolute top-0 right-0 left-0 bottom-0 m-auto'
                                                         color='onSurface'
                                                     />

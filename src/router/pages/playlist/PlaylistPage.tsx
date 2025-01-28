@@ -9,7 +9,7 @@ import { usePlaylistPageData } from '@/router/features/playlist/usePlaylistPageD
 import { useGlobalStore } from '@/store/global.ts';
 import DeletePlaylistDialog from '@/router/features/playlist/DeletePlaylistDialog.tsx';
 import AddPlaylistDialog from '@/router/shared/components/playlist/AddPlaylistDialog.tsx';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit32';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 import PlaylistLikeButton from '@/router/shared/components/playlist/PlaylistLikeButton.tsx';
 import PlaylistPlayButton from '@/router/shared/components/playlist/PlaylistPlayButton.tsx';

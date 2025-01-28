@@ -6,12 +6,12 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import { cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
-import ExplicitIcon from '@/components/icons/Explicit.tsx';
-import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
-import AltIcon from '@/components/icons/Alt.tsx';
+import ExplicitIcon from '@/components/icons/explicit/Explicit24';
+import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
+import AltIcon from '@/components/icons/alt/Alt24';
 import { Link } from 'react-router-dom';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Mashup } from '@/store/entities/mashup.ts';
 
 interface MashupSmallThumbExplicitDisallowedProps {
@@ -38,25 +38,27 @@ export default function MashupSmallThumbExplicitDisallowed({
                                 />
                             </div>
                             <div className='flex flex-col'>
-                                <div className='flex items-center gap-x-2'>
+                                <div className='flex items-center gap-x-1'>
                                     <div className='font-bold text-onSurface line-clamp-1'>
                                         {mashup.name}
                                     </div>
-                                    {isExplicit(mashup.statuses) && (
-                                        <div className='w-[17px] h-[17px]'>
-                                            <ExplicitIcon />
-                                        </div>
-                                    )}
-                                    {isHashtagMashup(mashup.statuses) && (
-                                        <div className='w-[17px] h-[17px]'>
-                                            <HashtagMashupIcon />
-                                        </div>
-                                    )}
-                                    {isAlt(mashup.statuses) && (
-                                        <div className='w-[17px] h-[17px]'>
-                                            <AltIcon />
-                                        </div>
-                                    )}
+                                    <div className='flex items-center gap-x-0'>
+                                        {isExplicit(mashup.statuses) && (
+                                            <div className='w-[24px] h-[24px]'>
+                                                <ExplicitIcon />
+                                            </div>
+                                        )}
+                                        {isHashtagMashup(mashup.statuses) && (
+                                            <div className='w-[24px] h-[24px]'>
+                                                <HashtagMashupIcon />
+                                            </div>
+                                        )}
+                                        {isAlt(mashup.statuses) && (
+                                            <div className='w-[24px] h-[24px]'>
+                                                <AltIcon />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                                     {mashup.authors.map((author, index) => (

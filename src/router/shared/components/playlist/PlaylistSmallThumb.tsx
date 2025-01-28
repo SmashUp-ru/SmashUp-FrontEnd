@@ -1,6 +1,6 @@
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
+import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
 import { Link } from 'react-router-dom';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { usePlayerStore } from '@/store/player.ts';

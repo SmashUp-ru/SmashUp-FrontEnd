@@ -1,7 +1,7 @@
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit24';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useTrackStore } from '@/store/entities/track.ts';

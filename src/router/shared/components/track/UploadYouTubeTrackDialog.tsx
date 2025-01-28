@@ -14,7 +14,7 @@ import BaseToast from '../../toasts/Base';
 import { getToken } from '@/store/global';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from './TrackSmallThumb';
-import CancelIcon from '@/components/icons/Cancel';
+import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { RegEx } from '@/lib/regex';
 import { DialogTitle } from '@radix-ui/react-dialog';
 

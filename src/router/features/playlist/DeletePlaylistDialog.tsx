@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog';
-import CancelIcon from '@/components/icons/Cancel.tsx';
+import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { Button } from '@/components/ui/button.tsx';
 import { axiosSession } from '@/lib/utils.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';

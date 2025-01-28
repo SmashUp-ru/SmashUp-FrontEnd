@@ -1,7 +1,7 @@
 import { useSettingsPageData } from '@/router/features/settings/useSettingsPageData.ts';
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
-import ChevronRightIcon from '@/components/icons/ChevronRight.tsx';
+import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
 import VKIcon from '@/components/icons/VK.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
@@ -82,7 +82,7 @@ export default function SettingsPage() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <ChevronRightIcon width={13} height={23} />
+                                            <ChevronRightIcon size={32} />
                                         </div>
                                     </TooltipTrigger>
                                     <TooltipContent

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils.ts';
 import { IconProps } from '@/components/icons/props.tsx';
 import LockIcon from '@/components/icons/Lock.tsx';
-import HideIcon from '@/components/icons/Hide.tsx';
+import HideIcon from '@/components/icons/hide/Hide28';
 import { Button } from '@/components/ui/button.tsx';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -36,7 +36,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         return (
             <div className='w-full relative'>
-                <div className='absolute left-4 top-1/2 transform -translate-y-1/2'>
+                <div className='absolute left-5 top-1/2 transform -translate-y-1/2'>
                     {type === 'password' ? (
                         <LockIcon size={23} />
                     ) : (
@@ -58,7 +58,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     ref={ref}
                     {...props}
                 />
-                <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
+                <div className='absolute right-5 top-1/2 transform -translate-y-3.5'>
                     {type === 'password' ? (
                         <Button
                             type='button'
@@ -68,7 +68,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                                 setShowPassword(!showPassword);
                             }}
                         >
-                            <HideIcon size={23} />
+                            <HideIcon />
                         </Button>
                     ) : (
                         EndIcon && (

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button.tsx';
 import { axiosSession } from '@/lib/utils.ts';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useMemo } from 'react';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 

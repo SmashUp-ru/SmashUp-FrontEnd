@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
-import EditIcon from '@/components/icons/Edit.tsx';
+import EditIcon from '@/components/icons/edit/Edit32';
 import { Input } from '@/components/ui/input.tsx';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { AxiosResponse } from 'axios';
@@ -102,7 +102,7 @@ export default function UpdateAvatar() {
                 onLoad={() => setImageLoaded(true)}
             />
             <EditIcon
-                size={70}
+                size={89}
                 className='absolute top-0 right-0 left-0 bottom-0 m-auto'
                 color='onSurface'
             />

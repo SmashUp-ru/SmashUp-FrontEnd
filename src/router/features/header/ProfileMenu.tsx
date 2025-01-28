@@ -6,11 +6,11 @@ import {
 } from '@/components/ui/tooltip.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
-import GavelIcon from '@/components/icons/Gavel.tsx';
+import GavelIcon from '@/components/icons/gavel/Gavel32';
 import { Button } from '@/components/ui/button.tsx';
-import DoorIcon from '@/components/icons/Door.tsx';
+import DoorIcon from '@/components/icons/door/Door32';
 import { useGlobalStore } from '@/store/global.ts';
-import AddMashupIcon from '@/components/icons/AddMashup.tsx';
+import AddMashupIcon from '@/components/icons/addMashup/AddMashup32';
 import { isModerator } from '@/lib/bitmask';
 import SettingsIcon from '@/components/icons/Settings';
 

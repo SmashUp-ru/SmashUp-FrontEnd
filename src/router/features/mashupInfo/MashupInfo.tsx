@@ -1,7 +1,7 @@
 import { usePlayerStore } from '@/store/player.ts';
 import { axiosSession, cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
-import CancelIcon from '@/components/icons/Cancel.tsx';
+import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useMashupStore } from '@/store/entities/mashup.ts';
@@ -10,11 +10,11 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
-import ExplicitIcon from '@/components/icons/Explicit.tsx';
-import HashtagMashupIcon from '@/components/icons/HashtagMashup.tsx';
-import AltIcon from '@/components/icons/Alt.tsx';
-import LikeFilledIcon from '@/components/icons/LikeFilled.tsx';
-import LikeOutlineIcon from '@/components/icons/LikeOutline.tsx';
+import ExplicitIcon from '@/components/icons/explicit/Explicit24';
+import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
+import AltIcon from '@/components/icons/alt/Alt24';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
@@ -73,21 +73,23 @@ export default function MashupInfo() {
                     <span className='font-bold text-[18px] text-onSurface truncate'>
                         {mashup.name}
                     </span>
-                    {isExplicit(mashup.statuses) && (
-                        <div className='w-[17px] h-[17px]'>
-                            <ExplicitIcon />
-                        </div>
-                    )}
-                    {isHashtagMashup(mashup.statuses) && (
-                        <div className='w-[17px] h-[17px]'>
-                            <HashtagMashupIcon />
-                        </div>
-                    )}
-                    {isAlt(mashup.statuses) && (
-                        <div className='w-[17px] h-[17px]'>
-                            <AltIcon />
-                        </div>
-                    )}
+                    <div className='flex items-center gap-x-0'>
+                        {isExplicit(mashup.statuses) && (
+                            <div className='w-[24px] h-[24px]'>
+                                <ExplicitIcon />
+                            </div>
+                        )}
+                        {isHashtagMashup(mashup.statuses) && (
+                            <div className='w-[24px] h-[24px]'>
+                                <HashtagMashupIcon />
+                            </div>
+                        )}
+                        {isAlt(mashup.statuses) && (
+                            <div className='w-[24px] h-[24px]'>
+                                <AltIcon />
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                     {mashup.authors.map((author, index) => (

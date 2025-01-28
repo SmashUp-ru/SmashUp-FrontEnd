@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 
 import { cn } from '@/lib/utils';
-import DoneIcon from '@/components/icons/Done.tsx';
+import DoneIcon from '@/components/icons/done/Done24';
 
 const Checkbox = React.forwardRef<
     React.ElementRef<typeof CheckboxPrimitive.Root>,
@@ -19,7 +19,7 @@ const Checkbox = React.forwardRef<
         <CheckboxPrimitive.Indicator
             className={cn('flex items-center justify-center text-current')}
         >
-            <DoneIcon width={16} height={12} color='onSurface' />
+            <DoneIcon color='onSurface' />
         </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
 ));
