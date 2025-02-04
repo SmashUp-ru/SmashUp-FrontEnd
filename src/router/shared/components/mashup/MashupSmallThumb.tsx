@@ -150,7 +150,7 @@ export default function MashupSmallThumb({
                         <div
                             role='button'
                             onClick={() => openMashupInfo(mashup.id)}
-                            className={`font-bold ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer`}
+                            className={`font-bold ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
                         >
                             {mashup.name}
                         </div>
@@ -181,7 +181,7 @@ export default function MashupSmallThumb({
                             )}
                         </div>
                     </div>
-                    <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
+                    <div className='w-full gap-x-1 line-clamp-1 text-ellipsis'>
                         {mashup.authors.map((author, index) => (
                             <div key={index}>
                                 <Link
