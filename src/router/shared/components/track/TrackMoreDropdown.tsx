@@ -5,7 +5,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu.tsx';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { TrackLike } from '@/store/entities/track.ts';
 import LinkExternalIcon from '@/components/icons/LinkExternal.tsx';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,24 @@ interface TrackMoreDropdownProps {
 }
 
 export default function TrackMoreDropdown({ track, children }: TrackMoreDropdownProps) {
+    const link = useMemo(() => {
+        if (track.link.indexOf('spotify.com') >= 0) {
+            if (track.link.indexOf('albums') >= 0) {
+                return (
+                    'https://open.spotify.com/album' +
+                    track.link.substring(track.link.lastIndexOf('/'))
+                );
+            } else {
+                return (
+                    'https://open.spotify.com/track' +
+                    track.link.substring(track.link.lastIndexOf('/'))
+                );
+            }
+        }
+
+        return track.link;
+    }, [track]);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -27,7 +45,7 @@ export default function TrackMoreDropdown({ track, children }: TrackMoreDropdown
                     >
                         <Link
                             className='flex items-center gap-x-[14.4px]'
-                            to={track.link}
+                            to={link}
                             target='_blank'
                         >
                             <LinkExternalIcon
