@@ -101,8 +101,6 @@ export const usePlayerStore = create<PlayerState>()(
                 queueIndex: state.queueIndex,
                 queueName: state.queueName,
                 queueId: state.queueId,
-                seek: state.seek,
-                changedSeek: state.seek,
 
                 info: state.info,
                 mashupInfo: state.mashupInfo,

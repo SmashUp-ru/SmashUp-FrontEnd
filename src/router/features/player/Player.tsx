@@ -153,10 +153,6 @@ export default function Player({ mashup }: { mashup: Mashup }) {
         onNextTrack: next
     });
 
-    useEffect(() => {
-        console.log('wtf');
-    }, [mashup, queueName]);
-
     return (
         <ReactHowler
             src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
@@ -166,7 +162,6 @@ export default function Player({ mashup }: { mashup: Mashup }) {
             volume={volume}
             ref={(ref) => (player.current = ref)}
             html5={true}
-            onSeek={() => console.log('seek')}
             preload={false}
         />
     );

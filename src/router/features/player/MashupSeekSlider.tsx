@@ -15,10 +15,14 @@ export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
     const [localSeekChanging, setLocalSeekChanging] = useState(false);
     const [localSeek, setLocalSeek] = useState(0);
     useEffect(() => {
-        if (!localSeekChanging) {
+        if (!localSeekChanging && seek !== localSeek) {
             setLocalSeek(seek);
         }
     }, [seek]);
+
+    useEffect(() => {
+        updateChangedSeek(0);
+    }, []);
 
     return (
         <div className='absolute top-0 w-full pr-8'>
