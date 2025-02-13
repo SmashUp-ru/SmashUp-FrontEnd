@@ -58,7 +58,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     };
 
     useEffect(() => {
-        if (player.current) {
+        if (player && player.current && player.current.howler.state() === 'loaded') {
             player.current.seek(changedSeek / 1000);
         }
     }, [changedSeek]);
