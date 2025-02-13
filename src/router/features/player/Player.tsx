@@ -167,6 +167,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
             ref={(ref) => (player.current = ref)}
             html5={true}
             onSeek={() => console.log('seek')}
+            preload={false}
         />
     );
 }
