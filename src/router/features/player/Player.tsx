@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
@@ -7,6 +7,7 @@ import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { useGlobalStore } from '@/store/global.ts';
+import { useMediaSession } from '@mebtte/react-media-session';
 
 export default function Player({ mashup }: { mashup: Mashup }) {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -17,6 +18,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
+    const queueName = usePlayerStore((state) => state.queueName);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const changedSeek = usePlayerStore((state) => state.changedSeek);
     const bitrate = useSettingsStore((state) => state.bitrate);
@@ -119,6 +121,41 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     useHotkeys('ctrl+right', () => next(), { preventDefault: true });
     useHotkeys('ctrl+left', () => prev(), { preventDefault: true });
     useHotkeys('esc', () => closeInfo(), { preventDefault: true });
+
+    // media session api
+
+    const artwork = useMemo(
+        () => [
+            {
+                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`,
+                sizes: '100x100',
+                type: 'image/jpeg'
+            },
+            {
+                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`,
+                sizes: '800x800',
+                type: 'image/jpeg'
+            }
+        ],
+        [mashup.imageUrl]
+    );
+
+    useMediaSession({
+        title: useMemo(() => mashup.name, [mashup.name]),
+        artist: useMemo(() => mashup.authors.join(', '), [mashup.authors]),
+        album: queueName,
+        artwork: artwork,
+        onPlay: play,
+        onPause: pause,
+        // onSeekBackward,
+        // onSeekForward,
+        onPreviousTrack: prev,
+        onNextTrack: next
+    });
+
+    useEffect(() => {
+        console.log('wtf');
+    }, [mashup, queueName]);
 
     return (
         <ReactHowler
