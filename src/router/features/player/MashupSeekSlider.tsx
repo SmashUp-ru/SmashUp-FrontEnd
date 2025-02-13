@@ -10,6 +10,7 @@ interface MashupSeekSliderProps {
 
 export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
     const seek = usePlayerStore((state) => state.seek);
+    const updateSeek = usePlayerStore((state) => state.updateSeek);
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
 
     const [localSeekChanging, setLocalSeekChanging] = useState(false);
@@ -21,6 +22,7 @@ export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
     }, [seek]);
 
     useEffect(() => {
+        updateSeek(0);
         updateChangedSeek(0);
     }, []);
 

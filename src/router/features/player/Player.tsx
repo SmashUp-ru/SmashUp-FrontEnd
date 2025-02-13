@@ -21,6 +21,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const queueName = usePlayerStore((state) => state.queueName);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
     const changedSeek = usePlayerStore((state) => state.changedSeek);
+    const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
     const bitrate = useSettingsStore((state) => state.bitrate);
 
     const [lastId, setLastId] = useState<number | null>(null);
@@ -58,10 +59,14 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     };
 
     useEffect(() => {
-        if (player && player.current && player.current.howler.state() === 'loaded') {
+        if (!player.current) return;
+        if (player.current.howler.state() === 'loaded') {
             player.current.seek(changedSeek / 1000);
+            if (changedSeek !== 0) {
+                updateChangedSeek(0);
+            }
         }
-    }, [changedSeek]);
+    }, [changedSeek, updateChangedSeek]);
 
     useEffect(() => {
         if (isPlaying) {
@@ -162,7 +167,13 @@ export default function Player({ mashup }: { mashup: Mashup }) {
             volume={volume}
             ref={(ref) => (player.current = ref)}
             html5={true}
-            preload={false}
+            preload={true}
+            onLoad={() => {
+                if (changedSeek > 0 && player.current) {
+                    player.current.seek(changedSeek / 1000);
+                    updateChangedSeek(0);
+                }
+            }}
         />
     );
 }
