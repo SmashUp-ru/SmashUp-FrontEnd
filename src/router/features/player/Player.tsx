@@ -137,8 +137,8 @@ export default function Player({ mashup }: { mashup: Mashup }) {
                 type: 'image/jpeg'
             },
             {
-                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`,
-                sizes: '800x800',
+                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`,
+                sizes: '400x400',
                 type: 'image/jpeg'
             }
         ],

@@ -37,6 +37,7 @@ export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
                     setLocalSeek(value[0]);
                 }}
                 onValueCommit={(value) => {
+                    setLocalSeek(value[0]);
                     updateChangedSeek(value[0]);
                     setLocalSeekChanging(false);
                 }}
