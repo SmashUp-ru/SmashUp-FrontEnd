@@ -682,8 +682,14 @@ export default function MashupForm({
             }
         }
 
+        const finalBasedImageFile =
+            basedImageFile &&
+            (basedImageFile.startsWith('http') || basedImageFile.startsWith('blob:'))
+                ? null
+                : basedImageFile;
+
         if (requireImageFile) {
-            if (!basedImageFile || !imageFile || !imageSrc) {
+            if (!finalBasedImageFile || !imageFile || !imageSrc) {
                 toast({
                     element: (
                         <ErrorToast
@@ -818,7 +824,7 @@ export default function MashupForm({
             statusesUrls: hasStatusLink ? [statusLink] : null,
             genres: [...selectedGenres],
             basedMashupFile: basedMashupFile,
-            basedImageFile: basedImageFile
+            basedImageFile: finalBasedImageFile
         };
 
         return onClick(body);
