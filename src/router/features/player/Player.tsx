@@ -133,12 +133,10 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     useHotkeys(
         'space',
         () => {
-            console.log('123');
+            // TODO: разобраться с пробелом
             if (moderationSrc !== null) {
-                console.log(moderationIsPlaying);
                 updateModerationIsPlaying(!moderationIsPlaying);
             } else if (vkMashupSrc !== null) {
-                console.log(vkMashupIsPlaying);
                 updateVkMashupIsPlaying(!vkMashupIsPlaying);
             } else {
                 updatePlaying(!isPlaying);

@@ -81,19 +81,10 @@ export function UploadYouTubeTrackDialog({
                         )
                     })
                     .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
-                        console.log('[1]', r.data.response);
-                        console.log('[2]', unpublishedMashups);
                         if (unpublishedMashups !== null) {
                             const newMashup = r.data.response;
 
                             updateUnpublishedMashups(
-                                unpublishedMashups.map((mashup) =>
-                                    mashup.id === newMashup.id ? newMashup : mashup
-                                )
-                            );
-
-                            console.log(
-                                'NEW',
                                 unpublishedMashups.map((mashup) =>
                                     mashup.id === newMashup.id ? newMashup : mashup
                                 )
