@@ -6,8 +6,8 @@ import ErrorToast from './error.tsx';
 export function axiosCatcher(
     toast: (t: Toast) => unknown,
     text?: string
-): (r: AxiosSmashUpError<unknown>) => unknown {
-    return (r: AxiosSmashUpError<unknown>) => {
+): (r: AxiosSmashUpError) => unknown {
+    return (r: AxiosSmashUpError) => {
         const message = r.response?.data.message;
         let humanMessage = message ? (errorMessages as Record<string, string>)[message] : undefined;
         if (!humanMessage) {

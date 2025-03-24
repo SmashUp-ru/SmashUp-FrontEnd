@@ -6,4 +6,4 @@ export interface SmashUpResponse<T> {
 }
 
 export type AxiosSmashUpResponse<T> = AxiosResponse<SmashUpResponse<T>>;
-export type AxiosSmashUpError<T> = AxiosError<SmashUpResponse<T>>;
+export type AxiosSmashUpError = AxiosError<SmashUpResponse<unknown>>;

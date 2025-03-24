@@ -58,7 +58,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosSmashUpError<unknown>) => {
+            .catch((e: AxiosSmashUpError) => {
                 if (e.status === 403) {
                     toast({
                         element: (
