@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { usePlayerStore } from '@/store/player.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
+import { VkMashup } from '@/store/entities/vkMashup';
 
 interface MashupSeekSliderProps {
-    mashup: Mashup | UnpublishedMashup;
+    mashup: Mashup | UnpublishedMashup | VkMashup;
 }
 
 export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
@@ -30,7 +31,7 @@ export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
         <div className='absolute top-0 w-full pr-8'>
             <Slider
                 min={0}
-                max={mashup.duration}
+                max={mashup.duration || 0}
                 value={[localSeek]}
                 onValueChange={(value) => {
                     setLocalSeekChanging(true);

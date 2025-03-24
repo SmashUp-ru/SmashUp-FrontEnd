@@ -24,6 +24,14 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
     const bitrate = useSettingsStore((state) => state.bitrate);
 
+    const moderationSrc = usePlayerStore((state) => state.moderationSrc);
+    const moderationIsPlaying = usePlayerStore((state) => state.moderationIsPlaying);
+    const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
+
+    const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
+    const vkMashupIsPlaying = usePlayerStore((state) => state.vkMashupIsPlaying);
+    const updateVkMashupIsPlaying = usePlayerStore((state) => state.updateVkMashupIsPlaying);
+
     const [lastId, setLastId] = useState<number | null>(null);
 
     const { next, prev, play, pause, closeInfo } = usePlayer();
@@ -122,7 +130,22 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     };
 
     // hotkeys
-    useHotkeys('space', () => updatePlaying(!isPlaying), { preventDefault: true });
+    useHotkeys(
+        'space',
+        () => {
+            console.log('123');
+            if (moderationSrc !== null) {
+                console.log(moderationIsPlaying);
+                updateModerationIsPlaying(!moderationIsPlaying);
+            } else if (vkMashupSrc !== null) {
+                console.log(vkMashupIsPlaying);
+                updateVkMashupIsPlaying(!vkMashupIsPlaying);
+            } else {
+                updatePlaying(!isPlaying);
+            }
+        },
+        { preventDefault: true }
+    );
     useHotkeys('ctrl+right', () => next(), { preventDefault: true });
     useHotkeys('ctrl+left', () => prev(), { preventDefault: true });
     useHotkeys('esc', () => closeInfo(), { preventDefault: true });

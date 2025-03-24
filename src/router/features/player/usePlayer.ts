@@ -1,6 +1,7 @@
 import { usePlayerStore } from '@/store/player.ts';
 import { shuffleQueue } from '@/lib/utils.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
+import { VkMashup } from '@/store/entities/vkMashup';
 
 export function usePlayer() {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
@@ -18,6 +19,8 @@ export function usePlayer() {
     const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
     const updateModerationSrc = usePlayerStore((state) => state.updateModerationSrc);
     const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
+    const updateVkMashupSrc = usePlayerStore((state) => state.updateVkMashupSrc);
+    const updateVkMashupIsPlaying = usePlayerStore((state) => state.updateVkMashupIsPlaying);
 
     const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupInfo = usePlayerStore((state) => state.updateMashupInfo);
@@ -80,6 +83,9 @@ export function usePlayer() {
             updateModerationSrc(null);
             updateModerationIsPlaying(false);
 
+            updateVkMashupSrc(null);
+            updateVkMashupIsPlaying(false);
+
             updateSeek(0);
             updateChangedSeek(0);
 
@@ -108,6 +114,9 @@ export function usePlayer() {
         } else {
             updateModerationSrc(null);
             updateModerationIsPlaying(false);
+
+            updateVkMashupSrc(null);
+            updateVkMashupIsPlaying(false);
 
             updateSeek(0);
             updateChangedSeek(0);
@@ -140,6 +149,27 @@ export function usePlayer() {
 
         updateModerationSrc(mashup);
         updateModerationIsPlaying(true);
+
+        updateVkMashupSrc(null);
+        updateVkMashupIsPlaying(false);
+    }
+
+    function playVkMashup(mashup: VkMashup) {
+        updateOriginalQueue([]);
+        updateQueueId('');
+        updateQueue([]);
+        updateQueueIndex(-1);
+        updateQueueName('');
+        updateSeek(0);
+        updateChangedSeek(0);
+        updateInfo(false);
+        updateMashupInfo(null);
+
+        updateModerationSrc(null);
+        updateModerationIsPlaying(false);
+
+        updateVkMashupSrc(mashup);
+        updateVkMashupIsPlaying(true);
     }
 
     function openMashupInfo(mashupId: number) {
@@ -167,6 +197,7 @@ export function usePlayer() {
         openMashupInfo,
         openInfo,
         closeInfo,
-        playModerationMashup
+        playModerationMashup,
+        playVkMashup
     };
 }

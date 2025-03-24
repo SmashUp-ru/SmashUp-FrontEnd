@@ -72,13 +72,32 @@ export function trim(str: string) {
 export function removeItem<T>(
     array: T[],
     item: T,
-    predicate: (item: T, toRemove: T) => unknown = (l, r) => l === r
+    predicate: (item: T, toRemove: T) => unknown = (l, r) => l === r,
+    direct: boolean = false
 ): T[] {
     let index = 0;
     for (const element of array) {
         if (predicate(element, item)) {
-            const newArray = [...array];
+            const newArray = direct ? array : [...array];
             newArray.splice(index, 1);
+            return newArray;
+        }
+        index++;
+    }
+    return array;
+}
+
+export function replaceItem<T>(
+    array: T[],
+    newItem: T,
+    predicate: (item: T) => unknown,
+    direct: boolean = false
+): T[] {
+    let index = 0;
+    for (const element of array) {
+        if (predicate(element)) {
+            const newArray = direct ? array : [...array];
+            newArray[index] = newItem;
             return newArray;
         }
         index++;

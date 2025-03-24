@@ -79,6 +79,7 @@ interface MashupFormProps {
 
 interface MashupFormInitialProps {
     name: string;
+    originalName?: string;
     explicit?: boolean;
     banWords?: boolean;
     statuses?: number;
@@ -132,6 +133,7 @@ export default function MashupForm({
     const hasExplicit = initial.explicit !== undefined;
     const hasBanWords = initial.banWords !== undefined;
     const hasStatuses = initial.statuses !== undefined;
+    const hasOriginalName = initial.originalName !== undefined;
 
     // Inputs
 
@@ -939,6 +941,15 @@ export default function MashupForm({
                                     placeholder='Введите название мэшапа'
                                 />
                             </div>
+
+                            {hasOriginalName && (
+                                <div className='flex flex-col gap-y-2.5'>
+                                    <Label className='font-medium text-onSurfaceVariant'>
+                                        Оригинальное название
+                                    </Label>
+                                    {initial.originalName}
+                                </div>
+                            )}
 
                             {handleMashupFile && (
                                 <div className='flex flex-col gap-y-2.5'>

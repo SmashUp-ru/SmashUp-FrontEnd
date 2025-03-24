@@ -9,21 +9,30 @@ import {
 import ConfirmCoAuthorshipNotification from '@/router/features/header/notifications/ConfirmCoautorshipNotification.tsx';
 import {
     ConfirmCoAuthorshipNotificationType,
-    MashupStatusNotificationType
+    MashupStatusNotificationType,
+    UnpublishedMashupsNotificationType
 } from '@/router/shared/types/notifications.ts';
 import MashupStatusNotification from '@/router/features/header/notifications/MashupStatusNotification.tsx';
 import { useNotificationsData } from '@/router/features/header/notifications/useNotificationsData.ts';
+import UnpublishedMashupsNotification from './notifications/UnpublishedMashupsNotification';
+import { useState } from 'react';
 
 export default function NotificationsMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
     const { notifications } = useNotificationsData();
 
+    const [open, setOpen] = useState<boolean>(false);
+
+    const close = () => setOpen(false);
+
     if (!currentUser) return null;
     if (!notifications) return null;
+
+    // TODO: хотя бы показать, что нет уведомлений
     if (notifications.length === 0) return <BellIcon />;
 
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={setOpen} open={open}>
             <DropdownMenuTrigger>
                 <BellIcon active />
             </DropdownMenuTrigger>
@@ -46,6 +55,13 @@ export default function NotificationsMenu() {
                         {notification.meta.type === 'MASHUP_STATUS' && (
                             <MashupStatusNotification
                                 notification={notification as MashupStatusNotificationType}
+                            />
+                        )}
+
+                        {notification.meta.type === 'UNPUBLISHED_MASHUPS_FROM_VK' && (
+                            <UnpublishedMashupsNotification
+                                notification={notification as UnpublishedMashupsNotificationType}
+                                close={close}
                             />
                         )}
                     </DropdownMenuItem>

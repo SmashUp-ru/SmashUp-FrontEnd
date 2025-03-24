@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UnpublishedMashup } from '@/store/moderation.ts';
+import { VkMashup } from './entities/vkMashup';
 
 interface PlayerState {
     isPlaying: boolean;
@@ -43,6 +44,11 @@ interface PlayerState {
     updateModerationSrc: (newModerationSrc: null | UnpublishedMashup) => void;
     moderationIsPlaying: boolean;
     updateModerationIsPlaying: (newModerationIsPlaying: boolean) => void;
+
+    vkMashupSrc: VkMashup | null;
+    updateVkMashupSrc: (newVkMashupSrc: null | VkMashup) => void;
+    vkMashupIsPlaying: boolean;
+    updateVkMashupIsPlaying: (newVkMashupIsPlaying: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState>()(
@@ -90,7 +96,14 @@ export const usePlayerStore = create<PlayerState>()(
                 set({ moderationSrc: newModerationSrc }),
             moderationIsPlaying: false,
             updateModerationIsPlaying: (newModerationIsPlaying: boolean) =>
-                set({ moderationIsPlaying: newModerationIsPlaying })
+                set({ moderationIsPlaying: newModerationIsPlaying }),
+
+            vkMashupSrc: null,
+            updateVkMashupSrc: (newVkMashupSrc: null | VkMashup) =>
+                set({ vkMashupSrc: newVkMashupSrc }),
+            vkMashupIsPlaying: false,
+            updateVkMashupIsPlaying: (newVkMashupIsPlaying: boolean) =>
+                set({ vkMashupIsPlaying: newVkMashupIsPlaying })
         }),
         {
             name: 'player-storage',

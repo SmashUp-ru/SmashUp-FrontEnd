@@ -22,6 +22,13 @@ export interface MashupStatusNotificationType extends NotificationType {
     };
 }
 
+export interface UnpublishedMashupsNotificationType extends NotificationType {
+    meta: {
+        type: 'UNPUBLISHED_MASHUPS_FROM_VK';
+        count: number;
+    };
+}
+
 export interface GetNotificationsResponse {
     status: string;
     response: NotificationType[];

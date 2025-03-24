@@ -36,6 +36,8 @@ import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 import UploadTrackPage from '@/router/pages/uploadTrack/UploadTrackPage.tsx';
 import ModerateMashupPage from './router/pages/moderation/moderateMashup/ModerateMashupPage';
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
+import UploadVkMashupPage from './router/pages/vkMashup/UploadVkMashupPage';
+import ListVkMashupPage from './router/pages/vkMashup/ListVkMashupPage';
 
 const router = createBrowserRouter(
     [
@@ -94,6 +96,14 @@ const router = createBrowserRouter(
                         {
                             element: <UploadMashupPage />,
                             path: '/mashup/upload'
+                        },
+                        {
+                            element: <ListVkMashupPage />,
+                            path: '/mashup/list/vk'
+                        },
+                        {
+                            element: <UploadVkMashupPage />,
+                            path: '/mashup/upload/vk/:ownerId/:audioId'
                         },
                         {
                             element: <ModerationPage />,
