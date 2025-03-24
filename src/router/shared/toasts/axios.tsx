@@ -1,14 +1,13 @@
 import errorMessages from '@/assets/error_messages.json';
 import { Toast } from '@/router/shared/hooks/use-toast.ts';
-import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
-import { AxiosError } from 'axios';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 import ErrorToast from './error.tsx';
 
 export function axiosCatcher(
     toast: (t: Toast) => unknown,
     text?: string
-): (r: AxiosError<SmashUpResponse<unknown>>) => unknown {
-    return (r: AxiosError<SmashUpResponse<unknown>>) => {
+): (r: AxiosSmashUpError<unknown>) => unknown {
+    return (r: AxiosSmashUpError<unknown>) => {
         const message = r.response?.data.message;
         let humanMessage = message ? (errorMessages as Record<string, string>)[message] : undefined;
         if (!humanMessage) {

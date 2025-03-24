@@ -34,8 +34,7 @@ import WarningIcon from '@/components/icons/Warning';
 import { RegEx } from '@/lib/regex';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipContent } from '@/components/ui/tooltip';
-import { AxiosResponse } from 'axios';
-import { SmashUpResponse } from '@/router/shared/types/smashup';
+import { AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 import { SmashUpIcon } from '@/components/icons/SmashUp';
 import { UploadYouTubeTrackDialog } from '@/router/shared/components/track/UploadYouTubeTrackDialog';
 import BaseToast from '@/router/shared/toasts/Base';
@@ -133,7 +132,7 @@ export function UnpublishedMashupAccordionItem({
                 id: mashup.id,
                 statuses: switchBit(mashup.statuses, isStatus, setStatus)
             })
-            .then((r: AxiosResponse<SmashUpResponse<UnpublishedMashup>>) => {
+            .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
                 const newMashup = r.data.response;
 
                 updateUnpublishedMashups(
@@ -206,7 +205,7 @@ export function UnpublishedMashupAccordionItem({
                                         .post(
                                             `/moderation/unpublished_mashup/publish?id=${mashup.id}`
                                         )
-                                        .then((r: AxiosResponse<SmashUpResponse<Mashup>>) => {
+                                        .then((r: AxiosSmashUpResponse<Mashup>) => {
                                             updateUnpublishedMashups([
                                                 ...unpublishedMashups.filter(
                                                     (um) => um.id !== mashup.id

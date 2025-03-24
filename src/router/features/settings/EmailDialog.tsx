@@ -19,10 +19,9 @@ import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useState } from 'react';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
-import { AxiosError } from 'axios';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 
 interface EmailDialogProps {
@@ -59,7 +58,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosError<SmashUpResponse<unknown>>) => {
+            .catch((e: AxiosSmashUpError<unknown>) => {
                 if (e.status === 403) {
                     toast({
                         element: (

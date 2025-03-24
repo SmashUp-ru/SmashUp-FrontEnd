@@ -4,8 +4,7 @@ import { axiosSession, removeItem } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { YouTubeTrack } from '../../types/youtube';
-import { AxiosResponse } from 'axios';
-import { SmashUpResponse } from '../../types/smashup';
+import { AxiosSmashUpResponse } from '../../types/smashup';
 import { Track } from '@/store/entities/track';
 import { useToast } from '../../hooks/use-toast';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation';
@@ -62,7 +61,7 @@ export function UploadYouTubeTrackDialog({
                 name: name,
                 authors: realAuthors
             })
-            .then((r: AxiosResponse<SmashUpResponse<Track>>) => {
+            .then((r: AxiosSmashUpResponse<Track>) => {
                 toast({
                     element: (
                         <BaseToast image={track.imageUrl} field='Трек' after='успешно загружен' />
@@ -81,7 +80,7 @@ export function UploadYouTubeTrackDialog({
                             RegEx.NORMALIZE_YOUTUBE_LINK(uploadedTrack.link)
                         )
                     })
-                    .then((r: AxiosResponse<SmashUpResponse<UnpublishedMashup>>) => {
+                    .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
                         console.log('[1]', r.data.response);
                         console.log('[2]', unpublishedMashups);
                         if (unpublishedMashups !== null) {

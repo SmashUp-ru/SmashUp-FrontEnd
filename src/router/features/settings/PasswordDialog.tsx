@@ -16,14 +16,13 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
-import { AxiosError } from 'axios';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useState } from 'react';
 import PasswordDialogSentContent from '@/router/features/settings/PasswordDialogSentContent.tsx';
 import { changePasswordFormSchema } from '@/router/shared/schemas/changePassword.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
-import { SmashUpResponse } from '@/router/shared/types/smashup.ts';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 
 interface PasswordDialogProps {
     email: string | null;
@@ -51,7 +50,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosError<SmashUpResponse<unknown>>) => {
+            .catch((e: AxiosSmashUpError<unknown>) => {
                 if (e.status === 403) {
                     toast({
                         element: (

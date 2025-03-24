@@ -7,11 +7,10 @@ import MashupFormSkeleton from '@/router/shared/components/mashup/MashupFormSkel
 import { useTrackStore } from '@/store/entities/track';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation';
 import { axiosSession } from '@/lib/utils';
-import { AxiosResponse } from 'axios';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { getToken } from '@/store/global';
-import { SmashUpResponse } from '@/router/shared/types/smashup';
+import { AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 
 export default function ModerateMashupPage() {
     const params = useParams();
@@ -101,7 +100,7 @@ export default function ModerateMashupPage() {
                         ...body,
                         albumId: -1
                     })
-                    .then((r: AxiosResponse<SmashUpResponse<UnpublishedMashup>>) => {
+                    .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
                         const newMashup = r.data.response;
 
                         updateUnpublishedMashups(
