@@ -7,7 +7,7 @@ import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { useGlobalStore } from '@/store/global.ts';
-import { useMediaSession } from '@mebtte/react-media-session';
+import { useMediaSession } from '@dmhd6219/react-media-session';
 
 export default function Player({ mashup }: { mashup: Mashup }) {
     const currentUser = useGlobalStore((state) => state.currentUser);
