@@ -53,7 +53,7 @@ interface PlayerState {
 
 export const usePlayerStore = create<PlayerState>()(
     persist(
-        (set) => ({
+        (set): PlayerState => ({
             isPlaying: false,
             updatePlaying: (newIsPlaying: boolean) => set({ isPlaying: newIsPlaying }),
             play: () => set({ isPlaying: true }),
