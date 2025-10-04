@@ -44,7 +44,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-hidden`,
+                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-y-auto`,
                 'flex flex-col gap-y-4 items-start'
             )}
         >
@@ -177,12 +177,12 @@ export default function MashupInfo() {
                 </MashupMoreDropdown>
             </div>
 
-            <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
+            <div className='flex flex-col gap-y-2.5 w-full'>
                 <span className='font-bold text-[18px] text-onSurfaceVariant'>
                     Использованные треки
                 </span>
 
-                <div className='flex flex-col gap-y-2.5 w-full overflow-y-scroll'>
+                <div className='flex flex-col gap-y-2.5 w-full'>
                     {tracks.map((track) => (
                         <TrackSmallThumb key={track.id} track={track} />
                     ))}

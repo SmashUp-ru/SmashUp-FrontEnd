@@ -25,7 +25,7 @@ export default function RootLayout() {
     const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
 
     return (
-        <div className='flex h-screen pl-4 bg-background text-onBackground'>
+        <div className='flex h-screen pl-4 bg-background text-onBackground '>
             <Sidebar />
             <main
                 className={`w-full flex flex-col ${queue.length > 0 || (queueIndex !== -1 && queueIndex !== null) || moderationSrc !== null || vkMashupSrc !== null ? 'pb-[112px]' : ''}`}
