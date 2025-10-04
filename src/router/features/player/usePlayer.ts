@@ -2,6 +2,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import { shuffleQueue } from '@/lib/utils.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
 import { VkMashup } from '@/store/entities/vkMashup';
+import { useCallback } from 'react';
 
 export function usePlayer() {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
@@ -25,15 +26,15 @@ export function usePlayer() {
     const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupInfo = usePlayerStore((state) => state.updateMashupInfo);
 
-    function play() {
+    const play = useCallback(() => {
         updatePlaying(true);
-    }
+    }, [updatePlaying]);
 
-    function pause() {
+    const pause = useCallback(() => {
         updatePlaying(false);
-    }
+    }, [updatePlaying]);
 
-    function next() {
+    const next = useCallback(() => {
         const currentLoop = usePlayerStore.getState().loop;
         updateSeek(0);
         updateChangedSeek(0);
@@ -48,12 +49,11 @@ export function usePlayer() {
         } else if (currentLoop === 'none') {
             pause();
         }
-    }
+    }, [pause, play, queue.length, queueIndex, updateChangedSeek, updateQueueIndex, updateSeek]);
 
-    function prev() {
+    const prev = useCallback(() => {
         const currentLoop = usePlayerStore.getState().loop;
 
-        console.log(seek);
         if (seek > 1000 * 5) {
             pause();
             updateSeek(0);
@@ -67,125 +67,195 @@ export function usePlayer() {
                 pause();
             }
         }
-    }
+    }, [pause, play, queueIndex, seek, updateChangedSeek, updateQueueIndex, updateSeek]);
 
-    function playQueue(
-        newQueue: number[],
-        newQueueName: string,
-        newQueueId: string,
-        newQueueIndex: number = 0
-    ) {
-        if (newQueue.length === 0) return;
+    const playQueue = useCallback(
+        (
+            newQueue: number[],
+            newQueueName: string,
+            newQueueId: string,
+            newQueueIndex: number = 0
+        ) => {
+            if (newQueue.length === 0) return;
 
-        if (newQueueId === queueId) {
-            play();
-        } else {
-            updateModerationSrc(null);
-            updateModerationIsPlaying(false);
+            if (newQueueId === queueId) {
+                play();
+            } else {
+                updateModerationSrc(null);
+                updateModerationIsPlaying(false);
+
+                updateVkMashupSrc(null);
+                updateVkMashupIsPlaying(false);
+
+                updateSeek(0);
+                updateChangedSeek(0);
+
+                updateOriginalQueue(newQueue);
+
+                let shuffledQueue = newQueue;
+                if (shuffle) {
+                    [shuffledQueue] = shuffleQueue(newQueue, newQueueIndex);
+                }
+
+                updateQueueId(newQueueId);
+                updateQueue([...shuffledQueue]);
+                updateQueueIndex(newQueueIndex);
+                updateQueueName(newQueueName);
+                play();
+            }
+        },
+        [
+            play,
+            queueId,
+            shuffle,
+            updateChangedSeek,
+            updateModerationIsPlaying,
+            updateModerationSrc,
+            updateOriginalQueue,
+            updateQueue,
+            updateQueueId,
+            updateQueueIndex,
+            updateQueueName,
+            updateSeek,
+            updateVkMashupIsPlaying,
+            updateVkMashupSrc
+        ]
+    );
+
+    const playMashup = useCallback(
+        (newQueue: number[], newQueueName: string, newQueueId: string, newQueueIndex: number) => {
+            if (newQueueId === queueId && queueIndex === newQueueIndex) {
+                play();
+            } else {
+                updateModerationSrc(null);
+                updateModerationIsPlaying(false);
+
+                updateVkMashupSrc(null);
+                updateVkMashupIsPlaying(false);
+
+                updateSeek(0);
+                updateChangedSeek(0);
+
+                updateOriginalQueue(newQueue);
+
+                if (shuffle) {
+                    [newQueue, newQueueIndex] = shuffleQueue(newQueue, newQueueIndex);
+                }
+
+                updateQueueId(newQueueId);
+
+                updateQueue([...newQueue]);
+                updateQueueIndex(newQueueIndex);
+                updateQueueName(newQueueName);
+                play();
+            }
+        },
+        [
+            play,
+            queueId,
+            queueIndex,
+            shuffle,
+            updateChangedSeek,
+            updateModerationIsPlaying,
+            updateModerationSrc,
+            updateOriginalQueue,
+            updateQueue,
+            updateQueueId,
+            updateQueueIndex,
+            updateQueueName,
+            updateSeek,
+            updateVkMashupIsPlaying,
+            updateVkMashupSrc
+        ]
+    );
+
+    const playModerationMashup = useCallback(
+        (mashup: UnpublishedMashup) => {
+            updateOriginalQueue([]);
+            updateQueueId('');
+            updateQueue([]);
+            updateQueueIndex(-1);
+            updateQueueName('');
+            updateSeek(0);
+            updateChangedSeek(0);
+            updateInfo(false);
+            updateMashupInfo(null);
+
+            updateModerationSrc(mashup);
+            updateModerationIsPlaying(true);
 
             updateVkMashupSrc(null);
             updateVkMashupIsPlaying(false);
+        },
+        [
+            updateChangedSeek,
+            updateInfo,
+            updateMashupInfo,
+            updateModerationIsPlaying,
+            updateModerationSrc,
+            updateOriginalQueue,
+            updateQueue,
+            updateQueueId,
+            updateQueueIndex,
+            updateQueueName,
+            updateSeek,
+            updateVkMashupIsPlaying,
+            updateVkMashupSrc
+        ]
+    );
 
+    const playVkMashup = useCallback(
+        (mashup: VkMashup) => {
+            updateOriginalQueue([]);
+            updateQueueId('');
+            updateQueue([]);
+            updateQueueIndex(-1);
+            updateQueueName('');
             updateSeek(0);
             updateChangedSeek(0);
+            updateInfo(false);
+            updateMashupInfo(null);
 
-            updateOriginalQueue(newQueue);
-
-            if (shuffle) {
-                [newQueue] = shuffleQueue(newQueue, newQueueIndex);
-            }
-
-            updateQueueId(newQueueId);
-            updateQueue([...newQueue]);
-            updateQueueIndex(newQueueIndex);
-            updateQueueName(newQueueName);
-            play();
-        }
-    }
-
-    function playMashup(
-        newQueue: number[],
-        newQueueName: string,
-        newQueueId: string,
-        newQueueIndex: number
-    ) {
-        if (newQueueId === queueId && queueIndex === newQueueIndex) {
-            play();
-        } else {
             updateModerationSrc(null);
             updateModerationIsPlaying(false);
 
-            updateVkMashupSrc(null);
-            updateVkMashupIsPlaying(false);
+            updateVkMashupSrc(mashup);
+            updateVkMashupIsPlaying(true);
+        },
+        [
+            updateChangedSeek,
+            updateInfo,
+            updateMashupInfo,
+            updateModerationIsPlaying,
+            updateModerationSrc,
+            updateOriginalQueue,
+            updateQueue,
+            updateQueueId,
+            updateQueueIndex,
+            updateQueueName,
+            updateSeek,
+            updateVkMashupIsPlaying,
+            updateVkMashupSrc
+        ]
+    );
 
-            updateSeek(0);
-            updateChangedSeek(0);
+    const openMashupInfo = useCallback(
+        (mashupId: number) => {
+            updateInfo(false);
+            updateMashupInfo(mashupId);
+        },
+        [updateInfo, updateMashupInfo]
+    );
 
-            updateOriginalQueue(newQueue);
-
-            if (shuffle) {
-                [newQueue, newQueueIndex] = shuffleQueue(newQueue, newQueueIndex);
-            }
-
-            updateQueueId(newQueueId);
-
-            updateQueue([...newQueue]);
-            updateQueueIndex(newQueueIndex);
-            updateQueueName(newQueueName);
-            play();
-        }
-    }
-
-    function playModerationMashup(mashup: UnpublishedMashup) {
-        updateOriginalQueue([]);
-        updateQueueId('');
-        updateQueue([]);
-        updateQueueIndex(-1);
-        updateQueueName('');
-        updateSeek(0);
-        updateChangedSeek(0);
-        updateInfo(false);
-        updateMashupInfo(null);
-
-        updateModerationSrc(mashup);
-        updateModerationIsPlaying(true);
-
-        updateVkMashupSrc(null);
-        updateVkMashupIsPlaying(false);
-    }
-
-    function playVkMashup(mashup: VkMashup) {
-        updateOriginalQueue([]);
-        updateQueueId('');
-        updateQueue([]);
-        updateQueueIndex(-1);
-        updateQueueName('');
-        updateSeek(0);
-        updateChangedSeek(0);
-        updateInfo(false);
-        updateMashupInfo(null);
-
-        updateModerationSrc(null);
-        updateModerationIsPlaying(false);
-
-        updateVkMashupSrc(mashup);
-        updateVkMashupIsPlaying(true);
-    }
-
-    function openMashupInfo(mashupId: number) {
-        updateInfo(false);
-        updateMashupInfo(mashupId);
-    }
-
-    function openInfo() {
+    const openInfo = useCallback(() => {
         updateInfo(true);
         updateMashupInfo(null);
-    }
+    }, [updateInfo, updateMashupInfo]);
 
-    function closeInfo() {
+    const closeInfo = useCallback(() => {
         updateInfo(false);
         updateMashupInfo(null);
-    }
+    }, [updateInfo, updateMashupInfo]);
 
     return {
         play,
