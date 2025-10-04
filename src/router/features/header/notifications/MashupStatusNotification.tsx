@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { MashupStatusNotificationType } from '@/router/shared/types/notifications.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { useCurrentUserStore } from '@/store/currentUser.ts';
+import { useCallback } from 'react';
 
 interface MashupStatusNotificationProps {
     notification: MashupStatusNotificationType;
@@ -11,13 +12,13 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
     const notifications = useCurrentUserStore((state) => state.notifications);
     const updateNotifications = useCurrentUserStore((state) => state.updateNotifications);
 
-    const handleButtonClick = () => {
+    const handleButtonClick = useCallback(() => {
         if (notifications !== null) {
             axiosSession.post(`/notification/delete?id=${notification.id}`).then(() => {
                 updateNotifications([...notifications.filter((n) => n.id !== notification.id)]);
             });
         }
-    };
+    }, [notification.id, notifications, updateNotifications]);
 
     return (
         <div className='flex gap-x-3'>

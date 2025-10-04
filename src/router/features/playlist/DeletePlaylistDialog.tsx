@@ -17,6 +17,7 @@ import { toast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { useCallback } from 'react';
 
 interface DeletePlaylistDialogProps {
     playlist: Playlist;
@@ -31,6 +32,46 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
     const getUserById = useUserStore((state) => state.getOneById);
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
+
+    const handleDelete = useCallback(() => {
+        if (!currentUser) return;
+
+        axiosSession.post(`/playlist/delete?id=${playlist.id}`).then(() => {
+            toast({
+                element: (
+                    <BaseToast
+                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
+                        before='Плейлист'
+                        field={playlist.name}
+                        after='успешно удалён!'
+                    />
+                ),
+                duration: 2000
+            });
+            updatePlaylistById(playlist.id, undefined);
+            updateUserById(currentUser.id, {
+                playlists: [
+                    ...currentUser.playlists.filter((playlistId) => playlistId !== playlist.id)
+                ]
+            });
+            getUserById(currentUser.id).then((r) => {
+                updateCurrentUser(r);
+                updateCurrentUserPlaylists(r.playlists);
+            });
+            navigate(`/user/${currentUser.username}`);
+        });
+    }, [
+        currentUser,
+        getUserById,
+        navigate,
+        playlist.id,
+        playlist.imageUrl,
+        playlist.name,
+        updateCurrentUser,
+        updateCurrentUserPlaylists,
+        updatePlaylistById,
+        updateUserById
+    ]);
 
     if (!currentUser) return null;
 
@@ -47,37 +88,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button
-                        variant='error'
-                        onClick={() => {
-                            axiosSession.post(`/playlist/delete?id=${playlist.id}`).then(() => {
-                                toast({
-                                    element: (
-                                        <BaseToast
-                                            image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
-                                            before='Плейлист'
-                                            field={playlist.name}
-                                            after='успешно удалён!'
-                                        />
-                                    ),
-                                    duration: 2000
-                                });
-                                updatePlaylistById(playlist.id, undefined);
-                                updateUserById(currentUser.id, {
-                                    playlists: [
-                                        ...currentUser.playlists.filter(
-                                            (playlistId) => playlistId !== playlist.id
-                                        )
-                                    ]
-                                });
-                                getUserById(currentUser.id).then((r) => {
-                                    updateCurrentUser(r);
-                                    updateCurrentUserPlaylists(r.playlists);
-                                });
-                                navigate(`/user/${currentUser.username}`);
-                            });
-                        }}
-                    >
+                    <Button variant='error' onClick={handleDelete}>
                         Удалить
                     </Button>
                     <DialogClose>

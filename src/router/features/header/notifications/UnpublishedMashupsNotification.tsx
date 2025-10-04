@@ -2,6 +2,7 @@ import VKIcon from '@/components/icons/VK';
 import { Button } from '@/components/ui/button.tsx';
 import { UnpublishedMashupsNotificationType } from '@/router/shared/types/notifications.ts';
 import { useNavigate } from 'react-router-dom';
+import { useCallback } from 'react';
 
 interface UnpublishedMashupsNotificationProps {
     notification: UnpublishedMashupsNotificationType;
@@ -14,10 +15,10 @@ export default function UnpublishedMashupsNotification({
 }: UnpublishedMashupsNotificationProps) {
     const navigate = useNavigate();
 
-    const handleButtonClick = () => {
+    const handleButtonClick = useCallback(() => {
         navigate(`/mashup/list/vk`);
         close();
-    };
+    }, [close, navigate]);
 
     return (
         <div className='flex gap-x-3 w-full'>

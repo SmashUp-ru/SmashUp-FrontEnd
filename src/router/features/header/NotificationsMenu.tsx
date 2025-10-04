@@ -15,7 +15,7 @@ import {
 import MashupStatusNotification from '@/router/features/header/notifications/MashupStatusNotification.tsx';
 import { useNotificationsData } from '@/router/features/header/notifications/useNotificationsData.ts';
 import UnpublishedMashupsNotification from './notifications/UnpublishedMashupsNotification';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function NotificationsMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -23,7 +23,7 @@ export default function NotificationsMenu() {
 
     const [open, setOpen] = useState<boolean>(false);
 
-    const close = () => setOpen(false);
+    const close = useCallback(() => setOpen(false), []);
 
     if (!currentUser) return null;
     if (!notifications) return null;

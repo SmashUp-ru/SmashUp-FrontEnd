@@ -9,7 +9,7 @@ import { axiosSession, cn } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { loadSelectedTracks, SelectedTrack, TrackType } from '@/router/shared/types/upload';
 import { isExplicit, isTwitchBanned, setExplicit, setTwitchBanned, switchBit } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
@@ -80,7 +80,7 @@ export function UnpublishedMashupAccordionItem({
     const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`;
 
     const [rejectionValue, setRejectionValue] = useState('');
-    const rejectMashup = () => {
+    const rejectMashup = useCallback(() => {
         axiosSession
             .post(`/moderation/unpublished_mashup/reject`, {
                 id: mashup.id,
@@ -94,7 +94,7 @@ export function UnpublishedMashupAccordionItem({
                 }
             })
             .catch(axiosCatcher(toast, 'при отклонении мэшапа.'));
-    };
+    }, [mashup.id, rejectionValue, toast, unpublishedMashups, updateUnpublishedMashups]);
 
     const [hasYouTube, setHasYoutube] = useState(false);
 
@@ -113,36 +113,41 @@ export function UnpublishedMashupAccordionItem({
     const [switchingExplicit, setSwitchingExplicit] = useState<boolean>(false);
     const [switchingBanWords, setSwitchingBanWords] = useState<boolean>(false);
 
+    const switchStatus = useCallback(
+        (
+            isSwitching: boolean,
+            setSwitching: (s: boolean) => unknown,
+            isStatus: (b: number) => boolean,
+            setStatus: (b: number, s: boolean) => number
+        ) => {
+            if (isSwitching) {
+                return;
+            }
+
+            setSwitching(true);
+
+            axiosSession
+                .post('/moderation/unpublished_mashup/edit', {
+                    id: mashup.id,
+                    statuses: switchBit(mashup.statuses, isStatus, setStatus)
+                })
+                .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
+                    const newMashup = r.data.response;
+
+                    if (unpublishedMashups) {
+                        updateUnpublishedMashups(
+                            unpublishedMashups.map((mashup) =>
+                                mashup.id === newMashup.id ? newMashup : mashup
+                            )
+                        );
+                    }
+                })
+                .finally(() => setSwitching(false));
+        },
+        [mashup.id, mashup.statuses, unpublishedMashups, updateUnpublishedMashups]
+    );
+
     if (!unpublishedMashups) return null;
-
-    const switchStatus = (
-        isSwitching: boolean,
-        setSwitching: (s: boolean) => unknown,
-        isStatus: (b: number) => boolean,
-        setStatus: (b: number, s: boolean) => number
-    ) => {
-        if (isSwitching) {
-            return;
-        }
-
-        setSwitching(true);
-
-        axiosSession
-            .post('/moderation/unpublished_mashup/edit', {
-                id: mashup.id,
-                statuses: switchBit(mashup.statuses, isStatus, setStatus)
-            })
-            .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
-                const newMashup = r.data.response;
-
-                updateUnpublishedMashups(
-                    unpublishedMashups.map((mashup) =>
-                        mashup.id === newMashup.id ? newMashup : mashup
-                    )
-                );
-            })
-            .finally(() => setSwitching(false));
-    };
 
     return (
         <AccordionItem value={value}>

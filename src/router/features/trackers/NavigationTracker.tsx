@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { removeItem } from '@/lib/utils';
 
 export default function NavigationTracker() {
@@ -7,9 +7,7 @@ export default function NavigationTracker() {
 
     const [lastLocation, setLastLocation] = useState<string | null>(null);
 
-    const handleLocationChange = (newLocation: string, searchId: string | null) => {
-        console.log(`Transition from ${lastLocation} to ${newLocation}`);
-
+    const handleLocationChange = useCallback((newLocation: string, searchId: string | null) => {
         if (!newLocation || !searchId) {
             return;
         }
@@ -57,7 +55,7 @@ export default function NavigationTracker() {
 
             localStorage.setItem('search_history', JSON.stringify(history));
         }
-    };
+    }, []);
 
     useEffect(() => {
         if (location && location.pathname !== lastLocation) {

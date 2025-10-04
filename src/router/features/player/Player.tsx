@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactHowler from 'react-howler';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
@@ -42,29 +42,47 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const playTimeRef = useRef<number>(0);
     const playTimeSent = useRef<boolean>(false);
 
-    const sendListenedEvent = () => {
+    const sendListenedEvent = useCallback(() => {
         playTimeSent.current = true;
 
         const currentTrackId = queue[queueIndex];
         if (currentTrackId && currentUser !== null) {
             axiosSession.post(`/mashup/add_stream?id=${currentTrackId}`).catch(console.error);
         }
-    };
+    }, [currentUser, queue, queueIndex]);
 
-    const sendListenedDuration = () => {
+    const sendListenedDuration = useCallback(() => {
         if (lastId && currentUser !== null && playTimeRef.current > 0) {
             axiosSession
                 .post(`/mashup/listened?id=${lastId}&duration=${playTimeRef.current}`)
                 .catch(console.error);
         }
-    };
+    }, [currentUser, lastId]);
 
-    const resetPlayTime = () => {
+    const resetPlayTime = useCallback(() => {
         sendListenedDuration();
 
         playTimeRef.current = 0;
         playTimeSent.current = false;
-    };
+    }, [sendListenedDuration]);
+
+    const handleOnEnd = useCallback(() => {
+        resetPlayTime();
+        const currentLoop = usePlayerStore.getState().loop;
+        const queue = usePlayerStore.getState().queue;
+        const queueIndex = usePlayerStore.getState().queueIndex;
+
+        if (queueIndex === queue.length - 1) {
+            if (currentLoop === 'queue') {
+                updateQueueIndex(0);
+                play();
+            } else if (currentLoop === 'none') {
+                pause();
+            }
+        } else {
+            next();
+        }
+    }, [next, pause, play, resetPlayTime, updateQueueIndex]);
 
     useEffect(() => {
         if (!player.current) return;
@@ -104,30 +122,12 @@ export default function Player({ mashup }: { mashup: Mashup }) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [isPlaying, updateSeek]);
+    }, [isPlaying, mashup.duration, sendListenedDuration, sendListenedEvent, updateSeek]);
 
     useEffect(() => {
         resetPlayTime();
         setLastId(queue[queueIndex]);
-    }, [queue, queueIndex]);
-
-    const handleOnEnd = () => {
-        resetPlayTime();
-        const currentLoop = usePlayerStore.getState().loop;
-        const queue = usePlayerStore.getState().queue;
-        const queueIndex = usePlayerStore.getState().queueIndex;
-
-        if (queueIndex === queue.length - 1) {
-            if (currentLoop === 'queue') {
-                updateQueueIndex(0);
-                play();
-            } else if (currentLoop === 'none') {
-                pause();
-            }
-        } else {
-            next();
-        }
-    };
+    }, [queue, queueIndex, resetPlayTime]);
 
     // hotkeys
     useHotkeys(
@@ -167,8 +167,8 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     );
 
     useMediaSession({
-        title: useMemo(() => mashup.name, [mashup.name]),
-        artist: useMemo(() => mashup.authors.join(', '), [mashup.authors]),
+        title: mashup.name,
+        artist: mashup.authors.join(', '),
         album: queueName,
         artwork: artwork,
         onPlay: play,

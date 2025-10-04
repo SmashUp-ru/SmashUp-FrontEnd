@@ -3,6 +3,7 @@ import { useConfirmCoAuthorshipNotificationData } from '@/router/features/header
 import { Button } from '@/components/ui/button.tsx';
 import { axiosSession } from '@/lib/utils.ts';
 import { useCurrentUserStore } from '@/store/currentUser.ts';
+import { useCallback } from 'react';
 
 interface ConfirmCoAuthorshipNotificationProps {
     notification: ConfirmCoAuthorshipNotificationType;
@@ -16,15 +17,20 @@ export default function ConfirmCoAuthorshipNotification({
 
     const { mashup, isLoading } = useConfirmCoAuthorshipNotificationData(notification);
 
-    const handleButtonClick = (accepted: boolean) => {
-        if (notifications !== null) {
-            axiosSession
-                .post(`/notification/interact?id=${notification.id}`, { accepted: accepted })
-                .then(() => {
-                    updateNotifications([...notifications.filter((n) => n.id !== notification.id)]);
-                });
-        }
-    };
+    const handleButtonClick = useCallback(
+        (accepted: boolean) => {
+            if (notifications !== null) {
+                axiosSession
+                    .post(`/notification/interact?id=${notification.id}`, { accepted: accepted })
+                    .then(() => {
+                        updateNotifications([
+                            ...notifications.filter((n) => n.id !== notification.id)
+                        ]);
+                    });
+            }
+        },
+        [notification.id, notifications, updateNotifications]
+    );
 
     // TODO: скелет
     if (isLoading) return <div>Скелет..</div>;
