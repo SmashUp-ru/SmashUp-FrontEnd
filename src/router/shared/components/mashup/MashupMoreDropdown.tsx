@@ -25,6 +25,7 @@ import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -126,7 +127,11 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                             toast({
                                                                 element: (
                                                                     <BaseToast
-                                                                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_100x100.png`}
+                                                                        image={coverUrl(
+                                                                            'playlist',
+                                                                            playlist.imageUrl,
+                                                                            100
+                                                                        )}
                                                                         before='Трек'
                                                                         field={
                                                                             includes
@@ -194,7 +199,7 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                     toast({
                                         element: (
                                             <CopiedToast
-                                                img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                                img={coverUrl('mashup', mashup.imageUrl, 400)}
                                                 name={mashup.name}
                                             />
                                         ),

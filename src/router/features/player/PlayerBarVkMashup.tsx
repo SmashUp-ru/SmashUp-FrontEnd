@@ -15,6 +15,7 @@ import ErrorToast from '@/router/shared/toasts/error';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useVkMashups } from '@/router/pages/vkMashup/useVkMashups';
 import { VkMashup } from '@/store/entities/vkMashup';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function PlayerBarVkMashup() {
     const { toast } = useToast();
@@ -93,10 +94,7 @@ export default function PlayerBarVkMashup() {
                 {/*левая часть*/}
                 <div className='w-1/3 flex items-center gap-x-6'>
                     <img
-                        src={
-                            vkMashupSrc.imageUrl ||
-                            `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`
-                        }
+                        src={vkMashupSrc.imageUrl || coverUrl('mashup', 'default', 100)}
                         alt={vkMashupSrc.name}
                         className='w-12 h-12 rounded-[10px]'
                     />

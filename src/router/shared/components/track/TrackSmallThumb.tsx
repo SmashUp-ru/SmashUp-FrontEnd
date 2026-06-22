@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import TrackMoreDropdown from '@/router/shared/components/track/TrackMoreDropdown.tsx';
 import { ReactNode } from 'react';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export interface TrackThumbProps {
     track: TrackLike;
@@ -34,7 +35,7 @@ export default function TrackSmallThumb({
                 src={
                     track.imageUrl.startsWith('https://')
                         ? track.imageUrl
-                        : `${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`
+                        : coverUrl('track', track.imageUrl, 100)
                 }
                 alt={track.name}
                 className='w-12 h-12 rounded-xl object-cover'

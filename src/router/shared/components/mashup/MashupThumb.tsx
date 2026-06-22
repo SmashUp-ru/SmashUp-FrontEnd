@@ -12,6 +12,7 @@ import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import MashupThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupThumbExplicitDisallowed.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -53,7 +54,7 @@ export default function MashupThumb({
                     to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
                 >
                     <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                        src={coverUrl('mashup', mashup.imageUrl, 400)}
                         alt={mashup.name}
                         className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                         draggable={false}

@@ -62,6 +62,7 @@ import SpotifyIcon from '@/components/icons/Spotify.tsx';
 import TrackSmallThumbSkeleton from '../track/TrackSmallThumbSkeleton.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { SmashUpIcon } from '@/components/icons/SmashUp.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -1003,7 +1004,11 @@ export default function MashupForm({
                                                         toast({
                                                             element: (
                                                                 <CopiedToast
-                                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`}
+                                                                    img={coverUrl(
+                                                                        'mashup',
+                                                                        'default',
+                                                                        100
+                                                                    )}
                                                                     name={'undefined'}
                                                                 />
                                                             ),
@@ -1116,7 +1121,7 @@ export default function MashupForm({
                                                 }}
                                             >
                                                 <img
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
+                                                    src={coverUrl('user', user.imageUrl, 100)}
                                                     alt={user.username}
                                                     className='w-12 h-12 rounded-xl object-cover'
                                                     draggable={false}

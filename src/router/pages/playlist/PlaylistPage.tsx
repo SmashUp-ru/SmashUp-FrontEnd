@@ -13,6 +13,7 @@ import EditIcon from '@/components/icons/edit/Edit32';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 import PlaylistLikeButton from '@/router/shared/components/playlist/PlaylistLikeButton.tsx';
 import PlaylistPlayButton from '@/router/shared/components/playlist/PlaylistPlayButton.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -30,7 +31,7 @@ export default function PlaylistPage() {
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 <ImageWithSkeleton
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
+                    src={coverUrl('playlist', playlist.imageUrl, 800)}
                     alt={playlist.name}
                     className='w-[216px] h-[216px] rounded-[34px]'
                     skeletonClassName='w-[216px] h-[216px] rounded-[34px]'
@@ -69,7 +70,11 @@ export default function PlaylistPage() {
                                         toast({
                                             element: (
                                                 <CopiedToast
-                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
+                                                    img={coverUrl(
+                                                        'playlist',
+                                                        playlist.imageUrl,
+                                                        800
+                                                    )}
                                                     name={playlist.name}
                                                 />
                                             ),

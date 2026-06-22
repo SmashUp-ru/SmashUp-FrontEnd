@@ -20,6 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();
@@ -61,7 +62,7 @@ export default function MashupInfo() {
 
             {!imageLoaded && <Skeleton className='w-[350px] h-[350px] rounded-[30px]' />}
             <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`}
+                src={coverUrl('mashup', mashup.imageUrl, 800)}
                 alt={mashup.name}
                 className={cn('w-[350px] h-[350px] rounded-[30px]', !imageLoaded && 'hidden')}
                 draggable={false}

@@ -10,6 +10,7 @@ import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlayl
 import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { useSettingsStore } from '@/store/settings.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -42,11 +43,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                     }
                 >
                     <img
-                        src={
-                            image
-                                ? image
-                                : `${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_400x400.png`
-                        }
+                        src={image ? image : coverUrl('playlist', playlist.imageUrl, 400)}
                         alt={playlist.name}
                         className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                         draggable={false}

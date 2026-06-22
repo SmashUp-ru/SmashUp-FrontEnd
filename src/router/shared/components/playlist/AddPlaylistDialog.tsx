@@ -34,6 +34,7 @@ import { useNavigate } from 'react-router-dom';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { addPlaylistFormSchema } from '@/router/shared/schemas/addPlaylist.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
@@ -148,7 +149,7 @@ export default function AddPlaylistDialog({
     }
 
     const imageLink = form.watch('basedImageFile');
-    const defaultImageLink = 'https://api.smashup.ru/uploads/playlist/default_800x800.png';
+    const defaultImageLink = coverUrl('playlist', 'default', 800);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

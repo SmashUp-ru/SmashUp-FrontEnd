@@ -15,6 +15,7 @@ import { usePlayerStore } from '@/store/player';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface VkMashupItemProps {
     mashup: VkMashup;
@@ -29,8 +30,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
     const vkMashupIsPlaying = usePlayerStore((state) => state.vkMashupIsPlaying);
     const updateVkMashupIsPlaying = usePlayerStore((state) => state.updateVkMashupIsPlaying);
 
-    const imageUrl =
-        mashup.imageUrl || `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/default_100x100.png`;
+    const imageUrl = mashup.imageUrl || coverUrl('mashup', 'default', 100);
 
     const isCurrent =
         vkMashupSrc !== null &&

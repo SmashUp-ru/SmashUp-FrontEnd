@@ -15,6 +15,7 @@ import MashupThumb from '@/router/shared/components/mashup/MashupThumb.tsx';
 import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import SettingsIcon from '@/components/icons/Settings.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function UserPage() {
     const params = useParams();
@@ -42,7 +43,7 @@ export default function UserPage() {
             >
                 {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                    src={coverUrl('user', user.imageUrl, 800)}
                     alt={user.username}
                     className={cn('w-[200px] h-[200px] rounded-full', !imageLoaded && 'hidden')}
                     draggable={false}
@@ -90,7 +91,7 @@ export default function UserPage() {
                                         toast({
                                             element: (
                                                 <CopiedToast
-                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                                                    img={coverUrl('user', user.imageUrl, 800)}
                                                     name={user.username}
                                                 />
                                             ),

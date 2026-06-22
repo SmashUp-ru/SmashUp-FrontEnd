@@ -18,6 +18,7 @@ import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useCallback } from 'react';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface DeletePlaylistDialogProps {
     playlist: Playlist;
@@ -40,7 +41,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
             toast({
                 element: (
                     <BaseToast
-                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_800x800.png`}
+                        image={coverUrl('playlist', playlist.imageUrl, 800)}
                         before='Плейлист'
                         field={playlist.name}
                         after='успешно удалён!'

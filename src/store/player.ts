@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UnpublishedMashup } from '@/store/moderation.ts';
 import { VkMashup } from './entities/vkMashup';
+import { LoopMode } from '@/lib/types.ts';
 
 interface PlayerState {
     isPlaying: boolean;
@@ -20,8 +21,8 @@ interface PlayerState {
     queueId: string;
     updateQueueId: (newQueueId: string) => void;
 
-    loop: string;
-    updateLoop: (newLoop: string) => void;
+    loop: LoopMode;
+    updateLoop: (newLoop: LoopMode) => void;
 
     shuffle: boolean;
     updateShuffle: (newShuffle: boolean) => void;
@@ -72,7 +73,7 @@ export const usePlayerStore = create<PlayerState>()(
             updateQueueId: (newQueueId: string) => set({ queueId: newQueueId }),
 
             loop: 'none',
-            updateLoop: (newLoop: string) => set({ loop: newLoop }),
+            updateLoop: (newLoop: LoopMode) => set({ loop: newLoop }),
 
             shuffle: false,
             updateShuffle: (newShuffle: boolean) => set({ shuffle: newShuffle }),

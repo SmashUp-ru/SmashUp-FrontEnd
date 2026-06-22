@@ -6,6 +6,7 @@ import AltIcon from '@/components/icons/alt/Alt24';
 import { zip } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface MashupThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -23,7 +24,7 @@ export default function MashupThumbExplicitDisallowed({
                     <div className='opacity-50 w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
                         <div className='relative'>
                             <img
-                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                src={coverUrl('mashup', mashup.imageUrl, 400)}
                                 alt={mashup.name}
                                 className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                                 draggable={false}

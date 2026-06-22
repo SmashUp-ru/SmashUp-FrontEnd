@@ -13,6 +13,7 @@ import { useGlobalStore } from '@/store/global.ts';
 import AddMashupIcon from '@/components/icons/addMashup/AddMashup32';
 import { isModerator } from '@/lib/bitmask';
 import SettingsIcon from '@/components/icons/Settings';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -50,9 +51,7 @@ export default function ProfileMenu() {
                 <TooltipTrigger>
                     <Link draggable={false} to={`/user/${currentUser.username}`}>
                         <Avatar className='w-12 h-12'>
-                            <AvatarImage
-                                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_100x100.png`}
-                            />
+                            <AvatarImage src={coverUrl('user', currentUser.imageUrl, 100)} />
                             <AvatarFallback>{currentUser.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </Link>

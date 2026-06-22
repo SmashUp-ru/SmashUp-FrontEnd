@@ -15,6 +15,7 @@ import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { useSettingsStore } from '@/store/settings.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
@@ -52,7 +53,7 @@ export default function UserTracksPage() {
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                    src={coverUrl('user', user.imageUrl, 800)}
                     alt={user.username}
                     className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
@@ -111,7 +112,7 @@ export default function UserTracksPage() {
                                         toast({
                                             element: (
                                                 <BaseToast
-                                                    image={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_800x800.png`}
+                                                    image={coverUrl('user', user.imageUrl, 800)}
                                                     before='Ссылка на треки пользователя'
                                                     field={user.username}
                                                     after='скопирована в буфер обмена!'

@@ -5,6 +5,7 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
+import { coverUrl, mashupAudioUrl } from '@/lib/cdn.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useMediaSession } from '@dmhd6219/react-media-session';
@@ -153,12 +154,12 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const artwork = useMemo(
         () => [
             {
-                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`,
+                src: coverUrl('mashup', mashup.imageUrl, 100),
                 sizes: '100x100',
                 type: 'image/jpeg'
             },
             {
-                src: `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`,
+                src: coverUrl('mashup', mashup.imageUrl, 400),
                 sizes: '400x400',
                 type: 'image/jpeg'
             }
@@ -181,7 +182,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
 
     return (
         <ReactHowler
-            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${queue[queueIndex]}.mp3?bitrate=${BITRATES[bitrate]}`}
+            src={mashupAudioUrl(queue[queueIndex], BITRATES[bitrate])}
             playing={isPlaying}
             onEnd={handleOnEnd}
             loop={usePlayerStore.getState().loop === 'mashup'}

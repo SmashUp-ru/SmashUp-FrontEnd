@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface ProfileThumbProps {
     playlist: Playlist;
@@ -33,7 +34,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
             <div className='flex items-center gap-x-4'>
                 <div className='relative'>
                     <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/playlist/${playlist.imageUrl}_100x100.png`}
+                        src={coverUrl('playlist', playlist.imageUrl, 100)}
                         alt={playlist.name}
                         className={cn(
                             'w-12 h-12 rounded-xl',

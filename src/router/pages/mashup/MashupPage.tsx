@@ -18,6 +18,7 @@ import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { useSettingsStore } from '@/store/settings.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -45,7 +46,7 @@ export default function MashupPage() {
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_800x800.png`}
+                    src={coverUrl('mashup', mashup.imageUrl, 800)}
                     alt={mashup.name}
                     className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
@@ -128,7 +129,7 @@ export default function MashupPage() {
                                         toast({
                                             element: (
                                                 <CopiedToast
-                                                    img={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_400x400.png`}
+                                                    img={coverUrl('mashup', mashup.imageUrl, 400)}
                                                     name={mashup.name}
                                                 />
                                             ),

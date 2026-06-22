@@ -9,6 +9,7 @@ import {
 } from '@/router/shared/types/upload.ts';
 import { YouTubeTrack } from '@/router/shared/types/youtube.ts';
 import React from 'react';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export interface YouTubeTrackThumbProps {
     track: YouTubeTrack | null;
@@ -78,7 +79,7 @@ export default function YouTubeTrackSmallThumb({
                 src={
                     track.imageUrl.startsWith('https://')
                         ? `${track.imageUrl}`
-                        : `${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`
+                        : coverUrl('track', track.imageUrl, 100)
                 }
                 alt={track.name}
                 className='w-12 h-12 rounded-xl object-cover'

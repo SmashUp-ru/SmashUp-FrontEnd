@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Mashup } from '@/store/entities/mashup.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface MashupSmallThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -31,7 +32,7 @@ export default function MashupSmallThumbExplicitDisallowed({
                         <div className='flex items-center gap-x-4 w-full'>
                             <div className='relative'>
                                 <img
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
+                                    src={coverUrl('mashup', mashup.imageUrl, 100)}
                                     alt={mashup.name}
                                     className={cn('w-12 h-12 min-w-12 min-h-12 rounded-xl')}
                                     draggable={false}

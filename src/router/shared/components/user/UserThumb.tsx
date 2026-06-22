@@ -8,6 +8,7 @@ import { usePlayerStore } from '@/store/player.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface ProfileThumbProps {
     user: User;
@@ -31,7 +32,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
         <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_400x400.png`}
+                    src={coverUrl('user', user.imageUrl, 400)}
                     alt={user.username}
                     className='w-[216px] h-[216px] object-cover rounded-full group-hover:opacity-30'
                     draggable={false}

@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function FavoritesPage() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -38,7 +39,7 @@ export default function FavoritesPage() {
             <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
                 {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
+                    src={coverUrl('user', currentUser.imageUrl, 800)}
                     alt={currentUser.username}
                     className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}

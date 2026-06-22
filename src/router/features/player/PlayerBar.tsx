@@ -17,6 +17,7 @@ import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -54,7 +55,7 @@ export default function PlayerBar() {
                 {/*левая часть*/}
                 <div className='w-1/3 flex items-center gap-x-6'>
                     <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${mashup.imageUrl}_100x100.png`}
+                        src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt='mashup title'
                         className='w-16 h-16 rounded-2xl'
                         draggable={false}

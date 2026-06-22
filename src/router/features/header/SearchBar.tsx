@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CrossoverPopoverContent from '@/router/features/header/CrossoverPopoverContent.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function SearchBar() {
     const {
@@ -78,7 +79,7 @@ export default function SearchBar() {
                             <div className='w-6 h-6'>
                                 <img
                                     className='w-full h-full'
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/track/${track.imageUrl}_100x100.png`}
+                                    src={coverUrl('track', track.imageUrl, 100)}
                                     alt={track.name}
                                 />
                             </div>

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
+import { coverUrl } from '@/lib/cdn.ts';
 
 export default function UpdateAvatar() {
     const { toast } = useToast();
@@ -92,7 +93,7 @@ export default function UpdateAvatar() {
                 <Skeleton className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full' />
             )}
             <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${currentUser.imageUrl}_800x800.png`}
+                src={coverUrl('user', currentUser.imageUrl, 800)}
                 alt={currentUser.username}
                 className={cn(
                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full brightness-50',

@@ -9,6 +9,7 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
+import { coverUrl } from '@/lib/cdn.ts';
 
 interface ProfileThumbProps {
     user: User;
@@ -32,7 +33,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
             <div className='flex items-center gap-x-4'>
                 <div className='relative'>
                     <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/user/${user.imageUrl}_100x100.png`}
+                        src={coverUrl('user', user.imageUrl, 100)}
                         alt={user.username}
                         className='w-12 h-12 rounded-full group-hover:opacity-30 object-cover'
                         draggable={false}
