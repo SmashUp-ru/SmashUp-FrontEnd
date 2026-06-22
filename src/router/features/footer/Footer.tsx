@@ -4,7 +4,7 @@ import VKMPIcon from '@/components/icons/VKMP.tsx';
 import TelegramIcon from '@/components/icons/Telegram.tsx';
 
 export default function Footer() {
-    const { isLoading } = useGlobalStore();
+    const isLoading = useGlobalStore((state) => state.isLoading);
 
     if (isLoading) return null;
 

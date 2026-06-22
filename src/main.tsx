@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { lazy, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -14,7 +14,7 @@ import RegisterPage from '@/router/pages/register/RegisterPage.tsx';
 import RecoverPasswordPage from '@/router/pages/recover/RecoverPasswordPage.tsx';
 import RecoverPasswordEmailPage from '@/router/pages/recover/recoverPasswordEmail/RecoverPasswordEmailPage.tsx';
 import RecoverPasswordConfirmPage from '@/router/pages/recover/recoverPasswordConfirm/RecoverPasswordConfirmPage.tsx';
-import DebugPage from '@/router/pages/debug/DebugPage.tsx';
+const DebugPage = lazy(() => import('@/router/pages/debug/DebugPage.tsx'));
 import ProfileTracksPage from '@/router/pages/user/tracks/UserTracksPage.tsx';
 import MashupPage from '@/router/pages/mashup/MashupPage.tsx';
 import Layout from '@/router/pages/layout.tsx';
@@ -23,22 +23,32 @@ import RegisterEmailPage from '@/router/pages/register/registerEmail/RegisterEma
 import RegisterConfirmPage from '@/router/pages/register/registerConfirm/RegisterConfirmPage.tsx';
 import RestorePasswordSuccessPage from '@/router/pages/recover/recoverPasswordSuccess/RestorePasswordSuccessPage.tsx';
 import { HotkeysProvider } from 'react-hotkeys-hook';
-import PrivacyPolicyPage from '@/router/pages/privacyPolicy/PrivacyPolicyPage.tsx';
-import DMCAPage from '@/router/pages/dmca/DMCAPage.tsx';
-import UserAgreementPage from '@/router/pages/userAgreement/UserAgreement.tsx';
+const PrivacyPolicyPage = lazy(() => import('@/router/pages/privacyPolicy/PrivacyPolicyPage.tsx'));
+const DMCAPage = lazy(() => import('@/router/pages/dmca/DMCAPage.tsx'));
+const UserAgreementPage = lazy(() => import('@/router/pages/userAgreement/UserAgreement.tsx'));
 import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
-import UploadMashupPage from '@/router/pages/uploadMashup/UploadMashupPage.tsx';
-import ModerationPage from '@/router/pages/moderation/ModerationPage.tsx';
-import UploadMashupSuccessPage from '@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx';
-import ChangeUsernameConfirmPage from '@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx';
-import ChangeEmailConfirmPage from '@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx';
-import ChangePasswordConfirmPage from '@/router/pages/changePassword/ChangePasswordConfirmPage.tsx';
+const UploadMashupPage = lazy(() => import('@/router/pages/uploadMashup/UploadMashupPage.tsx'));
+const ModerationPage = lazy(() => import('@/router/pages/moderation/ModerationPage.tsx'));
+const UploadMashupSuccessPage = lazy(
+    () => import('@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx')
+);
+const ChangeUsernameConfirmPage = lazy(
+    () => import('@/router/pages/changeUsername/ChangeUsernameConfirmPage.tsx')
+);
+const ChangeEmailConfirmPage = lazy(
+    () => import('@/router/pages/changeEmail/ChangeEmailConfirmPage.tsx')
+);
+const ChangePasswordConfirmPage = lazy(
+    () => import('@/router/pages/changePassword/ChangePasswordConfirmPage.tsx')
+);
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
-import UploadTrackPage from '@/router/pages/uploadTrack/UploadTrackPage.tsx';
-import ModerateMashupPage from './router/pages/moderation/moderateMashup/ModerateMashupPage';
+const UploadTrackPage = lazy(() => import('@/router/pages/uploadTrack/UploadTrackPage.tsx'));
+const ModerateMashupPage = lazy(
+    () => import('./router/pages/moderation/moderateMashup/ModerateMashupPage')
+);
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
-import UploadVkMashupPage from './router/pages/vkMashup/UploadVkMashupPage';
-import ListVkMashupPage from './router/pages/vkMashup/ListVkMashupPage';
+const UploadVkMashupPage = lazy(() => import('./router/pages/vkMashup/UploadVkMashupPage'));
+const ListVkMashupPage = lazy(() => import('./router/pages/vkMashup/ListVkMashupPage'));
 
 const router = createBrowserRouter(
     [

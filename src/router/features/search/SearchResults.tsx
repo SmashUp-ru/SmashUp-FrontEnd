@@ -13,7 +13,7 @@ import UserThumb from '@/router/shared/components/user/UserThumb.tsx';
 import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx';
 import { useSearchStore } from '@/store/search.ts';
 import SearchResultsSkeleton from '@/router/features/search/SearchResultsSkeleton.tsx';
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
 export default function SearchResults() {
     const updateType = useSearchStore((state) => state.updateType);
@@ -21,9 +21,7 @@ export default function SearchResults() {
 
     const { mashups, playlists, users, isLoading } = useSearch(searchValue);
 
-    const getMashupIds = useCallback(() => {
-        return mashups.map((mashup) => mashup.id);
-    }, [mashups]);
+    const mashupIds = useMemo(() => mashups.map((mashup) => mashup.id), [mashups]);
 
     if (isLoading) return <SearchResultsSkeleton />;
 
@@ -69,7 +67,7 @@ export default function SearchResults() {
                                     key={mashup.id}
                                     mashup={mashup}
                                     searchMode
-                                    playlist={getMashupIds()}
+                                    playlist={mashupIds}
                                     indexInPlaylist={idx}
                                     playlistName={`Поиск "${searchValue}"`}
                                     queueId={`search/${searchValue}`}
@@ -110,7 +108,7 @@ export default function SearchResults() {
                                     key={mashup.id}
                                     mashup={mashup}
                                     searchMode
-                                    playlist={getMashupIds()}
+                                    playlist={mashupIds}
                                     indexInPlaylist={idx}
                                     playlistName={`Поиск "${searchValue}"`}
                                     queueId={`search/${searchValue}`}

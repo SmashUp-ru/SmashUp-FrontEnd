@@ -4,11 +4,12 @@ import Header from '@/router/features/header/Header.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
 import PlayerBar from '@/router/features/player/PlayerBar.tsx';
 import MashupInfo from '@/router/features/mashupInfo/MashupInfo.tsx';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { usePlayerStore } from '@/store/player.ts';
 import PlayerBarModeration from '@/router/features/player/PlayerBarModeration.tsx';
 import { useSettings } from '@/router/features/settings/useSettings.ts';
 import PlayerBarVkMashup from '../features/player/PlayerBarVkMashup';
+import ErrorBoundary from '@/router/features/error/ErrorBoundary.tsx';
 
 export default function RootLayout() {
     useSettings();
@@ -35,7 +36,11 @@ export default function RootLayout() {
                     <div className='flex flex-grow overflow-hidden'>
                         <div className='flex-1 pr-4 pb-4 overflow-x-hidden overflow-y-auto flex flex-col'>
                             <div className='flex-grow'>
-                                <Outlet />
+                                <ErrorBoundary>
+                                    <Suspense fallback={null}>
+                                        <Outlet />
+                                    </Suspense>
+                                </ErrorBoundary>
                             </div>
                             <Footer />
                         </div>

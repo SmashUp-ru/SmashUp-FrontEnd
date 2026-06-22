@@ -20,7 +20,8 @@ interface PlaylistThumbProps {
 
 export default function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
-    const { isPlaying, queueId } = usePlayerStore();
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const queueId = usePlayerStore((state) => state.queueId);
     const { playQueue, pause } = usePlayer();
 
     const { mashups, isLoading } = usePlaylistMashups(playlist.mashups);

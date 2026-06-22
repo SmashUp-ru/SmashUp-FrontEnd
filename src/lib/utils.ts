@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import axios from 'axios';
-import { getToken } from '@/store/global.ts';
+import { getToken, useGlobalStore } from '@/store/global.ts';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -22,6 +22,29 @@ axiosSession.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${getToken()}`;
     return config;
 });
+
+// 401 = протухший/невалидный токен → разлогиниваем и уводим на /login.
+// Срабатывает только если токен БЫЛ (у гостя 401 на защищённом эндпоинте ожидаем).
+// 403 НЕ обрабатываем: это «нет прав»/бан/неверный пароль — пользователь остаётся в сессии.
+// Жёсткий переход через window.location полностью сбрасывает in-memory состояние.
+axiosSession.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error?.response?.status === 401 && getToken()) {
+            localStorage.removeItem('smashup_token');
+            sessionStorage.removeItem('smashup_token');
+            useGlobalStore.getState().updateToken('');
+
+            const onAuthPage = ['/login', '/register', '/user/recover_password'].some((path) =>
+                window.location.pathname.startsWith(path)
+            );
+            if (!onAuthPage) {
+                window.location.href = '/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 export function shuffleQueue(queue: number[], indexInQueue: number): [number[], number] {
     const shuffledQueue = [...queue];
