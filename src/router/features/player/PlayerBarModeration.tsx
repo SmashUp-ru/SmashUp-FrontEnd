@@ -1,18 +1,16 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
-import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts';
+import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
+import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { getToken } from '@/store/global';
 
 export default function PlayerBarModeration() {
     const volume = usePlayerStore((state) => state.volume);
-    const updateVolume = usePlayerStore((state) => state.updateVolume);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
     const moderationIsPlaying = usePlayerStore((state) => state.moderationIsPlaying);
     const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
@@ -22,12 +20,11 @@ export default function PlayerBarModeration() {
     if (!moderationSrc) return null;
 
     return (
-        <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
-            <MashupSeekSlider mashup={moderationSrc} />
-
-            <div className='w-full flex justify-between items-center'>
-                {/*левая часть*/}
-                <div className='w-1/3 flex items-center gap-x-6'>
+        <PlaybackBar
+            fixed
+            seekMashup={moderationSrc}
+            left={
+                <>
                     <img
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}_800x800.png?token=${getToken()}`}
                         alt={moderationSrc.name}
@@ -56,47 +53,29 @@ export default function PlayerBarModeration() {
                             ))}
                         </div>
                     </div>
-                </div>
-
-                {/*центральная часть*/}
-                <div className='flex flex-row justify-center items-center gap-x-6'>
-                    {moderationIsPlaying ? (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => updateModerationIsPlaying(false)}
-                        >
-                            <PauseHollowIcon color='onSurface' />
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => updateModerationIsPlaying(true)}
-                        >
-                            <PlayHollowIcon color='onSurface' />
-                        </Button>
-                    )}
-                </div>
-
-                {/*правая часть*/}
-                <div className='w-1/3 flex justify-end items-center gap-x-6'>
-                    <div>
-                        <VolumeIcon color='onSurface' />
-                    </div>
-
-                    <Slider
-                        className='w-[150px]'
-                        trackClassName='h-[5px]'
-                        min={0.0}
-                        max={1.0}
-                        step={0.01}
-                        value={[volume]}
-                        onValueChange={(value) => updateVolume(value[0])}
-                    />
-                </div>
-            </div>
-
+                </>
+            }
+            center={
+                moderationIsPlaying ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => updateModerationIsPlaying(false)}
+                    >
+                        <PauseHollowIcon color='onSurface' />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => updateModerationIsPlaying(true)}
+                    >
+                        <PlayHollowIcon color='onSurface' />
+                    </Button>
+                )
+            }
+            right={<VolumeControl />}
+        >
             <ReactHowler
                 src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}.mp3?token=${getToken()}`}
                 playing={moderationIsPlaying}
@@ -104,6 +83,6 @@ export default function PlayerBarModeration() {
                 ref={(ref) => (moderationPlayer.current = ref)}
                 html5={true}
             />
-        </div>
+        </PlaybackBar>
     );
 }

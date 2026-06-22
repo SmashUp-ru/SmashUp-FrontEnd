@@ -35,6 +35,7 @@ import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { addPlaylistFormSchema } from '@/router/shared/schemas/addPlaylist.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 
 interface AddPlaylistDialogProps {
     redirect?: boolean;
@@ -50,7 +51,7 @@ export default function AddPlaylistDialog({
     const { toast } = useToast();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [sent, setSent] = useState(false);
+    const { sent, guard } = useSubmitGuard();
 
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
     const updateUserById = useUserStore((state) => state.updateOneById);
@@ -70,82 +71,81 @@ export default function AddPlaylistDialog({
     });
 
     async function onSubmit(values: z.infer<typeof addPlaylistFormSchema>) {
-        if (sent) {
-            return;
-        }
-
-        setSent(true);
-
-        if (values.basedImageFile) {
-            const validSize = await validateImageDimensions(values.basedImageFile, 800);
-            if (!validSize) {
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Ошибка'
-                            field='при загрузке обложки.'
-                            after='Обложка должна быть размером больше 800px.'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
-                setSent(false);
-                return;
+        await guard(async () => {
+            if (values.basedImageFile) {
+                const validSize = await validateImageDimensions(values.basedImageFile, 800);
+                if (!validSize) {
+                    toast({
+                        element: (
+                            <ErrorToast
+                                icon
+                                before='Ошибка'
+                                field='при загрузке обложки.'
+                                after='Обложка должна быть размером больше 800px.'
+                            />
+                        ),
+                        duration: 2000,
+                        variant: 'destructive'
+                    });
+                    return;
+                }
             }
-        }
 
-        axiosSession
-            .post(`/playlist/${existingPlaylist ? `edit?id=${existingPlaylist.id}` : 'create'}`, {
-                name: values.name,
-                description: values.description,
-                basedImageFile: values.basedImageFile
-                    ? values.basedImageFile.substring(values.basedImageFile.indexOf(',') + 1)
-                    : undefined
-            })
-            .then((r: AxiosResponse<CreatePlaylistResponse>) => {
-                if (currentUser) {
-                    updatePlaylistById(r.data.response.id, r.data.response);
-
-                    if (!existingPlaylist) {
-                        if (userCache[currentUser.id]) {
-                            updateUserById(currentUser.id, {
-                                playlists: [...currentUser.playlists, r.data.response.id]
-                            });
-                            getUserById(currentUser.id).then((r) => {
-                                updateCurrentUser(r);
-                                updateCurrentUserPlaylists(r.playlists);
-                            });
-                        }
-                    } else {
-                        window.location.reload();
+            await axiosSession
+                .post(
+                    `/playlist/${existingPlaylist ? `edit?id=${existingPlaylist.id}` : 'create'}`,
+                    {
+                        name: values.name,
+                        description: values.description,
+                        basedImageFile: values.basedImageFile
+                            ? values.basedImageFile.substring(
+                                  values.basedImageFile.indexOf(',') + 1
+                              )
+                            : undefined
                     }
-                }
-
-                toast({
-                    element: (
-                        <BaseToast
-                            image={values.basedImageFile}
-                            field='Плейлист'
-                            after={`успешно ${existingPlaylist ? 'обновлён' : 'создан'}!`}
-                        />
-                    ),
-                    duration: 2000
-                });
-
-                setOpen(false);
-                if (redirect) {
-                    navigate(`/playlist/${r.data.response.id}`);
-                }
-            })
-            .catch(
-                axiosCatcher(
-                    toast,
-                    `при ${existingPlaylist ? 'обновлении' : 'создании'} плейлиста.`
                 )
-            )
-            .finally(() => setSent(false));
+                .then((r: AxiosResponse<CreatePlaylistResponse>) => {
+                    if (currentUser) {
+                        updatePlaylistById(r.data.response.id, r.data.response);
+
+                        if (!existingPlaylist) {
+                            if (userCache[currentUser.id]) {
+                                updateUserById(currentUser.id, {
+                                    playlists: [...currentUser.playlists, r.data.response.id]
+                                });
+                                getUserById(currentUser.id).then((r) => {
+                                    updateCurrentUser(r);
+                                    updateCurrentUserPlaylists(r.playlists);
+                                });
+                            }
+                        } else {
+                            window.location.reload();
+                        }
+                    }
+
+                    toast({
+                        element: (
+                            <BaseToast
+                                image={values.basedImageFile}
+                                field='Плейлист'
+                                after={`успешно ${existingPlaylist ? 'обновлён' : 'создан'}!`}
+                            />
+                        ),
+                        duration: 2000
+                    });
+
+                    setOpen(false);
+                    if (redirect) {
+                        navigate(`/playlist/${r.data.response.id}`);
+                    }
+                })
+                .catch(
+                    axiosCatcher(
+                        toast,
+                        `при ${existingPlaylist ? 'обновлении' : 'создании'} плейлиста.`
+                    )
+                );
+        });
     }
 
     const imageLink = form.watch('basedImageFile');

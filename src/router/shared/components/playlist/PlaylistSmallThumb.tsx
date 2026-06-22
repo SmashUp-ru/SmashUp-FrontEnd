@@ -2,29 +2,22 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
 import { Link } from 'react-router-dom';
-import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
 import { cn } from '@/lib/utils.ts';
-import { useSettingsStore } from '@/store/settings.ts';
-import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
-import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
 
 interface ProfileThumbProps {
     playlist: Playlist;
 }
 
 export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
-    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
-    const isPlaying = usePlayerStore((state) => state.isPlaying);
-    const queueId = usePlayerStore((state) => state.queueId);
-    const { playQueue, pause } = usePlayer();
-
-    const { mashups, isLoading } = usePlaylistMashups(playlist.mashups);
-
-    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+    const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
+        playlist.mashups,
+        playlist.name,
+        `playlist/${playlist.id}`
+    );
 
     // TODO: skeleton
     if (isLoading) return null;
@@ -38,20 +31,16 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         alt={playlist.name}
                         className={cn(
                             'w-12 h-12 rounded-xl',
-                            queueId === `playlist/${playlist.id}` && isPlaying
-                                ? 'opacity-30'
-                                : 'group-hover:opacity-30'
+                            isThisPlaying ? 'opacity-30' : 'group-hover:opacity-30'
                         )}
                         draggable={false}
                     />
-                    {isPlaying && queueId === `playlist/${playlist.id}` ? (
+                    {isThisPlaying ? (
                         <Button
                             variant='ghost'
                             size='icon'
                             className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                            onClick={() => {
-                                pause();
-                            }}
+                            onClick={togglePlay}
                         >
                             <PauseHollowIcon color='onSurface' size={24} />
                         </Button>
@@ -60,17 +49,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                             variant='ghost'
                             size='icon'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                            onClick={() => {
-                                playQueue(
-                                    hideExplicit
-                                        ? mashups
-                                              .filter((mashup) => !isExplicit(mashup.statuses))
-                                              .map((mashup) => mashup.id)
-                                        : playlist.mashups,
-                                    playlist.name,
-                                    `playlist/${playlist.id}`
-                                );
-                            }}
+                            onClick={togglePlay}
                         >
                             <PlayHollowIcon color='onSurface' size={24} />
                         </Button>

@@ -1,6 +1,7 @@
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useMashupStore } from '@/store/entities/mashup.ts';
 import { useEffect, useMemo } from 'react';
+import { useCachedEntityById } from '@/store/entities/useCachedEntity.ts';
 
 export function usePlaylistPageData(playlistId?: string) {
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
@@ -9,10 +10,11 @@ export function usePlaylistPageData(playlistId?: string) {
     const playlistCache = usePlaylistStore((state) => state.cache);
     const mashupCache = useMashupStore((state) => state.cache);
 
-    const playlist = useMemo(() => {
-        if (!playlistId) return null;
-        return playlistCache[parseInt(playlistId)];
-    }, [playlistId, playlistCache]);
+    const { entity: playlist, isLoading: playlistLoading } = useCachedEntityById(
+        playlistId,
+        getPlaylistById,
+        playlistCache
+    );
 
     const mashups = useMemo(() => {
         if (!playlist?.mashups) return [];
@@ -20,17 +22,9 @@ export function usePlaylistPageData(playlistId?: string) {
     }, [playlist, mashupCache]);
 
     const isLoading = useMemo(
-        () =>
-            (playlistId !== undefined && !playlist) ||
-            (playlist?.mashups?.some((id) => !mashupCache[id]) ?? false),
-        [playlistId, playlist, mashupCache]
+        () => playlistLoading || (playlist?.mashups?.some((id) => !mashupCache[id]) ?? false),
+        [playlistLoading, playlist, mashupCache]
     );
-
-    useEffect(() => {
-        if (playlistId && !playlist) {
-            getPlaylistById(parseInt(playlistId)).catch(console.error);
-        }
-    }, [playlistId, playlist, getPlaylistById]);
 
     useEffect(() => {
         if (playlist?.mashups?.length) {

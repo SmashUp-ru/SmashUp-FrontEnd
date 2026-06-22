@@ -2,15 +2,11 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
-import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { usePlayerStore } from '@/store/player.ts';
 import { cn, zip } from '@/lib/utils.ts';
-import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
-import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
-import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -20,14 +16,11 @@ interface PlaylistThumbProps {
 }
 
 export default function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
-    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
-    const isPlaying = usePlayerStore((state) => state.isPlaying);
-    const queueId = usePlayerStore((state) => state.queueId);
-    const { playQueue, pause } = usePlayer();
-
-    const { mashups, isLoading } = usePlaylistMashups(playlist.mashups);
-
-    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
+    const { isThisQueue, isThisPlaying, togglePlay, isLoading } = useEntityThumb(
+        playlist.mashups,
+        playlist.name,
+        `playlist/${playlist.id}`
+    );
 
     if (isLoading) return <PlaylistThumbSkeleton />;
 
@@ -50,16 +43,14 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                     />
                 </Link>
                 {playlist.mashups.length > 0 &&
-                    (isPlaying && queueId === `playlist/${playlist.id}` ? (
+                    (isThisPlaying ? (
                         <Button
                             variant='ghost'
                             size='icon'
-                            onClick={() => {
-                                pause();
-                            }}
+                            onClick={togglePlay}
                             className={cn(
                                 'hidden group-hover:block absolute bottom-3 right-3 z-20',
-                                isPlaying ? 'block' : ''
+                                'block'
                             )}
                         >
                             <PauseHollowIcon color='primary' hoverColor='hoverPrimary' />
@@ -68,28 +59,12 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                         <Button
                             variant='ghost'
                             size='icon'
-                            onClick={() => {
-                                playQueue(
-                                    hideExplicit
-                                        ? mashups
-                                              .filter((mashup) => !isExplicit(mashup.statuses))
-                                              .map((mashup) => mashup.id)
-                                        : playlist.mashups,
-                                    playlist.name,
-                                    `playlist/${playlist.id}`
-                                );
-                            }}
+                            onClick={togglePlay}
                             className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         >
                             <PlayHollowIcon
-                                color={
-                                    queueId === `playlist/${playlist.id}` ? 'primary' : 'onSurface'
-                                }
-                                hoverColor={
-                                    queueId === `playlist/${playlist.id}`
-                                        ? 'hoverPrimary'
-                                        : 'onSurfaceVariant'
-                                }
+                                color={isThisQueue ? 'primary' : 'onSurface'}
+                                hoverColor={isThisQueue ? 'hoverPrimary' : 'onSurfaceVariant'}
                             />
                         </Button>
                     ))}

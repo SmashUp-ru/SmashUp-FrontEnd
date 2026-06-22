@@ -1,13 +1,12 @@
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
 import { useEffect, useState } from 'react';
-import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts';
+import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
+import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { axiosSession } from '@/lib/utils';
 import { AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 import { useToast } from '@/router/shared/hooks/use-toast';
@@ -21,7 +20,6 @@ export default function PlayerBarVkMashup() {
     const { toast } = useToast();
 
     const volume = usePlayerStore((state) => state.volume);
-    const updateVolume = usePlayerStore((state) => state.updateVolume);
     const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
     const updateVkMashupSrc = usePlayerStore((state) => state.updateVkMashupSrc);
     const vkMashupIsPlaying = usePlayerStore((state) => state.vkMashupIsPlaying);
@@ -87,12 +85,11 @@ export default function PlayerBarVkMashup() {
     if (!vkMashupSrc) return null;
 
     return (
-        <div className='fixed bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
-            <MashupSeekSlider mashup={vkMashupSrc} />
-
-            <div className='w-full flex justify-between items-center'>
-                {/*левая часть*/}
-                <div className='w-1/3 flex items-center gap-x-6'>
+        <PlaybackBar
+            fixed
+            seekMashup={vkMashupSrc}
+            left={
+                <>
                     <img
                         src={vkMashupSrc.imageUrl || coverUrl('mashup', 'default', 100)}
                         alt={vkMashupSrc.name}
@@ -107,47 +104,29 @@ export default function PlayerBarVkMashup() {
                             {vkMashupSrc.artist}
                         </div>
                     </div>
-                </div>
-
-                {/*центральная часть*/}
-                <div className='flex flex-row justify-center items-center gap-x-6'>
-                    {vkMashupIsPlaying ? (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => updateVkMashupIsPlaying(false)}
-                        >
-                            <PauseHollowIcon color='onSurface' />
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => updateVkMashupIsPlaying(true)}
-                        >
-                            <PlayHollowIcon color='onSurface' />
-                        </Button>
-                    )}
-                </div>
-
-                {/*правая часть*/}
-                <div className='w-1/3 flex justify-end items-center gap-x-6'>
-                    <div>
-                        <VolumeIcon color='onSurface' />
-                    </div>
-
-                    <Slider
-                        className='w-[150px]'
-                        trackClassName='h-[5px]'
-                        min={0.0}
-                        max={1.0}
-                        step={0.01}
-                        value={[volume]}
-                        onValueChange={(value) => updateVolume(value[0])}
-                    />
-                </div>
-            </div>
-
+                </>
+            }
+            center={
+                vkMashupIsPlaying ? (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => updateVkMashupIsPlaying(false)}
+                    >
+                        <PauseHollowIcon color='onSurface' />
+                    </Button>
+                ) : (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => updateVkMashupIsPlaying(true)}
+                    >
+                        <PlayHollowIcon color='onSurface' />
+                    </Button>
+                )
+            }
+            right={<VolumeControl />}
+        >
             {audioUrl && (
                 <ReactHowler
                     src={audioUrl}
@@ -157,6 +136,6 @@ export default function PlayerBarVkMashup() {
                     html5={true}
                 />
             )}
-        </div>
+        </PlaybackBar>
     );
 }

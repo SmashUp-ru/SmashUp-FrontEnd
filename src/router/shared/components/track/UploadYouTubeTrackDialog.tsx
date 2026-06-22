@@ -16,6 +16,7 @@ import TrackSmallThumb from './TrackSmallThumb';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { RegEx } from '@/lib/regex';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 
 interface UploadYouTubeTrackDialogProps {
     mashup: UnpublishedMashup;
@@ -32,7 +33,7 @@ export function UploadYouTubeTrackDialog({
 }: UploadYouTubeTrackDialogProps) {
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
-    const [sent, setSent] = useState(false);
+    const { sent, guard } = useSubmitGuard();
 
     const unpublishedMashups = useModerationStore((state) => state.unpublishedMashups);
     const updateUnpublishedMashups = useModerationStore((state) => state.updateUnpublishedMashups);
@@ -44,69 +45,70 @@ export function UploadYouTubeTrackDialog({
     }, [authors]);
 
     const upload = () => {
-        if (sent) {
-            return;
-        }
-
         const match = (track.id as string).match(RegEx.YOUTUBE);
         if (!match || match[1].length !== 11) {
             throw new Error('Got wrong YouTube link!');
         }
 
-        setSent(true);
+        guard(async () => {
+            await axiosSession
+                .post('/track/upload/youtube/video', {
+                    videoId: match[1],
+                    name: name,
+                    authors: realAuthors
+                })
+                .then((r: AxiosSmashUpResponse<Track>) => {
+                    toast({
+                        element: (
+                            <BaseToast
+                                image={track.imageUrl}
+                                field='Трек'
+                                after='успешно загружен'
+                            />
+                        ),
+                        duration: 2000
+                    });
 
-        axiosSession
-            .post('/track/upload/youtube/video', {
-                videoId: match[1],
-                name: name,
-                authors: realAuthors
-            })
-            .then((r: AxiosSmashUpResponse<Track>) => {
-                toast({
-                    element: (
-                        <BaseToast image={track.imageUrl} field='Трек' after='успешно загружен' />
-                    ),
-                    duration: 2000
-                });
+                    const uploadedTrack = r.data.response;
 
-                const uploadedTrack = r.data.response;
+                    return axiosSession
+                        .post('/moderation/unpublished_mashup/edit', {
+                            id: mashup.id,
+                            tracks: mashup.tracks.concat([uploadedTrack.id]),
+                            tracksUrls: removeItem(
+                                mashup.tracksUrls,
+                                RegEx.NORMALIZE_YOUTUBE_LINK(uploadedTrack.link)
+                            )
+                        })
+                        .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
+                            if (unpublishedMashups !== null) {
+                                const newMashup = r.data.response;
 
-                return axiosSession
-                    .post('/moderation/unpublished_mashup/edit', {
-                        id: mashup.id,
-                        tracks: mashup.tracks.concat([uploadedTrack.id]),
-                        tracksUrls: removeItem(
-                            mashup.tracksUrls,
-                            RegEx.NORMALIZE_YOUTUBE_LINK(uploadedTrack.link)
-                        )
-                    })
-                    .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
-                        if (unpublishedMashups !== null) {
-                            const newMashup = r.data.response;
+                                updateUnpublishedMashups(
+                                    unpublishedMashups.map((mashup) =>
+                                        mashup.id === newMashup.id ? newMashup : mashup
+                                    )
+                                );
+                            }
 
-                            updateUnpublishedMashups(
-                                unpublishedMashups.map((mashup) =>
-                                    mashup.id === newMashup.id ? newMashup : mashup
-                                )
-                            );
-                        }
+                            const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`;
+                            toast({
+                                element: (
+                                    <BaseToast
+                                        image={imageUrl}
+                                        field='Мэшап'
+                                        after='успешно изменён'
+                                    />
+                                ),
+                                duration: 2000
+                            });
 
-                        const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`;
-                        toast({
-                            element: (
-                                <BaseToast image={imageUrl} field='Мэшап' after='успешно изменён' />
-                            ),
-                            duration: 2000
-                        });
-
-                        setOpen(false);
-                    })
-                    .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
-            })
-            .catch(axiosCatcher(toast, 'при загрузки трека'))
-            .finally(() => {
-                setSent(false);
-            });
+                            setOpen(false);
+                        })
+                        .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
+                })
+                .catch(axiosCatcher(toast, 'при загрузки трека'));
+        });
     };
 
     return (

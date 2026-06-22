@@ -8,16 +8,15 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import SkipRightIcon from '@/components/icons/SkipRight.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
 import InfoIcon from '@/components/icons/Info.tsx';
-import VolumeIcon from '@/components/icons/Volume.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { Slider } from '@/components/ui/slider.tsx';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
-import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
 import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
+import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -28,8 +27,6 @@ export default function PlayerBar() {
     const updateLoop = usePlayerStore((state) => state.updateLoop);
     const info = usePlayerStore((state) => state.info);
 
-    const volume = usePlayerStore((state) => state.volume);
-    const updateVolume = usePlayerStore((state) => state.updateVolume);
     const shuffle = usePlayerStore((state) => state.shuffle);
     const updateShuffle = usePlayerStore((state) => state.updateShuffle);
     const updateQueue = usePlayerStore((state) => state.updateQueue);
@@ -48,12 +45,10 @@ export default function PlayerBar() {
     }
 
     return (
-        <div className='absolute min-w-fit bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10'>
-            <MashupSeekSlider mashup={mashup} />
-
-            <div className='w-full flex justify-between items-center'>
-                {/*левая часть*/}
-                <div className='w-1/3 flex items-center gap-x-6'>
+        <PlaybackBar
+            seekMashup={mashup}
+            left={
+                <>
                     <img
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt='mashup title'
@@ -123,10 +118,10 @@ export default function PlayerBar() {
                             <LikeOutlineIcon color='onSurface' />
                         </Button>
                     )}
-                </div>
-
-                {/*центральная часть*/}
-                <div className='flex flex-row justify-center items-center gap-x-6'>
+                </>
+            }
+            center={
+                <>
                     {shuffle ? (
                         <Button
                             variant='ghost'
@@ -208,10 +203,10 @@ export default function PlayerBar() {
                             <RepeatIcon repeating={true} color='primary' />
                         </Button>
                     )}
-                </div>
-
-                {/*правая часть*/}
-                <div className='w-1/3 flex justify-end items-center gap-x-6'>
+                </>
+            }
+            right={
+                <>
                     <Button
                         variant='ghost'
                         size='icon'
@@ -220,22 +215,11 @@ export default function PlayerBar() {
                         <InfoIcon color={info ? 'primary' : 'onSurface'} />
                     </Button>
 
-                    <div>
-                        <VolumeIcon color='onSurface' />
-                    </div>
-
-                    <Slider
-                        className='w-[150px]'
-                        trackClassName='h-[5px]'
-                        min={0.0}
-                        max={1.0}
-                        step={0.01}
-                        value={[volume]}
-                        onValueChange={(value) => updateVolume(value[0])}
-                    />
-                </div>
-            </div>
+                    <VolumeControl />
+                </>
+            }
+        >
             {queue.length > 0 && queueIndex !== -1 && <Player mashup={mashup} />}
-        </div>
+        </PlaybackBar>
     );
 }
