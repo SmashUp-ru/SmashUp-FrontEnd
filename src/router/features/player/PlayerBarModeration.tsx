@@ -6,8 +6,8 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
-import { useEffect, useRef } from 'react';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
+import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts';
 import { getToken } from '@/store/global';
 
 export default function PlayerBarModeration() {
@@ -16,35 +16,8 @@ export default function PlayerBarModeration() {
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
     const moderationIsPlaying = usePlayerStore((state) => state.moderationIsPlaying);
     const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
-    const changedSeek = usePlayerStore((state) => state.changedSeek);
-    const updateSeek = usePlayerStore((state) => state.updateSeek);
 
-    const moderationPlayer = useRef<ReactHowler | null>(null);
-    const moderationIntervalRef = useRef<number | null>(null);
-
-    useEffect(() => {
-        if (moderationPlayer.current) {
-            moderationPlayer.current.seek(changedSeek / 1000);
-        }
-    }, [changedSeek]);
-
-    useEffect(() => {
-        if (moderationIsPlaying) {
-            moderationIntervalRef.current = window.setInterval(() => {
-                if (moderationPlayer.current) {
-                    updateSeek(moderationPlayer.current.seek() * 1000);
-                }
-            }, 500);
-        } else if (moderationIntervalRef.current) {
-            clearInterval(moderationIntervalRef.current);
-        }
-
-        return () => {
-            if (moderationIntervalRef.current) {
-                clearInterval(moderationIntervalRef.current);
-            }
-        };
-    }, [moderationIsPlaying, updateSeek]);
+    const moderationPlayer = usePlaybackEngine(moderationIsPlaying);
 
     if (!moderationSrc) return null;
 

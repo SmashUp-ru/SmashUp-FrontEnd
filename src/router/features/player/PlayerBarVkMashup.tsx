@@ -5,8 +5,9 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { Slider } from '@/components/ui/slider.tsx';
 import ReactHowler from 'react-howler';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MashupSeekSlider from '@/router/features/player/MashupSeekSlider.tsx';
+import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts';
 import { axiosSession } from '@/lib/utils';
 import { AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 import { useToast } from '@/router/shared/hooks/use-toast';
@@ -24,37 +25,10 @@ export default function PlayerBarVkMashup() {
     const updateVkMashupSrc = usePlayerStore((state) => state.updateVkMashupSrc);
     const vkMashupIsPlaying = usePlayerStore((state) => state.vkMashupIsPlaying);
     const updateVkMashupIsPlaying = usePlayerStore((state) => state.updateVkMashupIsPlaying);
-    const changedSeek = usePlayerStore((state) => state.changedSeek);
-    const updateSeek = usePlayerStore((state) => state.updateSeek);
 
-    const vkMashupPlayer = useRef<ReactHowler | null>(null);
-    const vkMashupIntervalRef = useRef<number | null>(null);
+    const vkMashupPlayer = usePlaybackEngine(vkMashupIsPlaying);
 
     const { vkMashups, updateVkMashup, updateVkMashups } = useVkMashups();
-
-    useEffect(() => {
-        if (vkMashupPlayer.current) {
-            vkMashupPlayer.current.seek(changedSeek / 1000);
-        }
-    }, [changedSeek]);
-
-    useEffect(() => {
-        if (vkMashupIsPlaying) {
-            vkMashupIntervalRef.current = window.setInterval(() => {
-                if (vkMashupPlayer.current) {
-                    updateSeek(vkMashupPlayer.current.seek() * 1000);
-                }
-            }, 500);
-        } else if (vkMashupIntervalRef.current) {
-            clearInterval(vkMashupIntervalRef.current);
-        }
-
-        return () => {
-            if (vkMashupIntervalRef.current) {
-                clearInterval(vkMashupIntervalRef.current);
-            }
-        };
-    }, [vkMashupIsPlaying, updateSeek]);
 
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
