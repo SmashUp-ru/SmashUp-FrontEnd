@@ -6,7 +6,9 @@ import * as React from 'react';
 import type { ToastProps } from '@/components/ui/toast.tsx';
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+// Задержка перед удалением закрытого тоста из памяти (должна покрывать out-анимацию).
+// Видимое время показа задаётся через `duration` в вызове toast() и управляется Radix.
+const TOAST_REMOVE_DELAY = 1000;
 
 type ToasterToast = ToastProps & {
     id: string;

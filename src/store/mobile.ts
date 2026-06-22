@@ -13,7 +13,7 @@ export const useMobileStore = create<MobileState>()(
             updateAgreed: (newAgreed: boolean) => set(() => ({ agreed: newAgreed }))
         }),
         {
-            name: 'settings-storage',
+            name: 'mobile-storage',
             partialize: (state) => ({
                 agreed: state.agreed
             })

@@ -3,15 +3,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer base {
-    :root {
-
-    }
-}
-
-@layer base {
-}
-
 
 html, body, :root, #root {
     min-height: fit-content;

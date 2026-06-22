@@ -18,6 +18,8 @@ export type CacheStore<T> = {
     fetchAndCacheMany: (ids: number[], needToBeModified?: boolean) => Promise<T[]>;
 
     updateOneById: (id: number, updatedData: Partial<T> | undefined) => void;
+
+    reset: () => void;
 };
 
 export function createEntityStore<T extends CachingEntity>(
@@ -228,6 +230,19 @@ export function createEntityStore<T extends CachingEntity>(
                     [id]: newData
                 }
             }));
-        }
+        },
+
+        reset: () =>
+            set({
+                cache: {},
+                additionalCache: keyNames.reduce(
+                    (acc, key: string) => {
+                        acc[key] = {};
+                        return acc;
+                    },
+                    {} as Record<string, Record<string, number>>
+                ),
+                pendingRequests: {}
+            })
     }));
 }

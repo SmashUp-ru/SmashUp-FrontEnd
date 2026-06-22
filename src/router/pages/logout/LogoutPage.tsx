@@ -2,17 +2,17 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useGlobalStore } from '@/store/global.ts';
+import { resetAppState } from '@/store/reset.ts';
 
 export default function LogoutPage() {
     const updateToken = useGlobalStore((state) => state.updateToken);
-    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
 
     useEffect(() => {
         localStorage.removeItem('smashup_token');
         sessionStorage.removeItem('smashup_token');
         localStorage.removeItem('player-storage');
         updateToken('');
-        updateCurrentUser(null);
+        resetAppState();
     }, []);
 
     return (

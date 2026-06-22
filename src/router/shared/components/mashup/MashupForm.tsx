@@ -1,4 +1,4 @@
-import { axiosSession, cn, removeItem } from '@/lib/utils.ts';
+import { axiosSession, cn, removeItem, validateImageDimensions } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
@@ -649,7 +649,7 @@ export default function MashupForm({
 
     // Send
 
-    const send = () => {
+    const send = async () => {
         if (handleMashupFile) {
             if (!basedMashupFile || !mashupFile) {
                 toast({
@@ -707,25 +707,22 @@ export default function MashupForm({
                 return;
             }
 
-            const image = new Image();
-            image.src = imageSrc;
-            image.onload = () => {
-                if (image.naturalHeight < 800 || image.naturalWidth < 800) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при загрузке обложки.'
-                                after='Обложка мэшапа должна быть размером больше 800px.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
-                    return;
-                }
-            };
+            const validSize = await validateImageDimensions(imageSrc, 800);
+            if (!validSize) {
+                toast({
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Ошибка'
+                            field='при загрузке обложки.'
+                            after='Обложка мэшапа должна быть размером больше 800px.'
+                        />
+                    ),
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+                return;
+            }
 
             if (imageFile.size > 5 * 1024 * 1024) {
                 toast({

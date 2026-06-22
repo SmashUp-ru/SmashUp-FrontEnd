@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ReactNode, useState } from 'react';
-import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
+import { axiosSession, cn, convertToBase64, validateImageDimensions } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32';
 import { Input } from '@/components/ui/input.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
@@ -68,7 +68,7 @@ export default function AddPlaylistDialog({
         }
     });
 
-    function onSubmit(values: z.infer<typeof addPlaylistFormSchema>) {
+    async function onSubmit(values: z.infer<typeof addPlaylistFormSchema>) {
         if (sent) {
             return;
         }
@@ -76,26 +76,23 @@ export default function AddPlaylistDialog({
         setSent(true);
 
         if (values.basedImageFile) {
-            const image = new Image();
-            image.src = values.basedImageFile;
-            image.onload = () => {
-                if (image.naturalHeight < 800 || image.naturalWidth < 800) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при загрузке обложки.'
-                                after='Обложка должна быть размером больше 800px.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
-                    // TODO: это же не завершит выполнение метода
-                    return;
-                }
-            };
+            const validSize = await validateImageDimensions(values.basedImageFile, 800);
+            if (!validSize) {
+                toast({
+                    element: (
+                        <ErrorToast
+                            icon
+                            before='Ошибка'
+                            field='при загрузке обложки.'
+                            after='Обложка должна быть размером больше 800px.'
+                        />
+                    ),
+                    duration: 2000,
+                    variant: 'destructive'
+                });
+                setSent(false);
+                return;
+            }
         }
 
         axiosSession

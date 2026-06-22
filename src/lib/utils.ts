@@ -52,6 +52,21 @@ export function declOfNum(n: number, titles: string[]) {
     return titles[n % 100 > 4 && n % 100 < 20 ? 2 : cases[n % 10 < 5 ? n % 10 : 5]];
 }
 
+/**
+ * Проверяет, что изображение по ссылке/data-URL не меньше `minSize` по обеим сторонам.
+ * Резолвится в `false` при ошибке загрузки. Используется для блокировки сабмита форм
+ * до отправки запроса (см. AddPlaylistDialog, MashupForm).
+ */
+export function validateImageDimensions(src: string, minSize: number): Promise<boolean> {
+    return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () =>
+            resolve(image.naturalWidth >= minSize && image.naturalHeight >= minSize);
+        image.onerror = () => resolve(false);
+        image.src = src;
+    });
+}
+
 export function convertToBase64(file: File): Promise<string | null | ArrayBuffer> {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
