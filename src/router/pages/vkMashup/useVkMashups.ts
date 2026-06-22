@@ -6,7 +6,11 @@ import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { AxiosSmashUpError, AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 import { useToast } from '@/router/shared/hooks/use-toast';
 
-export function useVkMashups() {
+// autoLoad=false: только читать список VK из стора, НЕ инициировать загрузку.
+// Нужно для PlayerBarVkMashup, который висит глобально в RootLayout — иначе он
+// дёргал /mashup/list/vk на каждой странице (404 mashup.list.vk.not_connected
+// + error-toast у любого юзера без подключённого VK).
+export function useVkMashups(autoLoad: boolean = true) {
     const vkMashups = useCurrentUserStore((state) => state.vkMashups);
     const updateVkMashups = useCurrentUserStore((state) => state.updateVkMashups);
 
@@ -15,6 +19,7 @@ export function useVkMashups() {
     const { toast } = useToast();
 
     useEffect(() => {
+        if (!autoLoad) return;
         if (vkMashups === null) {
             const emptyVkMashups: VkMashups = {
                 total: 0,

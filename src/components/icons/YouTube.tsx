@@ -20,7 +20,7 @@ export default function YouTubeIcon({
             xmlns='http://www.w3.org/2000/svg'
             className={className}
         >
-            <g clip-path='url(#clip0_7326_4557)'>
+            <g clipPath='url(#clip0_7326_4557)'>
                 <path
                     fillRule='evenodd'
                     clipRule='evenodd'

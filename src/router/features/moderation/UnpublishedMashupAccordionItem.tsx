@@ -151,9 +151,9 @@ export function UnpublishedMashupAccordionItem({
 
     return (
         <AccordionItem value={value}>
-            <AccordionTrigger>
-                <div className='w-full flex items-center justify-between py-[6px] pl-[6px]'>
-                    <div className='flex items-center gap-x-4'>
+            <div className='h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex items-center justify-between gap-x-4'>
+                <AccordionTrigger className='flex-1 min-w-0 h-auto p-0 bg-transparent rounded-none'>
+                    <div className='flex items-center gap-x-4 min-w-0'>
                         <img
                             src={imageUrl}
                             alt={mashup.name}
@@ -166,118 +166,117 @@ export function UnpublishedMashupAccordionItem({
                             </span>
                         </div>
                     </div>
+                </AccordionTrigger>
 
-                    <div className='flex items-center gap-x-7'>
-                        <div className='flex items-center gap-x-3'>
-                            {hasYouTube && (
-                                <TooltipProvider>
-                                    <Tooltip delayDuration={100}>
-                                        <TooltipTrigger>
-                                            <WarningIcon />
-                                        </TooltipTrigger>
-                                        <TooltipContent
-                                            className='max-w-[300px] text-center'
-                                            side='top'
-                                            sideOffset={16}
-                                        >
-                                            <p>В треках есть непривязанная ссылка с YouTube</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            )}
+                <div className='flex items-center gap-x-7'>
+                    <div className='flex items-center gap-x-3'>
+                        {hasYouTube && (
+                            <TooltipProvider>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger>
+                                        <WarningIcon />
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                        className='max-w-[300px] text-center'
+                                        side='top'
+                                        sideOffset={16}
+                                    >
+                                        <p>В треках есть непривязанная ссылка с YouTube</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        )}
 
-                            <div className='flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
-                                {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
-                            </div>
-
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                className=''
-                                onClick={(e) => {
-                                    playModerationMashup(mashup);
-                                    e.preventDefault();
-                                }}
-                            >
-                                <PlayHollowIcon color='primary' size={36} />
-                            </Button>
-
-                            <Button
-                                className='py-[7px] font-bold text-base rounded-xl'
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    axiosSession
-                                        .post(
-                                            `/moderation/unpublished_mashup/publish?id=${mashup.id}`
-                                        )
-                                        .then((r: AxiosSmashUpResponse<Mashup>) => {
-                                            updateUnpublishedMashups([
-                                                ...unpublishedMashups.filter(
-                                                    (um) => um.id !== mashup.id
-                                                )
-                                            ]);
-
-                                            const uploadedMashup = r.data.response;
-
-                                            toast({
-                                                element: (
-                                                    <BaseToast
-                                                        image={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${uploadedMashup.imageUrl}_100x100.png`}
-                                                        before='Мэшап'
-                                                        field={`${uploadedMashup.authors.join(', ')} — ${uploadedMashup.name}`}
-                                                        after='успешно загружен!'
-                                                    />
-                                                ),
-                                                duration: 2000
-                                            });
-                                        })
-                                        .catch(axiosCatcher(toast, 'при публикации мэшапа'));
-                                }}
-                            >
-                                Принять
-                            </Button>
-
-                            <Dialog>
-                                <DialogTrigger
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                >
-                                    <Button className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
-                                        Отклонить
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent
-                                    className='w-[765px]'
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                >
-                                    <DialogHeader>
-                                        <DialogTitle className='pb-0 mb-0'>
-                                            Отклонение мэшапа
-                                        </DialogTitle>
-                                        <DialogDescription className='pt-0 mt-0'>
-                                            <Textarea
-                                                placeholder='Комментарий'
-                                                value={rejectionValue}
-                                                onChange={(e) => setRejectionValue(e.target.value)}
-                                            />
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <Button onClick={() => rejectMashup()}>Сохранить</Button>
-                                </DialogContent>
-                            </Dialog>
+                        <div className='flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
+                            {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
                         </div>
 
-                        <Button className='mr-7' variant='ghost' size='icon'>
-                            <Link to={`/mashup/moderation/${mashup.id}`}>
-                                <EditIcon />
-                            </Link>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            className=''
+                            onClick={(e) => {
+                                playModerationMashup(mashup);
+                                e.preventDefault();
+                            }}
+                        >
+                            <PlayHollowIcon color='primary' size={36} />
                         </Button>
+
+                        <Button
+                            className='py-[7px] font-bold text-base rounded-xl'
+                            onClick={(e) => {
+                                e.preventDefault();
+                                axiosSession
+                                    .post(`/moderation/unpublished_mashup/publish?id=${mashup.id}`)
+                                    .then((r: AxiosSmashUpResponse<Mashup>) => {
+                                        updateUnpublishedMashups([
+                                            ...unpublishedMashups.filter(
+                                                (um) => um.id !== mashup.id
+                                            )
+                                        ]);
+
+                                        const uploadedMashup = r.data.response;
+
+                                        toast({
+                                            element: (
+                                                <BaseToast
+                                                    image={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${uploadedMashup.imageUrl}_100x100.png`}
+                                                    before='Мэшап'
+                                                    field={`${uploadedMashup.authors.join(', ')} — ${uploadedMashup.name}`}
+                                                    after='успешно загружен!'
+                                                />
+                                            ),
+                                            duration: 2000
+                                        });
+                                    })
+                                    .catch(axiosCatcher(toast, 'при публикации мэшапа'));
+                            }}
+                        >
+                            Принять
+                        </Button>
+
+                        <Dialog>
+                            <DialogTrigger
+                                asChild
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
+                            >
+                                <Button className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                                    Отклонить
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent
+                                className='w-[765px]'
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
+                            >
+                                <DialogHeader>
+                                    <DialogTitle className='pb-0 mb-0'>
+                                        Отклонение мэшапа
+                                    </DialogTitle>
+                                    <DialogDescription className='pt-0 mt-0'>
+                                        <Textarea
+                                            placeholder='Комментарий'
+                                            value={rejectionValue}
+                                            onChange={(e) => setRejectionValue(e.target.value)}
+                                        />
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <Button onClick={() => rejectMashup()}>Сохранить</Button>
+                            </DialogContent>
+                        </Dialog>
                     </div>
+
+                    <Button className='mr-7' variant='ghost' size='icon' asChild>
+                        <Link to={`/mashup/moderation/${mashup.id}`}>
+                            <EditIcon />
+                        </Link>
+                    </Button>
                 </div>
-            </AccordionTrigger>
+            </div>
             <AccordionContent className='mt-4 flex gap-x-6'>
                 <img
                     src={imageUrl}

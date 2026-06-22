@@ -28,7 +28,7 @@ export default function PlayerBarVkMashup() {
 
     const vkMashupPlayer = usePlaybackEngine(vkMashupIsPlaying);
 
-    const { vkMashups, updateVkMashup, updateVkMashups } = useVkMashups();
+    const { vkMashups, updateVkMashup, updateVkMashups } = useVkMashups(false);
 
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
