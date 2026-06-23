@@ -28,6 +28,7 @@ export default function MashupThumbExplicitDisallowed({
                                 alt={mashup.name}
                                 className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                                 draggable={false}
+                                loading='lazy'
                             />
                         </div>
                         <div className='flex flex-col'>

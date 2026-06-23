@@ -27,6 +27,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
             <div className='flex items-center gap-x-4'>
                 <div className='relative'>
                     <img
+                        loading='lazy'
                         src={coverUrl('playlist', playlist.imageUrl, 100)}
                         alt={playlist.name}
                         className={cn(
@@ -39,6 +40,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Пауза'
                             className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
                         >
@@ -48,6 +50,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Воспроизвести'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
                         >
@@ -79,6 +82,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
             <div className='flex items-center gap-x-[34px]'>
                 <Link
                     draggable={false}
+                    aria-label='Перейти к плейлисту'
                     to={`/playlist/${playlist.id}`}
                     className='w-10 flex items-center justify-center'
                 >

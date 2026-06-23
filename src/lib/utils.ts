@@ -8,9 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function msToMinutesAndSeconds(ms: number) {
-    const date = new Date(ms);
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    // Math.floor вместо new Date(ms).getMinutes(): getMinutes() обнуляется на границе
+    // часа (теряет часы для длительностей >= 60 мин) и зависит от часового пояса.
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 }
 

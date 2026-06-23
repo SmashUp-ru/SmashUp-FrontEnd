@@ -74,6 +74,7 @@ export default function ProfileMenu() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Выйти'
                         onClick={() => {
                             localStorage.removeItem('smashup_token');
                             sessionStorage.removeItem('smashup_token');

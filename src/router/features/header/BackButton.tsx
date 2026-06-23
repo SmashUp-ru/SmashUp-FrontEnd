@@ -9,6 +9,7 @@ export default function BackButton() {
         <Button
             variant='ghost'
             size='icon'
+            aria-label='Назад'
             className='rounded-full bg-surface w-[40px] h-[40px]'
             onClick={() => navigate(-1)}
         >

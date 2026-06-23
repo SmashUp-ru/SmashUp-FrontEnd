@@ -25,7 +25,7 @@ export default function Sidebar() {
             className={`h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] flex rounded-[30px] flex-col w-[123px] bg-surface pt-[70px] mr-[30px] my-4`}
         >
             {/* Логотип */}
-            <Link draggable={false} className='px-7 mb-[70px]' to='/'>
+            <Link draggable={false} className='px-7 mb-[70px]' to='/' aria-label='На главную'>
                 <LogoIcon color='primary' hoverColor='hoverPrimary' />
             </Link>
 
@@ -40,7 +40,7 @@ export default function Sidebar() {
                     </Link>
 
                     {currentUser ? (
-                        <Link draggable={false} to={'/favorites'}>
+                        <Link draggable={false} to={'/favorites'} aria-label='Любимые мэшапы'>
                             <LikeOutlineIcon
                                 color={
                                     location.pathname === '/favorites'
@@ -57,7 +57,7 @@ export default function Sidebar() {
                     ) : (
                         <TooltipProvider>
                             <Tooltip delayDuration={100}>
-                                <TooltipTrigger>
+                                <TooltipTrigger aria-label='Любимые мэшапы (требуется вход)'>
                                     <LikeOutlineIcon color='onSurfaceVariant/50' />
                                 </TooltipTrigger>
                                 <TooltipContent
@@ -81,7 +81,7 @@ export default function Sidebar() {
                     ) : (
                         <TooltipProvider>
                             <Tooltip delayDuration={100}>
-                                <TooltipTrigger>
+                                <TooltipTrigger aria-label='Создать плейлист (требуется вход)'>
                                     <AddIcon color='onSurfaceVariant/50' />
                                 </TooltipTrigger>
                                 <TooltipContent

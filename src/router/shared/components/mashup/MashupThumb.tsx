@@ -58,12 +58,14 @@ export default function MashupThumb({
                         alt={mashup.name}
                         className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                         draggable={false}
+                        loading='lazy'
                     />
                 </Link>
                 {queue[queueIndex] === mashup.id && isPlaying ? (
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Пауза'
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
                             pause();
@@ -75,6 +77,7 @@ export default function MashupThumb({
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Воспроизвести'
                         className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
                             playMashup(playlist, playlistName, queueId, indexInPlaylist);

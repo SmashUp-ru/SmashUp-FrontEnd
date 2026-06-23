@@ -195,6 +195,7 @@ export function UnpublishedMashupAccordionItem({
                             variant='ghost'
                             size='icon'
                             className=''
+                            aria-label='Воспроизвести'
                             onClick={(e) => {
                                 playModerationMashup(mashup);
                                 e.preventDefault();
@@ -271,7 +272,10 @@ export function UnpublishedMashupAccordionItem({
                     </div>
 
                     <Button className='mr-7' variant='ghost' size='icon' asChild>
-                        <Link to={`/mashup/moderation/${mashup.id}`}>
+                        <Link
+                            to={`/mashup/moderation/${mashup.id}`}
+                            aria-label='Редактировать мэшап'
+                        >
                             <EditIcon />
                         </Link>
                     </Button>
@@ -406,6 +410,7 @@ export function UnpublishedMashupAccordionItem({
                                 variant='ghost'
                                 size='icon'
                                 className='cursor-pointer'
+                                aria-label='Открыть ссылку'
                                 onClick={() => {
                                     if (statusUrl) {
                                         window.open(statusUrl, '_blank');

@@ -33,7 +33,7 @@ export default function NotificationsMenu() {
 
     return (
         <DropdownMenu onOpenChange={setOpen} open={open}>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger aria-label='Уведомления'>
                 <BellIcon active />
             </DropdownMenuTrigger>
             <DropdownMenuContent

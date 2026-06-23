@@ -30,6 +30,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                         alt={user.username}
                         className='w-12 h-12 rounded-full group-hover:opacity-30 object-cover'
                         draggable={false}
+                        loading='lazy'
                     />
                     {isThisPlaying ? (
                         <Button
@@ -37,6 +38,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                             size='icon'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
+                            aria-label='Пауза'
                         >
                             <PauseHollowIcon color='onSurface' size={24} />
                         </Button>
@@ -46,6 +48,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                             size='icon'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
+                            aria-label='Воспроизвести'
                         >
                             <PlayHollowIcon color='onSurface' size={24} />
                         </Button>
@@ -65,6 +68,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                     draggable={false}
                     to={`/user/${user.username}`}
                     className='w-10 flex items-center justify-center'
+                    aria-label='Перейти к профилю'
                 >
                     <ChevronRightIcon />
                 </Link>

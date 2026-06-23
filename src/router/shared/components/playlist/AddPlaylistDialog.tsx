@@ -153,7 +153,11 @@ export default function AddPlaylistDialog({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger>{children}</DialogTrigger>
+            <DialogTrigger
+                aria-label={existingPlaylist ? 'Редактировать плейлист' : 'Создать плейлист'}
+            >
+                {children}
+            </DialogTrigger>
             <DialogContent className='w-fit'>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>

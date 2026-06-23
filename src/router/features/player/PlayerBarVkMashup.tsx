@@ -111,6 +111,7 @@ export default function PlayerBarVkMashup() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Пауза'
                         onClick={() => updateVkMashupIsPlaying(false)}
                     >
                         <PauseHollowIcon color='onSurface' />
@@ -119,6 +120,7 @@ export default function PlayerBarVkMashup() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Воспроизвести'
                         onClick={() => updateVkMashupIsPlaying(true)}
                     >
                         <PlayHollowIcon color='onSurface' />

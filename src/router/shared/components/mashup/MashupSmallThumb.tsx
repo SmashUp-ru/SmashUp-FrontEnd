@@ -82,6 +82,7 @@ export default function MashupSmallThumb({
                     <img
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt={mashup.name}
+                        loading='lazy'
                         className={cn(
                             'w-12 h-12 min-w-12 min-h-12 rounded-xl',
                             isThisMash ? 'opacity-30' : 'group-hover:opacity-30'
@@ -93,6 +94,7 @@ export default function MashupSmallThumb({
                             <Button
                                 variant='ghost'
                                 size='icon'
+                                aria-label='Пауза'
                                 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                                 onClick={() => {
                                     pause();
@@ -104,6 +106,7 @@ export default function MashupSmallThumb({
                             <Button
                                 variant='ghost'
                                 size='icon'
+                                aria-label='Воспроизвести'
                                 className=' absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                                 onClick={() => {
                                     play();
@@ -120,6 +123,7 @@ export default function MashupSmallThumb({
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Воспроизвести'
                             className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={() => {
                                 const filteredMashups = hideExplicit
@@ -208,6 +212,7 @@ export default function MashupSmallThumb({
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Убрать лайк'
                             onClick={() => {
                                 axiosSession
                                     .post(
@@ -229,6 +234,7 @@ export default function MashupSmallThumb({
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Лайкнуть'
                             onClick={() => {
                                 axiosSession
                                     .post(
@@ -274,7 +280,7 @@ export default function MashupSmallThumb({
 
                 <div className='w-10 flex items-center justify-center'>
                     <MashupMoreDropdown mashup={mashup}>
-                        <Button variant='ghost' size='icon'>
+                        <Button variant='ghost' size='icon' aria-label='Опции мэшапа'>
                             <div className='hidden group-hover:block'>
                                 <MoreHorizontalIcon
                                     color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}

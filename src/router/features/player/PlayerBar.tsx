@@ -61,6 +61,7 @@ export default function PlayerBar() {
                             <Button
                                 variant='ghost'
                                 size='icon'
+                                aria-label='Информация о мэшапе'
                                 onClick={() => (info ? closeInfo() : openInfo())}
                             >
                                 {mashup.name}
@@ -89,6 +90,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Убрать лайк'
                             onClick={() => {
                                 axiosSession
                                     .post(
@@ -105,6 +107,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Лайкнуть'
                             onClick={() => {
                                 axiosSession
                                     .post(
@@ -126,6 +129,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Отключить перемешивание'
                             onClick={() => {
                                 updateShuffle(false);
                                 updateQueueIndex(originalQueue.indexOf(queue[queueIndex]));
@@ -138,6 +142,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            aria-label='Перемешать'
                             onClick={() => {
                                 updateShuffle(true);
 
@@ -157,6 +162,7 @@ export default function PlayerBar() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Предыдущий трек'
                         onClick={() => {
                             prev();
                             play();
@@ -166,11 +172,21 @@ export default function PlayerBar() {
                     </Button>
 
                     {isPlaying ? (
-                        <Button variant='ghost' size='icon' onClick={() => pause()}>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Пауза'
+                            onClick={() => pause()}
+                        >
                             <PauseHollowIcon color='onSurface' />
                         </Button>
                     ) : (
-                        <Button variant='ghost' size='icon' onClick={() => play()}>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Воспроизвести'
+                            onClick={() => play()}
+                        >
                             <PlayHollowIcon color='onSurface' />
                         </Button>
                     )}
@@ -178,6 +194,7 @@ export default function PlayerBar() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Следующий трек'
                         onClick={() => {
                             next();
                             play();
@@ -187,19 +204,34 @@ export default function PlayerBar() {
                     </Button>
 
                     {loop === 'none' && (
-                        <Button variant='ghost' size='icon' onClick={() => updateLoop('queue')}>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Повторять очередь'
+                            onClick={() => updateLoop('queue')}
+                        >
                             <RepeatIcon repeating={false} color='onSurface' />
                         </Button>
                     )}
 
                     {loop === 'queue' && (
-                        <Button variant='ghost' size='icon' onClick={() => updateLoop('mashup')}>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Повторять мэшап'
+                            onClick={() => updateLoop('mashup')}
+                        >
                             <RepeatIcon repeating={false} color='primary' />
                         </Button>
                     )}
 
                     {loop === 'mashup' && (
-                        <Button variant='ghost' size='icon' onClick={() => updateLoop('none')}>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Отключить повтор'
+                            onClick={() => updateLoop('none')}
+                        >
                             <RepeatIcon repeating={true} color='primary' />
                         </Button>
                     )}
@@ -210,6 +242,7 @@ export default function PlayerBar() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Информация о треке'
                         onClick={() => (info ? closeInfo() : openInfo())}
                     >
                         <InfoIcon color={info ? 'primary' : 'onSurface'} />

@@ -42,7 +42,9 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild aria-label='Опции мэшапа'>
+                {children}
+            </DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
                     {currentUser && (

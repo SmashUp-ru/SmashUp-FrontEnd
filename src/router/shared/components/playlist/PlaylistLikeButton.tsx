@@ -23,6 +23,7 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
             <Button
                 variant='ghost'
                 size='icon'
+                aria-label='Убрать лайк'
                 onClick={() => {
                     axiosSession
                         .post(
@@ -43,6 +44,7 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
         <Button
             variant='ghost'
             size='icon'
+            aria-label='Лайкнуть'
             onClick={() => {
                 axiosSession
                     .post(`${import.meta.env.VITE_BACKEND_URL}/playlist/add_like?id=${playlist.id}`)

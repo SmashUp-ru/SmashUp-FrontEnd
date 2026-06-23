@@ -36,6 +36,7 @@ export default function MashupSmallThumbExplicitDisallowed({
                                     alt={mashup.name}
                                     className={cn('w-12 h-12 min-w-12 min-h-12 rounded-xl')}
                                     draggable={false}
+                                    loading='lazy'
                                 />
                             </div>
                             <div className='flex flex-col'>

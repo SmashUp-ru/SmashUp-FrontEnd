@@ -40,6 +40,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                         alt={playlist.name}
                         className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
                         draggable={false}
+                        loading='lazy'
                     />
                 </Link>
                 {playlist.mashups.length > 0 &&
@@ -48,6 +49,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             variant='ghost'
                             size='icon'
                             onClick={togglePlay}
+                            aria-label='Пауза'
                             className={cn(
                                 'hidden group-hover:block absolute bottom-3 right-3 z-20',
                                 'block'
@@ -60,6 +62,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             variant='ghost'
                             size='icon'
                             onClick={togglePlay}
+                            aria-label='Воспроизвести'
                             className='hidden group-hover:block absolute bottom-3 right-3 z-20'
                         >
                             <PlayHollowIcon

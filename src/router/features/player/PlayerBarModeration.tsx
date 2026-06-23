@@ -60,6 +60,7 @@ export default function PlayerBarModeration() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Пауза'
                         onClick={() => updateModerationIsPlaying(false)}
                     >
                         <PauseHollowIcon color='onSurface' />
@@ -68,6 +69,7 @@ export default function PlayerBarModeration() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        aria-label='Воспроизвести'
                         onClick={() => updateModerationIsPlaying(true)}
                     >
                         <PlayHollowIcon color='onSurface' />

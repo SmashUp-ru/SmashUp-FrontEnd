@@ -33,6 +33,7 @@ export default function PlaylistPlayButton({ playlist }: PlaylistPlayButtonProps
             <Button
                 variant='ghost'
                 size='icon'
+                aria-label='Пауза'
                 onClick={() => {
                     pause();
                 }}
@@ -46,6 +47,7 @@ export default function PlaylistPlayButton({ playlist }: PlaylistPlayButtonProps
         <Button
             variant='ghost'
             size='icon'
+            aria-label='Воспроизвести'
             onClick={() => {
                 playQueue(
                     hideExplicit

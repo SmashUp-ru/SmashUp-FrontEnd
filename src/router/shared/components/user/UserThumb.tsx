@@ -29,6 +29,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                     alt={user.username}
                     className='w-[216px] h-[216px] object-cover rounded-full group-hover:opacity-30'
                     draggable={false}
+                    loading='lazy'
                 />
                 {isThisPlaying ? (
                     <Button
@@ -36,6 +37,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                         size='icon'
                         className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                         onClick={togglePlay}
+                        aria-label='Пауза'
                     >
                         <PauseHollowIcon color='onSurface' />
                     </Button>
@@ -45,6 +47,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                         size='icon'
                         className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                         onClick={togglePlay}
+                        aria-label='Воспроизвести'
                     >
                         <PlayHollowIcon color='onSurface' />
                     </Button>

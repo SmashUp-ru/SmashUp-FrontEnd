@@ -40,6 +40,7 @@ export default function TrackSmallThumb({
                 alt={track.name}
                 className='w-12 h-12 rounded-xl object-cover'
                 draggable={false}
+                loading='lazy'
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
                 <span
@@ -63,7 +64,7 @@ export default function TrackSmallThumb({
             {icon}
 
             <TrackMoreDropdown track={track}>
-                <Button variant='ghost' size='icon'>
+                <Button variant='ghost' size='icon' aria-label='Опции трека'>
                     <div className='hidden group-hover:block'>
                         <MoreHorizontalIcon />
                     </div>

@@ -49,6 +49,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                             <img
                                 src={imageUrl}
                                 alt={mashup.name}
+                                loading='lazy'
                                 className='w-12 h-12 rounded-[10px]'
                             />
                             <div className='flex flex-col items-start'>
@@ -75,6 +76,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                     variant='ghost'
                                     size='icon'
                                     className=''
+                                    aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
                                     onClick={(e) => {
                                         if (isCurrent) {
                                             updateVkMashupIsPlaying(!vkMashupIsPlaying);
@@ -108,6 +110,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                     <img
                         src={imageUrl}
                         alt={mashup.name}
+                        loading='lazy'
                         className='w-[216px] h-[216px] rounded-[30px]'
                     />
 

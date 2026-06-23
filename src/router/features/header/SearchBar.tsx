@@ -69,6 +69,7 @@ export default function SearchBar() {
                         key={track.id}
                         variant='nothing'
                         size='icon'
+                        aria-label='Удалить трек из поиска'
                         onClick={() =>
                             updateCrossoverTracks([
                                 ...crossoverTracks.filter((elem) => elem.id !== track.id)
@@ -93,6 +94,7 @@ export default function SearchBar() {
                         key={artist.id}
                         variant='nothing'
                         size='icon'
+                        aria-label='Удалить артиста из поиска'
                         onClick={() =>
                             updateCrossoverArtists([
                                 ...crossoverArtists.filter((elem) => elem.id !== artist.id)
