@@ -15,7 +15,11 @@ export default function ChevronLeftIcon({
             height={size ? size : height}
             viewBox='0 0 11 18'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <g opacity='0.75'>
                 <path

@@ -20,7 +20,11 @@ export default function SourcesIcon({
             strokeLinecap='round'
             strokeLinejoin='round'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color} hover:text-${hoverColor}`, className)}
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <path d='M9 17V5l11-2v12' />
             <circle cx='6' cy='17' r='3' fill='currentColor' stroke='none' />

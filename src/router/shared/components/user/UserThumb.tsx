@@ -27,7 +27,7 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
                 <img
                     src={coverUrl('user', user.imageUrl, 400)}
                     alt={user.username}
-                    className='w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] object-cover rounded-full md:group-hover:opacity-30'
+                    className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] object-cover rounded-full md:group-hover:opacity-30'
                     draggable={false}
                     loading='lazy'
                 />

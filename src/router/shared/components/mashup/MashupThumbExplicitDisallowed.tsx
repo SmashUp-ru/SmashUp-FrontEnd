@@ -26,7 +26,7 @@ export default function MashupThumbExplicitDisallowed({
                             <img
                                 src={coverUrl('mashup', mashup.imageUrl, 400)}
                                 alt={mashup.name}
-                                className='w-[216px] h-[216px] rounded-[30px] md:group-hover:opacity-30'
+                                className='transition-opacity duration-200 motion-reduce:transition-none w-[216px] h-[216px] rounded-[30px] md:group-hover:opacity-30'
                                 draggable={false}
                                 loading='lazy'
                             />

@@ -16,7 +16,11 @@ export default function LogoIcon({
             viewBox='0 0 67 34'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <path d='M66.5 0L38.1262 33.8049L26.4065 21.128L0.5 33.8049L6.97664 25.3537L13.4533 16.9024L19.9299 8.45122L26.4065 0L38.1262 12.6768L66.5 0Z' />
         </svg>

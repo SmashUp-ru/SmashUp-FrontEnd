@@ -19,7 +19,11 @@ export default function QueueIcon({
             strokeWidth={2}
             strokeLinecap='round'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color} hover:text-${hoverColor}`, className)}
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <path d='M8 6h13M8 12h13M8 18h13' />
             <circle cx='3.5' cy='6' r='1.2' fill='currentColor' stroke='none' />

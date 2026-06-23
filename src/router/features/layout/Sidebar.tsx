@@ -61,7 +61,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
             {/* Затемнение под мобильным drawer */}
             <div
                 className={cn(
-                    'fixed inset-0 z-40 bg-black/60 transition-opacity md:hidden',
+                    'fixed inset-0 z-40 bg-black/60 transition-opacity motion-reduce:transition-none md:hidden',
                     open ? 'opacity-100' : 'pointer-events-none opacity-0'
                 )}
                 onClick={onClose}
@@ -71,7 +71,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
             {/* Панель: на десктопе в потоке, на мобильном — off-canvas drawer */}
             <div
                 className={cn(
-                    'fixed left-0 top-0 z-50 flex h-dvh w-[280px] flex-col rounded-r-[30px] bg-surface pt-[64px] transition-transform duration-300',
+                    'fixed left-0 top-0 z-50 flex h-dvh w-[280px] flex-col rounded-r-[30px] bg-surface pt-[64px] transition-transform duration-300 motion-reduce:transition-none',
                     'md:static md:z-auto md:my-4 md:mr-[30px] md:w-[123px] md:rounded-[30px] md:pt-[70px] md:transition-none',
                     desktopHeight,
                     open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'

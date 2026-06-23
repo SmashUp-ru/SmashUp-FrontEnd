@@ -20,6 +20,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
+import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -44,6 +45,7 @@ export default function PlayerBar() {
     const { play, pause, next, prev, openInfo, closeInfo } = usePlayer();
 
     const { mashup, isLiked, setIsLiked } = usePlayerBarData();
+    const likePop = useLikePop(isLiked);
 
     if (queue.length === 0 || queueIndex === null || !mashup) {
         return;
@@ -116,7 +118,11 @@ export default function PlayerBar() {
                                     });
                             }}
                         >
-                            <LikeFilledIcon />
+                            <span
+                                className={`inline-flex ${likePop ? 'animate-pop motion-reduce:animate-none' : ''}`}
+                            >
+                                <LikeFilledIcon />
+                            </span>
                         </Button>
                     ) : (
                         <Button

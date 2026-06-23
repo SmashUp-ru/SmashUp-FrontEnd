@@ -29,6 +29,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
+import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -59,11 +60,19 @@ export default function MashupSmallThumb({
 
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
-    const isLiked = mashup?.liked ?? false;
+    // isLiked читаем реактивно из стора: в секциях главной («Премьера»/«Рекомендации»)
+    // мэшапы приходят снимком из локального стейта RootPage, и проп `mashup` не
+    // обновляется при лайке — оптимистичный апдейт идёт в стор (updateOneById),
+    // поэтому проп даёт устаревший `liked`, а сердечко не закрашивалось.
+    const likedInStore = useMashupStore((state) =>
+        mashup ? state.cache[mashup.id]?.liked : undefined
+    );
+    const isLiked = likedInStore ?? mashup?.liked ?? false;
     const setIsLiked = (liked: boolean) => {
         if (!mashup) return;
         useMashupStore.getState().updateOneById(mashup.id, { liked });
     };
+    const likePop = useLikePop(isLiked);
 
     if (!mashup || isLoading) {
         return <MashupSmallThumbSkeleton />;
@@ -108,7 +117,7 @@ export default function MashupSmallThumb({
     return (
         <div
             className={cn(
-                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary/[0.3] rounded-2xl',
+                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary/[0.3] rounded-2xl transition-colors duration-300 motion-reduce:transition-none',
                 isThisMash && 'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3]'
             )}
         >
@@ -125,7 +134,7 @@ export default function MashupSmallThumb({
                         alt={mashup.name}
                         loading='lazy'
                         className={cn(
-                            'w-12 h-12 min-w-12 min-h-12 rounded-xl bg-surface object-cover',
+                            'transition-opacity duration-200 motion-reduce:transition-none w-12 h-12 min-w-12 min-h-12 rounded-xl bg-surface object-cover',
                             isThisMash ? 'opacity-30' : 'md:group-hover:opacity-30'
                         )}
                         draggable={false}
@@ -264,12 +273,19 @@ export default function MashupSmallThumb({
                                     });
                             }}
                         >
-                            <LikeFilledIcon
-                                width={20}
-                                height={17}
-                                color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                hoverColor={isThisMash ? 'primary' : 'onSurface'}
-                            />
+                            <span
+                                className={cn(
+                                    'inline-flex',
+                                    likePop && 'animate-pop motion-reduce:animate-none'
+                                )}
+                            >
+                                <LikeFilledIcon
+                                    width={20}
+                                    height={17}
+                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                    hoverColor={isThisMash ? 'primary' : 'onSurface'}
+                                />
+                            </span>
                         </Button>
                     ) : (
                         <Button

@@ -14,7 +14,11 @@ export default function HideIcon({
             height={size ? size : height}
             viewBox='0 0 28 28'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color}`, 'fill-current', className)}
+            className={cn(
+                `text-${color}`,
+                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <path
                 fillRule='evenodd'

@@ -72,11 +72,32 @@ export default {
     				to: {
     					height: '0'
     				}
+    			},
+    			shimmer: {
+    				'100%': {
+    					transform: 'translateX(100%)'
+    				}
+    			},
+    			pop: {
+    				'0%': {
+    					transform: 'scale(1)'
+    				},
+    				'40%': {
+    					transform: 'scale(1.3)'
+    				},
+    				'70%': {
+    					transform: 'scale(0.92)'
+    				},
+    				'100%': {
+    					transform: 'scale(1)'
+    				}
     			}
     		},
     		animation: {
     			'accordion-down': 'accordion-down 0.2s ease-out',
-    			'accordion-up': 'accordion-up 0.2s ease-out'
+    			'accordion-up': 'accordion-up 0.2s ease-out',
+    			shimmer: 'shimmer 1.6s infinite',
+    			pop: 'pop 0.3s ease-out'
     		}
     	}
     },

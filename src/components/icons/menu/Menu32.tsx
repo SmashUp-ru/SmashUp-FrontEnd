@@ -15,7 +15,11 @@ export default function MenuIcon({
             height={size ? size : height}
             viewBox='0 0 32 32'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${color} hover:text-${hoverColor}`, 'fill-current', className)}
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <rect x='5' y='8' width='22' height='2.6' rx='1.3' />
             <rect x='5' y='14.7' width='22' height='2.6' rx='1.3' />

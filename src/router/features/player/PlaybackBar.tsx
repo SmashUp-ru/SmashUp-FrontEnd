@@ -34,6 +34,7 @@ export default function PlaybackBar({
         <div
             className={cn(
                 'bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10',
+                'animate-in fade-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none',
                 fixed ? 'fixed' : 'absolute'
             )}
         >

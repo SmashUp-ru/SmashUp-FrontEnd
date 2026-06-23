@@ -28,7 +28,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                     <img
                         src={coverUrl('user', user.imageUrl, 100)}
                         alt={user.username}
-                        className='w-12 h-12 rounded-full md:group-hover:opacity-30 object-cover'
+                        className='transition-opacity duration-200 motion-reduce:transition-none w-12 h-12 rounded-full md:group-hover:opacity-30 object-cover'
                         draggable={false}
                         loading='lazy'
                     />

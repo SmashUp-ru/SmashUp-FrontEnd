@@ -38,7 +38,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                     <img
                         src={image ? image : coverUrl('playlist', playlist.imageUrl, 400)}
                         alt={playlist.name}
-                        className='w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30'
+                        className='transition-opacity duration-200 motion-reduce:transition-none w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30'
                         draggable={false}
                         loading='lazy'
                     />

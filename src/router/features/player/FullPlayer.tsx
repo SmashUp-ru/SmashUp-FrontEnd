@@ -24,6 +24,7 @@ import ChevronDownIcon from '@/components/icons/ChevronDown.tsx';
 import QueueIcon from '@/components/icons/Queue.tsx';
 import SourcesIcon from '@/components/icons/Sources.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
+import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
 
 function SeekBar({ duration }: { duration: number }) {
     const seek = usePlayerStore((s) => s.seek);
@@ -90,6 +91,7 @@ export default function FullPlayer() {
     const [panel, setPanel] = useState<'none' | 'queue' | 'sources'>('none');
     const [dragY, setDragY] = useState(0);
     const [touchStartY, setTouchStartY] = useState<number | null>(null);
+    const likePop = useLikePop(isLiked);
 
     const upcomingIds = queue.slice(queueIndex + 1);
 
@@ -162,7 +164,7 @@ export default function FullPlayer() {
         <div
             className={cn(
                 'fixed inset-0 z-[60] md:hidden flex flex-col overflow-hidden bg-background text-onSurface',
-                'transition-transform duration-300',
+                'transition-transform duration-300 motion-reduce:transition-none',
                 fullPlayer ? 'translate-y-0' : 'translate-y-full pointer-events-none'
             )}
             style={dragY ? { transform: `translateY(${dragY}px)`, transition: 'none' } : undefined}
@@ -201,7 +203,7 @@ export default function FullPlayer() {
             <div className='flex-1 min-h-0 flex flex-col px-6'>
                 {panel === 'none' && (
                     <div
-                        className='flex-1 min-h-0 flex flex-col items-center justify-center gap-7'
+                        className='flex-1 min-h-0 flex flex-col items-center justify-center gap-7 animate-in fade-in duration-200 motion-reduce:animate-none'
                         onTouchStart={onTouchStart}
                         onTouchMove={onTouchMove}
                         onTouchEnd={onTouchEnd}
@@ -254,7 +256,7 @@ export default function FullPlayer() {
                 )}
 
                 {panel === 'queue' && (
-                    <div className='flex-1 min-h-0 overflow-y-auto py-2'>
+                    <div className='flex-1 min-h-0 overflow-y-auto py-2 animate-in fade-in slide-in-from-right-4 duration-200 motion-reduce:animate-none'>
                         <div className='flex items-center gap-x-3 mb-4 px-1.5'>
                             <img
                                 src={coverUrl('mashup', mashup.imageUrl, 100)}
@@ -304,7 +306,7 @@ export default function FullPlayer() {
                 )}
 
                 {panel === 'sources' && (
-                    <div className='flex-1 min-h-0 overflow-y-auto py-2'>
+                    <div className='flex-1 min-h-0 overflow-y-auto py-2 animate-in fade-in slide-in-from-left-4 duration-200 motion-reduce:animate-none'>
                         <div className='flex items-center gap-x-3 mb-4 px-1.5'>
                             <img
                                 src={coverUrl('mashup', mashup.imageUrl, 100)}
@@ -359,7 +361,7 @@ export default function FullPlayer() {
                     <button
                         aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
                         onClick={() => (isPlaying ? pause() : play())}
-                        className='flex items-center justify-center w-[72px] h-[72px] rounded-full bg-primary'
+                        className='flex items-center justify-center w-[72px] h-[72px] rounded-full bg-primary transition-transform active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100'
                     >
                         {isPlaying ? (
                             <PauseIcon color='onSurface' size={34} />
@@ -402,7 +404,18 @@ export default function FullPlayer() {
                         aria-label={isLiked ? 'Убрать лайк' : 'Лайкнуть'}
                         onClick={toggleLike}
                     >
-                        {isLiked ? <LikeFilledIcon /> : <LikeOutlineIcon color='onSurface' />}
+                        {isLiked ? (
+                            <span
+                                className={cn(
+                                    'inline-flex',
+                                    likePop && 'animate-pop motion-reduce:animate-none'
+                                )}
+                            >
+                                <LikeFilledIcon />
+                            </span>
+                        ) : (
+                            <LikeOutlineIcon color='onSurface' />
+                        )}
                     </Button>
                     <Button
                         variant='ghost'

@@ -31,7 +31,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         src={coverUrl('playlist', playlist.imageUrl, 100)}
                         alt={playlist.name}
                         className={cn(
-                            'w-12 h-12 rounded-xl',
+                            'w-12 h-12 rounded-xl transition-opacity duration-200 motion-reduce:transition-none',
                             isThisPlaying ? 'opacity-30' : 'md:group-hover:opacity-30'
                         )}
                         draggable={false}

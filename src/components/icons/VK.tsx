@@ -24,7 +24,11 @@ export default function VKIcon({
             viewBox='0 0 25 24'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
-            className={cn(`text-${backgroundColor}`, 'fill-current', className)}
+            className={cn(
+                `text-${backgroundColor}`,
+                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                className
+            )}
         >
             <g clipPath='url(#clip0_6443_2601)'>
                 <path d='M0.5 11.52C0.5 6.0894 0.5 3.37413 2.18707 1.68707C3.87413 0 6.5894 0 12.02 0H12.98C18.4106 0 21.1259 0 22.813 1.68707C24.5 3.37413 24.5 6.0894 24.5 11.52V12.48C24.5 17.9106 24.5 20.6259 22.813 22.313C21.1259 24 18.4106 24 12.98 24H12.02C6.5894 24 3.87413 24 2.18707 22.313C0.5 20.6259 0.5 17.9106 0.5 12.48V11.52Z' />

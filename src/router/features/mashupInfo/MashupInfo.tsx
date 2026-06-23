@@ -17,11 +17,12 @@ import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
+import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();
@@ -40,6 +41,21 @@ export default function MashupInfo() {
     const [imageLoaded, setImageLoaded] = useState(false);
     const isMobile = useIsMobile();
 
+    // Плавное раскрытие side-панели по ширине (на десктопе): контент слева
+    // ужимается анимированно, а не прыгает скачком при появлении панели.
+    const shouldShow = !isMobile && (info || mashupInfo !== null);
+    const [entered, setEntered] = useState(false);
+    useEffect(() => {
+        if (!shouldShow) {
+            setEntered(false);
+            return;
+        }
+        const id = requestAnimationFrame(() => setEntered(true));
+        return () => cancelAnimationFrame(id);
+    }, [shouldShow]);
+
+    const likePop = useLikePop(isLiked);
+
     // На мобайле «использованные треки» показываются в полноэкранном плеере (FullPlayer).
     if (isMobile) return null;
     if (!info && mashupInfo === null) return null;
@@ -49,8 +65,11 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:min-w-[382px] md:w-[382px] md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto`,
-                'flex flex-col gap-y-4 items-start'
+                `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto overflow-x-hidden`,
+                'flex flex-col gap-y-4 items-start md:transition-[width,min-width,opacity] md:duration-300 motion-reduce:transition-none',
+                entered
+                    ? 'opacity-100 md:w-[382px] md:min-w-[382px]'
+                    : 'opacity-0 md:w-0 md:min-w-0'
             )}
         >
             <div className='w-full flex items-center justify-between gap-x-[30px]'>
@@ -164,7 +183,14 @@ export default function MashupInfo() {
                                 });
                         }}
                     >
-                        <LikeFilledIcon />
+                        <span
+                            className={cn(
+                                'inline-flex',
+                                likePop && 'animate-pop motion-reduce:animate-none'
+                            )}
+                        >
+                            <LikeFilledIcon />
+                        </span>
                     </Button>
                 ) : (
                     <Button
