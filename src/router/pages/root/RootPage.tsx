@@ -50,7 +50,7 @@ export default function RootPage() {
     return (
         <div className='flex flex-col gap-8 pb-12'>
             <Section title='Подборки'>
-                <div className='flex items-center flex-wrap'>
+                <div className='grid grid-cols-2 gap-x-[15px] gap-y-2 md:flex md:items-center md:flex-wrap md:gap-x-0 md:gap-y-0'>
                     {currentUser && (
                         <PlaylistThumb
                             playlist={
@@ -76,7 +76,7 @@ export default function RootPage() {
 
             {premierePlaylist && premiere && premiere.length > 0 && (
                 <Section title='Премьера!' link={{ href: 'playlist/1', title: 'ПОКАЗАТЬ ВСЕ' }}>
-                    <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                         {premiere.slice(0, 6).map((mashup, idx) => (
                             <MashupSmallThumb
                                 key={idx}
@@ -96,7 +96,7 @@ export default function RootPage() {
                     title='Рекомендации'
                     link={{ href: 'recommendations', title: 'ПОКАЗАТЬ ВСЕ' }}
                 >
-                    <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                         {recommendations.slice(0, 6).map((recommendation, idx) => (
                             <MashupSmallThumb
                                 key={idx}
@@ -113,7 +113,7 @@ export default function RootPage() {
 
             {currentUserPlaylists && currentUserPlaylists.length > 0 && (
                 <Section title='Ваши плейлисты'>
-                    <div className='flex items-center flex-wrap'>
+                    <div className='grid grid-cols-2 gap-x-[15px] gap-y-2 md:flex md:items-center md:flex-wrap md:gap-x-0 md:gap-y-0'>
                         {currentUserPlaylists.map((playlist) => (
                             <PlaylistThumb key={playlist.id} playlist={playlist} />
                         ))}
@@ -123,7 +123,7 @@ export default function RootPage() {
 
             {favoritesPlaylists && favoritesPlaylists.length > 0 && (
                 <Section title='Понравившиеся плейлисты других пользователей '>
-                    <div className='flex items-center flex-wrap'>
+                    <div className='grid grid-cols-2 gap-x-[15px] gap-y-2 md:flex md:items-center md:flex-wrap md:gap-x-0 md:gap-y-0'>
                         {favoritesPlaylists.map((playlist) => (
                             <PlaylistThumb key={playlist.id} playlist={playlist} />
                         ))}

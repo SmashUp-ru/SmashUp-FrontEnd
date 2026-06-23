@@ -34,15 +34,21 @@ export default function PlaybackBar({
         <div
             className={cn(
                 'bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10',
-                fixed ? 'fixed' : 'absolute min-w-fit'
+                fixed ? 'fixed' : 'absolute'
             )}
         >
             <MashupSeekSlider mashup={seekMashup} />
 
             <div className='w-full flex justify-between items-center'>
-                <div className='w-1/3 flex items-center gap-x-6'>{left}</div>
-                <div className='flex flex-row justify-center items-center gap-x-6'>{center}</div>
-                <div className='w-1/3 flex justify-end items-center gap-x-6'>{right}</div>
+                <div className='flex-1 min-w-0 md:flex-none md:w-1/3 flex items-center gap-x-2 md:gap-x-6'>
+                    {left}
+                </div>
+                <div className='flex flex-row justify-center items-center gap-x-2 md:gap-x-6 shrink-0'>
+                    {center}
+                </div>
+                <div className='hidden md:flex md:w-1/3 justify-end items-center gap-x-2 md:gap-x-6'>
+                    {right}
+                </div>
             </div>
 
             {children}

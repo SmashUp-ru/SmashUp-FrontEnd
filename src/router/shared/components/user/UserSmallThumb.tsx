@@ -28,7 +28,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                     <img
                         src={coverUrl('user', user.imageUrl, 100)}
                         alt={user.username}
-                        className='w-12 h-12 rounded-full group-hover:opacity-30 object-cover'
+                        className='w-12 h-12 rounded-full md:group-hover:opacity-30 object-cover'
                         draggable={false}
                         loading='lazy'
                     />
@@ -36,7 +36,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                         <Button
                             variant='ghost'
                             size='icon'
-                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            className='block md:hidden md:group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
                             aria-label='Пауза'
                         >
@@ -46,7 +46,7 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
                         <Button
                             variant='ghost'
                             size='icon'
-                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            className='hidden md:group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
                             aria-label='Воспроизвести'
                         >

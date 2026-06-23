@@ -26,6 +26,8 @@ import ErrorToast from '@/router/shared/toasts/error.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPlaylists.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useNavigate } from 'react-router-dom';
+import InfoIcon from '@/components/icons/Info.tsx';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -34,6 +36,7 @@ interface MashupMoreDropdownProps {
 
 export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
     const { toast } = useToast();
+    const navigate = useNavigate();
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
@@ -47,6 +50,18 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
             </DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
+                    <DropdownMenuItem
+                        className='flex items-center gap-x-[14.4px] hover:text-primary hover:bg-primary/[0.2] group'
+                        onClick={() => navigate(`/mashup/${mashup.id}`)}
+                    >
+                        <InfoIcon
+                            className='group-hover:text-primary'
+                            color='onSurface'
+                            hoverColor='primary'
+                        />
+                        <span>Открыть мэшап</span>
+                    </DropdownMenuItem>
+
                     {currentUser && (
                         <DropdownMenuSub>
                             <DropdownMenuSubTrigger className='flex items-center gap-x-[14.4px] hover:text-primary hover:bg-primary/[0.2] group'>

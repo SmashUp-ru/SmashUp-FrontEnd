@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils.ts';
 import { useSearchStore } from '@/store/search.ts';
 import { useLastSearchedData } from '@/router/features/search/useLastSearchedData.ts';
 import LastSearchedSkeleton from '@/router/features/search/LastSearchedSkeleton.tsx';
+import SearchIcon from '@/components/icons/Search.tsx';
 
 export default function LastSearched() {
     const type = useSearchStore((state) => state.type);
@@ -17,7 +18,14 @@ export default function LastSearched() {
     const { searchHistory, searchHistoryObjects, isLoading } = useLastSearchedData();
 
     if (isLoading) return <LastSearchedSkeleton />;
-    if (searchHistory.length === 0) return <div>История пуста!</div>;
+    if (searchHistory.length === 0)
+        return (
+            <div className='flex flex-1 flex-col items-center justify-center text-center gap-y-3 py-24 text-onSurfaceVariant'>
+                <SearchIcon size={64} color='onSurfaceVariant' />
+                <p className='text-lg font-bold text-onSurface'>Здесь появится история поиска</p>
+                <p className='text-sm'>Найдите мэшапы, плейлисты или авторов</p>
+            </div>
+        );
 
     return (
         <div className='flex flex-col gap-y-4 h-full'>

@@ -29,7 +29,7 @@ export default function PlaylistPage() {
 
     return (
         <div className='flex flex-col gap-y-6'>
-            <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+            <div className='flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left bg-surface p-4 rounded-[34px]'>
                 <ImageWithSkeleton
                     src={coverUrl('playlist', playlist.imageUrl, 800)}
                     alt={playlist.name}
@@ -51,7 +51,9 @@ export default function PlaylistPage() {
                                 </Link>
                             ))}
                         </span>
-                        <h1 className='font-bold text-4xl text-onSurface'>{playlist.name}</h1>
+                        <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
+                            {playlist.name}
+                        </h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
                         <PlaylistPlayButton playlist={playlist} />

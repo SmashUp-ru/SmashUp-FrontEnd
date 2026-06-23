@@ -41,6 +41,10 @@ interface PlayerState {
     mashupInfo: null | number;
     updateMashupInfo: (newMashupInfo: null | number) => void;
 
+    /** Полноэкранный плеер на мобайле (эфемерно, не персистится). */
+    fullPlayer: boolean;
+    updateFullPlayer: (newFullPlayer: boolean) => void;
+
     moderationSrc: UnpublishedMashup | null;
     updateModerationSrc: (newModerationSrc: null | UnpublishedMashup) => void;
     moderationIsPlaying: boolean;
@@ -91,6 +95,9 @@ export const usePlayerStore = create<PlayerState>()(
 
             mashupInfo: null,
             updateMashupInfo: (newMashupInfo: null | number) => set({ mashupInfo: newMashupInfo }),
+
+            fullPlayer: false,
+            updateFullPlayer: (newFullPlayer: boolean) => set({ fullPlayer: newFullPlayer }),
 
             moderationSrc: null,
             updateModerationSrc: (newModerationSrc: null | UnpublishedMashup) =>

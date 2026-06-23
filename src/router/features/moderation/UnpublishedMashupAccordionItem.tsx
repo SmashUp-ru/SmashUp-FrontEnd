@@ -151,7 +151,7 @@ export function UnpublishedMashupAccordionItem({
 
     return (
         <AccordionItem value={value}>
-            <div className='h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex items-center justify-between gap-x-4'>
+            <div className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4'>
                 <AccordionTrigger className='flex-1 min-w-0 h-auto p-0 bg-transparent rounded-none'>
                     <div className='flex items-center gap-x-4 min-w-0'>
                         <img
@@ -168,8 +168,8 @@ export function UnpublishedMashupAccordionItem({
                     </div>
                 </AccordionTrigger>
 
-                <div className='flex items-center gap-x-7'>
-                    <div className='flex items-center gap-x-3'>
+                <div className='flex items-center gap-2 md:flex-wrap md:justify-start md:gap-x-7'>
+                    <div className='flex flex-1 md:flex-none items-center gap-2 md:gap-x-3'>
                         {hasYouTube && (
                             <TooltipProvider>
                                 <Tooltip delayDuration={100}>
@@ -187,7 +187,7 @@ export function UnpublishedMashupAccordionItem({
                             </TooltipProvider>
                         )}
 
-                        <div className='flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
+                        <div className='hidden md:flex items-center justify-center text-onSurfaceVariant md:min-w-[150px]'>
                             {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
                         </div>
 
@@ -205,7 +205,7 @@ export function UnpublishedMashupAccordionItem({
                         </Button>
 
                         <Button
-                            className='py-[7px] font-bold text-base rounded-xl'
+                            className='flex-1 md:flex-none py-[7px] font-bold text-base rounded-xl'
                             onClick={(e) => {
                                 e.preventDefault();
                                 axiosSession
@@ -244,12 +244,12 @@ export function UnpublishedMashupAccordionItem({
                                     e.stopPropagation();
                                 }}
                             >
-                                <Button className='py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                                <Button className='flex-1 md:flex-none py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
                                     Отклонить
                                 </Button>
                             </DialogTrigger>
                             <DialogContent
-                                className='w-[765px]'
+                                className='w-[calc(100vw-2rem)] max-w-[765px] md:w-[765px]'
                                 onClick={(e) => {
                                     e.stopPropagation();
                                 }}
@@ -271,7 +271,7 @@ export function UnpublishedMashupAccordionItem({
                         </Dialog>
                     </div>
 
-                    <Button className='mr-7' variant='ghost' size='icon' asChild>
+                    <Button className='md:mr-7' variant='ghost' size='icon' asChild>
                         <Link
                             to={`/mashup/moderation/${mashup.id}`}
                             aria-label='Редактировать мэшап'
@@ -281,14 +281,14 @@ export function UnpublishedMashupAccordionItem({
                     </Button>
                 </div>
             </div>
-            <AccordionContent className='mt-4 flex gap-x-6'>
+            <AccordionContent className='mt-4 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-x-6'>
                 <img
                     src={imageUrl}
                     alt={mashup.name}
-                    className='w-[216px] h-[216px] rounded-[30px]'
+                    className='w-[216px] h-[216px] max-w-full rounded-[30px] shrink-0'
                 />
 
-                <div className='w-full grid grid-cols-4 gap-x-6'>
+                <div className='w-full grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-x-6'>
                     {/*название, авторы*/}
                     <div className='flex flex-col gap-y-7'>
                         <div className='w-full flex flex-col gap-y-2.5'>
@@ -417,9 +417,9 @@ export function UnpublishedMashupAccordionItem({
                                     }
                                 }}
                             >
-                                <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
+                                <div className='w-full min-w-0 bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
                                     <LinkIcon />
-                                    <span className='font-medium text-onSurfaceVariant'>
+                                    <span className='font-medium text-onSurfaceVariant min-w-0 truncate'>
                                         {statusUrl || 'Ссылка на основу / альт'}
                                     </span>
                                 </div>

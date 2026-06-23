@@ -39,12 +39,17 @@ export default function RecommendationsPage() {
 
     return (
         <div className='flex flex-col gap-y-6'>
-            <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
-                {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
+            <div className='flex flex-col md:flex-row items-center gap-y-3 md:gap-x-12 md:gap-y-0 text-center md:text-left bg-surface p-3 md:p-4 rounded-[34px]'>
+                {!imageLoaded && (
+                    <Skeleton className='w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]' />
+                )}
                 <img
                     src={coverUrl('user', currentUser.imageUrl, 800)}
                     alt={currentUser.username}
-                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
+                    className={cn(
+                        'w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]',
+                        !imageLoaded && 'hidden'
+                    )}
                     draggable={false}
                     onLoad={() => setImageLoaded(true)}
                 />

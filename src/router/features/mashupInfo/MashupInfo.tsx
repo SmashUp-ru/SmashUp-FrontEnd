@@ -21,6 +21,7 @@ import { useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();
@@ -37,7 +38,10 @@ export default function MashupInfo() {
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
 
     const [imageLoaded, setImageLoaded] = useState(false);
+    const isMobile = useIsMobile();
 
+    // На мобайле «использованные треки» показываются в полноэкранном плеере (FullPlayer).
+    if (isMobile) return null;
     if (!info && mashupInfo === null) return null;
     if (isLoading) return <MashupInfoSkeleton />;
     if (mashup === null) return null;
@@ -45,7 +49,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `min-w-[382px] w-[382px] h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] sticky top-0 bg-surfaceVariant rounded-[30px] my-4 mr-4 py-4 px-[10.5px] overflow-y-auto`,
+                `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:min-w-[382px] md:w-[382px] md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto`,
                 'flex flex-col gap-y-4 items-start'
             )}
         >
@@ -55,16 +59,26 @@ export default function MashupInfo() {
                         {queueName}
                     </span>
                 </div>
-                <Button variant='ghost' size='icon' onClick={() => closeInfo()}>
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    aria-label='Закрыть'
+                    onClick={() => closeInfo()}
+                >
                     <CancelIcon size={24} />
                 </Button>
             </div>
 
-            {!imageLoaded && <Skeleton className='w-[350px] h-[350px] rounded-[30px]' />}
+            {!imageLoaded && (
+                <Skeleton className='w-full aspect-square md:w-[350px] md:h-[350px] md:aspect-auto rounded-[30px]' />
+            )}
             <img
                 src={coverUrl('mashup', mashup.imageUrl, 800)}
                 alt={mashup.name}
-                className={cn('w-[350px] h-[350px] rounded-[30px]', !imageLoaded && 'hidden')}
+                className={cn(
+                    'w-full aspect-square md:w-[350px] md:h-[350px] md:aspect-auto rounded-[30px]',
+                    !imageLoaded && 'hidden'
+                )}
                 draggable={false}
                 onLoad={() => setImageLoaded(true)}
             />

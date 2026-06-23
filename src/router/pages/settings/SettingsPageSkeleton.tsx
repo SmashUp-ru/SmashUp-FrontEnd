@@ -2,11 +2,11 @@ import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export default function SettingsPageSkeleton() {
     return (
-        <section className='flex flex-col gap-y-6 pr-[35px]'>
+        <section className='flex flex-col gap-y-6 md:pr-[35px]'>
             <div className='flex items-center justify-between'>
                 <Skeleton className='w-[200px] h-[38px] rounded-xl' />
             </div>
-            <div className='w-full flex gap-x-12'>
+            <div className='w-full flex flex-col md:flex-row items-center md:items-start gap-y-8 md:gap-y-0 md:gap-x-12'>
                 <Skeleton className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full' />
                 {/*настройки*/}
                 <div className='w-full flex flex-col gap-y-[75px]'>
@@ -23,7 +23,7 @@ export default function SettingsPageSkeleton() {
                             <Skeleton className='w-[114px] h-[20px] rounded-[9px]' />
                         </div>
 
-                        <div className='grid grid-cols-3 gap-x-20'>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-y-6 md:gap-y-0 md:gap-x-20'>
                             <div className='flex flex-col gap-y-2'>
                                 <Skeleton className='w-[265px] h-[20px] rounded-[9px]' />
                                 <Skeleton className='w-full h-[20px] rounded-[9px]' />
@@ -40,7 +40,7 @@ export default function SettingsPageSkeleton() {
                             </div>
                         </div>
 
-                        <div className='grid grid-cols-3 gap-x-20'>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-y-6 md:gap-y-0 md:gap-x-20'>
                             <div className='flex flex-col gap-y-2'>
                                 <Skeleton className='w-[265px] h-[20px] rounded-[9px]' />
                                 <Skeleton className='w-full h-[20px] rounded-[9px]' />
@@ -61,7 +61,7 @@ export default function SettingsPageSkeleton() {
                     {/*настройки аккаунта*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <Skeleton className='w-[268px] h-[38px] rounded-xl' />
-                        <div className='grid grid-cols-3 gap-x-20'>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-y-6 md:gap-y-0 md:gap-x-20'>
                             <div className='flex flex-col gap-y-2'>
                                 <Skeleton className='w-[265px] h-[20px] rounded-[9px]' />
                                 <Skeleton className='w-full h-[20px] rounded-[9px]' />

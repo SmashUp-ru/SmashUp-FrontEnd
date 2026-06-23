@@ -16,7 +16,7 @@ export default function RootPageSkeleton() {
 
             <section className='flex flex-col gap-y-2.5'>
                 <Skeleton className='w-[268px] h-[38px] rounded-lg' />
-                <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                     {Array.from({ length: 10 })
                         .slice(0, 6)
                         .map((_, idx) => (
@@ -27,7 +27,7 @@ export default function RootPageSkeleton() {
 
             <section className='flex flex-col gap-y-2.5'>
                 <Skeleton className='w-[268px] h-[38px] rounded-lg' />
-                <div className='grid grid-cols-3 gap-x-[25px] gap-y-[15px]'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                     {Array.from({ length: 10 })
                         .slice(0, 6)
                         .map((_, idx) => (

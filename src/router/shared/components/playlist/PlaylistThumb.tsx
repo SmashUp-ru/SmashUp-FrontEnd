@@ -25,7 +25,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
     if (isLoading) return <PlaylistThumbSkeleton />;
 
     return (
-        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]'>
+        <div className='w-full md:w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <Link
                     draggable={false}
@@ -38,7 +38,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                     <img
                         src={image ? image : coverUrl('playlist', playlist.imageUrl, 400)}
                         alt={playlist.name}
-                        className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                        className='w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30'
                         draggable={false}
                         loading='lazy'
                     />
@@ -51,7 +51,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             onClick={togglePlay}
                             aria-label='Пауза'
                             className={cn(
-                                'hidden group-hover:block absolute bottom-3 right-3 z-20',
+                                'block md:hidden md:group-hover:block absolute bottom-3 right-3 z-20',
                                 'block'
                             )}
                         >
@@ -63,7 +63,7 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             size='icon'
                             onClick={togglePlay}
                             aria-label='Воспроизвести'
-                            className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                            className='hidden md:group-hover:block absolute bottom-3 right-3 z-20'
                         >
                             <PlayHollowIcon
                                 color={isThisQueue ? 'primary' : 'onSurface'}
@@ -79,12 +79,12 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
                             ? link
                             : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
                     }
-                    className='font-bold text-lg text-onSurface truncate w-[216px]'
+                    className='font-bold text-lg text-onSurface truncate w-full md:w-[216px]'
                     title={playlist.name}
                 >
                     {playlist.name}
                 </Link>
-                <div className='flex items-center gap-x-2'>
+                <div className='flex items-center gap-x-2 max-w-full md:max-w-[216px]'>
                     {zip([playlist.authorsIds, playlist.authors]).map(
                         ([authorId, author], index) => (
                             <Link

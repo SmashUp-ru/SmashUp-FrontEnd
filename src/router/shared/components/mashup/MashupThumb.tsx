@@ -47,7 +47,7 @@ export default function MashupThumb({
         return <MashupThumbExplicitDisallowed mashup={mashup} searchMode={searchMode} />;
 
     return (
-        <div className='w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+        <div className='w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
             <div className='relative'>
                 <Link
                     draggable={false}
@@ -56,7 +56,7 @@ export default function MashupThumb({
                     <img
                         src={coverUrl('mashup', mashup.imageUrl, 400)}
                         alt={mashup.name}
-                        className='w-[216px] h-[216px] rounded-[30px] group-hover:opacity-30'
+                        className='w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] rounded-[30px] md:group-hover:opacity-30'
                         draggable={false}
                         loading='lazy'
                     />
@@ -66,7 +66,7 @@ export default function MashupThumb({
                         variant='ghost'
                         size='icon'
                         aria-label='Пауза'
-                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                        className='block md:hidden md:group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
                             pause();
                         }}
@@ -78,7 +78,7 @@ export default function MashupThumb({
                         variant='ghost'
                         size='icon'
                         aria-label='Воспроизвести'
-                        className='hidden group-hover:block absolute bottom-3 right-3 z-20'
+                        className='hidden md:group-hover:block absolute bottom-3 right-3 z-20'
                         onClick={() => {
                             playMashup(playlist, playlistName, queueId, indexInPlaylist);
                         }}
@@ -88,7 +88,7 @@ export default function MashupThumb({
                 )}
             </div>
             <div className='flex flex-col'>
-                <div className='flex items-center gap-x-2 min-w-0 max-w-[216px]'>
+                <div className='flex items-center gap-x-2 min-w-0 max-w-[42vw] md:max-w-[216px]'>
                     <Link
                         draggable={false}
                         to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
@@ -114,7 +114,7 @@ export default function MashupThumb({
                         )}
                     </div>
                 </div>
-                <div className='flex items-center gap-x-2 max-w-[216px]'>
+                <div className='flex items-center gap-x-2 max-w-[42vw] md:max-w-[216px]'>
                     {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (
                         <div key={author}>
                             <Link

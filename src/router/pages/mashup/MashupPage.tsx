@@ -43,7 +43,7 @@ export default function MashupPage() {
 
     return (
         <div className='flex flex-col gap-y-6'>
-            <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+            <div className='flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left bg-surface p-4 rounded-[34px]'>
                 {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
                     src={coverUrl('mashup', mashup.imageUrl, 800)}
@@ -51,6 +51,10 @@ export default function MashupPage() {
                     className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
                     draggable={false}
                     onLoad={() => setImageLoaded(true)}
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = coverUrl('mashup', 'default', 800);
+                    }}
                 />
 
                 <div className='flex flex-col gap-y-6'>
@@ -68,7 +72,9 @@ export default function MashupPage() {
                             ))}
                         </span>
                         <div className='flex items-center gap-x-1'>
-                            <h1 className='font-bold text-4xl text-onSurface'>{mashup.name}</h1>
+                            <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
+                                {mashup.name}
+                            </h1>
                             <div className='flex items-center gap-x-0'>
                                 {isExplicit(mashup.statuses) && (
                                     <div className='w-[24px] h-[24px]'>

@@ -30,7 +30,10 @@ export default {
 		'group-hover:bg-hover',
 
         'h-[calc(100%-148px)]',
-        'h-[calc(100%-32px)]'
+        'h-[calc(100%-32px)]',
+        'md:h-[calc(100%-148px)]',
+        'md:h-[calc(100%-32px)]',
+        'md:h-[calc(100%-16px)]'
     ],
     theme: {
     	extend: {

@@ -23,6 +23,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
+import Footer from '@/router/features/footer/Footer.tsx';
 
 export default function SettingsPage() {
     const { toast } = useToast();
@@ -48,15 +49,15 @@ export default function SettingsPage() {
     if (isLoading) return <SettingsPageSkeleton />;
 
     return (
-        <section className='flex flex-col gap-y-6 pr-[35px]'>
+        <section className='flex flex-col gap-y-6 md:pr-[35px]'>
             <div className='flex items-center justify-between'>
                 <h1 className='font-bold text-4xl text-onSurface'>Настройки</h1>
             </div>
-            <div className='w-full flex gap-x-12'>
+            <div className='w-full flex flex-col items-center md:items-start md:flex-row gap-8 md:gap-x-12'>
                 <UpdateAvatar />
 
                 {/*настройки*/}
-                <div className='w-full flex flex-col gap-y-[75px]'>
+                <div className='w-full flex flex-col gap-y-10 md:gap-y-[75px]'>
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
                         <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
@@ -66,7 +67,7 @@ export default function SettingsPage() {
 
                         <PasswordDialog email={email} />
 
-                        <div className='grid grid-cols-3 gap-x-20'>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-x-20'>
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger>
@@ -96,15 +97,15 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
-                    {/*настройки профиля*/}
+                    {/*настройки приложения*/}
                     <div className='w-full flex flex-col gap-y-[30px] mb-[30px]'>
-                        <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
-                        <div className='grid grid-cols-2 2xl:grid-cols-3 gap-x-20 gap-y-20 items-center'>
-                            <div className='flex items-center gap-x-10'>
-                                <Label className='w-1/2 font-medium text-[18px] text-onSurfaceVariant'>
+                        <h2 className='font-bold text-[32px]'>Настройки приложения</h2>
+                        <div className='grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-x-20 lg:gap-y-20 items-center'>
+                            <div className='flex flex-col items-start gap-y-3 md:flex-row md:items-center md:gap-x-10'>
+                                <Label className='w-auto md:w-1/2 shrink-0 font-medium text-[18px] text-onSurfaceVariant'>
                                     Битрейт мэшапов
                                 </Label>
-                                <div className='w-full relative'>
+                                <div className='w-full relative mt-10 md:mt-0'>
                                     <Slider
                                         min={0}
                                         max={4}
@@ -185,6 +186,7 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </section>
     );
 }

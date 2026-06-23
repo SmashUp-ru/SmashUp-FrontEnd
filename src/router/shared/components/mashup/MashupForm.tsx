@@ -838,13 +838,13 @@ export default function MashupForm({
     if (loading) return <MashupFormSkeleton />;
 
     return (
-        <section className='flex flex-col gap-y-6 pr-[35px] h-full'>
+        <section className='flex flex-col gap-y-6 md:pr-[35px] h-full'>
             <div className='flex items-center justify-between'>
                 <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
             </div>
-            <div className='w-full flex gap-x-12 flex-1'>
+            <div className='w-full flex flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-12 flex-1'>
                 {/*картинка*/}
-                <div className='flex flex-col gap-y-2.5'>
+                <div className='flex flex-col gap-y-2.5 items-center md:items-start'>
                     <label className='relative cursor-pointer h-fit'>
                         {imageSrc ? (
                             <img
@@ -884,7 +884,7 @@ export default function MashupForm({
                 </div>
 
                 <div className='w-full flex flex-col flex-1'>
-                    <div className='w-full grid grid-cols-3 gap-x-10 flex-grow'>
+                    <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-y-[35px] md:gap-y-0 gap-x-10 flex-grow'>
                         {/*использованные треки*/}
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
@@ -1031,7 +1031,7 @@ export default function MashupForm({
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Выберите жанр
                                 </Label>
-                                <div className='grid grid-cols-3 gap-x-2.5 gap-y-3 max-h-[189px] overflow-y-scroll'>
+                                <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-2.5 gap-y-3 max-h-[189px] overflow-y-scroll'>
                                     {allGenres?.map((genre) => {
                                         const selected = selectedGenres.has(genre.toLowerCase());
 
@@ -1251,9 +1251,9 @@ export default function MashupForm({
                     </div>
 
                     {/*сохранить*/}
-                    <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6'>
+                    <div className='bg-surfaceVariant p-5 w-full md:w-fit rounded-[30px] flex flex-col md:flex-row items-stretch md:items-center gap-y-4 md:gap-y-0 md:gap-x-6'>
                         <Button
-                            className='w-[460px]'
+                            className='w-full md:w-[460px]'
                             onClick={() => {
                                 toast({
                                     element: (

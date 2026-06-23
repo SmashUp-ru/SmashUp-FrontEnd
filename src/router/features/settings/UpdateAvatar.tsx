@@ -83,20 +83,20 @@ export default function UpdateAvatar() {
 
     if (!currentUser) {
         return (
-            <Skeleton className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full' />
+            <Skeleton className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full' />
         );
     }
 
     return (
         <label className='relative cursor-pointer h-fit'>
             {!imageLoaded && (
-                <Skeleton className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full' />
+                <Skeleton className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full' />
             )}
             <img
                 src={coverUrl('user', currentUser.imageUrl, 800)}
                 alt={currentUser.username}
                 className={cn(
-                    'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full brightness-50',
+                    'w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full brightness-75',
                     !imageLoaded && 'hidden'
                 )}
                 draggable={false}

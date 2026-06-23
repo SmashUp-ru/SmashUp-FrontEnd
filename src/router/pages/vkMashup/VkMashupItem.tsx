@@ -44,25 +44,27 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
         <Accordion type='single' collapsible value={value} onValueChange={(v) => setValue(v)}>
             <AccordionItem value={mashup.ownerId + '_' + mashup.audioId}>
                 <AccordionTrigger>
-                    <div className='w-full flex items-center justify-between py-[6px] pl-[6px]'>
-                        <div className='flex items-center gap-x-4'>
+                    <div className='w-full flex items-center justify-between gap-x-2 py-[6px] pl-[6px]'>
+                        <div className='flex min-w-0 items-center gap-x-3 md:gap-x-4'>
                             <img
                                 src={imageUrl}
                                 alt={mashup.name}
                                 loading='lazy'
-                                className='w-12 h-12 rounded-[10px]'
+                                className='w-12 h-12 shrink-0 rounded-[10px]'
                             />
-                            <div className='flex flex-col items-start'>
-                                <span className='font-bold text-onSurface'>{mashup.name}</span>
-                                <span className='font-medium text-onSurfaceVariant'>
+                            <div className='flex min-w-0 flex-col items-start'>
+                                <span className='truncate font-bold text-onSurface'>
+                                    {mashup.name}
+                                </span>
+                                <span className='truncate font-medium text-onSurfaceVariant'>
                                     {mashup.artist}
                                 </span>
                             </div>
                         </div>
 
-                        <div className='flex items-center gap-x-7'>
-                            <div className='flex items-center gap-x-3'>
-                                <div className='flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
+                        <div className='flex items-center gap-x-2 md:gap-x-7'>
+                            <div className='flex items-center gap-x-1 md:gap-x-3'>
+                                <div className='hidden md:flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
                                     <a>
                                         Дата релиза:{' '}
                                         {format(
@@ -93,7 +95,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                     )}
                                 </Button>
 
-                                <Button className='mr-7' variant='ghost' size='icon'>
+                                <Button className='md:mr-7' variant='ghost' size='icon'>
                                     <Link
                                         to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}
                                     >
@@ -106,15 +108,15 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                         </div>
                     </div>
                 </AccordionTrigger>
-                <AccordionContent className='mt-4 flex gap-x-6'>
+                <AccordionContent className='mt-4 flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-x-6'>
                     <img
                         src={imageUrl}
                         alt={mashup.name}
                         loading='lazy'
-                        className='w-[216px] h-[216px] rounded-[30px]'
+                        className='w-[216px] h-[216px] shrink-0 rounded-[30px]'
                     />
 
-                    <div className='w-full grid grid-cols-4 gap-x-6'>
+                    <div className='w-full grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-x-6'>
                         {/*название, авторы*/}
                         <div className='flex flex-col gap-y-7'>
                             <div className='w-full flex flex-col gap-y-2.5'>
@@ -144,9 +146,11 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                         window.open(postUrl, '_blank');
                                     }}
                                 >
-                                    <div className='w-full bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
-                                        <LinkIcon />
-                                        <span className='font-medium text-onSurfaceVariant'>
+                                    <div className='w-full min-w-0 bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-4 py-[11px] flex items-center gap-x-3 md:gap-x-4 md:px-5'>
+                                        <span className='shrink-0'>
+                                            <LinkIcon />
+                                        </span>
+                                        <span className='truncate font-medium text-onSurfaceVariant'>
                                             {postUrl}
                                         </span>
                                     </div>

@@ -50,7 +50,7 @@ export default function UserTracksPage() {
 
     return (
         <div className='flex flex-col gap-y-6'>
-            <div className='flex items-center gap-x-12 bg-surface p-4 rounded-[34px]'>
+            <div className='flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left bg-surface p-4 rounded-[34px]'>
                 {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
                 <img
                     src={coverUrl('user', user.imageUrl, 800)}
@@ -63,7 +63,7 @@ export default function UserTracksPage() {
                 <div className='flex flex-col gap-y-6'>
                     <div>
                         <span className='font-medium text-lg text-additionalText'>Коллекция</span>
-                        <h1 className='font-bold text-4xl text-onSurface'>
+                        <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
                             Мэшапы{' '}
                             <Link draggable={false} to={`/user/${user.username}`}>
                                 {user.username}
@@ -130,6 +130,11 @@ export default function UserTracksPage() {
             </div>
 
             <div className='flex flex-col gap-y-1'>
+                {mashups.length === 0 && (
+                    <p className='text-additionalText text-center py-12'>
+                        У пользователя пока нет мэшапов
+                    </p>
+                )}
                 {mashups.map((mashup, idx) => (
                     <MashupSmallThumb
                         key={mashup.id}

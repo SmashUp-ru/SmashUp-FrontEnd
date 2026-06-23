@@ -14,6 +14,7 @@ import AddMashupIcon from '@/components/icons/addMashup/AddMashup32';
 import { isModerator } from '@/lib/bitmask';
 import SettingsIcon from '@/components/icons/Settings';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -21,23 +22,24 @@ export default function ProfileMenu() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
 
     const navigate = useNavigate();
-    // const { isLoading } = useGlobalStore();
-    //
-    // if (isLoading) return <Skeleton className='w-12 h-12 rounded-full' />;
+    const isMobile = useIsMobile();
+
+    // На мобайле меню профиля заменяет бургер в хедере (открывает drawer с профилем/действиями).
+    if (isMobile) return null;
 
     if (!currentUser)
         return (
-            <div className='flex gap-2.5'>
+            <div className='flex gap-2 md:gap-2.5 shrink-0 items-center'>
                 <Link
                     to='/login'
-                    className='bg-primary text-surface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary'
+                    className='whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-2 text-base md:px-6 md:py-3.5 md:text-xl font-bold hover:bg-hoverPrimary'
                     draggable={false}
                 >
                     Войти
                 </Link>
                 <Link
                     to='/register'
-                    className='bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary/[0.2] hover:text-primary'
+                    className='hidden md:inline-block whitespace-nowrap bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary/[0.2] hover:text-primary'
                     draggable={false}
                 >
                     Зарегистрироваться

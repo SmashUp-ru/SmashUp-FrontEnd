@@ -10,6 +10,8 @@ import RepeatIcon from '@/components/icons/Repeat.tsx';
 import InfoIcon from '@/components/icons/Info.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
+import PlayIcon from '@/components/icons/Play.tsx';
+import PauseIcon from '@/components/icons/Pause.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
@@ -17,6 +19,7 @@ import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
+import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -26,6 +29,8 @@ export default function PlayerBar() {
     const loop = usePlayerStore((state) => state.loop);
     const updateLoop = usePlayerStore((state) => state.updateLoop);
     const info = usePlayerStore((state) => state.info);
+    const updateFullPlayer = usePlayerStore((state) => state.updateFullPlayer);
+    const isMobile = useIsMobile();
 
     const shuffle = usePlayerStore((state) => state.shuffle);
     const updateShuffle = usePlayerStore((state) => state.updateShuffle);
@@ -48,7 +53,11 @@ export default function PlayerBar() {
         <PlaybackBar
             seekMashup={mashup}
             left={
-                <>
+                // На мобайле тап по всей этой зоне (обложка/название/авторы) открывает полноэкранный плеер.
+                <div
+                    className='flex items-center gap-x-2 md:gap-x-6 w-full min-w-0 cursor-pointer md:cursor-default'
+                    onClick={() => isMobile && updateFullPlayer(true)}
+                >
                     <img
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt='mashup title'
@@ -56,23 +65,28 @@ export default function PlayerBar() {
                         draggable={false}
                     />
 
-                    <div className='flex flex-col min-w-0'>
-                        <span className='font-bold text-[18px] text-onSurface truncate'>
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                aria-label='Информация о мэшапе'
-                                onClick={() => (info ? closeInfo() : openInfo())}
-                            >
-                                {mashup.name}
-                            </Button>
-                        </span>
+                    <div className='flex flex-col min-w-0 flex-1'>
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            aria-label='Информация о мэшапе'
+                            onClick={() => {
+                                if (!isMobile) {
+                                    if (info) closeInfo();
+                                    else openInfo();
+                                }
+                            }}
+                            className='block w-full truncate text-left font-bold text-[18px] text-onSurface'
+                        >
+                            {mashup.name}
+                        </Button>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
                             {mashup.authors.map((author, index) => (
                                 <div key={index}>
                                     <Link
                                         key={author}
                                         to={`/user/${author}`}
+                                        onClick={(e) => e.stopPropagation()}
                                         className='font-medium text-onSurfaceVariant'
                                     >
                                         {author}
@@ -90,6 +104,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Убрать лайк'
                             onClick={() => {
                                 axiosSession
@@ -107,6 +122,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Лайкнуть'
                             onClick={() => {
                                 axiosSession
@@ -121,7 +137,7 @@ export default function PlayerBar() {
                             <LikeOutlineIcon color='onSurface' />
                         </Button>
                     )}
-                </>
+                </div>
             }
             center={
                 <>
@@ -129,6 +145,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Отключить перемешивание'
                             onClick={() => {
                                 updateShuffle(false);
@@ -142,6 +159,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Перемешать'
                             onClick={() => {
                                 updateShuffle(true);
@@ -162,6 +180,7 @@ export default function PlayerBar() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        className='hidden md:inline-flex'
                         aria-label='Предыдущий трек'
                         onClick={() => {
                             prev();
@@ -178,7 +197,11 @@ export default function PlayerBar() {
                             aria-label='Пауза'
                             onClick={() => pause()}
                         >
-                            <PauseHollowIcon color='onSurface' />
+                            {isMobile ? (
+                                <PauseIcon color='onSurface' size={30} />
+                            ) : (
+                                <PauseHollowIcon color='onSurface' />
+                            )}
                         </Button>
                     ) : (
                         <Button
@@ -187,7 +210,11 @@ export default function PlayerBar() {
                             aria-label='Воспроизвести'
                             onClick={() => play()}
                         >
-                            <PlayHollowIcon color='onSurface' />
+                            {isMobile ? (
+                                <PlayIcon color='onSurface' size={30} />
+                            ) : (
+                                <PlayHollowIcon color='onSurface' />
+                            )}
                         </Button>
                     )}
 
@@ -207,6 +234,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Повторять очередь'
                             onClick={() => updateLoop('queue')}
                         >
@@ -218,6 +246,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Повторять мэшап'
                             onClick={() => updateLoop('mashup')}
                         >
@@ -229,6 +258,7 @@ export default function PlayerBar() {
                         <Button
                             variant='ghost'
                             size='icon'
+                            className='hidden md:inline-flex'
                             aria-label='Отключить повтор'
                             onClick={() => updateLoop('none')}
                         >
@@ -242,6 +272,7 @@ export default function PlayerBar() {
                     <Button
                         variant='ghost'
                         size='icon'
+                        className='hidden md:inline-flex'
                         aria-label='Информация о треке'
                         onClick={() => (info ? closeInfo() : openInfo())}
                     >

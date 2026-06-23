@@ -26,6 +26,9 @@ import { useSettingsStore } from '@/store/settings.ts';
 import MashupSmallThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupSmallThumbExplicitDisallowed.tsx';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
+import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import ErrorToast from '@/router/shared/toasts/error.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -49,6 +52,8 @@ export default function MashupSmallThumb({
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const currentQueueId = usePlayerStore((state) => state.queueId);
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
+    const isMobile = useIsMobile();
+    const { toast } = useToast();
 
     const { mashups, isLoading } = usePlaylistMashups(playlist);
 
@@ -70,6 +75,36 @@ export default function MashupSmallThumb({
     if (hideExplicit && isExplicit(mashup.statuses))
         return <MashupSmallThumbExplicitDisallowed mashup={mashup} isLiked={isLiked} />;
 
+    const playThisMashup = () => {
+        const filteredMashups = hideExplicit
+            ? mashups.filter((mashup) => !isExplicit(mashup.statuses)).map((mashup) => mashup.id)
+            : playlist;
+
+        const adjustedIndex =
+            hideExplicit && filteredMashups.length > 0
+                ? filteredMashups.findIndex((id) => id === playlist[indexInPlaylist])
+                : indexInPlaylist;
+
+        playMashup(filteredMashups, playlistName, queueId, adjustedIndex);
+    };
+
+    // Тап по строке на мобайле (Spotify-стиль): текущий трек — toggle, иначе — проиграть его.
+    const handleRowPlay = () => {
+        if (isThisMash) {
+            if (isPlaying) pause();
+            else play();
+            return;
+        }
+        playThisMashup();
+    };
+
+    const guestLikeNotice = () =>
+        toast({
+            element: <ErrorToast icon before='Войдите,' field='чтобы лайкать' after='мэшапы.' />,
+            duration: 2000,
+            variant: 'destructive'
+        });
+
     return (
         <div
             className={cn(
@@ -77,17 +112,27 @@ export default function MashupSmallThumb({
                 isThisMash && 'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3]'
             )}
         >
-            <div className='flex items-center gap-x-4 w-full'>
+            <div
+                className={cn(
+                    'flex items-center gap-x-4 w-full min-w-0',
+                    isMobile && 'cursor-pointer'
+                )}
+                onClick={isMobile ? handleRowPlay : undefined}
+            >
                 <div className='relative'>
                     <img
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt={mashup.name}
                         loading='lazy'
                         className={cn(
-                            'w-12 h-12 min-w-12 min-h-12 rounded-xl',
-                            isThisMash ? 'opacity-30' : 'group-hover:opacity-30'
+                            'w-12 h-12 min-w-12 min-h-12 rounded-xl bg-surface object-cover',
+                            isThisMash ? 'opacity-30' : 'md:group-hover:opacity-30'
                         )}
                         draggable={false}
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = coverUrl('mashup', 'default', 100);
+                        }}
                     />
                     {isThisMash &&
                         (isPlaying ? (
@@ -96,7 +141,8 @@ export default function MashupSmallThumb({
                                 size='icon'
                                 aria-label='Пауза'
                                 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     pause();
                                 }}
                             >
@@ -108,7 +154,8 @@ export default function MashupSmallThumb({
                                 size='icon'
                                 aria-label='Воспроизвести'
                                 className=' absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     play();
                                 }}
                             >
@@ -124,22 +171,10 @@ export default function MashupSmallThumb({
                             variant='ghost'
                             size='icon'
                             aria-label='Воспроизвести'
-                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                            onClick={() => {
-                                const filteredMashups = hideExplicit
-                                    ? mashups
-                                          .filter((mashup) => !isExplicit(mashup.statuses))
-                                          .map((mashup) => mashup.id)
-                                    : playlist;
-
-                                const adjustedIndex =
-                                    hideExplicit && filteredMashups.length > 0
-                                        ? filteredMashups.findIndex(
-                                              (id) => id === playlist[indexInPlaylist]
-                                          )
-                                        : indexInPlaylist;
-
-                                playMashup(filteredMashups, playlistName, queueId, adjustedIndex);
+                            className='hidden md:group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                playThisMashup();
                             }}
                         >
                             <PlayHollowIcon
@@ -150,11 +185,16 @@ export default function MashupSmallThumb({
                         </Button>
                     )}
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col min-w-0'>
                     <div className='flex items-center gap-x-1'>
                         <div
                             role='button'
-                            onClick={() => openMashupInfo(mashup.id)}
+                            onClick={(e) => {
+                                if (!isMobile) {
+                                    e.stopPropagation();
+                                    openMashupInfo(mashup.id);
+                                }
+                            }}
                             className={`font-bold ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
                         >
                             {mashup.name}
@@ -192,6 +232,7 @@ export default function MashupSmallThumb({
                                 <Link
                                     key={author}
                                     to={`/user/${author}`}
+                                    onClick={(e) => e.stopPropagation()}
                                     className={`font-medium ${isThisMash ? 'text-primary' : 'text-onSurfaceVariant'}`}
                                 >
                                     {author}
@@ -206,7 +247,7 @@ export default function MashupSmallThumb({
                 </div>
             </div>
 
-            <div className='flex items-center gap-x-[34px]'>
+            <div className='flex items-center gap-x-2 md:gap-x-[34px]'>
                 {currentUser ? (
                     isLiked ? (
                         <Button
@@ -257,7 +298,7 @@ export default function MashupSmallThumb({
                 ) : (
                     <TooltipProvider>
                         <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger onClick={() => isMobile && guestLikeNotice()}>
                                 <LikeOutlineIcon
                                     color={isThisMash ? 'primary' : 'onSurface'}
                                     width={20}
@@ -281,7 +322,7 @@ export default function MashupSmallThumb({
                 <div className='w-10 flex items-center justify-center'>
                     <MashupMoreDropdown mashup={mashup}>
                         <Button variant='ghost' size='icon' aria-label='Опции мэшапа'>
-                            <div className='hidden group-hover:block'>
+                            <div className='block md:hidden md:group-hover:block'>
                                 <MoreHorizontalIcon
                                     color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
                                     hoverColor={isThisMash ? 'primary' : 'onSurface'}
@@ -289,7 +330,7 @@ export default function MashupSmallThumb({
                             </div>
 
                             <span
-                                className={`font-semibold text-[18px] text-additionalText group-hover:hidden ${isThisMash && 'text-primary'}`}
+                                className={`font-semibold text-[18px] text-additionalText hidden md:block md:group-hover:hidden ${isThisMash && 'text-primary'}`}
                             >
                                 {msToMinutesAndSeconds(mashup.duration)}
                             </span>

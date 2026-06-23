@@ -15,13 +15,15 @@ interface SectionProps {
 export default function Section({ children, title, link, className }: SectionProps) {
     return (
         <section className={cn('flex flex-col gap-y-2.5', className)}>
-            <div className='flex items-center justify-between'>
-                <h2 className='font-semibold text-2xl text-onSurface'>{title}</h2>
+            <div className='flex items-center justify-between gap-x-2'>
+                <h2 className='font-semibold text-xl md:text-2xl text-onSurface truncate min-w-0'>
+                    {title}
+                </h2>
                 {link && (
                     <Link
                         draggable={false}
                         to={link.href}
-                        className='font-bold text-additionalText'
+                        className='font-bold text-additionalText shrink-0 whitespace-nowrap text-sm md:text-base'
                     >
                         <span className='hover:text-onSurface'>{link.title}</span>
                     </Link>

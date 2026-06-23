@@ -37,8 +37,8 @@ export default function UserPage() {
             {/*шапка*/}
             <div
                 className={cn(
-                    'bg-surface p-4 rounded-tl-[120px] rounded-bl-[120px] rounded-r-[50px]',
-                    'flex items-center gap-x-12'
+                    'bg-surface p-4 rounded-[30px] md:rounded-tl-[120px] md:rounded-bl-[120px] md:rounded-r-[50px]',
+                    'flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left'
                 )}
             >
                 {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
@@ -52,18 +52,18 @@ export default function UserPage() {
                 <div className='flex flex-col gap-y-4'>
                     <div>
                         <span className='font-medium text-lg text-onSurfaceVariant'>Профиль</span>
-                        <div className='flex items-center gap-x-6'>
-                            <span className='font-bold text-4xl text-onSurface'>
+                        <div className='flex flex-col md:flex-row items-center gap-3 md:gap-x-6'>
+                            <span className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface break-all md:break-normal'>
                                 {user.username}
                             </span>
-                            <div className='flex items-center gap-x-5'>
+                            <div className='flex flex-wrap items-center justify-center gap-x-5 gap-y-2'>
                                 <Badge>
                                     {user.mashups.length}{' '}
                                     {declOfNum(user.mashups.length, ['Мэшап', 'Мэшапа', 'Мэшапов'])}
                                 </Badge>
                                 <Badge>
                                     {user.playlists.length}{' '}
-                                    {declOfNum(user.mashups.length, [
+                                    {declOfNum(user.playlists.length, [
                                         'Плейлист',
                                         'Плейлиста',
                                         'Плейлистов'
@@ -107,7 +107,7 @@ export default function UserPage() {
             </div>
 
             {/*контент*/}
-            <div className='grid grid-cols-2 gap-x-6 gap-y-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6'>
                 {mashups.length > 0 && (
                     <Section
                         title='Популярные мэшапы'

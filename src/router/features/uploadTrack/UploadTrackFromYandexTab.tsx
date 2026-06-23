@@ -136,9 +136,9 @@ export default function UploadTrackFromYandexTab() {
     };
 
     return (
-        <section className='flex flex-col gap-y-6 flex-1 overflow-auto pr-[35px]'>
+        <section className='flex flex-col gap-y-6 flex-1 overflow-auto overflow-x-hidden pr-0 md:pr-[35px]'>
             <div className='w-full flex gap-x-12 flex-1'>
-                <div className='w-full flex flex-col flex-1 justify-between p-4'>
+                <div className='w-full flex flex-col flex-1 gap-y-6 p-0 md:p-4'>
                     <div>
                         <Label className='font-medium text-onSurfaceVariant'>
                             Ссылка на трек в Яндекс Музыке
@@ -161,8 +161,12 @@ export default function UploadTrackFromYandexTab() {
                         {exists && 'Этот альбом уже загружен'}
                     </div>
 
-                    <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6 mt-auto'>
-                        <Button className='w-[460px]' onClick={() => send()} disabled={!agree}>
+                    <div className='bg-surfaceVariant p-5 w-full md:w-fit rounded-[30px] flex flex-col md:flex-row items-stretch md:items-center gap-y-4 md:gap-y-0 md:gap-x-6 mt-6'>
+                        <Button
+                            className='w-full md:w-[460px]'
+                            onClick={() => send()}
+                            disabled={!agree}
+                        >
                             Опубликовать
                         </Button>
                         <div className='flex items-center gap-x-4'>

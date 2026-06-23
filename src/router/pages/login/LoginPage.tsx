@@ -175,10 +175,12 @@ export default function LoginPage() {
                 </Form>
 
                 {/*Сепаратор*/}
-                <div className='flex items-center justify-between w-full text-onSurfaceVariant'>
-                    <Separator className='w-[30%]' />
-                    <span className='font-medium'>Войти с помощью</span>
-                    <Separator className='w-[30%]' />
+                <div className='flex items-center gap-x-3 w-full text-onSurfaceVariant'>
+                    <Separator className='flex-1' />
+                    <span className='shrink-0 whitespace-nowrap text-sm font-medium'>
+                        Войти с помощью
+                    </span>
+                    <Separator className='flex-1' />
                 </div>
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>

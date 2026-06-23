@@ -10,8 +10,8 @@ export default function Footer() {
 
     return (
         <div className='flex flex-col gap-y-2 mt-5'>
-            <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-x-8 font-bold text-onSurface'>
+            <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+                <div className='flex flex-wrap items-center gap-x-8 gap-y-2 font-bold text-onSurface'>
                     <Link to='/privacy_policy'>Политика Конфиденциальности</Link>
                     <Link to='/user_agreement'>Пользовательское соглашение</Link>
                     <Link to='/dmca'>Правообладателям</Link>

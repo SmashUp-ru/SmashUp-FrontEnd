@@ -8,7 +8,8 @@ export default function VolumeControl() {
     const updateVolume = usePlayerStore((state) => state.updateVolume);
 
     return (
-        <>
+        // Громкость скрыта на мобильном (нет смысла на тач-устройстве, экономит место в баре).
+        <div className='hidden md:flex items-center gap-x-6'>
             <div>
                 <VolumeIcon color='onSurface' />
             </div>
@@ -22,6 +23,6 @@ export default function VolumeControl() {
                 value={[volume]}
                 onValueChange={(value) => updateVolume(value[0])}
             />
-        </>
+        </div>
     );
 }

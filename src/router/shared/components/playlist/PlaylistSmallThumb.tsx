@@ -32,7 +32,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         alt={playlist.name}
                         className={cn(
                             'w-12 h-12 rounded-xl',
-                            isThisPlaying ? 'opacity-30' : 'group-hover:opacity-30'
+                            isThisPlaying ? 'opacity-30' : 'md:group-hover:opacity-30'
                         )}
                         draggable={false}
                     />
@@ -51,7 +51,7 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                             variant='ghost'
                             size='icon'
                             aria-label='Воспроизвести'
-                            className='hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                            className='hidden md:group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                             onClick={togglePlay}
                         >
                             <PlayHollowIcon color='onSurface' size={24} />

@@ -15,10 +15,10 @@ export default function UploadTrackFromYoutubeTab() {
     const [agree, setAgree] = useState<boolean>(false);
 
     return (
-        <section className='flex flex-col gap-y-6 flex-1 overflow-auto pr-[35px]'>
-            <div className='w-full flex gap-x-12 flex-1'>
-                <div className='w-full flex flex-col flex-1 justify-between p-4'>
-                    <div className='flex gap-x-10'>
+        <section className='flex flex-col gap-y-6 flex-1 overflow-auto overflow-x-hidden pr-0 md:pr-[35px]'>
+            <div className='w-full flex flex-col md:flex-row gap-y-12 md:gap-x-12 flex-1'>
+                <div className='w-full flex flex-col flex-1 gap-y-6 p-0 md:p-4'>
+                    <div className='flex flex-col items-center md:items-start md:flex-row gap-y-6 md:gap-x-10'>
                         <label className='relative cursor-pointer w-[200px] h-[200px] min-w-[200px] min-h-[200px]'>
                             <div className='w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[35px] bg-surfaceVariant' />
                             <EditIcon
@@ -92,8 +92,8 @@ export default function UploadTrackFromYoutubeTab() {
                         </div>
                     </div>
 
-                    <div className='bg-surfaceVariant p-5 w-fit rounded-[30px] flex items-center gap-x-6 mt-auto'>
-                        <Button className='w-[460px]' disabled={!agree}>
+                    <div className='bg-surfaceVariant p-5 w-full md:w-fit rounded-[30px] flex flex-col md:flex-row items-stretch md:items-center gap-y-4 md:gap-y-0 md:gap-x-6 mt-6'>
+                        <Button className='w-full md:w-[460px]' disabled={!agree}>
                             Опубликовать
                         </Button>
                         <div className='flex items-center gap-x-4'>

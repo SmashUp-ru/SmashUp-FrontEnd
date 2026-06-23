@@ -4,9 +4,6 @@ import NavigationTracker from '@/router/features/trackers/NavigationTracker.tsx'
 import { useEffect } from 'react';
 import { useUserStore } from '@/store/entities/user.ts';
 import { getToken, useGlobalStore } from '@/store/global.ts';
-import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
-import { MobileNotAllowed } from '@/router/features/mobileNotAllowed/MobileNotAllowed.tsx';
-import { useMobileStore } from '@/store/mobile.ts';
 import { AxiosError } from 'axios';
 
 export default function Layout() {
@@ -14,11 +11,8 @@ export default function Layout() {
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const updateToken = useGlobalStore((state) => state.updateToken);
     const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
-    const agreedMobile = useMobileStore((state) => state.agreed);
 
     const token = getToken();
-
-    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (token) {
@@ -37,8 +31,6 @@ export default function Layout() {
                 });
         }
     }, [token]);
-
-    if (isMobile && !agreedMobile) return <MobileNotAllowed />;
 
     return (
         <>

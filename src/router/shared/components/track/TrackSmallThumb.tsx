@@ -65,11 +65,11 @@ export default function TrackSmallThumb({
 
             <TrackMoreDropdown track={track}>
                 <Button variant='ghost' size='icon' aria-label='Опции трека'>
-                    <div className='hidden group-hover:block'>
+                    <div className='block md:hidden md:group-hover:block'>
                         <MoreHorizontalIcon />
                     </div>
 
-                    <div className='group-hover:hidden w-6 h-6 min-w-6 min-h-6 bg-transparent' />
+                    <div className='hidden md:block md:group-hover:hidden w-6 h-6 min-w-6 min-h-6 bg-transparent' />
                 </Button>
             </TrackMoreDropdown>
         </div>
