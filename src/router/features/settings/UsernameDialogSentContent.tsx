@@ -15,7 +15,7 @@ export default function UsernameDialogSentContent({ email }: UsernameDialogSentC
                 Подтвердите изменение никнейма, нажав на кнопку внутри письма.
             </span>
 
-            <DialogClose>
+            <DialogClose asChild>
                 <Button type='submit' className='w-full'>
                     Хорошо
                 </Button>

@@ -88,7 +88,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
             <div className='flex items-center gap-x-2.5'>
                 <span className='font-bold text-[24px]'>{username}</span>
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button variant='ghost' size='icon'>
                             <EditIcon color='onSurfaceVariant' />
                         </Button>
@@ -97,7 +97,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
                                 <DialogTitle>Изменение никнейма</DialogTitle>
-                                <DialogClose className='pb-5'>
+                                <DialogClose className='pb-5' asChild>
                                     <Button variant='ghost' size='icon'>
                                         <CancelIcon />
                                     </Button>
@@ -113,69 +113,71 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                     }
                                 />
                             ) : (
-                                <DialogDescription>
-                                    <Form {...form}>
-                                        <form
-                                            onSubmit={form.handleSubmit(onSubmit)}
-                                            className='flex flex-col gap-y-[30px]'
-                                        >
-                                            <FormField
-                                                control={form.control}
-                                                name='username'
-                                                render={({ field }) => (
-                                                    <FormItem className='flex flex-col gap-y-2.5'>
-                                                        <Label className='font-medium text-onSurfaceVariant'>
-                                                            Никнейм
-                                                        </Label>
-                                                        <FormControl>
-                                                            <Input
-                                                                error={
-                                                                    form.formState.errors
-                                                                        .username !== undefined
-                                                                }
-                                                                placeholder='Введите новый никнейм...'
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className='text-onSurface text-[12px]' />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <FormField
-                                                control={form.control}
-                                                name='password'
-                                                render={({ field }) => (
-                                                    <FormItem className='flex flex-col gap-y-2.5'>
-                                                        <Label className='font-medium text-onSurfaceVariant'>
-                                                            Пароль
-                                                        </Label>
-                                                        <FormControl>
-                                                            <Input
-                                                                type='password'
-                                                                error={
-                                                                    form.formState.errors
-                                                                        .password !== undefined
-                                                                }
-                                                                placeholder='Введите пароль...'
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className='text-onSurface text-[12px]' />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <Button
-                                                type='submit'
-                                                className='w-full'
-                                                disabled={
-                                                    form.getValues('username').length === 0 ||
-                                                    form.getValues('password').length === 0
-                                                }
+                                <DialogDescription asChild>
+                                    <div>
+                                        <Form {...form}>
+                                            <form
+                                                onSubmit={form.handleSubmit(onSubmit)}
+                                                className='flex flex-col gap-y-[30px]'
                                             >
-                                                Изменить
-                                            </Button>
-                                        </form>
-                                    </Form>
+                                                <FormField
+                                                    control={form.control}
+                                                    name='username'
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex flex-col gap-y-2.5'>
+                                                            <Label className='font-medium text-onSurfaceVariant'>
+                                                                Никнейм
+                                                            </Label>
+                                                            <FormControl>
+                                                                <Input
+                                                                    error={
+                                                                        form.formState.errors
+                                                                            .username !== undefined
+                                                                    }
+                                                                    placeholder='Введите новый никнейм...'
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage className='text-onSurface text-[12px]' />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name='password'
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex flex-col gap-y-2.5'>
+                                                            <Label className='font-medium text-onSurfaceVariant'>
+                                                                Пароль
+                                                            </Label>
+                                                            <FormControl>
+                                                                <Input
+                                                                    type='password'
+                                                                    error={
+                                                                        form.formState.errors
+                                                                            .password !== undefined
+                                                                    }
+                                                                    placeholder='Введите пароль...'
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage className='text-onSurface text-[12px]' />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <Button
+                                                    type='submit'
+                                                    className='w-full'
+                                                    disabled={
+                                                        form.getValues('username').length === 0 ||
+                                                        form.getValues('password').length === 0
+                                                    }
+                                                >
+                                                    Изменить
+                                                </Button>
+                                            </form>
+                                        </Form>
+                                    </div>
                                 </DialogDescription>
                             )}
                         </DialogHeader>

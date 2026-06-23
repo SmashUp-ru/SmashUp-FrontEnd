@@ -16,7 +16,7 @@ export default function PasswordDialogSentContent({ email }: PasswordDialogSentC
                 Подтвердите изменение пароля, нажав на кнопку внутри письма.
             </span>
 
-            <DialogClose>
+            <DialogClose asChild>
                 <Button type='submit' className='w-full'>
                     Хорошо
                 </Button>

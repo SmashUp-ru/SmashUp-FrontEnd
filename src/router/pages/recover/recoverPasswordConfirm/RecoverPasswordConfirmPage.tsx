@@ -12,7 +12,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { axiosSession } from '@/lib/utils.ts';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { recoverConfirmFormSchema } from '@/router/shared/schemas/recover.ts';
@@ -50,13 +50,30 @@ export default function RecoverPasswordConfirmPage() {
                 });
             })
             .then(() => {
-                navigate('/user/recover_password/confirm');
+                navigate('/user/recover_password/success');
             })
             .catch(axiosCatcher(toast, 'при завершении восстановления пароля.'));
     }
 
     if (!searchParams.has('id')) {
-        throw new Error('No ID');
+        return (
+            <div className='flex justify-center items-center h-full'>
+                <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
+                    <div className='text-center'>
+                        <h1 className='text-primary font-bold text-3xl'>Ссылка недействительна</h1>
+                        <span className='font-medium text-onSurfaceVariant'>
+                            Перейдите по ссылке из письма для восстановления пароля.
+                        </span>
+                    </div>
+
+                    <Button asChild className='w-full'>
+                        <Link draggable={false} to='/user/recover_password'>
+                            Восстановить пароль
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
     }
 
     return (

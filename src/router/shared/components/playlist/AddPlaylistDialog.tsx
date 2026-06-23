@@ -165,99 +165,103 @@ export default function AddPlaylistDialog({
                             <DialogTitle className='pb-0'>
                                 {existingPlaylist ? 'Редактирование ' : 'Добавление '} плейлиста
                             </DialogTitle>
-                            <DialogDescription className='pt-0 mt-0 flex items-center gap-x-[33px]'>
-                                <FormField
-                                    control={form.control}
-                                    name='basedImageFile'
-                                    render={() => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <label className='relative cursor-pointer w-[216px] h-[216px] min-w-[216px] min-h-[216px]'>
-                                                    <img
-                                                        src={
-                                                            imageLink ? imageLink : defaultImageLink
-                                                        }
-                                                        alt='Обложка загружаемого плейлиста'
-                                                        className={cn(
-                                                            'w-[216px] h-[216px] min-w-[216px] min-h-[216px] rounded-[30px] brightness-50'
-                                                        )}
-                                                        draggable={false}
-                                                    />
-                                                    <EditIcon
-                                                        size={89}
-                                                        className='absolute top-0 right-0 left-0 bottom-0 m-auto'
-                                                        color='onSurface'
-                                                    />
-                                                    <Input
-                                                        accept='.png,.jpg,.jpeg'
-                                                        type='file'
-                                                        className='hidden'
-                                                        onChange={async (e) => {
-                                                            if (
-                                                                e.target.files &&
-                                                                e.target.files.length > 0
-                                                            ) {
-                                                                const basedImageFile =
-                                                                    await convertToBase64(
-                                                                        e.target.files[0]
-                                                                    );
-                                                                if (
-                                                                    typeof basedImageFile ===
-                                                                    'string'
-                                                                ) {
-                                                                    form.setValue(
-                                                                        'basedImageFile',
-                                                                        basedImageFile
-                                                                    );
-                                                                }
+                            <DialogDescription asChild>
+                                <div className='pt-0 mt-0 flex items-center gap-x-[33px]'>
+                                    <FormField
+                                        control={form.control}
+                                        name='basedImageFile'
+                                        render={() => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <label className='relative cursor-pointer w-[216px] h-[216px] min-w-[216px] min-h-[216px]'>
+                                                        <img
+                                                            src={
+                                                                imageLink
+                                                                    ? imageLink
+                                                                    : defaultImageLink
                                                             }
-                                                        }}
-                                                    />
-                                                </label>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className='flex flex-col gap-y-[11px]'>
-                                    <FormField
-                                        control={form.control}
-                                        name='name'
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='font-medium text-onSurfaceVariant'>
-                                                    Название
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder='Название'
-                                                        className='w-[460px]'
-                                                        {...field}
-                                                    />
+                                                            alt='Обложка загружаемого плейлиста'
+                                                            className={cn(
+                                                                'w-[216px] h-[216px] min-w-[216px] min-h-[216px] rounded-[30px] brightness-50'
+                                                            )}
+                                                            draggable={false}
+                                                        />
+                                                        <EditIcon
+                                                            size={89}
+                                                            className='absolute top-0 right-0 left-0 bottom-0 m-auto'
+                                                            color='onSurface'
+                                                        />
+                                                        <Input
+                                                            accept='.png,.jpg,.jpeg'
+                                                            type='file'
+                                                            className='hidden'
+                                                            onChange={async (e) => {
+                                                                if (
+                                                                    e.target.files &&
+                                                                    e.target.files.length > 0
+                                                                ) {
+                                                                    const basedImageFile =
+                                                                        await convertToBase64(
+                                                                            e.target.files[0]
+                                                                        );
+                                                                    if (
+                                                                        typeof basedImageFile ===
+                                                                        'string'
+                                                                    ) {
+                                                                        form.setValue(
+                                                                            'basedImageFile',
+                                                                            basedImageFile
+                                                                        );
+                                                                    }
+                                                                }
+                                                            }}
+                                                        />
+                                                    </label>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
+                                    <div className='flex flex-col gap-y-[11px]'>
+                                        <FormField
+                                            control={form.control}
+                                            name='name'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='font-medium text-onSurfaceVariant'>
+                                                        Название
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder='Название'
+                                                            className='w-[460px]'
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                    <FormField
-                                        control={form.control}
-                                        name='description'
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='font-medium text-onSurfaceVariant'>
-                                                    Описание
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        placeholder='Добавь описание (необязательно)'
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                        <FormField
+                                            control={form.control}
+                                            name='description'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='font-medium text-onSurfaceVariant'>
+                                                        Описание
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder='Добавь описание (необязательно)'
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 </div>
                             </DialogDescription>
                             <Button type='submit' className='w-full' disabled={sent}>

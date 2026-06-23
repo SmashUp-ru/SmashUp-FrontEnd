@@ -42,9 +42,9 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
 
     return (
         <Accordion type='single' collapsible value={value} onValueChange={(v) => setValue(v)}>
-            <AccordionItem value={mashup.ownerId + '_' + mashup.audioId}>
+            <AccordionItem value={mashup.ownerId + '_' + mashup.audioId} className='relative'>
                 <AccordionTrigger>
-                    <div className='w-full flex items-center justify-between gap-x-2 py-[6px] pl-[6px]'>
+                    <div className='w-full flex items-center gap-x-2 py-[6px] pl-[6px]'>
                         <div className='flex min-w-0 items-center gap-x-3 md:gap-x-4'>
                             <img
                                 src={imageUrl}
@@ -61,53 +61,48 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                 </span>
                             </div>
                         </div>
-
-                        <div className='flex items-center gap-x-2 md:gap-x-7'>
-                            <div className='flex items-center gap-x-1 md:gap-x-3'>
-                                <div className='hidden md:flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
-                                    <a>
-                                        Дата релиза:{' '}
-                                        {format(
-                                            new Date(mashup.publishTime * 1000),
-                                            'dd.MM.yyyy HH:mm'
-                                        )}
-                                    </a>
-                                </div>
-
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    className=''
-                                    aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
-                                    onClick={(e) => {
-                                        if (isCurrent) {
-                                            updateVkMashupIsPlaying(!vkMashupIsPlaying);
-                                        } else {
-                                            playVkMashup(mashup);
-                                        }
-                                        e.preventDefault();
-                                    }}
-                                >
-                                    {isPlaying ? (
-                                        <PauseHollowIcon color='primary' size={36} />
-                                    ) : (
-                                        <PlayHollowIcon color='primary' size={36} />
-                                    )}
-                                </Button>
-
-                                <Button className='md:mr-7' variant='ghost' size='icon'>
-                                    <Link
-                                        to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}
-                                    >
-                                        <Button className='py-[7px] font-bold text-base rounded-xl'>
-                                            Опубликовать
-                                        </Button>
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
                     </div>
                 </AccordionTrigger>
+
+                {/* Интерактивные кнопки вынесены из AccordionTrigger (он сам <button>),
+                    чтобы избежать вложенности <button> в <button> */}
+                <div className='absolute right-12 top-0 h-[60px] flex items-center gap-x-2 md:gap-x-7 pr-[6px]'>
+                    <div className='flex items-center gap-x-1 md:gap-x-3'>
+                        <div className='hidden md:flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
+                            <span>
+                                Дата релиза:{' '}
+                                {format(new Date(mashup.publishTime * 1000), 'dd.MM.yyyy HH:mm')}
+                            </span>
+                        </div>
+
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            className=''
+                            aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
+                            onClick={(e) => {
+                                if (isCurrent) {
+                                    updateVkMashupIsPlaying(!vkMashupIsPlaying);
+                                } else {
+                                    playVkMashup(mashup);
+                                }
+                                e.preventDefault();
+                            }}
+                        >
+                            {isPlaying ? (
+                                <PauseHollowIcon color='primary' size={36} />
+                            ) : (
+                                <PlayHollowIcon color='primary' size={36} />
+                            )}
+                        </Button>
+
+                        <Button className='md:mr-7 py-[7px] font-bold text-base rounded-xl' asChild>
+                            <Link to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}>
+                                Опубликовать
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
                 <AccordionContent className='mt-4 flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-x-6'>
                     <img
                         src={imageUrl}

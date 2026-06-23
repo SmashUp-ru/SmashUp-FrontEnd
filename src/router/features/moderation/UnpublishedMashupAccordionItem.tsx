@@ -258,12 +258,14 @@ export function UnpublishedMashupAccordionItem({
                                     <DialogTitle className='pb-0 mb-0'>
                                         Отклонение мэшапа
                                     </DialogTitle>
-                                    <DialogDescription className='pt-0 mt-0'>
-                                        <Textarea
-                                            placeholder='Комментарий'
-                                            value={rejectionValue}
-                                            onChange={(e) => setRejectionValue(e.target.value)}
-                                        />
+                                    <DialogDescription asChild className='pt-0 mt-0'>
+                                        <div>
+                                            <Textarea
+                                                placeholder='Комментарий'
+                                                value={rejectionValue}
+                                                onChange={(e) => setRejectionValue(e.target.value)}
+                                            />
+                                        </div>
                                     </DialogDescription>
                                 </DialogHeader>
                                 <Button onClick={() => rejectMashup()}>Сохранить</Button>

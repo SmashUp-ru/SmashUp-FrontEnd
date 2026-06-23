@@ -14,7 +14,7 @@ export default function RestorePasswordSuccessPage() {
                 </div>
 
                 <Button asChild className='w-full'>
-                    <Link draggable={false} to='/public'>
+                    <Link draggable={false} to='/'>
                         Вернуться на главную
                     </Link>
                 </Button>

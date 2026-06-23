@@ -16,7 +16,7 @@ export default function EmailDialogSentContent({ email }: EmailDialogSentContent
                 Подтвердите изменение почты, нажав на кнопку внутри письма.
             </span>
 
-            <DialogClose>
+            <DialogClose asChild>
                 <Button type='submit' className='w-full'>
                     Хорошо
                 </Button>

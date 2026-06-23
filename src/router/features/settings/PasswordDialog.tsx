@@ -76,7 +76,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
             <Label className='font-medium text-onSurfaceVariant'>Текущий пароль</Label>
             <div className='flex items-center gap-x-2.5'>
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button
                             variant='ghost'
                             size='icon'
@@ -89,7 +89,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
                                 <DialogTitle>Изменение Пароля</DialogTitle>
-                                <DialogClose className='pb-5'>
+                                <DialogClose className='pb-5' asChild>
                                     <Button variant='ghost' size='icon'>
                                         <CancelIcon />
                                     </Button>
@@ -105,97 +105,105 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                                     }
                                 />
                             ) : (
-                                <DialogDescription>
-                                    <Form {...form}>
-                                        <form
-                                            onSubmit={form.handleSubmit(onSubmit)}
-                                            className='flex flex-col gap-y-[30px]'
-                                        >
-                                            <FormField
-                                                control={form.control}
-                                                name='oldPassword'
-                                                render={({ field }) => (
-                                                    <FormItem className='flex flex-col gap-y-2.5'>
-                                                        <Label className='font-medium text-onSurfaceVariant'>
-                                                            Текущий пароль
-                                                        </Label>
-                                                        <FormControl>
-                                                            <Input
-                                                                type='password'
-                                                                error={
-                                                                    form.formState.errors
-                                                                        .oldPassword !== undefined
-                                                                }
-                                                                placeholder='Введите пароль...'
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className='text-onSurface text-[12px]' />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name='newPassword'
-                                                render={({ field }) => (
-                                                    <FormItem className='flex flex-col gap-y-2.5'>
-                                                        <Label className='font-medium text-onSurfaceVariant'>
-                                                            Новый пароль
-                                                        </Label>
-                                                        <FormControl>
-                                                            <Input
-                                                                error={
-                                                                    form.formState.errors
-                                                                        .newPassword !== undefined
-                                                                }
-                                                                placeholder='Введите новый пароль...'
-                                                                type='password'
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className='text-onSurface text-[12px]' />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name='newPasswordAgain'
-                                                render={({ field }) => (
-                                                    <FormItem className='flex flex-col gap-y-2.5'>
-                                                        <Label className='font-medium text-onSurfaceVariant'>
-                                                            Подтвердить пароль
-                                                        </Label>
-                                                        <FormControl>
-                                                            <Input
-                                                                error={
-                                                                    form.formState.errors
-                                                                        .newPassword !== undefined
-                                                                }
-                                                                placeholder='Введите новый пароль...'
-                                                                type='password'
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className='text-onSurface text-[12px]' />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <Button
-                                                type='submit'
-                                                className='w-full'
-                                                disabled={
-                                                    form.getValues('oldPassword').length === 0 ||
-                                                    form.getValues('newPassword').length === 0 ||
-                                                    form.getValues('newPasswordAgain').length === 0
-                                                }
+                                <DialogDescription asChild>
+                                    <div>
+                                        <Form {...form}>
+                                            <form
+                                                onSubmit={form.handleSubmit(onSubmit)}
+                                                className='flex flex-col gap-y-[30px]'
                                             >
-                                                Изменить
-                                            </Button>
-                                        </form>
-                                    </Form>
+                                                <FormField
+                                                    control={form.control}
+                                                    name='oldPassword'
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex flex-col gap-y-2.5'>
+                                                            <Label className='font-medium text-onSurfaceVariant'>
+                                                                Текущий пароль
+                                                            </Label>
+                                                            <FormControl>
+                                                                <Input
+                                                                    type='password'
+                                                                    error={
+                                                                        form.formState.errors
+                                                                            .oldPassword !==
+                                                                        undefined
+                                                                    }
+                                                                    placeholder='Введите пароль...'
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage className='text-onSurface text-[12px]' />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name='newPassword'
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex flex-col gap-y-2.5'>
+                                                            <Label className='font-medium text-onSurfaceVariant'>
+                                                                Новый пароль
+                                                            </Label>
+                                                            <FormControl>
+                                                                <Input
+                                                                    error={
+                                                                        form.formState.errors
+                                                                            .newPassword !==
+                                                                        undefined
+                                                                    }
+                                                                    placeholder='Введите новый пароль...'
+                                                                    type='password'
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage className='text-onSurface text-[12px]' />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name='newPasswordAgain'
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex flex-col gap-y-2.5'>
+                                                            <Label className='font-medium text-onSurfaceVariant'>
+                                                                Подтвердить пароль
+                                                            </Label>
+                                                            <FormControl>
+                                                                <Input
+                                                                    error={
+                                                                        form.formState.errors
+                                                                            .newPassword !==
+                                                                        undefined
+                                                                    }
+                                                                    placeholder='Введите новый пароль...'
+                                                                    type='password'
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage className='text-onSurface text-[12px]' />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <Button
+                                                    type='submit'
+                                                    className='w-full'
+                                                    disabled={
+                                                        form.getValues('oldPassword').length ===
+                                                            0 ||
+                                                        form.getValues('newPassword').length ===
+                                                            0 ||
+                                                        form.getValues('newPasswordAgain')
+                                                            .length === 0
+                                                    }
+                                                >
+                                                    Изменить
+                                                </Button>
+                                            </form>
+                                        </Form>
+                                    </div>
                                 </DialogDescription>
                             )}
                         </DialogHeader>

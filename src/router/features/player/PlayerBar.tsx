@@ -67,7 +67,7 @@ export default function PlayerBar() {
                         draggable={false}
                     />
 
-                    <div className='flex flex-col min-w-0 flex-1'>
+                    <div className='flex flex-col min-w-0'>
                         <Button
                             variant='ghost'
                             size='icon'

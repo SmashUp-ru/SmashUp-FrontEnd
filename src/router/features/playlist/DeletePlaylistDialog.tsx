@@ -92,7 +92,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
                     <Button variant='error' onClick={handleDelete}>
                         Удалить
                     </Button>
-                    <DialogClose>
+                    <DialogClose asChild>
                         <Button variant='outline'>Отменить</Button>
                     </DialogClose>
                 </DialogFooter>
