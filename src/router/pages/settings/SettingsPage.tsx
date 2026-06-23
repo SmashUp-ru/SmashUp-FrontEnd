@@ -24,8 +24,10 @@ import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import Footer from '@/router/features/footer/Footer.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function SettingsPage() {
+    useDocumentTitle('Настройки');
     const { toast } = useToast();
     const { settings, isLoading, email } = useSettingsPageData();
 

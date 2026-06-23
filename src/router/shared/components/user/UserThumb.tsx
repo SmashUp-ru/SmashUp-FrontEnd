@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Link } from 'react-router-dom';
@@ -12,7 +13,7 @@ interface ProfileThumbProps {
     searchMode?: boolean;
 }
 
-export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
+function UserThumb({ user, searchMode }: ProfileThumbProps) {
     const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         user.mashups,
         `Мэшапы ${user.username}`,
@@ -66,3 +67,5 @@ export default function UserThumb({ user, searchMode }: ProfileThumbProps) {
         </div>
     );
 }
+
+export default memo(UserThumb);

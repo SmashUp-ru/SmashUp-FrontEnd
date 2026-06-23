@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
@@ -7,20 +8,20 @@ import { Playlist } from '@/store/entities/playlist.ts';
 import { cn } from '@/lib/utils.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
+import PlaylistSmallThumbSkeleton from '@/router/shared/components/playlist/PlaylistSmallThumbSkeleton.tsx';
 
 interface ProfileThumbProps {
     playlist: Playlist;
 }
 
-export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
+function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
     const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         playlist.mashups,
         playlist.name,
         `playlist/${playlist.id}`
     );
 
-    // TODO: skeleton
-    if (isLoading) return null;
+    if (isLoading) return <PlaylistSmallThumbSkeleton />;
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -92,3 +93,5 @@ export default function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
         </div>
     );
 }
+
+export default memo(PlaylistSmallThumb);

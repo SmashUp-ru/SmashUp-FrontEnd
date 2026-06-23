@@ -1,7 +1,7 @@
 import { User as UserType, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useUserPageData(username?: string) {
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
@@ -13,45 +13,53 @@ export function useUserPageData(username?: string) {
     const [latestMashup, setLatestMashup] = useState<Mashup | null>(null);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
-    const [userLoading, setUserLoading] = useState<boolean>(true);
-    const [mashupsLoading, setMashupsLoading] = useState<boolean>(true);
-    const [playlistsLoading, setPlaylistsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isError, setIsError] = useState<boolean>(false);
+
+    // Единая (ретраябельная) загрузка: пользователь → его мэшапы (топ-5 + последний)
+    // и плейлисты параллельно. Раньше было два отдельных useEffect без .catch —
+    // на ошибке сети isLoading зависал и не было обратной связи.
+    const load = useCallback(() => {
+        if (!username) return;
+
+        setIsError(false);
+        setIsLoading(true);
+
+        getUserByUsername('username', username)
+            .then((u) => {
+                setUser(u);
+
+                const mashupsPromise =
+                    u.mashups.length <= 5
+                        ? getMashupsByIds(u.mashups).then((r) => {
+                              setMashups(r);
+                              setLatestMashup(r[r.length - 1]);
+                          })
+                        : getMashupsByIds(
+                              u.mashups.slice(0, 5).concat(u.mashups[u.mashups.length - 1])
+                          ).then((r) => {
+                              setMashups(r.slice(0, 5));
+                              setLatestMashup(r[5]);
+                          });
+
+                const playlistsPromise = getManyPlaylistsByIds(u.playlists).then((r) =>
+                    setPlaylists(r)
+                );
+
+                return Promise.all([mashupsPromise, playlistsPromise]);
+            })
+            .catch(() => setIsError(true))
+            .finally(() => setIsLoading(false));
+    }, [username, getUserByUsername, getMashupsByIds, getManyPlaylistsByIds]);
 
     useEffect(() => {
-        if (username) {
-            getUserByUsername('username', username)
-                .then((r) => setUser(r))
-                .finally(() => setUserLoading(false));
-        }
-    }, [username]);
-
-    useEffect(() => {
-        if (user) {
-            if (user.mashups.length <= 5) {
-                getMashupsByIds(user.mashups)
-                    .then((r) => {
-                        setMashups(r);
-                        setLatestMashup(r[r.length - 1]);
-                    })
-                    .finally(() => setMashupsLoading(false));
-            } else {
-                getMashupsByIds(
-                    user.mashups.slice(0, 5).concat(user.mashups[user.mashups.length - 1])
-                )
-                    .then((r) => {
-                        setMashups(r.slice(0, 5));
-                        setLatestMashup(r[5]);
-                    })
-                    .finally(() => setMashupsLoading(false));
-            }
-            getManyPlaylistsByIds(user.playlists)
-                .then((r) => setPlaylists(r))
-                .finally(() => setPlaylistsLoading(false));
-        }
-    }, [user]);
+        load();
+    }, [load]);
 
     return {
-        isLoading: userLoading || mashupsLoading || playlistsLoading,
+        isLoading,
+        isError,
+        reload: load,
         user,
         mashups,
         latestMashup,

@@ -16,20 +16,25 @@ import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx
 import { useGlobalStore } from '@/store/global.ts';
 import SettingsIcon from '@/components/icons/Settings.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState } from '@/router/shared/components/StateView.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function UserPage() {
     const params = useParams();
     const { toast } = useToast();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const { user, mashups, latestMashup, playlists, isLoading } = useUserPageData(
+    const { user, mashups, latestMashup, playlists, isLoading, isError, reload } = useUserPageData(
         params.profileUsername
     );
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
+    useDocumentTitle(user?.username);
+
     if (!params.profileUsername) return;
     if (isLoading) return <UserPageSkeleton />;
+    if (isError) return <ErrorState onRetry={reload} />;
     if (!user) return null;
 
     return (

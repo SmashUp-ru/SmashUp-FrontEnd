@@ -5,10 +5,17 @@ export function useMashupPageData(mashupId?: string) {
     const getMashupById = useMashupStore((state) => state.getOneById);
     const mashupCache = useMashupStore((state) => state.cache);
 
-    const { entity: mashup, isLoading } = useCachedEntityById(mashupId, getMashupById, mashupCache);
+    const {
+        entity: mashup,
+        isLoading,
+        isError,
+        reload
+    } = useCachedEntityById(mashupId, getMashupById, mashupCache);
 
     return {
         mashup,
-        isLoading
+        isLoading,
+        isError,
+        reload
     };
 }

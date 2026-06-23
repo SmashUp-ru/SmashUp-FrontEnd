@@ -14,8 +14,22 @@ export default defineConfig({
         sourcemap: false,
         rollupOptions: {
             output: {
+                // React-ядро держим в ОДНОМ чанке (react/react-dom/router): дробление
+                // React-зависимых вендоров ломало порядок инициализации в проде
+                // (React.useLayoutEffect undefined → белый экран). Дополнительно
+                // выносим тяжёлые независимые либы в свои кэшируемые чанки.
                 manualChunks: {
-                    'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+                    'react-vendor': [
+                        'react',
+                        'react-dom',
+                        'react-router-dom',
+                        'react-router',
+                        '@remix-run/router'
+                    ],
+                    forms: ['react-hook-form', 'zod'],
+                    player: ['howler', 'react-howler'],
+                    // Чистые утилиты без React — безопасно выносить отдельно.
+                    utils: ['tailwind-merge', 'clsx', 'axios'],
                     markdown: ['react-markdown']
                 }
             }

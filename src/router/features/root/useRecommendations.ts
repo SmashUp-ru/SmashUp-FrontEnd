@@ -1,5 +1,5 @@
 import { useGlobalStore } from '@/store/global.ts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
@@ -12,29 +12,48 @@ export function useRecommendations() {
     const currentUser = useGlobalStore((state) => state.currentUser);
 
     const [isLoading, setIsLoading] = useState(recommendations === null && currentUser !== null);
+    const [isError, setIsError] = useState(false);
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
-    useEffect(() => {
-        if (recommendations === null) {
-            axiosSession
-                .get('/recommendations/v1')
-                .then((r: AxiosResponse<GetRecommedationsResponse>) => {
-                    updateRecommendations(r.data.response);
-                });
+    // Единая (ретраябельная) загрузка: список рекомендаций → мэшапы по ним.
+    // Раньше было два отдельных useEffect без .catch — на ошибке сети isLoading
+    // зависал. Рекомендации грузятся только для авторизованного пользователя;
+    // для гостя — isLoading=false, запрос не делаем.
+    const load = useCallback(() => {
+        if (currentUser === null) {
+            setIsLoading(false);
+            return;
         }
-    }, []);
+
+        setIsError(false);
+        setIsLoading(true);
+
+        const idsPromise: Promise<number[]> =
+            recommendations !== null
+                ? Promise.resolve(recommendations)
+                : axiosSession
+                      .get('/recommendations/v1')
+                      .then((r: AxiosResponse<GetRecommedationsResponse>) => {
+                          updateRecommendations(r.data.response);
+                          return r.data.response;
+                      });
+
+        idsPromise
+            .then((ids) => getManyMashupsByIds(ids))
+            .then((r) => setMashups(r))
+            .catch(() => setIsError(true))
+            .finally(() => setIsLoading(false));
+    }, [currentUser, recommendations, updateRecommendations, getManyMashupsByIds]);
 
     useEffect(() => {
-        if (recommendations !== null) {
-            getManyMashupsByIds(recommendations)
-                .then((r) => setMashups(r))
-                .finally(() => setIsLoading(false));
-        }
-    }, [recommendations]);
+        load();
+    }, [load]);
 
     return {
         mashups,
         recommendations,
-        isLoading
+        isLoading,
+        isError,
+        reload: load
     };
 }

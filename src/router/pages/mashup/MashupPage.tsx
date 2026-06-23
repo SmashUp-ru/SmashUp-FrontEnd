@@ -19,6 +19,8 @@ import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState } from '@/router/shared/components/StateView.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -33,11 +35,14 @@ export default function MashupPage() {
 
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
-    const { mashup, isLoading } = useMashupPageData(params.mashupId);
+    const { mashup, isLoading, isError, reload } = useMashupPageData(params.mashupId);
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
+    useDocumentTitle(mashup?.name);
+
     if (isLoading) return <MashupPageSkeleton />;
+    if (isError) return <ErrorState onRetry={reload} />;
     if (!params.mashupId) return;
     if (!mashup) return;
 

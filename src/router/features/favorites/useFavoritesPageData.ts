@@ -1,43 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 
 export function useFavoritesPageData() {
-    const [likes, setLikes] = useState<number[]>([]);
-
     const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
 
-    const [isPlaylistPageLoading, setIsPlaylistPageLoading] = useState(true);
-    const [mashupsLoading, setMashupsLoading] = useState(true);
-
+    const [likes, setLikes] = useState<number[]>([]);
     const [mashups, setMashups] = useState<Mashup[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
 
-    useEffect(() => {
+    // Единая (ретраябельная) загрузка: лайки → мэшапы по ним. Раньше было два
+    // отдельных useEffect без .catch — на ошибке сети isLoading не сбрасывался
+    // корректно и не было обратной связи.
+    const load = useCallback(() => {
+        setIsError(false);
+        setIsLoading(true);
         axiosSession
             .get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`)
-            .then(
-                (
-                    r: AxiosResponse<{
-                        status: string;
-                        response: number[];
-                    }>
-                ) => {
-                    setLikes(r.data.response);
-                }
-            )
-            .finally(() => setIsPlaylistPageLoading(false));
-    }, []);
+            .then((r: AxiosResponse<{ status: string; response: number[] }>) => {
+                const ids = r.data.response ?? [];
+                setLikes(ids);
+                return getMashupsByIds(ids);
+            })
+            .then((m) => setMashups(m))
+            .catch(() => setIsError(true))
+            .finally(() => setIsLoading(false));
+    }, [getMashupsByIds]);
 
     useEffect(() => {
-        getMashupsByIds(likes ? likes : [])
-            .then((r) => setMashups(r))
-            .finally(() => setMashupsLoading(false));
-    }, [likes]);
+        load();
+    }, [load]);
 
     return {
         mashups,
-        likes: likes,
-        isLoading: mashupsLoading || isPlaylistPageLoading
+        likes,
+        isLoading,
+        isError,
+        reload: load
     };
 }

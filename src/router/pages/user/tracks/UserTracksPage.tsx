@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -16,6 +16,8 @@ import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState } from '@/router/shared/components/StateView.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
@@ -27,12 +29,20 @@ export default function UserTracksPage() {
     const queueId = usePlayerStore((state) => state.queueId);
 
     const [user, setUser] = useState<User | null>(null);
+    const [isUserError, setIsUserError] = useState(false);
+
+    const loadUser = useCallback(() => {
+        if (!params.profileUsername) return;
+
+        setIsUserError(false);
+        getUserByUsername('username', params.profileUsername)
+            .then((r) => setUser(r))
+            .catch(() => setIsUserError(true));
+    }, [params.profileUsername, getUserByUsername]);
 
     useEffect(() => {
-        if (params.profileUsername) {
-            getUserByUsername('username', params.profileUsername).then((r) => setUser(r));
-        }
-    }, [params.profileUsername]);
+        loadUser();
+    }, [loadUser]);
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -42,10 +52,12 @@ export default function UserTracksPage() {
 
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
-    // TODO: skeleton
-    if (isLoading) return null;
+    useDocumentTitle(user ? `Мэшапы ${user.username}` : (params.profileUsername ?? null));
 
     if (!params.profileUsername) return;
+    if (isUserError) return <ErrorState onRetry={loadUser} />;
+    // TODO: skeleton
+    if (isLoading) return null;
     if (!user) return;
 
     return (

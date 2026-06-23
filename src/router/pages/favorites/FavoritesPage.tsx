@@ -14,8 +14,12 @@ import { cn } from '@/lib/utils.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function FavoritesPage() {
+    useDocumentTitle('Любимое');
     const currentUser = useGlobalStore((state) => state.currentUser);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queueId = usePlayerStore((state) => state.queueId);
@@ -26,13 +30,14 @@ export default function FavoritesPage() {
 
     const { playQueue, pause } = usePlayer();
 
-    const { isLoading, mashups, likes } = useFavoritesPageData();
+    const { isLoading, mashups, likes, isError, reload } = useFavoritesPageData();
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
     if (currentUser === null) return null;
 
     if (isLoading) return <FavoritesPageSkeleton />;
+    if (isError) return <ErrorState onRetry={reload} />;
 
     return (
         <div className='flex flex-col gap-y-6'>
@@ -95,18 +100,26 @@ export default function FavoritesPage() {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-y-1'>
-                {mashups.map((mashup, idx) => (
-                    <MashupSmallThumb
-                        key={mashup.id}
-                        mashup={mashup}
-                        playlist={likes}
-                        indexInPlaylist={idx}
-                        playlistName={`Любимое ${currentUser.username}`}
-                        queueId={`favorites`}
-                    />
-                ))}
-            </div>
+            {mashups.length === 0 ? (
+                <StateView
+                    icon={<LikeOutlineIcon color='onSurfaceVariant' size={48} />}
+                    title='Пока нет любимых мэшапов'
+                    description='Лайкните мэшап — и он появится здесь.'
+                />
+            ) : (
+                <div className='flex flex-col gap-y-1'>
+                    {mashups.map((mashup, idx) => (
+                        <MashupSmallThumb
+                            key={mashup.id}
+                            mashup={mashup}
+                            playlist={likes}
+                            indexInPlaylist={idx}
+                            playlistName={`Любимое ${currentUser.username}`}
+                            queueId={`favorites`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

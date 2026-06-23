@@ -5,8 +5,10 @@ import { AxiosResponse } from 'axios';
 import { UploadMashupResponse } from '@/router/shared/types/upload';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function UploadMashupPage() {
+    useDocumentTitle('Загрузка мешапа');
     const navigate = useNavigate();
     const { toast } = useToast();
 

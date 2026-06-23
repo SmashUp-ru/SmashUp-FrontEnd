@@ -222,15 +222,19 @@ export function createEntityStore<T extends CachingEntity>(
                 return fetchPromise;
             });
 
-            const results = await Promise.all(fetchPromises);
-
-            set((state) => {
-                const newPending = { ...state.pendingRequests };
-                toFetchIds.forEach((id) => delete newPending[id]);
-                return { pendingRequests: newPending };
-            });
-
-            return results.flat();
+            // pendingRequests чистим в finally: иначе при ошибке фетча в реестре
+            // оставался отклонённый промис, и повторная загрузка (retry) вечно
+            // падала на `await pendingRequests[id]` вместо нового запроса.
+            try {
+                const results = await Promise.all(fetchPromises);
+                return results.flat();
+            } finally {
+                set((state) => {
+                    const newPending = { ...state.pendingRequests };
+                    toFetchIds.forEach((id) => delete newPending[id]);
+                    return { pendingRequests: newPending };
+                });
+            }
         },
 
         /**

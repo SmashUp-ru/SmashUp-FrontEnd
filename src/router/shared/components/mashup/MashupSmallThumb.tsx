@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
@@ -39,7 +40,7 @@ interface MashupThumbProps {
     queueId: string;
 }
 
-export default function MashupSmallThumb({
+function MashupSmallThumb({
     mashup,
     playlist,
     indexInPlaylist,
@@ -357,3 +358,5 @@ export default function MashupSmallThumb({
         </div>
     );
 }
+
+export default memo(MashupSmallThumb);

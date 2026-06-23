@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -15,7 +16,7 @@ interface PlaylistThumbProps {
     link?: string;
 }
 
-export default function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
+function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps) {
     const { isThisQueue, isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         playlist.mashups,
         playlist.name,
@@ -101,3 +102,5 @@ export default function PlaylistThumb({ playlist, searchMode, image, link }: Pla
         </div>
     );
 }
+
+export default memo(PlaylistThumb);

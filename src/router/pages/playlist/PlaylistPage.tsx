@@ -14,6 +14,9 @@ import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleto
 import PlaylistLikeButton from '@/router/shared/components/playlist/PlaylistLikeButton.tsx';
 import PlaylistPlayButton from '@/router/shared/components/playlist/PlaylistPlayButton.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
+import QueueIcon from '@/components/icons/Queue.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -21,10 +24,15 @@ export default function PlaylistPage() {
 
     const currentUser = useGlobalStore((state) => state.currentUser);
 
-    const { playlist, mashups, isLoading } = usePlaylistPageData(params.playlistId);
+    const { playlist, mashups, isLoading, isError, reload } = usePlaylistPageData(
+        params.playlistId
+    );
+
+    useDocumentTitle(playlist?.name);
 
     if (!params.playlistId) return null;
     if (isLoading) return <PlaylistPageSkeleton />;
+    if (isError) return <ErrorState onRetry={reload} />;
     if (!playlist) return null;
 
     return (
@@ -101,19 +109,26 @@ export default function PlaylistPage() {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-y-1'>
-                {mashups.length === 0 && <p className='text-additionalText'>Плейлист пустой(</p>}
-                {mashups.map((mashup, idx) => (
-                    <MashupSmallThumb
-                        key={mashup.id}
-                        mashup={mashup}
-                        playlist={playlist.mashups}
-                        indexInPlaylist={idx}
-                        playlistName={playlist.name}
-                        queueId={`playlist/${playlist.id}`}
-                    />
-                ))}
-            </div>
+            {mashups.length === 0 ? (
+                <StateView
+                    icon={<QueueIcon color='onSurfaceVariant' size={48} />}
+                    title='Плейлист пуст'
+                    description='Здесь пока нет мэшапов.'
+                />
+            ) : (
+                <div className='flex flex-col gap-y-1'>
+                    {mashups.map((mashup, idx) => (
+                        <MashupSmallThumb
+                            key={mashup.id}
+                            mashup={mashup}
+                            playlist={playlist.mashups}
+                            indexInPlaylist={idx}
+                            playlistName={playlist.name}
+                            queueId={`playlist/${playlist.id}`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

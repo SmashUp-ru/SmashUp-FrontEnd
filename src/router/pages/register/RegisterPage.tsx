@@ -29,8 +29,10 @@ import { useGlobalStore } from '@/store/global.ts';
 import { registerFormSchema } from '@/router/shared/schemas/register.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function RegisterPage() {
+    useDocumentTitle('Регистрация');
     const { toast } = useToast();
     const navigate = useNavigate();
     const token = useGlobalStore((state) => state.token);

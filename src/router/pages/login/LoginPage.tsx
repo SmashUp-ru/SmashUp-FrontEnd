@@ -27,8 +27,10 @@ import { loginFormSchema } from '@/router/shared/schemas/login.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import BaseToast from '@/router/shared/toasts/Base';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function LoginPage() {
+    useDocumentTitle('Вход');
     const { toast } = useToast();
 
     const { currentUser, updateCurrentUser, updateToken } = useGlobalStore();

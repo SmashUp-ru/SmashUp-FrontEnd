@@ -9,11 +9,20 @@ import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPla
 import { useRecommendations } from '@/router/features/root/useRecommendations.ts';
 import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import { useFavoritesPlaylists } from '@/router/features/root/useFavoritesPlaylists.ts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Mashup, useMashupStore } from '@/store/entities/mashup';
+import { ErrorState } from '@/router/shared/components/StateView.tsx';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function RootPage() {
-    const { isLoading: isDataLoading, playlists } = useCompilations();
+    useDocumentTitle('Главная');
+
+    const {
+        isLoading: isDataLoading,
+        playlists,
+        isError: isCompilationsError,
+        reload: reloadCompilations
+    } = useCompilations();
     const {
         mashups: recommendations,
         isLoading: isRecommendationsLoading,
@@ -30,8 +39,13 @@ export default function RootPage() {
     const [premierePlaylist, setPremierePlaylist] = useState<Playlist>();
     const [premiere, setPremiere] = useState<Mashup[]>();
     const [isPremiereLoading, setPremiereLoading] = useState<boolean>(true);
+    const [isPremiereError, setPremiereError] = useState<boolean>(false);
 
-    useEffect(() => {
+    // Ретраябельная загрузка «Премьеры»: playlist/1 → его мэшапы. Без .catch
+    // ошибка сети оставляла isPremiereLoading=true (бесконечный скелетон).
+    const loadPremiere = useCallback(() => {
+        setPremiereError(false);
+        setPremiereLoading(true);
         playlistStore
             .getOneById(1)
             .then((playlist) => {
@@ -39,10 +53,25 @@ export default function RootPage() {
                 return mashupStore.getManyByIds(playlist.mashups);
             })
             .then(setPremiere)
+            .catch(() => setPremiereError(true))
             .finally(() => {
                 setPremiereLoading(false);
             });
-    }, []);
+    }, [playlistStore, mashupStore]);
+
+    useEffect(() => {
+        loadPremiere();
+    }, [loadPremiere]);
+
+    // Повтор упавших критичных загрузок первого экрана.
+    const reloadCritical = useCallback(() => {
+        if (isCompilationsError) reloadCompilations();
+        if (isPremiereError) loadPremiere();
+    }, [isCompilationsError, isPremiereError, reloadCompilations, loadPremiere]);
+
+    // Критичный первый экран — «Подборки» и «Премьера». Если хотя бы один упал,
+    // показываем ошибку с возможностью повтора, а не пустую главную.
+    if (isCompilationsError || isPremiereError) return <ErrorState onRetry={reloadCritical} />;
 
     if (isDataLoading || isRecommendationsLoading || favoritesPlaylistsLoading || isPremiereLoading)
         return <RootPageSkeleton />;

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
@@ -6,20 +7,20 @@ import { User } from '@/store/entities/user.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
+import UserSmallThumbSkeleton from '@/router/shared/components/user/UserSmallThumbSkeleton.tsx';
 
 interface ProfileThumbProps {
     user: User;
 }
 
-export default function UserSmallThumb({ user }: ProfileThumbProps) {
+function UserSmallThumb({ user }: ProfileThumbProps) {
     const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         user.mashups,
         `Мэшапы ${user.username}`,
         `user/${user.username}/tracks`
     );
 
-    // TODO: skeleton
-    if (isLoading) return null;
+    if (isLoading) return <UserSmallThumbSkeleton />;
 
     return (
         <div className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl'>
@@ -76,3 +77,5 @@ export default function UserSmallThumb({ user }: ProfileThumbProps) {
         </div>
     );
 }
+
+export default memo(UserSmallThumb);

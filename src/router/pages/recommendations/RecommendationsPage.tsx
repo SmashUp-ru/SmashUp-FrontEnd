@@ -14,12 +14,18 @@ import { useRecommendations } from '@/router/features/root/useRecommendations.ts
 import { useSettingsStore } from '@/store/settings.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function RecommendationsPage() {
+    useDocumentTitle('Рекомендации');
     const {
         mashups: recommendations,
         isLoading: isRecommendationsLoading,
-        recommendations: recommendationsIds
+        recommendations: recommendationsIds,
+        isError,
+        reload
     } = useRecommendations();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -34,8 +40,10 @@ export default function RecommendationsPage() {
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    if (!currentUser || !recommendationsIds || !recommendations) return <FavoritesPageSkeleton />;
-    if (isRecommendationsLoading) return <FavoritesPageSkeleton />;
+    if (!currentUser) return null;
+    if (isError) return <ErrorState onRetry={reload} />;
+    if (isRecommendationsLoading || !recommendationsIds || !recommendations)
+        return <FavoritesPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-y-6'>
@@ -98,18 +106,26 @@ export default function RecommendationsPage() {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-y-1'>
-                {recommendations.map((mashup, idx) => (
-                    <MashupSmallThumb
-                        key={idx}
-                        mashup={mashup}
-                        playlist={recommendationsIds}
-                        indexInPlaylist={idx}
-                        playlistName='Рекомендации'
-                        queueId='recomendations'
-                    />
-                ))}
-            </div>
+            {recommendations.length === 0 ? (
+                <StateView
+                    icon={<LikeOutlineIcon color='onSurfaceVariant' size={48} />}
+                    title='Пока нет рекомендаций'
+                    description='Слушайте и лайкайте мэшапы — и здесь появятся персональные подборки.'
+                />
+            ) : (
+                <div className='flex flex-col gap-y-1'>
+                    {recommendations.map((mashup, idx) => (
+                        <MashupSmallThumb
+                            key={idx}
+                            mashup={mashup}
+                            playlist={recommendationsIds}
+                            indexInPlaylist={idx}
+                            playlistName='Рекомендации'
+                            queueId='recomendations'
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

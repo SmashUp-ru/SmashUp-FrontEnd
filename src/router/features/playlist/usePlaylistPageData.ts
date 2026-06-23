@@ -10,11 +10,12 @@ export function usePlaylistPageData(playlistId?: string) {
     const playlistCache = usePlaylistStore((state) => state.cache);
     const mashupCache = useMashupStore((state) => state.cache);
 
-    const { entity: playlist, isLoading: playlistLoading } = useCachedEntityById(
-        playlistId,
-        getPlaylistById,
-        playlistCache
-    );
+    const {
+        entity: playlist,
+        isLoading: playlistLoading,
+        isError,
+        reload
+    } = useCachedEntityById(playlistId, getPlaylistById, playlistCache);
 
     const mashups = useMemo(() => {
         if (!playlist?.mashups) return [];
@@ -38,6 +39,8 @@ export function usePlaylistPageData(playlistId?: string) {
     return {
         playlist,
         mashups,
-        isLoading
+        isLoading,
+        isError,
+        reload
     };
 }

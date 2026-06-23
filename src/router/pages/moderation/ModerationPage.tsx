@@ -2,8 +2,10 @@ import { TabsSeparated, TabsContent, TabsList, TabsTrigger } from '@/components/
 import ModerationMashup from '@/router/features/moderation/ModerationMashup.tsx';
 import { useModeration } from './useModeration';
 import { useGlobalStore } from '@/store/global.ts';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function ModerationPage() {
+    useDocumentTitle('Модерация');
     const { unpublishedMashups } = useModeration();
     const currentUser = useGlobalStore((state) => state.currentUser);
 

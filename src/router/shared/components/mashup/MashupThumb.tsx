@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -23,7 +24,7 @@ interface MashupThumbProps {
     searchMode?: boolean;
 }
 
-export default function MashupThumb({
+function MashupThumb({
     mashup,
     playlist,
     indexInPlaylist,
@@ -134,3 +135,5 @@ export default function MashupThumb({
         </div>
     );
 }
+
+export default memo(MashupThumb);

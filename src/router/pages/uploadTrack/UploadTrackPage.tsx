@@ -2,8 +2,10 @@ import { TabsSeparated, TabsContent, TabsList, TabsTrigger } from '@/components/
 import UploadTrackFromYandexTab from '@/router/features/uploadTrack/UploadTrackFromYandexTab.tsx';
 import UploadTrackFromYoutubeTab from '@/router/features/uploadTrack/UploadTrackFromYoutubeTab.tsx';
 import { useGlobalStore } from '@/store/global.ts';
+import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 export default function UploadTrackPage() {
+    useDocumentTitle('Загрузка трека');
     const currentUser = useGlobalStore((state) => state.currentUser);
     if (currentUser === null) return null;
 
