@@ -5,6 +5,16 @@ interface CachingEntity {
     id: number;
 }
 
+/**
+ * Контракт стора-кэша сущности.
+ *
+ * - `cache` — основной id-индексированный кэш (`Record<number, T>`).
+ * - `additionalCache` — вторичные строковые индексы вида `keyName -> (значение строкового ключа -> id)`;
+ *   создаются под каждый `keyName`, переданный в `createEntityStore` (напр. `username`/`token` у user-стора).
+ *   Хранят НЕ сам объект, а только id — реальные данные всегда лежат в `cache`.
+ * - `pendingRequests` — реестр in-flight промисов для дедупликации; ключ это либо `id` (число),
+ *   либо `"keyName:key"` (строка) для запросов по строковому ключу.
+ */
 export type CacheStore<T> = {
     cache: Record<number, T>;
     additionalCache: Record<string, Record<string, number>>;
@@ -22,6 +32,20 @@ export type CacheStore<T> = {
     reset: () => void;
 };
 
+/**
+ * Фабрика Zustand-стора, дающего id-индексированный кэш сущностей `T` поверх одного API-эндпоинта.
+ *
+ * Кэш «глупый»: НЕТ TTL и НЕТ инвалидации — сущность, попавшая в `cache`, живёт там до `reset()`.
+ * Сервер кэш не синхронит, поэтому после любой мутации запись нужно патчить ВРУЧНУЮ через
+ * `updateOneById(id, partial)` — это основной механизм оптимистичных апдейтов.
+ *
+ * @param apiPath относительный путь эндпоинта (напр. `'mashup/get'`, `'user/get'`); итоговый URL —
+ *   `${VITE_BACKEND_URL}/${apiPath}?id=...`. При `needToBeModified` к пути добавляется суффикс `_many`
+ *   (бек отдаёт «модифицированный» вариант для batch-запросов).
+ * @param keyNames имена полей `T`, под которые заводятся вторичные строковые индексы
+ *   (`additionalCache`) — позволяют доставать сущность не по id, а по строке через `getOneByStringKey`
+ *   (напр. `['username', 'token']` для user-стора). Поля должны реально присутствовать в ответе API.
+ */
 export function createEntityStore<T extends CachingEntity>(
     apiPath: string,
     keyNames: string[] = []
@@ -37,6 +61,11 @@ export function createEntityStore<T extends CachingEntity>(
         ),
         pendingRequests: {},
 
+        /**
+         * Возвращает одну сущность по id: сперва из `cache`, иначе ждёт уже летящий запрос
+         * (`pendingRequests[id]`), иначе фетчит её через `fetchAndCacheMany([id])`.
+         * Так конкурентные вызовы одного id не порождают дублирующих сетевых запросов.
+         */
         getOneById: async (id: number): Promise<T> => {
             if (get().cache[id]) {
                 return get().cache[id];
@@ -51,6 +80,12 @@ export function createEntityStore<T extends CachingEntity>(
             return get().cache[id];
         },
 
+        /**
+         * Достаёт сущность по вторичному строковому ключу (напр. `getOneByStringKey('username', 'foo')`).
+         * Сначала смотрит во вторичный индекс `additionalCache[keyName]` (там лежит id → читаем из `cache`),
+         * затем ждёт in-flight запрос с этим же ключом (дедупликация по `"keyName:key"`), и лишь потом
+         * фетчит через `fetchAndCacheOneByStringKey`, попутно регистрируя/снимая промис в `pendingRequests`.
+         */
         getOneByStringKey: async (keyName: string, key: string): Promise<T> => {
             const stringKey = `${keyName}:${key}`;
 
@@ -83,6 +118,11 @@ export function createEntityStore<T extends CachingEntity>(
             }
         },
 
+        /**
+         * Батч-получение сущностей по списку id. Догружает только отсутствующие в кэше id, затем
+         * возвращает результат В ПОРЯДКЕ переданного `ids` (а не в порядке ответа сервера),
+         * включая дубликаты исходного массива. `needToBeModified` проксируется в `fetchAndCacheMany`.
+         */
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
             const missingIds = ids.filter((id) => !get().cache[id]);
 
@@ -94,6 +134,14 @@ export function createEntityStore<T extends CachingEntity>(
             return ids.map((id) => get().cache[id]);
         },
 
+        /**
+         * Низкоуровневый загрузчик: дедуплицирует id, бьёт недостающие на чанки по 100
+         * (ограничение бека на `?id=1,2,3`) и фетчит чанки параллельно. На каждый чанк регистрирует
+         * один общий промис во `pendingRequests` под все его id — чтобы параллельные `getOneById`
+         * подцепились к уже летящему запросу. Заполняет и `cache`, и вторичные индексы `additionalCache`
+         * (по `keyNames`). При `needToBeModified` дёргает эндпоинт с суффиксом `_many`.
+         * Если фетчить нечего — лишь дожидается уже летящих запросов по этим id. Промисы снимаются в `finally`-фазе.
+         */
         fetchAndCacheMany: async (
             ids: number[],
             needToBeModified: boolean = false
@@ -185,6 +233,11 @@ export function createEntityStore<T extends CachingEntity>(
             return results.flat();
         },
 
+        /**
+         * Загружает одну сущность по строковому ключу через `?{keyName}={key}` (без суффикса `_many`,
+         * это всегда «модифицированный» одиночный объект). Кладёт её в `cache` и в соответствующий
+         * вторичный индекс `additionalCache[keyName]`. Если индекс уже знает id — сразу делегирует в `getOneById`.
+         */
         fetchAndCacheOneByStringKey: async (keyName: string, key: string): Promise<T> => {
             if (get().additionalCache[keyName][key]) {
                 return get().getOneById(get().additionalCache[keyName][key]);
@@ -221,6 +274,12 @@ export function createEntityStore<T extends CachingEntity>(
                 });
         },
 
+        /**
+         * Ручной патч записи кэша: сливает `updatedData` поверх текущего объекта и кладёт
+         * НОВЫЙ объект в `cache[id]` (новая ссылка → подписчики Zustand перерисуются).
+         * Основной способ синхронизировать кэш после мутации/оптимистичного апдейта, т.к. сервер кэш не обновляет.
+         * Вторичные индексы НЕ трогает — если меняется поле-ключ, его придётся переиндексировать отдельно.
+         */
         updateOneById: (id: number, updatedData: Partial<T> | undefined) => {
             const currentData = get().cache[id];
             const newData = { ...currentData, ...updatedData };
@@ -232,6 +291,10 @@ export function createEntityStore<T extends CachingEntity>(
             }));
         },
 
+        /**
+         * Полностью обнуляет стор: чистит `cache`, пересоздаёт пустые вторичные индексы по `keyNames`
+         * и сбрасывает `pendingRequests`. Вызывается из `resetAppState()` при logout и авто-логауте по 401.
+         */
         reset: () =>
             set({
                 cache: {},

@@ -4,6 +4,18 @@ import { UnpublishedMashup } from '@/store/moderation.ts';
 import { VkMashup } from '@/store/entities/vkMashup';
 import { useCallback } from 'react';
 
+/**
+ * Хук-фасад навигации по очереди воспроизведения.
+ *
+ * Возвращает набор колбэков, оборачивающих сеттеры `usePlayerStore`. Сами
+ * аудио-движки (Howler, медиасессия, трекеры стримов) живут отдельно — этот хук
+ * только меняет состояние очереди/индекса/флагов, движки реагируют на него.
+ *
+ * Важно: плеер поддерживает три **взаимоисключающих** источника звука —
+ * обычная очередь (`queue`), превью модерации (`moderationSrc`) и превью VK
+ * (`vkMashupSrc`). Запуск любого источника здесь гасит два других (обнуляет их
+ * src и `isPlaying`), поэтому одновременно играть может только один.
+ */
 export function usePlayer() {
     const updatePlaying = usePlayerStore((state) => state.updatePlaying);
     const queue = usePlayerStore((state) => state.queue);
@@ -26,14 +38,30 @@ export function usePlayer() {
     const updateInfo = usePlayerStore((state) => state.updateInfo);
     const updateMashupInfo = usePlayerStore((state) => state.updateMashupInfo);
 
+    /**
+     * Возобновить/запустить воспроизведение текущего трека очереди
+     * (выставляет только флаг `isPlaying`, ничего не перематывает).
+     */
     const play = useCallback(() => {
         updatePlaying(true);
     }, [updatePlaying]);
 
+    /** Поставить воспроизведение на паузу (сбрасывает только флаг `isPlaying`). */
     const pause = useCallback(() => {
         updatePlaying(false);
     }, [updatePlaying]);
 
+    /**
+     * Перейти к следующему треку. Всегда перематывает текущий в начало
+     * (`seek = 0`), затем ветвится по режиму `loop`:
+     * - `mashup` — повтор текущего трека: остаёмся на месте и просто играем заново;
+     * - иначе, если есть следующий трек — сдвигаем индекс вперёд;
+     * - `queue` (и трек был последним) — заворачиваем на индекс 0 и играем;
+     * - `none` (и трек был последним) — очередь кончилась, ставим на паузу.
+     *
+     * `loop` читается через `getState()`, а не из замыкания, чтобы избежать
+     * устаревшего значения и лишних пересозданий колбэка.
+     */
     const next = useCallback(() => {
         const currentLoop = usePlayerStore.getState().loop;
         updateSeek(0);
@@ -51,6 +79,14 @@ export function usePlayer() {
         }
     }, [pause, play, queue.length, queueIndex, updateChangedSeek, updateQueueIndex, updateSeek]);
 
+    /**
+     * Перейти к предыдущему треку — с привычным поведением «двойного назначения»:
+     * - если проиграно больше 5 секунд (`seek > 5000`), кнопка перематывает
+     *   **текущий** трек в начало (пауза + `seek = 0`), а не уходит назад;
+     * - иначе (в первые 5 секунд) переходим к предыдущему треку, если он есть;
+     *   при `loop === 'mashup'` на первом треке — играем текущий заново;
+     *   иначе на первом треке — ставим на паузу.
+     */
     const prev = useCallback(() => {
         const currentLoop = usePlayerStore.getState().loop;
 
@@ -69,6 +105,18 @@ export function usePlayer() {
         }
     }, [pause, play, queueIndex, seek, updateChangedSeek, updateQueueIndex, updateSeek]);
 
+    /**
+     * Запустить новую очередь (плейлист/альбом/подборку) с указанной позиции.
+     *
+     * Если `newQueueId` совпадает с уже активной очередью — повторного набора
+     * очереди не происходит, просто продолжаем играть (`play()`); это и делает
+     * кнопку Play на уже играющей сущности идемпотентной. Иначе гасим источники
+     * модерации и VK, сохраняем «оригинальную» (нешафленную) очередь в
+     * `originalQueue` и — при включённом `shuffle` — подменяем рабочую очередь
+     * перемешанной так, чтобы выбранный трек оказался первым.
+     *
+     * @param newQueueIndex стартовый индекс в очереди (по умолчанию 0).
+     */
     const playQueue = useCallback(
         (
             newQueue: number[],
@@ -122,6 +170,15 @@ export function usePlayer() {
         ]
     );
 
+    /**
+     * Запустить конкретный мешап внутри очереди.
+     *
+     * В отличие от {@link playQueue}, идемпотентность проверяется по паре
+     * (`queueId` + `queueIndex`): нажатие Play на уже играющем мешапе той же
+     * очереди лишь продолжает воспроизведение. Иначе гасим модерацию/VK и
+     * заново набираем очередь; при `shuffle` `shuffleQueue` перемешивает список
+     * **и пересчитывает** `newQueueIndex`, чтобы выбранный мешап остался текущим.
+     */
     const playMashup = useCallback(
         (newQueue: number[], newQueueName: string, newQueueId: string, newQueueIndex: number) => {
             if (newQueueId === queueId && queueIndex === newQueueIndex) {
@@ -169,6 +226,13 @@ export function usePlayer() {
         ]
     );
 
+    /**
+     * Запустить превью неопубликованного мешапа в режиме модерации.
+     *
+     * Полностью выключает обычную очередь (обнуляет queue/index/id/name) и
+     * закрывает панели info, затем активирует источник `moderationSrc` и гасит
+     * источник VK — три источника звука взаимоисключающи.
+     */
     const playModerationMashup = useCallback(
         (mashup: UnpublishedMashup) => {
             updateOriginalQueue([]);
@@ -204,6 +268,12 @@ export function usePlayer() {
         ]
     );
 
+    /**
+     * Запустить превью импортированного из VK аудио (перед загрузкой мешапа).
+     *
+     * Зеркально {@link playModerationMashup}: очищает обычную очереди и панели
+     * info, активирует источник `vkMashupSrc` и гасит модерацию.
+     */
     const playVkMashup = useCallback(
         (mashup: VkMashup) => {
             updateOriginalQueue([]);
@@ -239,6 +309,10 @@ export function usePlayer() {
         ]
     );
 
+    /**
+     * Открыть панель инфо для конкретного мешапа по id. Взаимоисключающа с
+     * панелью текущего трека: выставляет `mashupInfo` и сбрасывает `info`.
+     */
     const openMashupInfo = useCallback(
         (mashupId: number) => {
             updateInfo(false);
@@ -247,11 +321,16 @@ export function usePlayer() {
         [updateInfo, updateMashupInfo]
     );
 
+    /**
+     * Открыть панель инфо текущего играющего трека. Взаимоисключающа с
+     * {@link openMashupInfo}: выставляет `info` и сбрасывает `mashupInfo`.
+     */
     const openInfo = useCallback(() => {
         updateInfo(true);
         updateMashupInfo(null);
     }, [updateInfo, updateMashupInfo]);
 
+    /** Закрыть обе панели инфо (`info` и `mashupInfo`). */
     const closeInfo = useCallback(() => {
         updateInfo(false);
         updateMashupInfo(null);
