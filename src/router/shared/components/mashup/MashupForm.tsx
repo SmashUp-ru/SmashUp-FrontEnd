@@ -839,9 +839,11 @@ export default function MashupForm({
 
     return (
         <section className='flex flex-col gap-y-6 md:pr-[35px] h-full'>
-            <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
-            </div>
+            {text.title && (
+                <div className='flex items-center justify-between'>
+                    <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
+                </div>
+            )}
             <div className='w-full flex flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-12 flex-1'>
                 {/*картинка*/}
                 <div className='flex flex-col gap-y-2.5 items-center md:items-start'>

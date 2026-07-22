@@ -19,7 +19,7 @@ import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
 import { LoginResponse } from '@/router/shared/types/login.ts';
 import { useEffect } from 'react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { startVkFlow } from '@/lib/vk.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import ProfileIcon from '@/components/icons/Profile.tsx';
@@ -187,19 +187,19 @@ export default function LoginPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <TooltipProvider>
-                        <Tooltip delayDuration={100}>
-                            <TooltipTrigger className='w-full'>
-                                <Button className='w-full py-[15px]' variant='outline' disabled>
-                                    <VKIcon />
-                                    VK ID
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Появится уже совсем скоро!</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                        type='button'
+                        className='w-full py-[15px]'
+                        variant='outline'
+                        onClick={() =>
+                            startVkFlow('authorize').catch(
+                                axiosCatcher(toast, 'при входе через VK')
+                            )
+                        }
+                    >
+                        <VKIcon />
+                        VK ID
+                    </Button>
 
                     {/*Нет аккаунта?*/}
                     <div className='flex items-center gap-x-2.5'>

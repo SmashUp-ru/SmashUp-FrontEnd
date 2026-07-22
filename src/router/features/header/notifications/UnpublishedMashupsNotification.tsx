@@ -16,7 +16,7 @@ export default function UnpublishedMashupsNotification({
     const navigate = useNavigate();
 
     const handleButtonClick = useCallback(() => {
-        navigate(`/mashup/list/vk`);
+        navigate(`/mashup/upload?source=vk`);
         close();
     }, [close, navigate]);
 

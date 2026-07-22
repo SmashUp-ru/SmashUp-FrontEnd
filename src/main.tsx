@@ -1,7 +1,7 @@
 import { lazy, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import RootLayout from '@/router/pages/rootLayout.tsx';
 import Root from '@/router/pages/root/RootPage.tsx';
 import NotFound from '@/router/features/error/NotFound.tsx';
@@ -48,7 +48,8 @@ const ModerateMashupPage = lazy(
 );
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 const UploadVkMashupPage = lazy(() => import('./router/pages/vkMashup/UploadVkMashupPage'));
-const ListVkMashupPage = lazy(() => import('./router/pages/vkMashup/ListVkMashupPage'));
+const VkLinkCallbackPage = lazy(() => import('./router/pages/vk/VkLinkCallbackPage'));
+const VkAuthorizeCallbackPage = lazy(() => import('./router/pages/vk/VkAuthorizeCallbackPage'));
 
 const router = createBrowserRouter(
     [
@@ -109,12 +110,16 @@ const router = createBrowserRouter(
                             path: '/mashup/upload'
                         },
                         {
-                            element: <ListVkMashupPage />,
+                            element: <Navigate to='/mashup/upload?source=vk' replace />,
                             path: '/mashup/list/vk'
                         },
                         {
                             element: <UploadVkMashupPage />,
                             path: '/mashup/upload/vk/:ownerId/:audioId'
+                        },
+                        {
+                            element: <VkLinkCallbackPage />,
+                            path: '/vk/link'
                         },
                         {
                             element: <ModerationPage />,
@@ -165,6 +170,11 @@ const router = createBrowserRouter(
                         {
                             element: <LoginPage />,
                             path: '/login'
+                        },
+                        // возврат из VK OAuth (вход / регистрация)
+                        {
+                            element: <VkAuthorizeCallbackPage />,
+                            path: '/vk/authorize'
                         },
                         // регистрация
                         {

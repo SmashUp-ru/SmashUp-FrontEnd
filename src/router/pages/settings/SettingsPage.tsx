@@ -13,12 +13,7 @@ import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 import UpdateAvatar from '@/router/features/settings/UpdateAvatar.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
-} from '@/components/ui/tooltip.tsx';
+import { startVkFlow, getVkId } from '@/lib/vk.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
@@ -47,6 +42,16 @@ export default function SettingsPage() {
         }
     }, [settings]);
 
+    // undefined = грузим / эндпоинт недоступен; null = не привязан; number = привязан
+    const [vkId, setVkId] = useState<number | null | undefined>(undefined);
+    const vkConnected = vkId != null;
+
+    useEffect(() => {
+        getVkId()
+            .then(setVkId)
+            .catch(() => setVkId(null));
+    }, []);
+
     if (!currentUser) return null;
     if (isLoading) return <SettingsPageSkeleton />;
 
@@ -70,32 +75,44 @@ export default function SettingsPage() {
                         <PasswordDialog email={email} />
 
                         <div className='grid grid-cols-1 md:grid-cols-3 gap-x-20'>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <div className='flex items-center justify-between opacity-50'>
-                                            <div className='flex gap-x-[25px] items-center'>
-                                                <VKIcon size={32} />
-                                                <div className='flex flex-col items-start'>
-                                                    <span className='font-medium text-onSurfaceVariant'>
-                                                        Не подключено
-                                                    </span>
-                                                    <span className='font-bold text-[24px] text-onSurface'>
-                                                        VK
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <ChevronRightIcon size={32} />
+                            {vkConnected ? (
+                                <div className='flex items-center justify-between'>
+                                    <div className='flex gap-x-[25px] items-center'>
+                                        <VKIcon size={32} />
+                                        <div className='flex flex-col items-start'>
+                                            <span className='font-medium text-onSurfaceVariant'>
+                                                Подключено
+                                            </span>
+                                            <span className='font-bold text-[24px] text-onSurface'>
+                                                VK
+                                            </span>
                                         </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent
-                                        className='max-w-[300px] text-center'
-                                        side='right'
-                                    >
-                                        <p>Ещё не готово, но скоро будет!</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button
+                                    type='button'
+                                    onClick={() =>
+                                        startVkFlow('link').catch(
+                                            axiosCatcher(toast, 'при подключении VK')
+                                        )
+                                    }
+                                    className='flex items-center justify-between hover:opacity-80 transition-opacity'
+                                >
+                                    <div className='flex gap-x-[25px] items-center'>
+                                        <VKIcon size={32} />
+                                        <div className='flex flex-col items-start'>
+                                            <span className='font-medium text-onSurfaceVariant'>
+                                                Не подключено
+                                            </span>
+                                            <span className='font-bold text-[24px] text-onSurface'>
+                                                VK
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <ChevronRightIcon size={32} />
+                                </button>
+                            )}
                         </div>
                     </div>
 

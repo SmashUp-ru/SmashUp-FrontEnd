@@ -98,7 +98,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
 
                         <Button className='md:mr-7 py-[7px] font-bold text-base rounded-xl' asChild>
                             <Link to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}>
-                                Опубликовать
+                                Редактировать
                             </Link>
                         </Button>
                     </div>

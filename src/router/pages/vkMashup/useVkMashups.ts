@@ -15,6 +15,9 @@ export function useVkMashups(autoLoad: boolean = true) {
     const updateVkMashups = useCurrentUserStore((state) => state.updateVkMashups);
 
     const [mashupsLoading, setMashupsLoading] = useState(vkMashups === null);
+    // VK ID не привязан к аккаунту (бэк отвечает 404 mashup.list.vk.not_connected).
+    // Показываем информативный экран, а не error-тост.
+    const [notConnected, setNotConnected] = useState(false);
 
     const { toast } = useToast();
 
@@ -30,7 +33,14 @@ export function useVkMashups(autoLoad: boolean = true) {
             loadVkMashups(emptyVkMashups, 0)
                 .then(updateVkMashups)
                 .catch((e: AxiosSmashUpError) => {
-                    axiosCatcher(toast, 'при загрузке мэшапов из VK')(e);
+                    if (
+                        e.response?.data?.message === 'mashup.list.vk.not_connected' ||
+                        e.response?.status === 404
+                    ) {
+                        setNotConnected(true);
+                    } else {
+                        axiosCatcher(toast, 'при загрузке мэшапов из VK')(e);
+                    }
                     updateVkMashups(emptyVkMashups);
                 })
                 .finally(() => setMashupsLoading(false));
@@ -145,6 +155,7 @@ export function useVkMashups(autoLoad: boolean = true) {
     return {
         isLoading: mashupsLoading,
         setLoading: setMashupsLoading,
+        notConnected,
         vkMashups,
         updateVkMashups,
         removeVkMashup,

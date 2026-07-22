@@ -24,7 +24,7 @@ export default function UploadVkMashupPage() {
         const ownerId = params.ownerId ? parseInt(params.ownerId) : NaN;
 
         if (isNaN(audioId) || isNaN(ownerId)) {
-            navigate('/mashup/list/vk');
+            navigate('/mashup/upload?source=vk');
             return undefined;
         }
 

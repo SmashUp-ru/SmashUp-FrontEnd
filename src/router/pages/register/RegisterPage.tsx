@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input.tsx';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -19,12 +19,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
-} from '@/components/ui/tooltip.tsx';
+import { startVkFlow } from '@/lib/vk.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { registerFormSchema } from '@/router/shared/schemas/register.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
@@ -35,13 +30,18 @@ export default function RegisterPage() {
     useDocumentTitle('Регистрация');
     const { toast } = useToast();
     const navigate = useNavigate();
+    const location = useLocation();
     const token = useGlobalStore((state) => state.token);
+
+    // при регистрации через VK сюда приходят vkId и email (из /vk/authorize)
+    const vkState = location.state as { vkId?: number | null; email?: string } | null;
+    const vkId = vkState?.vkId ?? null;
 
     const form = useForm<z.infer<typeof registerFormSchema>>({
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
             nickname: '',
-            email: '',
+            email: vkState?.email ?? '',
             password: '',
             accept: false
         }
@@ -52,7 +52,8 @@ export default function RegisterPage() {
             .post('/register', {
                 username: values.nickname,
                 email: values.email,
-                password: values.password
+                password: values.password,
+                ...(vkId !== null ? { vkId } : {})
             })
             .then(() => navigate('/register/email'))
             .catch(axiosCatcher(toast, 'при попытке регистрации.'));
@@ -201,19 +202,19 @@ export default function RegisterPage() {
 
                 <div className='flex flex-col gap-y-4 w-full items-center'>
                     {/*ВКИД*/}
-                    <TooltipProvider>
-                        <Tooltip delayDuration={100}>
-                            <TooltipTrigger className='w-full'>
-                                <Button className='w-full py-[15px]' variant='outline' disabled>
-                                    <VKIcon />
-                                    VK ID
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Появится уже совсем скоро!</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                        type='button'
+                        className='w-full py-[15px]'
+                        variant='outline'
+                        onClick={() =>
+                            startVkFlow('authorize').catch(
+                                axiosCatcher(toast, 'при регистрации через VK')
+                            )
+                        }
+                    >
+                        <VKIcon />
+                        VK ID
+                    </Button>
 
                     {/*Есть аккаунт?*/}
                     <div className='flex items-center gap-x-2.5'>
