@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { coverUrl } from '@/lib/cdn.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface VkMashupItemProps {
     mashup: VkMashup;
@@ -46,11 +47,11 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                 <AccordionTrigger>
                     <div className='w-full flex items-center gap-x-2 py-[6px] pl-[6px]'>
                         <div className='flex min-w-0 items-center gap-x-3 md:gap-x-4'>
-                            <img
+                            <ImageWithSkeleton
                                 src={imageUrl}
                                 alt={mashup.name}
-                                loading='lazy'
                                 className='w-12 h-12 shrink-0 rounded-[10px]'
+                                skeletonClassName='w-12 h-12 shrink-0 rounded-[10px]'
                             />
                             <div className='flex min-w-0 flex-col items-start'>
                                 <span className='truncate font-bold text-onSurface'>
@@ -104,11 +105,11 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                     </div>
                 </div>
                 <AccordionContent className='mt-4 flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-x-6'>
-                    <img
+                    <ImageWithSkeleton
                         src={imageUrl}
                         alt={mashup.name}
-                        loading='lazy'
                         className='w-[216px] h-[216px] shrink-0 rounded-[30px]'
+                        skeletonClassName='w-[216px] h-[216px] shrink-0 rounded-[30px]'
                     />
 
                     <div className='w-full grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-x-6'>

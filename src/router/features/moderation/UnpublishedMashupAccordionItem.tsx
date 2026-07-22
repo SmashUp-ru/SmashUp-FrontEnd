@@ -39,6 +39,7 @@ import { SmashUpIcon } from '@/components/icons/SmashUp';
 import { UploadYouTubeTrackDialog } from '@/router/shared/components/track/UploadYouTubeTrackDialog';
 import BaseToast from '@/router/shared/toasts/Base';
 import { Mashup } from '@/store/entities/mashup';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -154,10 +155,11 @@ export function UnpublishedMashupAccordionItem({
             <div className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4'>
                 <AccordionTrigger className='flex-1 min-w-0 h-auto p-0 bg-transparent rounded-none'>
                     <div className='flex items-center gap-x-4 min-w-0'>
-                        <img
+                        <ImageWithSkeleton
                             src={imageUrl}
                             alt={mashup.name}
                             className='w-12 h-12 rounded-[10px]'
+                            skeletonClassName='w-12 h-12 rounded-[10px] shrink-0'
                         />
                         <div className='flex flex-col items-start'>
                             <span className='font-bold text-onSurface'>{mashup.name}</span>
@@ -284,10 +286,11 @@ export function UnpublishedMashupAccordionItem({
                 </div>
             </div>
             <AccordionContent className='mt-4 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-x-6'>
-                <img
+                <ImageWithSkeleton
                     src={imageUrl}
                     alt={mashup.name}
                     className='w-[216px] h-[216px] max-w-full rounded-[30px] shrink-0'
+                    skeletonClassName='w-[216px] h-[216px] max-w-full rounded-[30px] shrink-0'
                 />
 
                 <div className='w-full grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-x-6'>

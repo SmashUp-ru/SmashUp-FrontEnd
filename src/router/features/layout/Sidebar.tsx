@@ -43,9 +43,13 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
+    const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
 
     // На десктопе высота уменьшается, чтобы не перекрывать нижний плеер-бар.
-    const playerActive = queue.length > 0 || queueIndex >= 0 || moderationSrc !== null;
+    // Учитываем ВСЕ источники плеера (очередь / модерация / VK) — иначе при
+    // VK-превью сайдбар остаётся во всю высоту и полноширинный бар наезжает на него.
+    const playerActive =
+        queue.length > 0 || queueIndex >= 0 || moderationSrc !== null || vkMashupSrc !== null;
     const desktopHeight = playerActive ? 'md:h-[calc(100%-148px)]' : 'md:h-[calc(100%-32px)]';
 
     const logout = () => {

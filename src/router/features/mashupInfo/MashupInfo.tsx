@@ -35,6 +35,7 @@ export default function MashupInfo() {
     const info = usePlayerStore((state) => state.info);
     const mashupInfo = usePlayerStore((state) => state.mashupInfo);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
+    const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
 
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
 
@@ -65,7 +66,7 @@ export default function MashupInfo() {
     return (
         <div
             className={cn(
-                `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto overflow-x-hidden`,
+                `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null || vkMashupSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto overflow-x-hidden`,
                 'flex flex-col gap-y-4 items-start md:transition-[width,min-width,opacity] md:duration-300 motion-reduce:transition-none',
                 entered
                     ? 'opacity-100 md:w-[382px] md:min-w-[382px]'
