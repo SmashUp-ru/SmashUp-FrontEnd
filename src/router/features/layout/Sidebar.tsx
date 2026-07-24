@@ -25,7 +25,7 @@ interface SidebarProps {
 /** Подпись пункта меню — видна только в мобильном drawer (на десктопе icon-rail). */
 function RowLabel({ children }: { children: string }) {
     return (
-        <span className='md:hidden font-bold text-base text-onSurface whitespace-nowrap'>
+        <span className='md:hidden font-bold text-sm text-onSurface whitespace-nowrap'>
             {children}
         </span>
     );
@@ -191,7 +191,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                                 <AvatarImage src={coverUrl('user', currentUser.imageUrl, 100)} />
                                 <AvatarFallback>{currentUser.username.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            <span className='font-bold text-base text-onSurface truncate'>
+                            <span className='font-bold text-sm text-onSurface truncate'>
                                 {currentUser.username}
                             </span>
                         </Link>
@@ -202,7 +202,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <AddMashupIcon />
-                            <span className='font-bold text-base text-onSurface'>
+                            <span className='font-bold text-sm text-onSurface'>
                                 Загрузить мэшап
                             </span>
                         </Link>
@@ -214,9 +214,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                                 className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                             >
                                 <GavelIcon />
-                                <span className='font-bold text-base text-onSurface'>
-                                    Модерация
-                                </span>
+                                <span className='font-bold text-sm text-onSurface'>Модерация</span>
                             </Link>
                         )}
                         <Link
@@ -226,7 +224,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <SettingsIcon />
-                            <span className='font-bold text-base text-onSurface'>Настройки</span>
+                            <span className='font-bold text-sm text-onSurface'>Настройки</span>
                         </Link>
                         <button
                             aria-label='Выйти'
@@ -234,7 +232,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <DoorIcon color='error' />
-                            <span className='font-bold text-base text-error'>Выйти</span>
+                            <span className='font-bold text-sm text-error'>Выйти</span>
                         </button>
                     </div>
                 )}
@@ -244,7 +242,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                         <Link
                             draggable={false}
                             to='/login'
-                            className='w-full text-center whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-3 text-base font-bold'
+                            className='w-full text-center whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-3 text-sm font-bold'
                         >
                             Войти
                         </Link>

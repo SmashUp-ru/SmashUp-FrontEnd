@@ -51,7 +51,6 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                 src={imageUrl}
                                 alt={mashup.name}
                                 className='w-12 h-12 shrink-0 rounded-[10px]'
-                                skeletonClassName='w-12 h-12 shrink-0 rounded-[10px]'
                             />
                             <div className='flex min-w-0 flex-col items-start'>
                                 <span className='truncate font-bold text-onSurface'>
@@ -91,13 +90,13 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                             }}
                         >
                             {isPlaying ? (
-                                <PauseHollowIcon color='primary' size={36} />
+                                <PauseHollowIcon color='primary' size={32} />
                             ) : (
-                                <PlayHollowIcon color='primary' size={36} />
+                                <PlayHollowIcon color='primary' size={32} />
                             )}
                         </Button>
 
-                        <Button className='md:mr-7 py-[7px] font-bold text-base rounded-xl' asChild>
+                        <Button className='md:mr-7 py-[7px] font-bold text-sm rounded-xl' asChild>
                             <Link to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}>
                                 Редактировать
                             </Link>
@@ -109,7 +108,6 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                         src={imageUrl}
                         alt={mashup.name}
                         className='w-[216px] h-[216px] shrink-0 rounded-[30px]'
-                        skeletonClassName='w-[216px] h-[216px] shrink-0 rounded-[30px]'
                     />
 
                     <div className='w-full grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-x-6'>
@@ -119,12 +117,12 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Название мэшапа
                                 </Label>
-                                <span className='font-bold text-[24px]'>{mashup.name}</span>
+                                <span className='font-bold text-xl'>{mashup.name}</span>
                             </div>
 
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <span className='font-bold text-[24px]'>{mashup.artist}</span>
+                                <span className='font-bold text-xl'>{mashup.artist}</span>
                             </div>
                         </div>
 

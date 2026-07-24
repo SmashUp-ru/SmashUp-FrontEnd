@@ -8,6 +8,7 @@ import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts
 import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { getToken } from '@/store/global';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function PlayerBarModeration() {
     const volume = usePlayerStore((state) => state.volume);
@@ -25,14 +26,14 @@ export default function PlayerBarModeration() {
             seekMashup={moderationSrc}
             left={
                 <>
-                    <img
+                    <ImageWithSkeleton
                         src={`${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${moderationSrc.id}_800x800.png?token=${getToken()}`}
                         alt={moderationSrc.name}
                         className='w-12 h-12 rounded-[10px]'
                     />
 
                     <div className='flex flex-col min-w-0'>
-                        <span className='font-bold text-[18px] text-onSurface truncate'>
+                        <span className='font-bold text-[15px] text-onSurface truncate'>
                             {moderationSrc.name}
                         </span>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
@@ -63,7 +64,7 @@ export default function PlayerBarModeration() {
                         aria-label='Пауза'
                         onClick={() => updateModerationIsPlaying(false)}
                     >
-                        <PauseHollowIcon color='onSurface' />
+                        <PauseHollowIcon color='onSurface' size={32} />
                     </Button>
                 ) : (
                     <Button
@@ -72,7 +73,7 @@ export default function PlayerBarModeration() {
                         aria-label='Воспроизвести'
                         onClick={() => updateModerationIsPlaying(true)}
                     >
-                        <PlayHollowIcon color='onSurface' />
+                        <PlayHollowIcon color='onSurface' size={32} />
                     </Button>
                 )
             }

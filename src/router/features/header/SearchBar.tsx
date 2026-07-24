@@ -10,6 +10,7 @@ import CrossoverPopoverContent from '@/router/features/header/CrossoverPopoverCo
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function SearchBar() {
     const {
@@ -47,7 +48,7 @@ export default function SearchBar() {
                             location.pathname.startsWith('/mashup/moderation/')
                         }
                         startIcon={SearchIcon}
-                        className={cn('font-bold text-lg', 'w-full')}
+                        className={cn('font-bold text-[15px]', 'w-full')}
                         placeholder='Поиск'
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
@@ -78,7 +79,7 @@ export default function SearchBar() {
                     >
                         <Badge className='gap-x-1'>
                             <div className='w-6 h-6'>
-                                <img
+                                <ImageWithSkeleton
                                     className='w-full h-full'
                                     src={coverUrl('track', track.imageUrl, 100)}
                                     alt={track.name}
@@ -103,7 +104,7 @@ export default function SearchBar() {
                     >
                         <Badge className='gap-x-1'>
                             <div className='w-6 h-6'>
-                                <img
+                                <ImageWithSkeleton
                                     className='w-full h-full'
                                     src={`${import.meta.env.VITE_BACKEND_URL}/uploads/track_author/${artist.imageUrl}_100x100.png`}
                                     alt={artist.name}
@@ -123,8 +124,10 @@ export default function SearchBar() {
                     }
                 }}
                 className={cn(
-                    'rounded-xl bg-surface text-onSurfaceVariant',
-                    'w-[--radix-popover-trigger-width]'
+                    // фон теперь базовый; ширина — по триггеру, поэтому базовый
+                    // max-w здесь снимаем, иначе подсказка станет уже поля
+                    'rounded-2xl text-onSurfaceVariant',
+                    'w-[--radix-popover-trigger-width] max-w-none'
                 )}
             >
                 <CrossoverPopoverContent />

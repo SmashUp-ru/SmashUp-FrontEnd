@@ -1,13 +1,18 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { cn, zip } from '@/lib/utils.ts';
 import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
+import {
+    THUMB_REVEAL,
+    THUMB_REVEAL_DESKTOP,
+    THUMB_ROW_HOVER
+} from '@/router/shared/components/thumbHover.ts';
+import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -26,7 +31,12 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
     if (isLoading) return <PlaylistThumbSkeleton />;
 
     return (
-        <div className='w-full md:w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]'>
+        <div
+            className={cn(
+                'w-full md:w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                THUMB_ROW_HOVER
+            )}
+        >
             <div className='relative'>
                 <Link
                     draggable={false}
@@ -36,42 +46,33 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                             : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
                     }
                 >
-                    <img
+                    <ImageWithSkeleton
                         src={image ? image : coverUrl('playlist', playlist.imageUrl, 400)}
                         alt={playlist.name}
                         className='transition-opacity duration-200 motion-reduce:transition-none w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30'
-                        draggable={false}
                         loading='lazy'
                     />
                 </Link>
-                {playlist.mashups.length > 0 &&
-                    (isThisPlaying ? (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={togglePlay}
-                            aria-label='Пауза'
-                            className={cn(
-                                'block md:hidden md:group-hover:block absolute bottom-3 right-3 z-20',
-                                'block'
-                            )}
-                        >
-                            <PauseHollowIcon color='primary' hoverColor='hoverPrimary' />
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            onClick={togglePlay}
-                            aria-label='Воспроизвести'
-                            className='hidden md:group-hover:block absolute bottom-3 right-3 z-20'
-                        >
-                            <PlayHollowIcon
-                                color={isThisQueue ? 'primary' : 'onSurface'}
-                                hoverColor={isThisQueue ? 'hoverPrimary' : 'onSurfaceVariant'}
-                            />
-                        </Button>
-                    ))}
+                {playlist.mashups.length > 0 && (
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={togglePlay}
+                        aria-label={isThisPlaying ? 'Пауза' : 'Воспроизвести'}
+                        className={cn(
+                            isThisPlaying ? THUMB_REVEAL : THUMB_REVEAL_DESKTOP,
+                            'absolute bottom-3 right-3 z-20'
+                        )}
+                    >
+                        <PlayPauseMorphIcon
+                            hollow
+                            playing={isThisPlaying}
+                            color={isThisQueue ? 'primary' : 'onSurface'}
+                            hoverColor={isThisQueue ? 'hoverPrimary' : 'onSurfaceVariant'}
+                            size={32}
+                        />
+                    </Button>
+                )}
             </div>
             <div className='flex flex-col'>
                 <Link
@@ -80,7 +81,7 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                             ? link
                             : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
                     }
-                    className='font-bold text-lg text-onSurface truncate w-full md:w-[216px]'
+                    className='font-bold text-[15px] text-onSurface truncate w-full md:w-[216px]'
                     title={playlist.name}
                 >
                     {playlist.name}
@@ -91,7 +92,7 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                             <Link
                                 key={index}
                                 to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                className='font-medium text-lg text-onSurfaceVariant truncate'
+                                className='font-medium text-[13px] text-onSurfaceVariant truncate'
                             >
                                 {author}
                             </Link>

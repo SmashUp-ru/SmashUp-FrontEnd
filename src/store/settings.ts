@@ -9,6 +9,19 @@ export const BITRATES: Record<number, number> = {
     4: 320000
 };
 
+/**
+ * Варианты для сегментированного выбора битрейта: индекс `BITRATES` → подпись.
+ * Последний — «Ориг», исходное качество (320 кбит/с), как было в прежних
+ * подписях слайдера.
+ */
+export const BITRATE_OPTIONS: { value: number; label: string }[] = [
+    { value: 0, label: '64' },
+    { value: 1, label: '96' },
+    { value: 2, label: '128' },
+    { value: 3, label: '160' },
+    { value: 4, label: 'Ориг' }
+];
+
 interface SettingsState {
     bitrate: keyof typeof BITRATES;
     updateBitrate: (newBitrate: keyof typeof BITRATES) => void;

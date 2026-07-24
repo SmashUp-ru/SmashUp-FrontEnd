@@ -159,7 +159,6 @@ export function UnpublishedMashupAccordionItem({
                             src={imageUrl}
                             alt={mashup.name}
                             className='w-12 h-12 rounded-[10px]'
-                            skeletonClassName='w-12 h-12 rounded-[10px] shrink-0'
                         />
                         <div className='flex flex-col items-start'>
                             <span className='font-bold text-onSurface'>{mashup.name}</span>
@@ -203,11 +202,11 @@ export function UnpublishedMashupAccordionItem({
                                 e.preventDefault();
                             }}
                         >
-                            <PlayHollowIcon color='primary' size={36} />
+                            <PlayHollowIcon color='primary' size={32} />
                         </Button>
 
                         <Button
-                            className='flex-1 md:flex-none py-[7px] font-bold text-base rounded-xl'
+                            className='flex-1 md:flex-none py-[7px] font-bold text-sm rounded-xl'
                             onClick={(e) => {
                                 e.preventDefault();
                                 axiosSession
@@ -246,7 +245,7 @@ export function UnpublishedMashupAccordionItem({
                                     e.stopPropagation();
                                 }}
                             >
-                                <Button className='flex-1 md:flex-none py-[7px] font-bold text-base rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                                <Button className='flex-1 md:flex-none py-[7px] font-bold text-sm rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
                                     Отклонить
                                 </Button>
                             </DialogTrigger>
@@ -290,7 +289,6 @@ export function UnpublishedMashupAccordionItem({
                     src={imageUrl}
                     alt={mashup.name}
                     className='w-[216px] h-[216px] max-w-full rounded-[30px] shrink-0'
-                    skeletonClassName='w-[216px] h-[216px] max-w-full rounded-[30px] shrink-0'
                 />
 
                 <div className='w-full grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-x-6'>
@@ -300,14 +298,12 @@ export function UnpublishedMashupAccordionItem({
                             <Label className='font-medium text-onSurfaceVariant'>
                                 Название мэшапа
                             </Label>
-                            <span className='font-bold text-[24px]'>{mashup.name}</span>
+                            <span className='font-bold text-xl'>{mashup.name}</span>
                         </div>
 
                         <div className='w-full flex flex-col gap-y-2.5'>
                             <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                            <span className='font-bold text-[24px]'>
-                                {mashup.authors?.join(', ')}
-                            </span>
+                            <span className='font-bold text-xl'>{mashup.authors?.join(', ')}</span>
                         </div>
                     </div>
 
@@ -364,7 +360,7 @@ export function UnpublishedMashupAccordionItem({
                                         key={genre}
                                         className={cn(
                                             'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                            'font-bold text-[18px] text-onBackground'
+                                            'font-bold text-[15px] text-onBackground'
                                         )}
                                     >
                                         {genre}
@@ -389,7 +385,7 @@ export function UnpublishedMashupAccordionItem({
                                         );
                                     }}
                                 />
-                                <Label className='font-bold text-[18px] text-onSurface'>
+                                <Label className='font-bold text-[15px] text-onSurface'>
                                     Explicit (Мат)
                                 </Label>
                             </div>
@@ -406,7 +402,7 @@ export function UnpublishedMashupAccordionItem({
                                         );
                                     }}
                                 />
-                                <Label className='font-bold text-[18px] text-onSurface'>
+                                <Label className='font-bold text-[15px] text-onSurface'>
                                     Бан-ворды Twitch
                                 </Label>
                             </div>

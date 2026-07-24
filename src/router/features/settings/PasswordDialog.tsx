@@ -80,7 +80,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                         <Button
                             variant='ghost'
                             size='icon'
-                            className='font-bold text-[24px] text-primary'
+                            className='font-bold text-xl text-primary'
                         >
                             Изменить пароль
                         </Button>

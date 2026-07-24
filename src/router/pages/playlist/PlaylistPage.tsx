@@ -42,12 +42,11 @@ export default function PlaylistPage() {
                     src={coverUrl('playlist', playlist.imageUrl, 800)}
                     alt={playlist.name}
                     className='w-[216px] h-[216px] rounded-[34px]'
-                    skeletonClassName='w-[216px] h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>
+                        <span className='font-medium text-[15px] text-additionalText'>
                             Плейлист{' '}
                             {playlist.authors.map((author) => (
                                 <Link
@@ -59,7 +58,7 @@ export default function PlaylistPage() {
                                 </Link>
                             ))}
                         </span>
-                        <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
+                        <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                             {playlist.name}
                         </h1>
                     </div>

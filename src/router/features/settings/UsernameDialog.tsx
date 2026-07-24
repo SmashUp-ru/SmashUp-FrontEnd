@@ -86,7 +86,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
         <div className='w-full flex flex-col gap-y-2.5'>
             <Label className='font-medium text-onSurfaceVariant'>Отображаемый никнейм</Label>
             <div className='flex items-center gap-x-2.5'>
-                <span className='font-bold text-[24px]'>{username}</span>
+                <span className='font-bold text-xl'>{username}</span>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button variant='ghost' size='icon'>

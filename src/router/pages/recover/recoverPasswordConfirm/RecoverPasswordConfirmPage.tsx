@@ -60,7 +60,7 @@ export default function RecoverPasswordConfirmPage() {
             <div className='flex justify-center items-center h-full'>
                 <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                     <div className='text-center'>
-                        <h1 className='text-primary font-bold text-3xl'>Ссылка недействительна</h1>
+                        <h1 className='text-primary font-bold text-2xl'>Ссылка недействительна</h1>
                         <span className='font-medium text-onSurfaceVariant'>
                             Перейдите по ссылке из письма для восстановления пароля.
                         </span>
@@ -81,7 +81,7 @@ export default function RecoverPasswordConfirmPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-3xl'>Восстановление пароля</h1>
+                    <h1 className='text-primary font-bold text-2xl'>Восстановление пароля</h1>
                     <span className='font-medium text-onSurfaceVariant'>Не забывайте!</span>
                 </div>
 

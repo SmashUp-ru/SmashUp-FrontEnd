@@ -61,7 +61,7 @@ export default function UploadTrackFromYoutubeTab() {
                                     <Label className='font-medium text-onSurfaceVariant'>
                                         Авторы
                                     </Label>
-                                    <span className='font-bold text-[24px] text-onSurfaceVariant'>
+                                    <span className='font-bold text-xl text-onSurfaceVariant'>
                                         Автор, Авторка, Авториня, Авторесса, Авторогиня
                                     </span>
                                 </div>

@@ -12,7 +12,7 @@ export default function UploadTrackPage() {
     return (
         <div className='flex flex-col gap-y-7 h-full'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-4xl text-onSurface'>Загрузка трека</h1>
+                <h1 className='font-bold text-[28px] text-onSurface'>Загрузка трека</h1>
             </div>
 
             <TabsSeparated

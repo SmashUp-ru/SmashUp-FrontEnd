@@ -8,15 +8,13 @@ import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import { useFavoritesPageData } from '@/router/features/favorites/useFavoritesPageData.ts';
 import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton.tsx';
-import { useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { cn } from '@/lib/utils.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function FavoritesPage() {
     useDocumentTitle('Любимое');
@@ -32,8 +30,6 @@ export default function FavoritesPage() {
 
     const { isLoading, mashups, likes, isError, reload } = useFavoritesPageData();
 
-    const [imageLoaded, setImageLoaded] = useState(false);
-
     if (currentUser === null) return null;
 
     if (isLoading) return <FavoritesPageSkeleton />;
@@ -42,24 +38,18 @@ export default function FavoritesPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex flex-col items-center gap-y-3 md:flex-row md:items-center md:gap-x-12 md:gap-y-0 text-center md:text-left bg-surface p-3 md:p-4 rounded-[34px]'>
-                {!imageLoaded && (
-                    <Skeleton className='w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]' />
-                )}
-                <img
+                <ImageWithSkeleton
                     src={coverUrl('user', currentUser.imageUrl, 800)}
                     alt={currentUser.username}
-                    className={cn(
-                        'w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]',
-                        !imageLoaded && 'hidden'
-                    )}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
+                    className='w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>Коллекция</span>
-                        <h1 className='font-bold text-4xl text-onSurface'>
+                        <span className='font-medium text-[15px] text-additionalText'>
+                            Коллекция
+                        </span>
+                        <h1 className='font-bold text-[28px] text-onSurface'>
                             Любимое{' '}
                             <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
                                 {currentUser.username}
@@ -75,7 +65,7 @@ export default function FavoritesPage() {
                                     pause();
                                 }}
                             >
-                                <PauseHollowIcon />
+                                <PauseHollowIcon size={32} />
                             </Button>
                         ) : (
                             <Button
@@ -93,7 +83,7 @@ export default function FavoritesPage() {
                                     );
                                 }}
                             >
-                                <PlayHollowIcon />
+                                <PlayHollowIcon size={32} />
                             </Button>
                         )}
                     </div>

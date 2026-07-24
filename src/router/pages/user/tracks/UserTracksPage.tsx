@@ -8,8 +8,6 @@ import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { cn } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
@@ -18,6 +16,7 @@ import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
@@ -44,8 +43,6 @@ export default function UserTracksPage() {
         loadUser();
     }, [loadUser]);
 
-    const [imageLoaded, setImageLoaded] = useState(false);
-
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
 
     const { mashups, isLoading } = usePlaylistMashups(user ? user.mashups : [], [user]);
@@ -63,19 +60,18 @@ export default function UserTracksPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left bg-surface p-4 rounded-[34px]'>
-                {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
-                <img
+                <ImageWithSkeleton
                     src={coverUrl('user', user.imageUrl, 800)}
                     alt={user.username}
-                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
+                    className='w-[216px] h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>Коллекция</span>
-                        <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
+                        <span className='font-medium text-[15px] text-additionalText'>
+                            Коллекция
+                        </span>
+                        <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                             Мэшапы{' '}
                             <Link draggable={false} to={`/user/${user.username}`}>
                                 {user.username}
@@ -91,7 +87,7 @@ export default function UserTracksPage() {
                                     pause();
                                 }}
                             >
-                                <PauseHollowIcon />
+                                <PauseHollowIcon size={32} />
                             </Button>
                         ) : (
                             <Button
@@ -109,7 +105,7 @@ export default function UserTracksPage() {
                                     );
                                 }}
                             >
-                                <PlayHollowIcon />
+                                <PlayHollowIcon size={32} />
                             </Button>
                         )}
                         <Button

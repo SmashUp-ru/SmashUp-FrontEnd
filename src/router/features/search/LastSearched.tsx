@@ -22,15 +22,17 @@ export default function LastSearched() {
         return (
             <div className='flex flex-1 flex-col items-center justify-center text-center gap-y-3 py-24 text-onSurfaceVariant'>
                 <SearchIcon size={64} color='onSurfaceVariant' />
-                <p className='text-lg font-bold text-onSurface'>Здесь появится история поиска</p>
-                <p className='text-sm'>Найдите мэшапы, плейлисты или авторов</p>
+                <p className='text-[15px] font-bold text-onSurface'>
+                    Здесь появится история поиска
+                </p>
+                <p className='text-[13px]'>Найдите мэшапы, плейлисты или авторов</p>
             </div>
         );
 
     return (
         <div className='flex flex-col gap-y-4 h-full'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-xl text-onSurface'>История поиска</h1>
+                <h1 className='font-bold text-base text-onSurface'>История поиска</h1>
                 <div className='flex bg-surfaceVariant rounded-xl'>
                     <Button
                         size='sm'

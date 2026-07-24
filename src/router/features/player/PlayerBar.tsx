@@ -3,9 +3,8 @@ import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { Link } from 'react-router-dom';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
-import SkipLeftIcon from '@/components/icons/SkipLeft.tsx';
+import SkipButton from '@/router/features/player/SkipButton.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
-import SkipRightIcon from '@/components/icons/SkipRight.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
 import InfoIcon from '@/components/icons/Info.tsx';
 import { usePlayerStore } from '@/store/player.ts';
@@ -21,6 +20,7 @@ import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -60,11 +60,10 @@ export default function PlayerBar() {
                     className='flex items-center gap-x-2 md:gap-x-6 w-full min-w-0 cursor-pointer md:cursor-default'
                     onClick={() => isMobile && updateFullPlayer(true)}
                 >
-                    <img
+                    <ImageWithSkeleton
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt='mashup title'
                         className='w-16 h-16 rounded-2xl'
-                        draggable={false}
                     />
 
                     <div className='flex flex-col min-w-0'>
@@ -78,7 +77,7 @@ export default function PlayerBar() {
                                     else openInfo();
                                 }
                             }}
-                            className='block w-full truncate text-left font-bold text-[18px] text-onSurface'
+                            className='block w-full truncate text-left font-bold text-[15px] text-onSurface'
                         >
                             {mashup.name}
                         </Button>
@@ -183,18 +182,14 @@ export default function PlayerBar() {
                         </Button>
                     )}
 
-                    <Button
-                        variant='ghost'
-                        size='icon'
+                    <SkipButton
+                        direction='prev'
                         className='hidden md:inline-flex'
-                        aria-label='Предыдущий трек'
                         onClick={() => {
                             prev();
                             play();
                         }}
-                    >
-                        <SkipLeftIcon color='onSurface' />
-                    </Button>
+                    />
 
                     {isPlaying ? (
                         <Button
@@ -206,7 +201,7 @@ export default function PlayerBar() {
                             {isMobile ? (
                                 <PauseIcon color='onSurface' size={30} />
                             ) : (
-                                <PauseHollowIcon color='onSurface' />
+                                <PauseHollowIcon color='onSurface' size={32} />
                             )}
                         </Button>
                     ) : (
@@ -219,22 +214,18 @@ export default function PlayerBar() {
                             {isMobile ? (
                                 <PlayIcon color='onSurface' size={30} />
                             ) : (
-                                <PlayHollowIcon color='onSurface' />
+                                <PlayHollowIcon color='onSurface' size={32} />
                             )}
                         </Button>
                     )}
 
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        aria-label='Следующий трек'
+                    <SkipButton
+                        direction='next'
                         onClick={() => {
                             next();
                             play();
                         }}
-                    >
-                        <SkipRightIcon color='onSurface' />
-                    </Button>
+                    />
 
                     {loop === 'none' && (
                         <Button

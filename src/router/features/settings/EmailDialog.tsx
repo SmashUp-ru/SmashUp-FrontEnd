@@ -83,7 +83,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
         <div className='w-full flex flex-col gap-y-2.5'>
             <Label className='font-medium text-onSurfaceVariant'>Почта</Label>
             <div className='flex items-center gap-x-2.5'>
-                <span className='font-bold text-[24px]'>{email && maskEmail(email)}</span>
+                <span className='font-bold text-xl'>{email && maskEmail(email)}</span>
 
                 <Dialog>
                     <DialogTrigger asChild>

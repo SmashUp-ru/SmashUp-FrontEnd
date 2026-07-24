@@ -10,9 +10,6 @@ import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import MashupPageSkeleton from '@/router/pages/mashup/MashupPageSkeleton.tsx';
 import { useMashupPageData } from '@/router/features/mashup/useMashupPageData.ts';
-import { useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { cn } from '@/lib/utils.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
@@ -21,6 +18,7 @@ import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -37,8 +35,6 @@ export default function MashupPage() {
 
     const { mashup, isLoading, isError, reload } = useMashupPageData(params.mashupId);
 
-    const [imageLoaded, setImageLoaded] = useState(false);
-
     useDocumentTitle(mashup?.name);
 
     if (isLoading) return <MashupPageSkeleton />;
@@ -49,22 +45,15 @@ export default function MashupPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left bg-surface p-4 rounded-[34px]'>
-                {!imageLoaded && <Skeleton className='w-[216px] h-[216px] rounded-[34px]' />}
-                <img
+                <ImageWithSkeleton
                     src={coverUrl('mashup', mashup.imageUrl, 800)}
                     alt={mashup.name}
-                    className={cn('w-[216px] h-[216px] rounded-[34px]', !imageLoaded && 'hidden')}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = coverUrl('mashup', 'default', 800);
-                    }}
+                    className='w-[216px] h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>
+                        <span className='font-medium text-[15px] text-additionalText'>
                             Мэшап{' '}
                             {mashup.authors.map((author) => (
                                 <Link
@@ -77,7 +66,7 @@ export default function MashupPage() {
                             ))}
                         </span>
                         <div className='flex items-center gap-x-1'>
-                            <h1 className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface'>
+                            <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                                 {mashup.name}
                             </h1>
                             <div className='flex items-center gap-x-0'>
@@ -109,7 +98,7 @@ export default function MashupPage() {
                                     pause();
                                 }}
                             >
-                                <PauseHollowIcon color='primary' />
+                                <PauseHollowIcon color='primary' size={32} />
                             </Button>
                         ) : (
                             <Button
@@ -124,7 +113,7 @@ export default function MashupPage() {
                                     )
                                 }
                             >
-                                <PlayHollowIcon color='primary' />
+                                <PlayHollowIcon color='primary' size={32} />
                             </Button>
                         )}
 

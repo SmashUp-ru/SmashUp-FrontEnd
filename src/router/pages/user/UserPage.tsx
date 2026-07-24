@@ -1,10 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useUserPageData } from '@/router/features/user/useUserPageData.ts';
-import { useState } from 'react';
 import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';
 import { cn, declOfNum } from '@/lib/utils.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
@@ -18,6 +16,7 @@ import SettingsIcon from '@/components/icons/Settings.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function UserPage() {
     const params = useParams();
@@ -27,8 +26,6 @@ export default function UserPage() {
     const { user, mashups, latestMashup, playlists, isLoading, isError, reload } = useUserPageData(
         params.profileUsername
     );
-
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     useDocumentTitle(user?.username);
 
@@ -46,19 +43,18 @@ export default function UserPage() {
                     'flex flex-col md:flex-row items-center gap-6 md:gap-x-12 text-center md:text-left'
                 )}
             >
-                {!imageLoaded && <Skeleton className='w-[200px] h-[200px] rounded-full' />}
-                <img
+                <ImageWithSkeleton
                     src={coverUrl('user', user.imageUrl, 800)}
                     alt={user.username}
-                    className={cn('w-[200px] h-[200px] rounded-full', !imageLoaded && 'hidden')}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
+                    className='w-[200px] h-[200px] rounded-full'
                 />
                 <div className='flex flex-col gap-y-4'>
                     <div>
-                        <span className='font-medium text-lg text-onSurfaceVariant'>Профиль</span>
+                        <span className='font-medium text-[15px] text-onSurfaceVariant'>
+                            Профиль
+                        </span>
                         <div className='flex flex-col md:flex-row items-center gap-3 md:gap-x-6'>
-                            <span className='font-bold text-2xl sm:text-3xl md:text-4xl break-words text-onSurface break-all md:break-normal'>
+                            <span className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface break-all md:break-normal'>
                                 {user.username}
                             </span>
                             <div className='flex flex-wrap items-center justify-center gap-x-5 gap-y-2'>

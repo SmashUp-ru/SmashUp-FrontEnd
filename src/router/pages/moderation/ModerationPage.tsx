@@ -18,7 +18,7 @@ export default function ModerationPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-4xl text-onSurface'>Модерация</h1>
+                <h1 className='font-bold text-[28px] text-onSurface'>Модерация</h1>
             </div>
 
             <TabsSeparated defaultValue='все' className='flex flex-col gap-y-6'>

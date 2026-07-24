@@ -18,7 +18,7 @@ export default function LinkIcon({
             xmlns='http://www.w3.org/2000/svg'
             className={cn(
                 `text-${color} hover:text-${hoverColor}`,
-                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                'fill-current transition-[color,transform] duration-150 motion-reduce:transition-none',
                 className
             )}
         >

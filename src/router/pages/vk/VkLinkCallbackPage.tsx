@@ -43,7 +43,7 @@ export default function VkLinkCallbackPage() {
 
     return (
         <section className='flex flex-col items-center justify-center gap-y-4 h-full py-20 text-center'>
-            <span className='font-bold text-[24px] text-onSurface'>
+            <span className='font-bold text-xl text-onSurface'>
                 {failed ? 'Не удалось привязать VK' : 'Привязываем VK…'}
             </span>
             {failed && (

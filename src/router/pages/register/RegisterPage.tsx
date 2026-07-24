@@ -70,7 +70,7 @@ export default function RegisterPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-3xl'>Регистрация</h1>
+                    <h1 className='text-primary font-bold text-2xl'>Регистрация</h1>
                     <span className='font-medium text-onSurfaceVariant'>Рады знакомству!</span>
                 </div>
 
@@ -194,7 +194,7 @@ export default function RegisterPage() {
                 {/*Сепаратор*/}
                 <div className='flex items-center gap-x-3 w-full text-onSurfaceVariant'>
                     <Separator className='flex-1' />
-                    <span className='shrink-0 whitespace-nowrap text-sm font-medium'>
+                    <span className='shrink-0 whitespace-nowrap text-[13px] font-medium'>
                         Зарегистрироваться с помощью
                     </span>
                     <Separator className='flex-1' />
@@ -204,7 +204,7 @@ export default function RegisterPage() {
                     {/*ВКИД*/}
                     <Button
                         type='button'
-                        className='w-full py-[15px]'
+                        className='w-full py-[11px]'
                         variant='outline'
                         onClick={() =>
                             startVkFlow('authorize').catch(

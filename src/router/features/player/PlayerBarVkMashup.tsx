@@ -15,6 +15,7 @@ import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { useVkMashups } from '@/router/pages/vkMashup/useVkMashups';
 import { VkMashup } from '@/store/entities/vkMashup';
 import { coverUrl } from '@/lib/cdn.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function PlayerBarVkMashup() {
     const { toast } = useToast();
@@ -90,14 +91,14 @@ export default function PlayerBarVkMashup() {
             seekMashup={vkMashupSrc}
             left={
                 <>
-                    <img
+                    <ImageWithSkeleton
                         src={vkMashupSrc.imageUrl || coverUrl('mashup', 'default', 100)}
                         alt={vkMashupSrc.name}
                         className='w-12 h-12 rounded-[10px]'
                     />
 
                     <div className='flex flex-col min-w-0'>
-                        <span className='font-bold text-[18px] text-onSurface truncate'>
+                        <span className='font-bold text-[15px] text-onSurface truncate'>
                             {vkMashupSrc.name}
                         </span>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
@@ -114,7 +115,7 @@ export default function PlayerBarVkMashup() {
                         aria-label='Пауза'
                         onClick={() => updateVkMashupIsPlaying(false)}
                     >
-                        <PauseHollowIcon color='onSurface' />
+                        <PauseHollowIcon color='onSurface' size={32} />
                     </Button>
                 ) : (
                     <Button
@@ -123,7 +124,7 @@ export default function PlayerBarVkMashup() {
                         aria-label='Воспроизвести'
                         onClick={() => updateVkMashupIsPlaying(true)}
                     >
-                        <PlayHollowIcon color='onSurface' />
+                        <PlayHollowIcon color='onSurface' size={32} />
                     </Button>
                 )
             }

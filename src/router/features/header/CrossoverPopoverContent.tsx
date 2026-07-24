@@ -17,7 +17,7 @@ export default function CrossoverPopoverContent() {
 
     return (
         <div className='flex flex-col gap-y-1'>
-            <h3 className='text-[18px] font-bold text-onSurface'>Треки</h3>
+            <h3 className='text-[15px] font-bold text-onSurface'>Треки</h3>
             <div className='flex flex-col gap-y-1 max-h-[25vh] overflow-y-auto'>
                 {tracks.map((track) => (
                     <Button
@@ -35,7 +35,7 @@ export default function CrossoverPopoverContent() {
                 ))}
             </div>
 
-            <h3 className='text-[18px] font-bold text-onSurface'>Авторы</h3>
+            <h3 className='text-[15px] font-bold text-onSurface'>Авторы</h3>
             <div className='flex flex-col gap-y-1 max-h-[25vh] overflow-y-auto'>
                 {trackAuthors.map((trackAuthor) => (
                     <Button

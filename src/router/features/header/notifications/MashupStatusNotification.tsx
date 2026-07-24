@@ -31,7 +31,7 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
             )}
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit'>
-                    <span className='font-bold text-[14px] text-onSurface'>
+                    <span className='font-bold text-[12px] text-onSurface'>
                         <span>Ваш мэшап </span>
                         <span className='text-primary'>{notification.meta.mashupName} </span>
                         <span>
@@ -47,7 +47,7 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
                 </div>
 
                 <Button
-                    className='px-2.5 py-[4.5px] text-[14px] rounded-lg w-full'
+                    className='px-2.5 py-[4.5px] text-[12px] rounded-lg w-full'
                     onClick={() => handleButtonClick()}
                 >
                     Понятно

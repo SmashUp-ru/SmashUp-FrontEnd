@@ -9,7 +9,7 @@ export default function UploadMashupSuccessPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-4xl'>Поздравляем!</h1>
+                    <h1 className='text-primary font-bold text-[28px]'>Поздравляем!</h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         Мэшап{' '}
                         {params.mashupId !== '0' ? 'успешно загружен' : 'отправлен на модерацию'}

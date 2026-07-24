@@ -7,6 +7,9 @@ import { zip } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { coverUrl } from '@/lib/cdn.ts';
+import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
+import { cn } from '@/lib/utils.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface MashupThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -21,13 +24,17 @@ export default function MashupThumbExplicitDisallowed({
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger>
-                    <div className='opacity-50 w-fit flex flex-col gap-y-4 p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+                    <div
+                        className={cn(
+                            'opacity-50 w-fit flex flex-col gap-y-4 p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                            THUMB_ROW_HOVER
+                        )}
+                    >
                         <div className='relative'>
-                            <img
+                            <ImageWithSkeleton
                                 src={coverUrl('mashup', mashup.imageUrl, 400)}
                                 alt={mashup.name}
                                 className='transition-opacity duration-200 motion-reduce:transition-none w-[216px] h-[216px] rounded-[30px] md:group-hover:opacity-30'
-                                draggable={false}
                                 loading='lazy'
                             />
                         </div>
@@ -36,7 +43,7 @@ export default function MashupThumbExplicitDisallowed({
                                 <Link
                                     draggable={false}
                                     to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
-                                    className='font-bold text-lg text-onSurface truncate'
+                                    className='font-bold text-[15px] text-onSurface truncate'
                                 >
                                     {mashup.name}
                                 </Link>
@@ -65,7 +72,7 @@ export default function MashupThumbExplicitDisallowed({
                                             <Link
                                                 key={index}
                                                 to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                                className='font-medium text-lg text-onSurfaceVariant truncate'
+                                                className='font-medium text-[15px] text-onSurfaceVariant truncate'
                                             >
                                                 {author}
                                             </Link>

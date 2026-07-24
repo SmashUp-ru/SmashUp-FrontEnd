@@ -1,19 +1,25 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { zip } from '@/lib/utils.ts';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import MashupThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupThumbExplicitDisallowed.tsx';
 import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import {
+    THUMB_REVEAL,
+    THUMB_REVEAL_DESKTOP,
+    THUMB_ROW_HOVER
+} from '@/router/shared/components/thumbHover.ts';
+import { cn } from '@/lib/utils.ts';
+import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -39,6 +45,8 @@ function MashupThumb({
 
     const { pause, playMashup } = usePlayer();
 
+    const isThisPlaying = queue[queueIndex] === mashup.id && isPlaying;
+
     const hideExplicit =
         settingsBitmask !== null &&
         !explicitAllowed(settingsBitmask) &&
@@ -48,52 +56,55 @@ function MashupThumb({
         return <MashupThumbExplicitDisallowed mashup={mashup} searchMode={searchMode} />;
 
     return (
-        <div className='w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-hover rounded-t-[46px] rounded-b-[30px]'>
+        <div
+            className={cn(
+                'w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                THUMB_ROW_HOVER
+            )}
+        >
             <div className='relative'>
                 <Link
                     draggable={false}
                     to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
                 >
-                    <img
+                    <ImageWithSkeleton
                         src={coverUrl('mashup', mashup.imageUrl, 400)}
                         alt={mashup.name}
                         className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] rounded-[30px] md:group-hover:opacity-30'
-                        draggable={false}
                         loading='lazy'
                     />
                 </Link>
-                {queue[queueIndex] === mashup.id && isPlaying ? (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        aria-label='Пауза'
-                        className='block md:hidden md:group-hover:block absolute bottom-3 right-3 z-20'
-                        onClick={() => {
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    aria-label={isThisPlaying ? 'Пауза' : 'Воспроизвести'}
+                    className={cn(
+                        isThisPlaying ? THUMB_REVEAL : THUMB_REVEAL_DESKTOP,
+                        'absolute bottom-3 right-3 z-20'
+                    )}
+                    onClick={() => {
+                        if (isThisPlaying) {
                             pause();
-                        }}
-                    >
-                        <PauseHollowIcon color='onSurface' hoverColor='primary' />
-                    </Button>
-                ) : (
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        aria-label='Воспроизвести'
-                        className='hidden md:group-hover:block absolute bottom-3 right-3 z-20'
-                        onClick={() => {
-                            playMashup(playlist, playlistName, queueId, indexInPlaylist);
-                        }}
-                    >
-                        <PlayHollowIcon color='onSurface' hoverColor='primary' />
-                    </Button>
-                )}
+                            return;
+                        }
+                        playMashup(playlist, playlistName, queueId, indexInPlaylist);
+                    }}
+                >
+                    <PlayPauseMorphIcon
+                        hollow
+                        playing={isThisPlaying}
+                        color='onSurface'
+                        hoverColor='primary'
+                        size={32}
+                    />
+                </Button>
             </div>
             <div className='flex flex-col'>
                 <div className='flex items-center gap-x-2 min-w-0 max-w-[42vw] md:max-w-[216px]'>
                     <Link
                         draggable={false}
                         to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
-                        className='font-bold text-lg text-onSurface truncate'
+                        className='font-bold text-[15px] text-onSurface truncate'
                     >
                         {mashup.name}
                     </Link>
@@ -121,7 +132,7 @@ function MashupThumb({
                             <Link
                                 key={index}
                                 to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                className='font-medium text-lg text-onSurfaceVariant truncate'
+                                className='font-medium text-[13px] text-onSurfaceVariant truncate'
                             >
                                 {author}
                             </Link>

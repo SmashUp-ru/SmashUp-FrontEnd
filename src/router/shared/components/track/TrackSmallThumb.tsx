@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils.ts';
 import TrackMoreDropdown from '@/router/shared/components/track/TrackMoreDropdown.tsx';
 import { memo, ReactNode } from 'react';
 import { coverUrl } from '@/lib/cdn.ts';
+import { THUMB_REVEAL, THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export interface TrackThumbProps {
     track: TrackLike;
@@ -20,26 +22,26 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
             key={track.id}
             className={cn(
                 'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
+                THUMB_ROW_HOVER,
                 selected ? 'bg-badge' : 'hover:bg-onPrimary',
                 className
             )}
             onClick={onClick}
         >
-            <img
+            <ImageWithSkeleton
                 src={
                     track.imageUrl.startsWith('https://')
                         ? track.imageUrl
                         : coverUrl('track', track.imageUrl, 100)
                 }
                 alt={track.name}
-                className='w-12 h-12 rounded-xl object-cover'
-                draggable={false}
+                className='w-11 h-11 rounded-xl object-cover'
                 loading='lazy'
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
                 <span
                     className={cn(
-                        'font-bold truncate',
+                        'font-bold text-sm truncate',
                         selected ? 'text-primary' : 'text-onSurface'
                     )}
                 >
@@ -47,7 +49,7 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
                 </span>
                 <span
                     className={cn(
-                        'font-medium truncate',
+                        'font-medium text-[13px] truncate',
                         selected ? 'text-primary' : 'text-onSurfaceVariant'
                     )}
                 >
@@ -59,11 +61,14 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
 
             <TrackMoreDropdown track={track}>
                 <Button variant='ghost' size='icon' aria-label='Опции трека'>
-                    <div className='block md:hidden md:group-hover:block'>
+                    {/*
+                     * Место под иконку занято всегда (24×24) — сама иконка
+                     * проявляется прозрачностью. Прежняя пара «иконка + пустая
+                     * распорка» переключалась через display, то есть рывком.
+                     */}
+                    <div className={cn('w-6 h-6 min-w-6 min-h-6', THUMB_REVEAL)}>
                         <MoreHorizontalIcon />
                     </div>
-
-                    <div className='hidden md:block md:group-hover:hidden w-6 h-6 min-w-6 min-h-6 bg-transparent' />
                 </Button>
             </TrackMoreDropdown>
         </div>

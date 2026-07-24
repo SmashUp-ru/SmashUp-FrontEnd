@@ -84,7 +84,7 @@ export default function LoginPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-3xl'>Вход</h1>
+                    <h1 className='text-primary font-bold text-2xl'>Вход</h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         Добро пожаловать снова!
                     </span>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 {/*Сепаратор*/}
                 <div className='flex items-center gap-x-3 w-full text-onSurfaceVariant'>
                     <Separator className='flex-1' />
-                    <span className='shrink-0 whitespace-nowrap text-sm font-medium'>
+                    <span className='shrink-0 whitespace-nowrap text-[13px] font-medium'>
                         Войти с помощью
                     </span>
                     <Separator className='flex-1' />
@@ -189,7 +189,7 @@ export default function LoginPage() {
                     {/*ВКИД*/}
                     <Button
                         type='button'
-                        className='w-full py-[15px]'
+                        className='w-full py-[11px]'
                         variant='outline'
                         onClick={() =>
                             startVkFlow('authorize').catch(

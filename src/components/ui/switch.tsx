@@ -11,7 +11,11 @@ const Switch = React.forwardRef<React.ElementRef<typeof SwitchPrimitives.Root>, 
     ({ className, thumbClassName, ...props }, ref) => (
         <SwitchPrimitives.Root
             className={cn(
-                'peer inline-flex h-6 w-11 bg-onError shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input',
+                // Выключенный трек — `surface`. Раньше здесь стоял мёртвый
+                // `data-[state=unchecked]:bg-input` (токена `input` в конфиге нет),
+                // из-за чего фон брался из базового `bg-onError` — семантически
+                // «текст на ошибке».
+                'peer inline-flex h-6 w-11 bg-surface shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary',
                 className
             )}
             {...props}
@@ -19,7 +23,13 @@ const Switch = React.forwardRef<React.ElementRef<typeof SwitchPrimitives.Root>, 
         >
             <SwitchPrimitives.Thumb
                 className={cn(
-                    'pointer-events-none block h-5 w-5 rounded-full bg-onSurfaceVariant data-[state=checked]:bg-onSurface shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
+                    'pointer-events-none block h-5 w-5 rounded-full bg-onSurfaceVariant data-[state=checked]:bg-onSurface ring-0',
+                    // Без тени: `shadow-lg` смещена вниз на 10px при диаметре 20px,
+                    // из-за неё тёмное пятно снизу-справа съедало 2px зазор и кружок
+                    // читался сдвинутым вверх-влево (геометрия при этом ровная —
+                    // 2px со всех сторон, проверено пиксельно).
+                    'transition-transform [transition-duration:240ms] ease-spring motion-reduce:transition-none',
+                    'data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
                     thumbClassName
                 )}
             />

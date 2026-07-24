@@ -16,13 +16,13 @@ import AltIcon from '@/components/icons/alt/Alt24';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useEffect, useState } from 'react';
 import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.tsx';
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();
@@ -39,7 +39,6 @@ export default function MashupInfo() {
 
     const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
 
-    const [imageLoaded, setImageLoaded] = useState(false);
     const isMobile = useIsMobile();
 
     // Плавное раскрытие side-панели по ширине (на десктопе): контент слева
@@ -75,7 +74,7 @@ export default function MashupInfo() {
         >
             <div className='w-full flex items-center justify-between gap-x-[30px]'>
                 <div className=' overflow-hidden'>
-                    <span className='truncate block font-bold text-[18px] text-onSurface'>
+                    <span className='truncate block font-bold text-[15px] text-onSurface'>
                         {queueName}
                     </span>
                 </div>
@@ -89,23 +88,15 @@ export default function MashupInfo() {
                 </Button>
             </div>
 
-            {!imageLoaded && (
-                <Skeleton className='w-full aspect-square md:w-[350px] md:h-[350px] md:aspect-auto rounded-[30px]' />
-            )}
-            <img
+            <ImageWithSkeleton
                 src={coverUrl('mashup', mashup.imageUrl, 800)}
                 alt={mashup.name}
-                className={cn(
-                    'w-full aspect-square md:w-[350px] md:h-[350px] md:aspect-auto rounded-[30px]',
-                    !imageLoaded && 'hidden'
-                )}
-                draggable={false}
-                onLoad={() => setImageLoaded(true)}
+                className='w-full aspect-square md:w-[350px] md:h-[350px] md:aspect-auto rounded-[30px]'
             />
 
             <div className='flex flex-col w-full'>
                 <div className='flex items-center gap-x-2'>
-                    <span className='font-bold text-[18px] text-onSurface truncate'>
+                    <span className='font-bold text-[15px] text-onSurface truncate'>
                         {mashup.name}
                     </span>
                     <div className='flex items-center gap-x-0'>
@@ -155,7 +146,7 @@ export default function MashupInfo() {
                             pause();
                         }}
                     >
-                        <PauseHollowIcon color='primary' />
+                        <PauseHollowIcon color='primary' size={32} />
                     </Button>
                 ) : (
                     <Button
@@ -166,7 +157,7 @@ export default function MashupInfo() {
                             playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
                         }}
                     >
-                        <PlayHollowIcon color='primary' hoverColor='hoverPrimary' />
+                        <PlayHollowIcon color='primary' hoverColor='hoverPrimary' size={32} />
                     </Button>
                 )}
 
@@ -220,7 +211,7 @@ export default function MashupInfo() {
             </div>
 
             <div className='flex flex-col gap-y-2.5 w-full'>
-                <span className='font-bold text-[18px] text-onSurfaceVariant'>
+                <span className='font-bold text-[15px] text-onSurfaceVariant'>
                     Использованные треки
                 </span>
 

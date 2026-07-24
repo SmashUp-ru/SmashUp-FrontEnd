@@ -39,17 +39,14 @@ export default function TrackMoreDropdown({ track, children }: TrackMoreDropdown
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem
-                        onClick={(e) => e.stopPropagation()}
-                        className='group hover:text-primary hover:bg-primary/[0.2]'
-                    >
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
                         <Link
                             className='flex items-center gap-x-[14.4px]'
                             to={link}
                             target='_blank'
                         >
                             <LinkExternalIcon
-                                className='group-hover:text-primary'
+                                className='group-data-[highlighted]:text-primary'
                                 hoverColor='primary'
                             />
                             <span>Открыть оригинал</span>

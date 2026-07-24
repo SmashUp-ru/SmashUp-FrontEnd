@@ -18,7 +18,7 @@ export default function NotFound() {
                     {typedError.status || '???'}
                 </h1>
                 <div className='flex flex-col items-center gap-y-[34px]'>
-                    <h3 className='font-medium text-[40px] text-onSurface'>Что-то сломалось</h3>
+                    <h3 className='font-medium text-[32px] text-onSurface'>Что-то сломалось</h3>
                     <Button size='classic' asChild>
                         <Link draggable={false} to='/'>
                             Вернуться на главную

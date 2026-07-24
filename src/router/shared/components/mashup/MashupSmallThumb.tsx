@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Link } from 'react-router-dom';
@@ -9,8 +8,7 @@ import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitma
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
-import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { useGlobalStore } from '@/store/global.ts';
@@ -31,6 +29,9 @@ import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import { THUMB_REVEAL, THUMB_REVEAL_DESKTOP } from '@/router/shared/components/thumbHover.ts';
+import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -118,7 +119,7 @@ function MashupSmallThumb({
     return (
         <div
             className={cn(
-                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary/[0.3] rounded-2xl transition-colors duration-300 motion-reduce:transition-none',
+                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary rounded-2xl transition-colors duration-300 motion-reduce:transition-none',
                 isThisMash && 'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3]'
             )}
         >
@@ -130,70 +131,52 @@ function MashupSmallThumb({
                 onClick={isMobile ? handleRowPlay : undefined}
             >
                 <div className='relative'>
-                    <img
+                    {/*
+                     * Ручная подмена битой обложки на `default` больше не нужна:
+                     * `ImageWithSkeleton` сам показывает плейсхолдер по onError.
+                     */}
+                    <ImageWithSkeleton
                         src={coverUrl('mashup', mashup.imageUrl, 100)}
                         alt={mashup.name}
                         loading='lazy'
                         className={cn(
-                            'transition-opacity duration-200 motion-reduce:transition-none w-12 h-12 min-w-12 min-h-12 rounded-xl bg-surface object-cover',
+                            'transition-opacity duration-200 motion-reduce:transition-none w-11 h-11 min-w-11 min-h-11 rounded-xl bg-surface object-cover',
                             isThisMash ? 'opacity-30' : 'md:group-hover:opacity-30'
                         )}
-                        draggable={false}
-                        onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = coverUrl('mashup', 'default', 100);
-                        }}
                     />
-                    {isThisMash &&
-                        (isPlaying ? (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                aria-label='Пауза'
-                                className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    pause();
-                                }}
-                            >
-                                <PauseHollowIcon color='primary' size={24} />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                aria-label='Воспроизвести'
-                                className=' absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    play();
-                                }}
-                            >
-                                <PlayHollowIcon
-                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                    hoverColor={isThisMash ? 'hoverPrimary' : 'primary'}
-                                    size={24}
-                                />
-                            </Button>
-                        ))}
-                    {(queue[queueIndex] !== mashup.id || currentQueueId !== queueId) && (
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            aria-label='Воспроизвести'
-                            className='hidden md:group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                            onClick={(e) => {
-                                e.stopPropagation();
+                    {/*
+                     * Одна кнопка на все три состояния (играет / на паузе /
+                     * не текущий): иконка морфится play⇄pause только если
+                     * элемент в DOM тот же. Раньше это были две ветки JSX,
+                     * и React менял узел — морфить было нечего.
+                     */}
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        aria-label={isThisMash && isPlaying ? 'Пауза' : 'Воспроизвести'}
+                        className={cn(
+                            // текущий мэшап держит кнопку видимой и без ховера
+                            !isThisMash && THUMB_REVEAL_DESKTOP,
+                            'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+                        )}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isThisMash) {
                                 playThisMashup();
-                            }}
-                        >
-                            <PlayHollowIcon
-                                color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                hoverColor={isThisMash ? 'primary' : 'primary'}
-                                size={24}
-                            />
-                        </Button>
-                    )}
+                                return;
+                            }
+                            if (isPlaying) pause();
+                            else play();
+                        }}
+                    >
+                        <PlayPauseMorphIcon
+                            hollow
+                            playing={isThisMash && isPlaying}
+                            color={isThisMash ? 'primary' : 'onSurfaceVariant'}
+                            hoverColor={isThisMash ? 'hoverPrimary' : 'primary'}
+                            size={32}
+                        />
+                    </Button>
                 </div>
                 <div className='flex flex-col min-w-0'>
                     <div className='flex items-center gap-x-1'>
@@ -205,7 +188,7 @@ function MashupSmallThumb({
                                     openMashupInfo(mashup.id);
                                 }
                             }}
-                            className={`font-bold ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
+                            className={`font-bold text-sm ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
                         >
                             {mashup.name}
                         </div>
@@ -243,7 +226,7 @@ function MashupSmallThumb({
                                     key={author}
                                     to={`/user/${author}`}
                                     onClick={(e) => e.stopPropagation()}
-                                    className={`font-medium ${isThisMash ? 'text-primary' : 'text-onSurfaceVariant'}`}
+                                    className={`font-medium text-[13px] ${isThisMash ? 'text-primary' : 'text-onSurfaceVariant'}`}
                                 >
                                     {author}
                                 </Link>
@@ -281,8 +264,6 @@ function MashupSmallThumb({
                                 )}
                             >
                                 <LikeFilledIcon
-                                    width={20}
-                                    height={17}
                                     color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
                                     hoverColor={isThisMash ? 'primary' : 'onSurface'}
                                 />
@@ -307,8 +288,6 @@ function MashupSmallThumb({
                             <LikeOutlineIcon
                                 color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
                                 hoverColor={isThisMash ? 'primary' : 'onSurface'}
-                                width={20}
-                                height={17}
                             />
                         </Button>
                     )
@@ -316,11 +295,7 @@ function MashupSmallThumb({
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger onClick={() => isMobile && guestLikeNotice()}>
-                                <LikeOutlineIcon
-                                    color={isThisMash ? 'primary' : 'onSurface'}
-                                    width={20}
-                                    height={17}
-                                />
+                                <LikeOutlineIcon color={isThisMash ? 'primary' : 'onSurface'} />
                             </TooltipTrigger>
                             <TooltipContent
                                 className='max-w-[300px] text-center'
@@ -339,17 +314,32 @@ function MashupSmallThumb({
                 <div className='w-10 flex items-center justify-center'>
                     <MashupMoreDropdown mashup={mashup}>
                         <Button variant='ghost' size='icon' aria-label='Опции мэшапа'>
-                            <div className='block md:hidden md:group-hover:block'>
-                                <MoreHorizontalIcon
-                                    color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
-                                    hoverColor={isThisMash ? 'primary' : 'onSurface'}
-                                />
-                            </div>
+                            {/*
+                             * Длительность ⇄ «ещё»: раньше свап шёл через
+                             * display и происходил рывком. Теперь оба лежат
+                             * друг на друге и кроссфейдятся за те же 200ms.
+                             */}
+                            <span className='relative flex h-6 w-10 items-center justify-center'>
+                                <span
+                                    className={cn(
+                                        'absolute inset-0 flex items-center justify-center',
+                                        THUMB_REVEAL
+                                    )}
+                                >
+                                    <MoreHorizontalIcon
+                                        color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
+                                        hoverColor={isThisMash ? 'primary' : 'onSurface'}
+                                    />
+                                </span>
 
-                            <span
-                                className={`font-semibold text-[18px] text-additionalText hidden md:block md:group-hover:hidden ${isThisMash && 'text-primary'}`}
-                            >
-                                {msToMinutesAndSeconds(mashup.duration)}
+                                <span
+                                    className={cn(
+                                        'absolute inset-0 hidden items-center justify-center font-semibold text-[13px] text-additionalText transition-opacity duration-200 motion-reduce:transition-none md:flex md:group-hover:opacity-0 md:group-focus-within:opacity-0',
+                                        isThisMash && 'text-primary'
+                                    )}
+                                >
+                                    {msToMinutesAndSeconds(mashup.duration)}
+                                </span>
                             </span>
                         </Button>
                     </MashupMoreDropdown>

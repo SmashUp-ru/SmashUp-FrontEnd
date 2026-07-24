@@ -46,7 +46,7 @@ export default function ConfirmCoAuthorshipNotification({
             )}
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit'>
-                    <span className='font-bold text-[14px] text-onSurface'>
+                    <span className='font-bold text-[12px] text-onSurface'>
                         <span className='text-primary'>{mashup.authors[0]}</span> указал вас
                         соавтором мэшапа <span className='text-primary'>{mashup.name}</span>
                     </span>
@@ -54,13 +54,13 @@ export default function ConfirmCoAuthorshipNotification({
 
                 <div className='flex items-center gap-x-1'>
                     <Button
-                        className='px-2.5 py-[4.5px] text-[14px] rounded-lg'
+                        className='px-2.5 py-[4.5px] text-[12px] rounded-lg'
                         onClick={() => handleButtonClick(true)}
                     >
                         Подтвердить
                     </Button>
                     <Button
-                        className='px-2.5 py-[4.5px] text-[14px] rounded-lg'
+                        className='px-2.5 py-[4.5px] text-[12px] rounded-lg'
                         variant='ghost'
                         onClick={() => handleButtonClick(false)}
                     >

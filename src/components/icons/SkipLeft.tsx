@@ -1,11 +1,12 @@
 import { IconProps } from '@/components/icons/props.tsx';
 import { cn } from '@/lib/utils.ts';
 
+/** «Предыдущий трек» — Icon32/skip_previous из Figma (двойной треугольник). */
 export default function SkipLeftIcon({
     className,
     color = 'onSurfaceVariant',
     hoverColor,
-    size = 16,
+    size = 32,
     width,
     height
 }: IconProps) {
@@ -13,25 +14,15 @@ export default function SkipLeftIcon({
         <svg
             width={size ? size : width}
             height={size ? size : height}
-            viewBox='0 0 16 16'
+            viewBox='0 0 32 32'
             xmlns='http://www.w3.org/2000/svg'
             className={cn(
                 `text-${color} hover:text-${hoverColor}`,
-                'fill-current transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                'fill-current transition-[color] duration-150 motion-reduce:transition-none',
                 className
             )}
         >
-            <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M2.66667 6.446V2C2.66667 1.26363 2.06973 0.666671 1.33333 0.666671C0.597066 0.666671 0 1.26363 0 2V14C0 14.7364 0.597066 15.3333 1.33333 15.3333C2.06973 15.3333 2.66667 14.7364 2.66667 14V9.554L13.5314 15.7788C14.6286 16.4073 16 15.6216 16 14.3644V1.63556C16 0.378391 14.6286 -0.407356 13.5314 0.221231L2.66667 6.446Z'
-            />
-            <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M2.66667 6.446V2C2.66667 1.26363 2.06973 0.666671 1.33333 0.666671C0.597066 0.666671 0 1.26363 0 2V14C0 14.7364 0.597066 15.3333 1.33333 15.3333C2.06973 15.3333 2.66667 14.7364 2.66667 14V9.554L13.5314 15.7788C14.6286 16.4073 16 15.6216 16 14.3644V1.63556C16 0.378391 14.6286 -0.407356 13.5314 0.221231L2.66667 6.446Z'
-                fillOpacity='0.2'
-            />
+            <path d='M16.7783 17.2218V20.5495C16.7783 21.5908 15.638 22.2302 14.7495 21.6871L7.30587 17.1367C6.45533 16.6167 6.45534 15.3814 7.30587 14.8615L14.7495 10.3111C15.638 9.76797 16.7783 10.4074 16.7783 11.4487V14.7766L24.0828 10.3111C24.9713 9.76799 26.1116 10.4074 26.1116 11.4487V20.5495C26.1116 21.5908 24.9713 22.2302 24.0829 21.6871L16.7783 17.2218Z' />
         </svg>
     );
 }

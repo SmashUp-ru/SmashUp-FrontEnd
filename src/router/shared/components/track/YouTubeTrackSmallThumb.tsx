@@ -10,6 +10,8 @@ import {
 import { YouTubeTrack } from '@/router/shared/types/youtube.ts';
 import React from 'react';
 import { coverUrl } from '@/lib/cdn.ts';
+import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export interface YouTubeTrackThumbProps {
     track: YouTubeTrack | null;
@@ -34,12 +36,15 @@ export default function YouTubeTrackSmallThumb({
         return (
             <div
                 key='youtube-loading'
-                className='flex justify-between p-1.5 w-full group hover:bg-hover rounded-2xl items-center gap-x-4 cursor-pointer'
+                className={cn(
+                    'flex justify-between p-1.5 w-full group hover:bg-onPrimary rounded-2xl items-center gap-x-4 cursor-pointer',
+                    THUMB_ROW_HOVER
+                )}
             >
-                <div className='w-12 h-12 min-w-12 min-h-12 rounded-xl bg-onSurface' />
+                <div className='w-11 h-11 min-w-11 min-h-11 rounded-xl bg-onSurface' />
 
                 <div className='flex flex-col min-w-0 w-full text-left'>
-                    <span className='font-bold text-onSurface truncate'>
+                    <span className='font-bold text-sm text-onSurface truncate'>
                         'Загружаем информацию...'
                     </span>
                 </div>
@@ -60,7 +65,8 @@ export default function YouTubeTrackSmallThumb({
             key={track.link}
             className={cn(
                 'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
-                selected ? 'bg-badge' : 'hover:bg-hover'
+                THUMB_ROW_HOVER,
+                selected ? 'bg-badge' : 'hover:bg-onPrimary'
             )}
             onClick={() => {
                 if (track) {
@@ -75,15 +81,14 @@ export default function YouTubeTrackSmallThumb({
                 }
             }}
         >
-            <img
+            <ImageWithSkeleton
                 src={
                     track.imageUrl.startsWith('https://')
                         ? `${track.imageUrl}`
                         : coverUrl('track', track.imageUrl, 100)
                 }
                 alt={track.name}
-                className='w-12 h-12 rounded-xl object-cover'
-                draggable={false}
+                className='w-11 h-11 rounded-xl object-cover'
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
                 <span

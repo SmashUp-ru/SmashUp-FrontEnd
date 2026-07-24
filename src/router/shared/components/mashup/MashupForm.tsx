@@ -841,7 +841,7 @@ export default function MashupForm({
         <section className='flex flex-col gap-y-6 md:pr-[35px] h-full'>
             {text.title && (
                 <div className='flex items-center justify-between'>
-                    <h1 className='font-bold text-4xl text-onSurface'>{text.title}</h1>
+                    <h1 className='font-bold text-[28px] text-onSurface'>{text.title}</h1>
                 </div>
             )}
             <div className='w-full flex flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-12 flex-1'>
@@ -958,7 +958,7 @@ export default function MashupForm({
                                     </Label>
 
                                     <label className='relative'>
-                                        <span className='text-[24px] font-bold text-primary cursor-pointer'>
+                                        <span className='text-xl font-bold text-primary cursor-pointer'>
                                             {mashupFile === null || mashupFile === undefined
                                                 ? 'Нажмите для загрузки'
                                                 : mashupFile.name}
@@ -1070,7 +1070,7 @@ export default function MashupForm({
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <span className='font-bold text-[24px] text-onSurfaceVariant'>
+                                <span className='font-bold text-xl text-onSurfaceVariant'>
                                     {selectedUsers.map((user) => user.username).join(', ')}
                                 </span>
                             </div>
@@ -1097,7 +1097,7 @@ export default function MashupForm({
                                                 key={user.id}
                                                 className={cn(
                                                     'flex items-center gap-x-4 rounded-2xl p-[6px] mr-[7px] cursor-pointer',
-                                                    selected ? 'bg-badge' : 'hover:bg-hover'
+                                                    selected ? 'bg-badge' : 'hover:bg-onPrimary'
                                                 )}
                                                 onClick={() => {
                                                     if (
@@ -1151,7 +1151,7 @@ export default function MashupForm({
                                                 if (typeof v === 'boolean') setExplicit(v);
                                             }}
                                         />
-                                        <Label className='font-bold text-[18px] text-onSurface'>
+                                        <Label className='font-bold text-[15px] text-onSurface'>
                                             Explicit (Мат)
                                         </Label>
                                     </div>
@@ -1165,7 +1165,7 @@ export default function MashupForm({
                                                 if (typeof v === 'boolean') setBanWords(v);
                                             }}
                                         />
-                                        <Label className='font-bold text-[18px] text-onSurface'>
+                                        <Label className='font-bold text-[15px] text-onSurface'>
                                             Бан-ворды Twitch
                                         </Label>
                                     </div>

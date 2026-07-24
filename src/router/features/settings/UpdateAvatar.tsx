@@ -1,24 +1,22 @@
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { axiosSession, cn, convertToBase64 } from '@/lib/utils.ts';
+import { axiosSession, convertToBase64 } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32';
 import { Input } from '@/components/ui/input.tsx';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { AxiosResponse } from 'axios';
 import { UpdateUserImageResponse } from '@/router/shared/types/settings.ts';
 import { useGlobalStore } from '@/store/global.ts';
-import { useState } from 'react';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function UpdateAvatar() {
     const { toast } = useToast();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
-
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     const uploadPhoto = async (file: File) => {
         const basedImageFile = await convertToBase64(file);
@@ -89,18 +87,10 @@ export default function UpdateAvatar() {
 
     return (
         <label className='relative cursor-pointer h-fit'>
-            {!imageLoaded && (
-                <Skeleton className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full' />
-            )}
-            <img
+            <ImageWithSkeleton
                 src={coverUrl('user', currentUser.imageUrl, 800)}
                 alt={currentUser.username}
-                className={cn(
-                    'w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full brightness-75',
-                    !imageLoaded && 'hidden'
-                )}
-                draggable={false}
-                onLoad={() => setImageLoaded(true)}
+                className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full brightness-75'
             />
             <EditIcon
                 size={89}

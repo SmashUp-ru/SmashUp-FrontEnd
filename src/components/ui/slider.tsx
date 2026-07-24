@@ -3,46 +3,20 @@ import * as SliderPrimitive from '@radix-ui/react-slider';
 
 import { cn } from '@/lib/utils';
 
+// Слайдер остался только для непрерывных величин — seek и громкость.
+// Дискретный выбор (битрейт) переехал на SegmentedControl, вместе с ним удалены
+// showMarks/captions: засечки и подписи жили отдельно от трека и выглядели как
+// самостоятельные элементы, а попадать в нужный шаг было неудобно.
 interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
     trackClassName?: string;
     rangeClassName?: string;
     thumbClassName?: string;
-    showMarks?: boolean;
-    captions?: string[];
 }
 
 const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
-    (
-        {
-            className,
-            trackClassName,
-            rangeClassName,
-            thumbClassName,
-            showMarks = false,
-            captions,
-            value,
-            ...props
-        },
-        ref
-    ) => {
-        const currentValue = Array.isArray(value) ? value[0] : 0;
-
+    ({ className, trackClassName, rangeClassName, thumbClassName, value, ...props }, ref) => {
         return (
             <>
-                {captions && (
-                    <div className='absolute w-[105%] -left-2 -top-10 mb-4 flex flex-row justify-between'>
-                        {captions.map((caption) => (
-                            <span
-                                key={caption}
-                                className='w-[38px] font-semibold text-onSurfaceVariant'
-                                role='presentation'
-                            >
-                                {caption}
-                            </span>
-                        ))}
-                    </div>
-                )}
-
                 <SliderPrimitive.Root
                     ref={ref}
                     value={value}
@@ -70,20 +44,6 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
                         )}
                     />
                 </SliderPrimitive.Root>
-
-                {showMarks && (
-                    <div className='absolute -top-3 w-full flex justify-between'>
-                        {Array.from({ length: (props.max || 4) + 1 }).map((_, i) => (
-                            <div
-                                key={`slidermark ${i}`}
-                                className={cn(
-                                    'h-[30px] w-2.5 rounded-[2.8px]',
-                                    i <= currentValue ? 'bg-primary' : 'bg-sliderBg'
-                                )}
-                            />
-                        ))}
-                    </div>
-                )}
             </>
         );
     }

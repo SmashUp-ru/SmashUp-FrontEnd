@@ -56,7 +56,7 @@ export default function UploadMashupPage() {
 
     return (
         <div className='flex flex-col gap-y-7 h-full'>
-            <h1 className='font-bold text-4xl text-onSurface'>Загрузка мэшапа</h1>
+            <h1 className='font-bold text-[28px] text-onSurface'>Загрузка мэшапа</h1>
 
             <TabsSeparated
                 value={source}

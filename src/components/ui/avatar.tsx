@@ -22,7 +22,7 @@ const AvatarImage = React.forwardRef<
     <AvatarPrimitive.Image
         ref={ref}
         draggable={false}
-        className={cn('aspect-square h-full w-full', className)}
+        className={cn('aspect-square h-full w-full object-cover', className)}
         {...props}
     />
 ));
@@ -34,8 +34,10 @@ const AvatarFallback = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <AvatarPrimitive.Fallback
         ref={ref}
+        // `bg-muted` тут был мёртвым (токена `muted` в конфиге нет) — круг
+        // выходил прозрачным, и при незагруженном аватаре буква висела в пустоте.
         className={cn(
-            'flex h-full w-full items-center justify-center rounded-full bg-muted',
+            'flex h-full w-full items-center justify-center rounded-full bg-white/[0.07] text-[13px] font-medium uppercase text-onSurface',
             className
         )}
         {...props}

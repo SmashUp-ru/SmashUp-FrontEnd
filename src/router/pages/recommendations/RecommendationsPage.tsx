@@ -7,9 +7,6 @@ import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import FavoritesPageSkeleton from '@/router/pages/favorites/FavoitesPageSkeleton.tsx';
-import { useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { cn } from '@/lib/utils.ts';
 import { useRecommendations } from '@/router/features/root/useRecommendations.ts';
 import { useSettingsStore } from '@/store/settings.ts';
 import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
@@ -17,6 +14,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function RecommendationsPage() {
     useDocumentTitle('Рекомендации');
@@ -38,8 +36,6 @@ export default function RecommendationsPage() {
 
     const { playQueue, pause } = usePlayer();
 
-    const [imageLoaded, setImageLoaded] = useState(false);
-
     if (!currentUser) return null;
     if (isError) return <ErrorState onRetry={reload} />;
     if (isRecommendationsLoading || !recommendationsIds || !recommendations)
@@ -48,24 +44,18 @@ export default function RecommendationsPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex flex-col md:flex-row items-center gap-y-3 md:gap-x-12 md:gap-y-0 text-center md:text-left bg-surface p-3 md:p-4 rounded-[34px]'>
-                {!imageLoaded && (
-                    <Skeleton className='w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]' />
-                )}
-                <img
+                <ImageWithSkeleton
                     src={coverUrl('user', currentUser.imageUrl, 800)}
                     alt={currentUser.username}
-                    className={cn(
-                        'w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]',
-                        !imageLoaded && 'hidden'
-                    )}
-                    draggable={false}
-                    onLoad={() => setImageLoaded(true)}
+                    className='w-32 h-32 md:w-[216px] md:h-[216px] rounded-[34px]'
                 />
 
                 <div className='flex flex-col gap-y-6'>
                     <div>
-                        <span className='font-medium text-lg text-additionalText'>Коллекция</span>
-                        <h1 className='font-bold text-4xl text-onSurface'>
+                        <span className='font-medium text-[15px] text-additionalText'>
+                            Коллекция
+                        </span>
+                        <h1 className='font-bold text-[28px] text-onSurface'>
                             Рекомендации{' '}
                             <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
                                 {currentUser.username}
@@ -81,7 +71,7 @@ export default function RecommendationsPage() {
                                     pause();
                                 }}
                             >
-                                <PauseHollowIcon />
+                                <PauseHollowIcon size={32} />
                             </Button>
                         ) : (
                             <Button
@@ -99,7 +89,7 @@ export default function RecommendationsPage() {
                                     );
                                 }}
                             >
-                                <PlayHollowIcon />
+                                <PlayHollowIcon size={32} />
                             </Button>
                         )}
                     </div>

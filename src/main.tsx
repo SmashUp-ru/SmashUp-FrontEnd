@@ -1,4 +1,4 @@
-import { lazy, StrictMode } from 'react';
+import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
@@ -50,6 +50,8 @@ import RecommendationsPage from '@/router/pages/recommendations/RecommendationsP
 const UploadVkMashupPage = lazy(() => import('./router/pages/vkMashup/UploadVkMashupPage'));
 const VkLinkCallbackPage = lazy(() => import('./router/pages/vk/VkLinkCallbackPage'));
 const VkAuthorizeCallbackPage = lazy(() => import('./router/pages/vk/VkAuthorizeCallbackPage'));
+// ВРЕМЕННО (бета): витрина UI-компонентов. Удалить вместе с KitPage.tsx.
+const KitPage = lazy(() => import('@/router/pages/debug/KitPage.tsx'));
 
 const router = createBrowserRouter(
     [
@@ -57,6 +59,15 @@ const router = createBrowserRouter(
             element: <Layout />,
             errorElement: <NotFound />,
             children: [
+                // ВРЕМЕННО (бета): витрина UI-компонентов, bare-маршрут без чрома
+                {
+                    element: (
+                        <Suspense fallback={null}>
+                            <KitPage />
+                        </Suspense>
+                    ),
+                    path: '/kit'
+                },
                 // основное приложение
                 {
                     element: <RootLayout />,

@@ -8,7 +8,7 @@ interface EmailDialogSentContentProps {
 export default function EmailDialogSentContent({ email }: EmailDialogSentContentProps) {
     return (
         <DialogDescription className='pt-0 flex flex-col gap-y-[30px]'>
-            <span className='font-medium text-[18px] text-onSurfaceVariant text-center'>
+            <span className='font-medium text-[15px] text-onSurfaceVariant text-center'>
                 Мы отправили письмо на:
                 <br />
                 <span className='font-bold text-primary'>{email}</span>

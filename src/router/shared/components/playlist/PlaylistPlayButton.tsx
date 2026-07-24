@@ -38,7 +38,7 @@ export default function PlaylistPlayButton({ playlist }: PlaylistPlayButtonProps
                     pause();
                 }}
             >
-                <PauseHollowIcon hoverColor='hoverPrimary' />
+                <PauseHollowIcon hoverColor='hoverPrimary' size={32} />
             </Button>
         );
     }
@@ -60,7 +60,7 @@ export default function PlaylistPlayButton({ playlist }: PlaylistPlayButtonProps
                 );
             }}
         >
-            <PlayHollowIcon hoverColor='hoverPrimary' />
+            <PlayHollowIcon hoverColor='hoverPrimary' size={32} />
         </Button>
     );
 }

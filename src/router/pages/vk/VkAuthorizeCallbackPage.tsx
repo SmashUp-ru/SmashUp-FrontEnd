@@ -80,7 +80,7 @@ export default function VkAuthorizeCallbackPage() {
 
     return (
         <section className='flex flex-col items-center justify-center gap-y-4 h-full py-20 text-center'>
-            <span className='font-bold text-[24px] text-onSurface'>
+            <span className='font-bold text-xl text-onSurface'>
                 {failed ? 'Не удалось войти через VK' : 'Входим через VK…'}
             </span>
             {failed && (

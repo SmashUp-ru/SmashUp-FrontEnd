@@ -21,7 +21,7 @@ export default function QueueIcon({
             xmlns='http://www.w3.org/2000/svg'
             className={cn(
                 `text-${color} hover:text-${hoverColor}`,
-                'transition-[color,transform] duration-150 active:scale-90 motion-reduce:transition-none',
+                'transition-[color,transform] duration-150 motion-reduce:transition-none',
                 className
             )}
         >

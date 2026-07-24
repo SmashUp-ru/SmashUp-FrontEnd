@@ -32,14 +32,14 @@ export default function ProfileMenu() {
             <div className='flex gap-2 md:gap-2.5 shrink-0 items-center'>
                 <Link
                     to='/login'
-                    className='whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-2 text-base md:px-6 md:py-3.5 md:text-xl font-bold hover:bg-hoverPrimary'
+                    className='whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-2 text-[13px] md:px-5 md:py-[11px] md:text-[15px] font-bold hover:bg-hoverPrimary'
                     draggable={false}
                 >
                     Войти
                 </Link>
                 <Link
                     to='/register'
-                    className='hidden md:inline-block whitespace-nowrap bg-onPrimary text-onSurface rounded-2xl px-6 py-3.5 text-xl font-bold hover:bg-hoverPrimary/[0.2] hover:text-primary'
+                    className='hidden md:inline-block whitespace-nowrap bg-onPrimary text-onSurface rounded-2xl px-5 py-[11px] text-[15px] font-bold hover:bg-hoverPrimary/[0.2] hover:text-primary'
                     draggable={false}
                 >
                     Зарегистрироваться
@@ -60,7 +60,9 @@ export default function ProfileMenu() {
                 </TooltipTrigger>
                 <TooltipContent
                     sideOffset={18}
-                    className='flex flex-col gap-y-7 rounded-3xl bg-surfaceVariant border-none p-2'
+                    // фон/радиус/рамку не переопределяем — берём общий стиль
+                    // подсказки, иначе стрелка не совпадёт с фоном меню
+                    className='flex flex-col items-center gap-y-5 rounded-2xl p-2'
                 >
                     <Link to='/mashup/upload'>
                         <AddMashupIcon />

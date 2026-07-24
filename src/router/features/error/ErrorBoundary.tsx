@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                         className='absolute w-[200vw] h-[160vh] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2'
                     />
                     <div className='z-10 flex flex-col items-center gap-y-[34px]'>
-                        <h3 className='font-medium text-[40px] text-onSurface'>Что-то сломалось</h3>
+                        <h3 className='font-medium text-[32px] text-onSurface'>Что-то сломалось</h3>
                         <Button size='classic' onClick={() => window.location.reload()}>
                             Перезагрузить страницу
                         </Button>

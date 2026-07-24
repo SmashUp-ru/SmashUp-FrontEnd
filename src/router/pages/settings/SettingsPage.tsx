@@ -5,14 +5,14 @@ import ChevronRightIcon from '@/components/icons/chevronRight/ChevronRight24';
 import VKIcon from '@/components/icons/VK.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { explicitAllowed, multisessionAllowed } from '@/lib/bitmask.ts';
-import { Slider } from '@/components/ui/slider.tsx';
+import { SegmentedControl } from '@/components/ui/segmented-control.tsx';
 import SettingsPageSkeleton from '@/router/pages/settings/SettingsPageSkeleton.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
 import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 import UpdateAvatar from '@/router/features/settings/UpdateAvatar.tsx';
-import { useSettingsStore } from '@/store/settings.ts';
+import { BITRATE_OPTIONS, BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { startVkFlow, getVkId } from '@/lib/vk.ts';
 import { axiosSession } from '@/lib/utils.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
@@ -58,7 +58,7 @@ export default function SettingsPage() {
     return (
         <section className='flex flex-col gap-y-6 md:pr-[35px]'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-4xl text-onSurface'>Настройки</h1>
+                <h1 className='font-bold text-[28px] text-onSurface'>Настройки</h1>
             </div>
             <div className='w-full flex flex-col items-center md:items-start md:flex-row gap-8 md:gap-x-12'>
                 <UpdateAvatar />
@@ -67,7 +67,7 @@ export default function SettingsPage() {
                 <div className='w-full flex flex-col gap-y-10 md:gap-y-[75px]'>
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
-                        <h2 className='font-bold text-[32px]'>Настройки профиля</h2>
+                        <h2 className='font-bold text-2xl'>Настройки профиля</h2>
                         <UsernameDialog username={currentUser.username} email={email} />
 
                         <EmailDialog email={email} />
@@ -83,7 +83,7 @@ export default function SettingsPage() {
                                             <span className='font-medium text-onSurfaceVariant'>
                                                 Подключено
                                             </span>
-                                            <span className='font-bold text-[24px] text-onSurface'>
+                                            <span className='font-bold text-xl text-onSurface'>
                                                 VK
                                             </span>
                                         </div>
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                                             <span className='font-medium text-onSurfaceVariant'>
                                                 Не подключено
                                             </span>
-                                            <span className='font-bold text-[24px] text-onSurface'>
+                                            <span className='font-bold text-xl text-onSurface'>
                                                 VK
                                             </span>
                                         </div>
@@ -118,30 +118,24 @@ export default function SettingsPage() {
 
                     {/*настройки приложения*/}
                     <div className='w-full flex flex-col gap-y-[30px] mb-[30px]'>
-                        <h2 className='font-bold text-[32px]'>Настройки приложения</h2>
+                        <h2 className='font-bold text-2xl'>Настройки приложения</h2>
                         <div className='grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-x-20 lg:gap-y-20 items-center'>
                             <div className='flex flex-col items-start gap-y-3 md:flex-row md:items-center md:gap-x-10'>
-                                <Label className='w-auto md:w-1/2 shrink-0 font-medium text-[18px] text-onSurfaceVariant'>
+                                <Label className='w-auto md:w-1/2 shrink-0 font-medium text-[15px] text-onSurfaceVariant'>
                                     Битрейт мэшапов
                                 </Label>
-                                <div className='w-full relative mt-10 md:mt-0'>
-                                    <Slider
-                                        min={0}
-                                        max={4}
-                                        step={1}
-                                        value={[bitrate]}
-                                        showMarks={true}
-                                        onValueChange={(v) => updateBitrate(v[0])}
-                                        className='z-30'
-                                        rangeClassName='bg-primary'
-                                        thumbClassName='bg-onSurface h-[30px] w-2.5 rounded-[2.8px]'
-                                        captions={['64', '96', '128', '160', 'Ориг']}
+                                <div className='w-full'>
+                                    <SegmentedControl
+                                        aria-label='Битрейт мэшапов'
+                                        value={bitrate}
+                                        onChange={(v) => updateBitrate(v as keyof typeof BITRATES)}
+                                        options={BITRATE_OPTIONS}
                                     />
                                 </div>
                             </div>
 
                             <div className='flex items-center justify-between'>
-                                <Label className='font-medium text-[18px] text-onSurfaceVariant'>
+                                <Label className='font-medium text-[15px] text-onSurfaceVariant'>
                                     Разрешить мультисессии
                                 </Label>
                                 <Switch
@@ -172,7 +166,7 @@ export default function SettingsPage() {
                             </div>
 
                             <div className='flex items-center justify-between'>
-                                <Label className='font-medium text-[18px] text-onSurfaceVariant'>
+                                <Label className='font-medium text-[15px] text-onSurfaceVariant'>
                                     Показывать Explicit-контент
                                 </Label>
                                 <Switch

@@ -14,10 +14,8 @@ import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
-import SkipLeftIcon from '@/components/icons/SkipLeft.tsx';
-import SkipRightIcon from '@/components/icons/SkipRight.tsx';
-import PlayIcon from '@/components/icons/Play.tsx';
-import PauseIcon from '@/components/icons/Pause.tsx';
+import SkipButton from '@/router/features/player/SkipButton.tsx';
+import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import ChevronDownIcon from '@/components/icons/ChevronDown.tsx';
@@ -25,6 +23,7 @@ import QueueIcon from '@/components/icons/Queue.tsx';
 import SourcesIcon from '@/components/icons/Sources.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 function SeekBar({ duration }: { duration: number }) {
     const seek = usePlayerStore((s) => s.seek);
@@ -54,7 +53,7 @@ function SeekBar({ duration }: { duration: number }) {
                     setChanging(false);
                 }}
             />
-            <div className='flex justify-between mt-2 text-sm text-onSurfaceVariant'>
+            <div className='flex justify-between mt-2 text-[13px] text-onSurfaceVariant'>
                 <span>{msToMinutesAndSeconds(local)}</span>
                 <span>{msToMinutesAndSeconds(duration)}</span>
             </div>
@@ -192,7 +191,7 @@ export default function FullPlayer() {
                     <Button variant='ghost' size='icon' aria-label='Свернуть плеер' onClick={close}>
                         <ChevronDownIcon color='onSurface' size={28} />
                     </Button>
-                    <span className='font-bold text-sm text-onSurfaceVariant truncate max-w-[55%]'>
+                    <span className='font-bold text-[13px] text-onSurfaceVariant truncate max-w-[55%]'>
                         {queueName}
                     </span>
                     <div className='w-10' />
@@ -208,19 +207,14 @@ export default function FullPlayer() {
                         onTouchMove={onTouchMove}
                         onTouchEnd={onTouchEnd}
                     >
-                        <img
+                        <ImageWithSkeleton
                             src={coverUrl('mashup', mashup.imageUrl, 800)}
                             alt={mashup.name}
-                            onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = coverUrl('mashup', 'default', 800);
-                            }}
                             className='w-[min(84vw,44vh)] h-[min(84vw,44vh)] rounded-[20px] object-cover shadow-2xl bg-surface'
-                            draggable={false}
                         />
                         <div className='w-full flex flex-col items-center gap-1'>
                             <div className='flex items-center gap-x-1 max-w-full'>
-                                <span className='font-bold text-2xl truncate'>{mashup.name}</span>
+                                <span className='font-bold text-xl truncate'>{mashup.name}</span>
                                 {isExplicit(mashup.statuses) && (
                                     <div className='w-6 h-6 shrink-0'>
                                         <ExplicitIcon />
@@ -258,20 +252,19 @@ export default function FullPlayer() {
                 {panel === 'queue' && (
                     <div className='flex-1 min-h-0 overflow-y-auto py-2 animate-in fade-in slide-in-from-right-4 duration-200 motion-reduce:animate-none'>
                         <div className='flex items-center gap-x-3 mb-4 px-1.5'>
-                            <img
+                            <ImageWithSkeleton
                                 src={coverUrl('mashup', mashup.imageUrl, 100)}
                                 alt=''
                                 className='w-12 h-12 rounded-lg object-cover bg-surface shrink-0'
-                                draggable={false}
                             />
                             <div className='flex flex-col min-w-0'>
                                 <span className='font-bold truncate'>{mashup.name}</span>
-                                <span className='text-sm text-onSurfaceVariant truncate'>
+                                <span className='text-[13px] text-onSurfaceVariant truncate'>
                                     {mashup.authors.join(', ')}
                                 </span>
                             </div>
                         </div>
-                        <h2 className='font-bold text-lg mb-3 px-1.5'>Следующие в очереди</h2>
+                        <h2 className='font-bold text-[15px] mb-3 px-1.5'>Следующие в очереди</h2>
                         {upcomingIds.length === 0 && (
                             <p className='text-onSurfaceVariant'>Очередь пуста</p>
                         )}
@@ -284,17 +277,16 @@ export default function FullPlayer() {
                                         onClick={() => jumpTo(queueIndex + 1 + i)}
                                         className='flex items-center gap-x-3 p-1.5 rounded-xl hover:bg-white/5 text-left w-full min-w-0'
                                     >
-                                        <img
+                                        <ImageWithSkeleton
                                             src={coverUrl('mashup', m?.imageUrl ?? '', 100)}
                                             alt=''
                                             className='w-11 h-11 rounded-lg object-cover shrink-0'
-                                            draggable={false}
                                         />
                                         <div className='flex flex-col min-w-0'>
                                             <span className='font-semibold truncate'>
                                                 {m?.name ?? '…'}
                                             </span>
-                                            <span className='text-sm text-onSurfaceVariant truncate'>
+                                            <span className='text-[13px] text-onSurfaceVariant truncate'>
                                                 {m?.authors.join(', ')}
                                             </span>
                                         </div>
@@ -308,20 +300,19 @@ export default function FullPlayer() {
                 {panel === 'sources' && (
                     <div className='flex-1 min-h-0 overflow-y-auto py-2 animate-in fade-in slide-in-from-left-4 duration-200 motion-reduce:animate-none'>
                         <div className='flex items-center gap-x-3 mb-4 px-1.5'>
-                            <img
+                            <ImageWithSkeleton
                                 src={coverUrl('mashup', mashup.imageUrl, 100)}
                                 alt=''
                                 className='w-12 h-12 rounded-lg object-cover bg-surface shrink-0'
-                                draggable={false}
                             />
                             <div className='flex flex-col min-w-0'>
                                 <span className='font-bold truncate'>{mashup.name}</span>
-                                <span className='text-sm text-onSurfaceVariant truncate'>
+                                <span className='text-[13px] text-onSurfaceVariant truncate'>
                                     {mashup.authors.join(', ')}
                                 </span>
                             </div>
                         </div>
-                        <h2 className='font-bold text-lg mb-3 px-1.5'>Использованные треки</h2>
+                        <h2 className='font-bold text-[15px] mb-3 px-1.5'>Использованные треки</h2>
                         {tracks.length === 0 && (
                             <p className='text-onSurfaceVariant'>Сурсы не указаны</p>
                         )}
@@ -347,39 +338,28 @@ export default function FullPlayer() {
                     >
                         <ShuffleIcon color={shuffle ? 'primary' : 'onSurface'} />
                     </Button>
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        aria-label='Предыдущий трек'
+                    <SkipButton
+                        direction='prev'
                         onClick={() => {
                             prev();
                             play();
                         }}
-                    >
-                        <SkipLeftIcon color='onSurface' />
-                    </Button>
-                    <button
-                        aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
-                        onClick={() => (isPlaying ? pause() : play())}
-                        className='flex items-center justify-center w-[72px] h-[72px] rounded-full bg-primary transition-transform active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100'
-                    >
-                        {isPlaying ? (
-                            <PauseIcon color='onSurface' size={34} />
-                        ) : (
-                            <PlayIcon color='onSurface' size={34} />
-                        )}
-                    </button>
+                    />
                     <Button
                         variant='ghost'
                         size='icon'
-                        aria-label='Следующий трек'
+                        aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
+                        onClick={() => (isPlaying ? pause() : play())}
+                    >
+                        <PlayPauseMorphIcon playing={isPlaying} hollow size={72} color='primary' />
+                    </Button>
+                    <SkipButton
+                        direction='next'
                         onClick={() => {
                             next();
                             play();
                         }}
-                    >
-                        <SkipRightIcon color='onSurface' />
-                    </Button>
+                    />
                     <Button variant='ghost' size='icon' aria-label='Повтор' onClick={cycleLoop}>
                         <RepeatIcon
                             repeating={loop === 'mashup'}

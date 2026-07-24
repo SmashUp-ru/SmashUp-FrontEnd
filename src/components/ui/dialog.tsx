@@ -65,7 +65,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <DialogPrimitive.Title
         ref={ref}
-        className={cn('text-onSurface font-bold text-[28px] pb-7', className)}
+        className={cn('text-onSurface font-bold text-[22px] pb-7', className)}
         {...props}
     />
 ));
@@ -77,7 +77,9 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <DialogPrimitive.Description
         ref={ref}
-        className={cn('text-sm text-muted-foreground pt-7', className)}
+        // Было `text-muted-foreground` — токена `muted` в конфиге нет, класс не
+        // генерировался, и цвет наследовался от контента диалога.
+        className={cn('text-[13px] text-onSurfaceVariant pt-7', className)}
         {...props}
     />
 ));

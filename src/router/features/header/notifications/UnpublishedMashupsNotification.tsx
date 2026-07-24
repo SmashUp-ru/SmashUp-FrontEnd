@@ -25,7 +25,7 @@ export default function UnpublishedMashupsNotification({
             <VKIcon size={40} />
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit flex flex-col'>
-                    <span className='font-bold text-[14px] text-onSurface'>
+                    <span className='font-bold text-[12px] text-onSurface'>
                         <span>
                             Загрузите ваши мэшапы с <span className='text-primary'>VK</span>!
                         </span>
@@ -37,7 +37,7 @@ export default function UnpublishedMashupsNotification({
                 </div>
 
                 <Button
-                    className='px-2.5 py-[4.5px] text-[14px] rounded-lg w-full'
+                    className='px-2.5 py-[4.5px] text-[12px] rounded-lg w-full'
                     onClick={() => handleButtonClick()}
                 >
                     Ай, ну давай

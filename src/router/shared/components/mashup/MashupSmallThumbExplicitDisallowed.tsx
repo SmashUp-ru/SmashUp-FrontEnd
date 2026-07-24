@@ -10,10 +10,12 @@ import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { Link } from 'react-router-dom';
-import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
-import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { coverUrl } from '@/lib/cdn.ts';
+import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 interface MashupSmallThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -28,20 +30,24 @@ export default function MashupSmallThumbExplicitDisallowed({
         <TooltipProvider>
             <Tooltip delayDuration={100}>
                 <TooltipTrigger>
-                    <div className='flex justify-between gap-x-1 p-1.5 w-full group hover:bg-hover rounded-2xl opacity-50'>
+                    <div
+                        className={cn(
+                            'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary rounded-2xl opacity-50',
+                            THUMB_ROW_HOVER
+                        )}
+                    >
                         <div className='flex items-center gap-x-4 w-full'>
                             <div className='relative'>
-                                <img
+                                <ImageWithSkeleton
                                     src={coverUrl('mashup', mashup.imageUrl, 100)}
                                     alt={mashup.name}
-                                    className={cn('w-12 h-12 min-w-12 min-h-12 rounded-xl')}
-                                    draggable={false}
+                                    className={cn('w-11 h-11 min-w-11 min-h-11 rounded-xl')}
                                     loading='lazy'
                                 />
                             </div>
                             <div className='flex flex-col'>
                                 <div className='flex items-center gap-x-1'>
-                                    <div className='font-bold text-onSurface line-clamp-1'>
+                                    <div className='font-bold text-sm text-onSurface line-clamp-1'>
                                         {mashup.name}
                                     </div>
                                     <div className='flex items-center gap-x-0'>
@@ -68,7 +74,7 @@ export default function MashupSmallThumbExplicitDisallowed({
                                             <Link
                                                 key={author}
                                                 to={`/user/${author}`}
-                                                className='font-medium text-onSurfaceVariant'
+                                                className='font-medium text-[13px] text-onSurfaceVariant'
                                             >
                                                 {author}
                                             </Link>
@@ -83,13 +89,9 @@ export default function MashupSmallThumbExplicitDisallowed({
                         </div>
 
                         <div className='flex items-center gap-x-[34px]'>
-                            {isLiked ? (
-                                <LikeFilledIcon width={20} height={17} />
-                            ) : (
-                                <LikeOutlineIcon color='onSurface' width={20} height={17} />
-                            )}
+                            {isLiked ? <LikeFilledIcon /> : <LikeOutlineIcon color='onSurface' />}
 
-                            <span className='w-10 font-semibold text-[18px] text-additionalText'>
+                            <span className='w-10 font-semibold text-[13px] text-additionalText'>
                                 {msToMinutesAndSeconds(mashup.duration)}
                             </span>
                         </div>
