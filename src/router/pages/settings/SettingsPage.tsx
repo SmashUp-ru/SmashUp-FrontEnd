@@ -56,7 +56,7 @@ export default function SettingsPage() {
     if (isLoading) return <SettingsPageSkeleton />;
 
     return (
-        <section className='flex flex-col gap-y-6 md:pr-[35px]'>
+        <section className='flex flex-col gap-y-6 md:pr-[35px] min-h-full'>
             <div className='flex items-center justify-between'>
                 <h1 className='font-bold text-[28px] text-onSurface'>Настройки</h1>
             </div>
@@ -120,11 +120,14 @@ export default function SettingsPage() {
                     <div className='w-full flex flex-col gap-y-[30px] mb-[30px]'>
                         <h2 className='font-bold text-2xl'>Настройки приложения</h2>
                         <div className='grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-x-20 lg:gap-y-20 items-center'>
-                            <div className='flex flex-col items-start gap-y-3 md:flex-row md:items-center md:gap-x-10'>
-                                <Label className='w-auto md:w-1/2 shrink-0 font-medium text-[15px] text-onSurfaceVariant'>
+                            {/* Лейбл НАД контролом: так сегменты получают всю ширину
+                                ячейки (при label-сбоку «Ориг» клипался в узкой
+                                grid-ячейке). Настройки остаются в одну строку. */}
+                            <div className='flex flex-col items-start gap-y-3'>
+                                <Label className='shrink-0 font-medium text-[15px] text-onSurfaceVariant'>
                                     Битрейт мэшапов
                                 </Label>
-                                <div className='w-full'>
+                                <div className='w-full min-w-0 max-w-[360px]'>
                                     <SegmentedControl
                                         aria-label='Битрейт мэшапов'
                                         value={bitrate}
@@ -199,7 +202,10 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* mt-auto — футтер прижат к низу, даже когда контент короче экрана */}
+            <div className='mt-auto pt-6'>
+                <Footer />
+            </div>
         </section>
     );
 }

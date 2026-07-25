@@ -22,6 +22,9 @@ export default function ModerationMashup({ mashup }: ModerationMashupProps) {
                 value={mashup.id.toString()}
                 accordionValue={value}
                 mashup={mashup}
+                onToggle={() =>
+                    setValue((v) => (v === mashup.id.toString() ? undefined : mashup.id.toString()))
+                }
             />
         </Accordion>
     );

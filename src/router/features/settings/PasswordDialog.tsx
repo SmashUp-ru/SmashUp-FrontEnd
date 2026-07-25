@@ -89,9 +89,9 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                         <DialogHeader>
                             <div className='flex items-center justify-between'>
                                 <DialogTitle>Изменение Пароля</DialogTitle>
-                                <DialogClose className='pb-5' asChild>
-                                    <Button variant='ghost' size='icon'>
-                                        <CancelIcon />
+                                <DialogClose asChild>
+                                    <Button variant='ghost' size='control' aria-label='Закрыть'>
+                                        <CancelIcon size={24} />
                                     </Button>
                                 </DialogClose>
                             </div>

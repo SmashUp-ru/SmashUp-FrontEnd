@@ -60,7 +60,7 @@ export default function PlayerBarModeration() {
                 moderationIsPlaying ? (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         aria-label='Пауза'
                         onClick={() => updateModerationIsPlaying(false)}
                     >
@@ -69,7 +69,7 @@ export default function PlayerBarModeration() {
                 ) : (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         aria-label='Воспроизвести'
                         onClick={() => updateModerationIsPlaying(true)}
                     >

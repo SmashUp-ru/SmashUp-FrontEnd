@@ -35,7 +35,7 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
                         : coverUrl('track', track.imageUrl, 100)
                 }
                 alt={track.name}
-                className='w-11 h-11 rounded-xl object-cover'
+                className='w-11 h-11 shrink-0 rounded-xl object-cover'
                 loading='lazy'
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
@@ -59,13 +59,9 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
 
             {icon}
 
+            {/* ⋯ как в строке мэшапа: круглая обводка size='control' */}
             <TrackMoreDropdown track={track}>
-                <Button variant='ghost' size='icon' aria-label='Опции трека'>
-                    {/*
-                     * Место под иконку занято всегда (24×24) — сама иконка
-                     * проявляется прозрачностью. Прежняя пара «иконка + пустая
-                     * распорка» переключалась через display, то есть рывком.
-                     */}
+                <Button variant='ghost' size='control' aria-label='Опции трека'>
                     <div className={cn('w-6 h-6 min-w-6 min-h-6', THUMB_REVEAL)}>
                         <MoreHorizontalIcon />
                     </div>

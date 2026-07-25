@@ -15,6 +15,7 @@ import {
 import MashupStatusNotification from '@/router/features/header/notifications/MashupStatusNotification.tsx';
 import { useNotificationsData } from '@/router/features/header/notifications/useNotificationsData.ts';
 import UnpublishedMashupsNotification from './notifications/UnpublishedMashupsNotification';
+import { Button } from '@/components/ui/button.tsx';
 import { useCallback, useState } from 'react';
 
 export default function NotificationsMenu() {
@@ -29,12 +30,20 @@ export default function NotificationsMenu() {
     if (!notifications) return null;
 
     // TODO: хотя бы показать, что нет уведомлений
-    if (notifications.length === 0) return <BellIcon />;
+    if (notifications.length === 0)
+        return (
+            <Button variant='ghost' size='control' aria-label='Уведомления' disabled>
+                <BellIcon />
+            </Button>
+        );
 
     return (
         <DropdownMenu onOpenChange={setOpen} open={open}>
-            <DropdownMenuTrigger aria-label='Уведомления'>
-                <BellIcon active />
+            {/* asChild — триггер получает круглую подсветку ghost + пресс */}
+            <DropdownMenuTrigger asChild>
+                <Button variant='ghost' size='control' aria-label='Уведомления'>
+                    <BellIcon active />
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 sideOffset={32}

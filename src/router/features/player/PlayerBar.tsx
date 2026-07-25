@@ -4,13 +4,13 @@ import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
 import { Link } from 'react-router-dom';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
 import SkipButton from '@/router/features/player/SkipButton.tsx';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
 import InfoIcon from '@/components/icons/Info.tsx';
 import { usePlayerStore } from '@/store/player.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayIcon from '@/components/icons/Play.tsx';
 import PauseIcon from '@/components/icons/Pause.tsx';
+import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
+import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
 import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
@@ -67,8 +67,9 @@ export default function PlayerBar() {
                     />
 
                     <div className='flex flex-col min-w-0'>
+                        {/* variant='nothing' — без фоновой подсветки ghost; на ховер название красится в акцент */}
                         <Button
-                            variant='ghost'
+                            variant='nothing'
                             size='icon'
                             aria-label='Информация о мэшапе'
                             onClick={() => {
@@ -77,7 +78,7 @@ export default function PlayerBar() {
                                     else openInfo();
                                 }
                             }}
-                            className='block w-full truncate text-left font-bold text-[15px] text-onSurface'
+                            className='block w-full truncate text-left font-bold text-[15px] text-onSurface transition-colors hover:text-primary'
                         >
                             {mashup.name}
                         </Button>
@@ -88,7 +89,7 @@ export default function PlayerBar() {
                                         key={author}
                                         to={`/user/${author}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className='font-medium text-onSurfaceVariant'
+                                        className='font-medium text-onSurfaceVariant transition-colors hover:text-onSurface'
                                     >
                                         {author}
                                     </Link>
@@ -104,7 +105,7 @@ export default function PlayerBar() {
                     {isLiked ? (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Убрать лайк'
                             onClick={() => {
@@ -126,7 +127,7 @@ export default function PlayerBar() {
                     ) : (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Лайкнуть'
                             onClick={() => {
@@ -149,7 +150,7 @@ export default function PlayerBar() {
                     {shuffle ? (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Отключить перемешивание'
                             onClick={() => {
@@ -163,7 +164,7 @@ export default function PlayerBar() {
                     ) : (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Перемешать'
                             onClick={() => {
@@ -191,30 +192,54 @@ export default function PlayerBar() {
                         }}
                     />
 
+                    {/*
+                     * Десктоп — белый круг (hollow), на ховер САМ круг красится в
+                     * акцент (group-hover:text-primary → fill-current у иконки).
+                     * variant='nothing' — без тёмной ghost-подсветки, круг и есть
+                     * визуал кнопки. Мобайл — обычный глиф без круга.
+                     */}
                     {isPlaying ? (
                         <Button
-                            variant='ghost'
-                            size='icon'
+                            variant='nothing'
+                            size='control'
+                            className='group'
                             aria-label='Пауза'
                             onClick={() => pause()}
                         >
                             {isMobile ? (
-                                <PauseIcon color='onSurface' size={30} />
+                                <PauseIcon
+                                    className='group-hover:text-primary'
+                                    color='onSurface'
+                                    size={30}
+                                />
                             ) : (
-                                <PauseHollowIcon color='onSurface' size={32} />
+                                <PauseHollowIcon
+                                    className='group-hover:text-primary'
+                                    color='onSurface'
+                                    size={32}
+                                />
                             )}
                         </Button>
                     ) : (
                         <Button
-                            variant='ghost'
-                            size='icon'
+                            variant='nothing'
+                            size='control'
+                            className='group'
                             aria-label='Воспроизвести'
                             onClick={() => play()}
                         >
                             {isMobile ? (
-                                <PlayIcon color='onSurface' size={30} />
+                                <PlayIcon
+                                    className='group-hover:text-primary'
+                                    color='onSurface'
+                                    size={30}
+                                />
                             ) : (
-                                <PlayHollowIcon color='onSurface' size={32} />
+                                <PlayHollowIcon
+                                    className='group-hover:text-primary'
+                                    color='onSurface'
+                                    size={32}
+                                />
                             )}
                         </Button>
                     )}
@@ -230,7 +255,7 @@ export default function PlayerBar() {
                     {loop === 'none' && (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Повторять очередь'
                             onClick={() => updateLoop('queue')}
@@ -242,7 +267,7 @@ export default function PlayerBar() {
                     {loop === 'queue' && (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Повторять мэшап'
                             onClick={() => updateLoop('mashup')}
@@ -254,7 +279,7 @@ export default function PlayerBar() {
                     {loop === 'mashup' && (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             className='hidden md:inline-flex'
                             aria-label='Отключить повтор'
                             onClick={() => updateLoop('none')}
@@ -268,7 +293,7 @@ export default function PlayerBar() {
                 <>
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         className='hidden md:inline-flex'
                         aria-label='Информация о треке'
                         onClick={() => (info ? closeInfo() : openInfo())}

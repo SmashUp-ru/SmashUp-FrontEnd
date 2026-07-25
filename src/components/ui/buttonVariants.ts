@@ -25,7 +25,11 @@ const buttonVariants = cva(
                 default: 'rounded-2xl px-4 py-[11px]',
                 sm: 'px-4 py-2 font-bold text-[13px] rounded-xl',
                 classic: 'rounded-2xl font-bold text-[15px] px-6 py-[11px] w-fit',
-                icon: 'p-0'
+                icon: 'p-0',
+                // Icon-кнопка с полем вокруг: круглая подсветка (ghost) шире
+                // самой иконки и одинакова для иконок 24/32px. 44px = таргет
+                // нажатия WCAG 2.5.5. Иконка центрируется базовым items/justify.
+                control: 'h-11 w-11 rounded-full shrink-0'
             }
         },
         defaultVariants: {

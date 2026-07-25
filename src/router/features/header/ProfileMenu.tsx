@@ -62,22 +62,29 @@ export default function ProfileMenu() {
                     sideOffset={18}
                     // фон/радиус/рамку не переопределяем — берём общий стиль
                     // подсказки, иначе стрелка не совпадёт с фоном меню
-                    className='flex flex-col items-center gap-y-5 rounded-2xl p-2'
+                    className='flex flex-col items-center gap-y-1 rounded-2xl p-2'
                 >
-                    <Link to='/mashup/upload'>
-                        <AddMashupIcon />
-                    </Link>
-                    {isModerator(currentUser.permissions) && (
-                        <Link to='/mashup/moderation'>
-                            <GavelIcon />
+                    {/* asChild — ссылка получает стиль ghost-кнопки: круглая подсветка + пресс */}
+                    <Button asChild variant='ghost' size='control' aria-label='Загрузить мэшап'>
+                        <Link to='/mashup/upload'>
+                            <AddMashupIcon />
                         </Link>
+                    </Button>
+                    {isModerator(currentUser.permissions) && (
+                        <Button asChild variant='ghost' size='control' aria-label='Модерация'>
+                            <Link to='/mashup/moderation'>
+                                <GavelIcon />
+                            </Link>
+                        </Button>
                     )}
-                    <Link to='/settings'>
-                        <SettingsIcon />
-                    </Link>
+                    <Button asChild variant='ghost' size='control' aria-label='Настройки'>
+                        <Link to='/settings'>
+                            <SettingsIcon />
+                        </Link>
+                    </Button>
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         aria-label='Выйти'
                         onClick={() => {
                             localStorage.removeItem('smashup_token');

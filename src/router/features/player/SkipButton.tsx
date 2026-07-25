@@ -39,7 +39,7 @@ export default function SkipButton({
     return (
         <Button
             variant='ghost'
-            size='icon'
+            size='control'
             className={className}
             aria-label={isNext ? 'Следующий трек' : 'Предыдущий трек'}
             onClick={() => {

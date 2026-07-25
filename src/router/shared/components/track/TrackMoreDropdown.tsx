@@ -40,13 +40,11 @@ export default function TrackMoreDropdown({ track, children }: TrackMoreDropdown
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
                     <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        <Link
-                            className='flex items-center gap-x-[14.4px]'
-                            to={link}
-                            target='_blank'
-                        >
+                        <Link className='flex items-center gap-x-2.5' to={link} target='_blank'>
                             <LinkExternalIcon
                                 className='group-data-[highlighted]:text-primary'
+                                color='onSurface'
+                                size={24}
                                 hoverColor='primary'
                             />
                             <span>Открыть оригинал</span>

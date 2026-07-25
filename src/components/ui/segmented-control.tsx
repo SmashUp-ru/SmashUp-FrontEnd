@@ -92,7 +92,10 @@ function SegmentedControl<T extends string | number>({
                         tabIndex={active ? 0 : -1}
                         onClick={() => onChange(option.value)}
                         className={cn(
-                            'relative flex-1 rounded-xl px-2 py-2 text-[17px] font-bold',
+                            // min-w-0 обязателен: без него flex-1 не сжимается ниже
+                            // ширины текста, и длинный вариант («Ориг») вылезает
+                            // за контейнер.
+                            'relative min-w-0 flex-1 rounded-xl px-1.5 py-2 text-[15px] font-bold',
                             'transition-colors [transition-duration:200ms] motion-reduce:transition-none',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                             active ? 'text-surface' : 'text-onSurfaceVariant hover:text-onSurface'

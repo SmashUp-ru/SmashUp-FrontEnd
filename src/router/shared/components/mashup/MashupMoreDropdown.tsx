@@ -32,9 +32,15 @@ import InfoIcon from '@/components/icons/Info.tsx';
 interface MashupMoreDropdownProps {
     mashup: Mashup;
     children: ReactNode;
+    /** Скрыть пункт «Открыть мэшап» (когда мэшап уже открыт, напр. в MashupInfo). */
+    hideOpen?: boolean;
 }
 
-export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropdownProps) {
+export default function MashupMoreDropdown({
+    mashup,
+    children,
+    hideOpen = false
+}: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const navigate = useNavigate();
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -50,24 +56,28 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
             </DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem
-                        className='flex items-center gap-x-[14.4px]'
-                        onClick={() => navigate(`/mashup/${mashup.id}`)}
-                    >
-                        <InfoIcon
-                            className='group-data-[highlighted]:text-primary'
-                            color='onSurface'
-                            hoverColor='primary'
-                        />
-                        <span>Открыть мэшап</span>
-                    </DropdownMenuItem>
+                    {!hideOpen && (
+                        <DropdownMenuItem
+                            className='flex items-center gap-x-2.5'
+                            onClick={() => navigate(`/mashup/${mashup.id}`)}
+                        >
+                            <InfoIcon
+                                className='group-data-[highlighted]:text-primary'
+                                color='onSurface'
+                                size={24}
+                                hoverColor='primary'
+                            />
+                            <span>Открыть мэшап</span>
+                        </DropdownMenuItem>
+                    )}
 
                     {currentUser && (
                         <DropdownMenuSub>
-                            <DropdownMenuSubTrigger className='flex items-center gap-x-[14.4px]'>
+                            <DropdownMenuSubTrigger className='flex items-center gap-x-2.5'>
                                 <PlusIcon
                                     className='group-data-[highlighted]:text-primary'
                                     color='onSurface'
+                                    size={24}
                                     hoverColor='primary'
                                 />{' '}
                                 В плейлист
@@ -81,10 +91,11 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                                                 e.stopPropagation();
                                             }}
                                         >
-                                            <div className='flex items-center gap-x-[14.4px]'>
+                                            <div className='flex items-center gap-x-2.5'>
                                                 <AddIcon
                                                     className='group-data-[highlighted]:text-primary'
                                                     color='onSurface'
+                                                    size={24}
                                                     hoverColor='primary'
                                                 />
                                                 <span>Создать плейлист</span>
@@ -196,19 +207,18 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                         </DropdownMenuSub>
                     )}
 
-                    <DropdownMenuItem
-                        className='flex items-center gap-x-[14.4px]'
-                        onClick={() => {}}
-                    >
+                    <DropdownMenuItem className='flex items-center gap-x-2.5' onClick={() => {}}>
                         <BackIcon
                             className='group-data-[highlighted]:text-primary'
+                            color='onSurface'
+                            size={24}
                             hoverColor='primary'
                         />
                         <span>Добавить в очередь</span>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                        className='flex items-center gap-x-[14.4px]'
+                        className='flex items-center gap-x-2.5'
                         onClick={() => {
                             navigator.clipboard
                                 .writeText(
@@ -229,6 +239,8 @@ export default function MashupMoreDropdown({ mashup, children }: MashupMoreDropd
                     >
                         <ShareIcon
                             className='group-data-[highlighted]:text-primary'
+                            color='onSurface'
+                            size={24}
                             hoverColor='primary'
                         />
                         <span>Поделиться</span>

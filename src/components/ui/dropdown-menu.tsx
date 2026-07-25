@@ -28,7 +28,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
             // `group` — чтобы иконки внутри пункта могли красить себя через
             // group-data-[highlighted]; подсветка на data-[highlighted] (Radix ставит
             // его и при наведении мышью, и при навигации с клавиатуры), а не на :hover.
-            'group flex cursor-default gap-2 select-none items-center rounded-[14px] px-4 py-[13px] font-medium outline-none transition-colors',
+            'group flex cursor-default gap-2 select-none items-center rounded-[12px] px-3 py-2 font-medium outline-none transition-colors',
             'data-[highlighted]:bg-primary/20 data-[highlighted]:text-primary data-[state=open]:bg-primary/20 data-[state=open]:text-primary',
             inset && 'pl-8',
             className
@@ -101,7 +101,7 @@ const DropdownMenuItem = React.forwardRef<
     <DropdownMenuPrimitive.Item
         ref={ref}
         className={cn(
-            'group relative flex cursor-default select-none items-center gap-2 rounded-[14px] px-4 py-[13px] font-medium outline-none',
+            'group relative flex cursor-default select-none items-center gap-2 rounded-[12px] px-3 py-2 font-medium outline-none',
             'transition-colors [transition-duration:120ms] motion-reduce:transition-none',
             'data-[highlighted]:bg-primary/20 data-[highlighted]:text-primary',
             'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',

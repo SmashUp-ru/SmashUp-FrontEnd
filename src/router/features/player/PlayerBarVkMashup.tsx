@@ -111,7 +111,7 @@ export default function PlayerBarVkMashup() {
                 vkMashupIsPlaying ? (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         aria-label='Пауза'
                         onClick={() => updateVkMashupIsPlaying(false)}
                     >
@@ -120,7 +120,7 @@ export default function PlayerBarVkMashup() {
                 ) : (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
                         aria-label='Воспроизвести'
                         onClick={() => updateVkMashupIsPlaying(true)}
                     >

@@ -1,4 +1,5 @@
-import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion.tsx';
+import { AccordionContent, AccordionItem } from '@/components/ui/accordion.tsx';
+import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import EditIcon from '@/components/icons/edit/Edit24';
@@ -45,12 +46,15 @@ interface UnpublishedMashupAccordionItem {
     value: string;
     accordionValue?: string;
     mashup: UnpublishedMashup;
+    /** Тоггл раскрытия — вешается на всю строку (не только на шеврон). */
+    onToggle?: () => void;
 }
 
 export function UnpublishedMashupAccordionItem({
     mashup,
     accordionValue,
-    value
+    value,
+    onToggle
 }: UnpublishedMashupAccordionItem) {
     const { playModerationMashup } = usePlayer();
     const { toast } = useToast();
@@ -150,24 +154,30 @@ export function UnpublishedMashupAccordionItem({
 
     if (!unpublishedMashups) return null;
 
+    const isOpen = accordionValue === value;
+
     return (
         <AccordionItem value={value}>
-            <div className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4'>
-                <AccordionTrigger className='flex-1 min-w-0 h-auto p-0 bg-transparent rounded-none'>
-                    <div className='flex items-center gap-x-4 min-w-0'>
-                        <ImageWithSkeleton
-                            src={imageUrl}
-                            alt={mashup.name}
-                            className='w-12 h-12 rounded-[10px]'
-                        />
-                        <div className='flex flex-col items-start'>
-                            <span className='font-bold text-onSurface'>{mashup.name}</span>
-                            <span className='font-medium text-onSurfaceVariant'>
-                                {mashup.authors?.join(', ')}
-                            </span>
-                        </div>
+            {/* Клик по всей строке раскрывает; шеврон — в самом право (после «Редактировать») */}
+            <div
+                className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4 cursor-pointer'
+                onClick={onToggle}
+            >
+                <div className='flex flex-1 min-w-0 items-center gap-x-4'>
+                    <ImageWithSkeleton
+                        src={imageUrl}
+                        alt={mashup.name}
+                        className='w-12 h-12 shrink-0 rounded-[10px]'
+                    />
+                    <div className='flex flex-col items-start min-w-0'>
+                        <span className='font-bold text-onSurface truncate max-w-full'>
+                            {mashup.name}
+                        </span>
+                        <span className='font-medium text-onSurfaceVariant truncate max-w-full'>
+                            {mashup.authors?.join(', ')}
+                        </span>
                     </div>
-                </AccordionTrigger>
+                </div>
 
                 <div className='flex items-center gap-2 md:flex-wrap md:justify-start md:gap-x-7'>
                     <div className='flex flex-1 md:flex-none items-center gap-2 md:gap-x-3'>
@@ -198,8 +208,8 @@ export function UnpublishedMashupAccordionItem({
                             className=''
                             aria-label='Воспроизвести'
                             onClick={(e) => {
+                                e.stopPropagation();
                                 playModerationMashup(mashup);
-                                e.preventDefault();
                             }}
                         >
                             <PlayHollowIcon color='primary' size={32} />
@@ -208,6 +218,7 @@ export function UnpublishedMashupAccordionItem({
                         <Button
                             className='flex-1 md:flex-none py-[7px] font-bold text-sm rounded-xl'
                             onClick={(e) => {
+                                e.stopPropagation();
                                 e.preventDefault();
                                 axiosSession
                                     .post(`/moderation/unpublished_mashup/publish?id=${mashup.id}`)
@@ -274,7 +285,12 @@ export function UnpublishedMashupAccordionItem({
                         </Dialog>
                     </div>
 
-                    <Button className='md:mr-7' variant='ghost' size='icon' asChild>
+                    <Button
+                        variant='ghost'
+                        size='icon'
+                        asChild
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <Link
                             to={`/mashup/moderation/${mashup.id}`}
                             aria-label='Редактировать мэшап'
@@ -282,6 +298,14 @@ export function UnpublishedMashupAccordionItem({
                             <EditIcon />
                         </Link>
                     </Button>
+
+                    {/* Шеврон раскрытия — в самом право; вращается по состоянию */}
+                    <ChevronDown
+                        className={cn(
+                            'h-7 w-7 shrink-0 text-onSurfaceVariant transition-transform duration-200',
+                            isOpen && 'rotate-180'
+                        )}
+                    />
                 </div>
             </div>
             <AccordionContent className='mt-4 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-x-6'>

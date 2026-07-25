@@ -137,34 +137,46 @@ export default function MashupInfo() {
             </div>
 
             <div className='flex items-center gap-x-4'>
+                {/* Белый круг → акцент на ховер (как в баре); variant='nothing' — без ghost-кольца */}
                 {queue[queueIndex] === mashup.id && isPlaying ? (
                     <Button
-                        variant='ghost'
-                        size='icon'
-                        className=''
+                        variant='nothing'
+                        size='control'
+                        className='group'
+                        aria-label='Пауза'
                         onClick={() => {
                             pause();
                         }}
                     >
-                        <PauseHollowIcon color='primary' size={32} />
+                        <PauseHollowIcon
+                            className='group-hover:text-primary'
+                            color='onSurface'
+                            size={32}
+                        />
                     </Button>
                 ) : (
                     <Button
-                        variant='ghost'
-                        size='icon'
-                        className=''
+                        variant='nothing'
+                        size='control'
+                        className='group'
+                        aria-label='Воспроизвести'
                         onClick={() => {
                             playMashup([mashup.id], mashup.name, `mashup/${mashup.id}`, 0);
                         }}
                     >
-                        <PlayHollowIcon color='primary' hoverColor='hoverPrimary' size={32} />
+                        <PlayHollowIcon
+                            className='group-hover:text-primary'
+                            color='onSurface'
+                            size={32}
+                        />
                     </Button>
                 )}
 
                 {isLiked ? (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
+                        aria-label='Убрать лайк'
                         onClick={() => {
                             axiosSession
                                 .post(
@@ -187,7 +199,8 @@ export default function MashupInfo() {
                 ) : (
                     <Button
                         variant='ghost'
-                        size='icon'
+                        size='control'
+                        aria-label='Лайкнуть'
                         onClick={() => {
                             axiosSession
                                 .post(
@@ -203,9 +216,10 @@ export default function MashupInfo() {
                     </Button>
                 )}
 
-                <MashupMoreDropdown mashup={mashup}>
-                    <Button variant='ghost' size='icon' className=''>
-                        <MoreHorizontalIcon size={32} />
+                {/* hideOpen — «Открыть мэшап» тут лишний, мэшап уже открыт */}
+                <MashupMoreDropdown mashup={mashup} hideOpen>
+                    <Button variant='ghost' size='control' aria-label='Опции мэшапа'>
+                        <MoreHorizontalIcon size={24} />
                     </Button>
                 </MashupMoreDropdown>
             </div>

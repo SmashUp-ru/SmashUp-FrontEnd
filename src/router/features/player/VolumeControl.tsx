@@ -22,10 +22,10 @@ export default function VolumeControl() {
 
     return (
         // Громкость скрыта на мобильном (нет смысла на тач-устройстве, экономит место в баре).
-        <div className='hidden md:flex items-center gap-x-6'>
+        <div className='hidden md:flex items-center gap-x-2'>
             <Button
                 variant='ghost'
-                size='icon'
+                size='control'
                 aria-label={muted ? 'Включить звук' : 'Выключить звук'}
                 onClick={() => updateVolume(muted ? lastAudible.current : 0)}
             >

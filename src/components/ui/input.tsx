@@ -5,6 +5,7 @@ import { playOnce } from '@/lib/playAnimation.ts';
 import { IconProps } from '@/components/icons/props.tsx';
 import LockIcon from '@/components/icons/Lock.tsx';
 import HideIcon from '@/components/icons/hide/Hide28';
+import ViewIcon from '@/components/icons/view/View24';
 import { Button } from '@/components/ui/button.tsx';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -57,12 +58,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     className='pointer-events-none absolute inset-0 rounded-2xl bg-surface'
                 />
 
-                <div className='absolute left-5 top-1/2 transform -translate-y-1/2'>
+                <div className='absolute left-4 top-1/2 transform -translate-y-1/2'>
                     {type === 'password' ? (
-                        <LockIcon size={23} />
+                        <LockIcon size={24} />
                     ) : (
                         StartIcon && (
-                            <StartIcon size={23} color='onSurface' className={startIconClassName} />
+                            <StartIcon size={24} color='onSurface' className={startIconClassName} />
                         )
                     )}
                 </div>
@@ -72,7 +73,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     className={cn(
                         // фон живёт на подложке выше; relative — чтобы поле было
                         // над ней в порядке отрисовки
-                        'relative flex w-full rounded-2xl bg-transparent text-onSurface py-[11px] px-5 text-[15px] font-bold placeholder:text-onSurfaceVariant',
+                        // placeholder приглушён (additionalText, не onSurfaceVariant):
+                        // при 188 он почти сливался с реальным значением (235).
+                        'relative flex w-full rounded-2xl bg-transparent text-onSurface py-[11px] px-5 text-[15px] font-bold placeholder:text-additionalText',
                         // Кольцо есть всегда, но прозрачное и с отступом — на фокусе
                         // оно проявляется и «схлопывается» к краю поля. Так переход
                         // анимируется (outline-color/offset), а не появляется рывком.
@@ -94,17 +97,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     }}
                     {...props}
                 />
-                <div className='absolute right-5 top-1/2 transform -translate-y-3.5'>
+                <div className='absolute right-3 top-1/2 -translate-y-1/2'>
                     {type === 'password' ? (
                         <Button
                             type='button'
                             variant='ghost'
                             size='icon'
+                            aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+                            className='h-8 w-8'
                             onClick={() => {
-                                setShowPassword(!showPassword);
+                                setShowPassword((s) => !s);
                             }}
                         >
-                            <HideIcon />
+                            {/* открытый глаз = пароль виден, зачёркнутый = скрыт */}
+                            {showPassword ? <ViewIcon size={24} /> : <HideIcon size={24} />}
                         </Button>
                     ) : (
                         EndIcon && (

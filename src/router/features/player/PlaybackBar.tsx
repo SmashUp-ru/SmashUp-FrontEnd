@@ -40,14 +40,21 @@ export default function PlaybackBar({
         >
             <MashupSeekSlider mashup={seekMashup} />
 
-            <div className='w-full flex justify-between items-center'>
-                <div className='flex-1 min-w-0 md:flex-none md:w-1/3 flex items-center gap-x-2 md:gap-x-6'>
-                    {left}
-                </div>
-                <div className='flex flex-row justify-center items-center gap-x-2 md:gap-x-6 shrink-0'>
+            {/*
+             * Раскладка НЕ на жёсткие трети: left/right — `flex-1`, center —
+             * `shrink-0`. Центр остаётся ровно посередине (левый и правый берут
+             * поровну остаток), но заголовку достаётся (ширина_бара − центр)/2
+             * вместо фиксированной трети — правый блок (громкость + 2 иконки)
+             * свою треть не заполнял, из-за чего длинное название обрезалось рано.
+             */}
+            <div className='w-full flex justify-between items-center gap-x-2 md:gap-x-6'>
+                <div className='flex-1 min-w-0 flex items-center gap-x-2 md:gap-x-6'>{left}</div>
+                {/* Гэп контролов маленький: кнопки-контролы теперь 44px (size='control')
+                    с собственным полем вокруг иконки, поэтому большой gap разносил их. */}
+                <div className='flex flex-row justify-center items-center gap-x-0.5 md:gap-x-1 shrink-0'>
                     {center}
                 </div>
-                <div className='hidden md:flex md:w-1/3 justify-end items-center gap-x-2 md:gap-x-6'>
+                <div className='hidden md:flex flex-1 min-w-0 justify-end items-center gap-x-1'>
                     {right}
                 </div>
             </div>

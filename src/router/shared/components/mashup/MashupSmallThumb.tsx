@@ -245,7 +245,7 @@ function MashupSmallThumb({
                     isLiked ? (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             aria-label='Убрать лайк'
                             onClick={() => {
                                 axiosSession
@@ -272,7 +272,7 @@ function MashupSmallThumb({
                     ) : (
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
                             aria-label='Лайкнуть'
                             onClick={() => {
                                 axiosSession
@@ -311,9 +311,9 @@ function MashupSmallThumb({
                     </TooltipProvider>
                 )}
 
-                <div className='w-10 flex items-center justify-center'>
+                <div className='w-11 flex items-center justify-center'>
                     <MashupMoreDropdown mashup={mashup}>
-                        <Button variant='ghost' size='icon' aria-label='Опции мэшапа'>
+                        <Button variant='ghost' size='control' aria-label='Опции мэшапа'>
                             {/*
                              * Длительность ⇄ «ещё»: раньше свап шёл через
                              * display и происходил рывком. Теперь оба лежат
