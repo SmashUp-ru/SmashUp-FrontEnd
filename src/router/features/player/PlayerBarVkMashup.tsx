@@ -87,7 +87,6 @@ export default function PlayerBarVkMashup() {
 
     return (
         <PlaybackBar
-            fixed
             seekMashup={vkMashupSrc}
             left={
                 <>

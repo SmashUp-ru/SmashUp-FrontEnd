@@ -25,14 +25,10 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
                 size='icon'
                 aria-label='Убрать лайк'
                 onClick={() => {
-                    axiosSession
-                        .post(
-                            `${import.meta.env.VITE_BACKEND_URL}/playlist/remove_like?id=${playlist.id}`
-                        )
-                        .then(() => {
-                            setIsLiked(false);
-                            updatePlaylistById(playlist.id, { liked: false });
-                        });
+                    axiosSession.post(`playlist/remove_like?id=${playlist.id}`).then(() => {
+                        setIsLiked(false);
+                        updatePlaylistById(playlist.id, { liked: false });
+                    });
                 }}
             >
                 <LikeFilledIcon color='primary' hoverColor='hoverPrimary' />
@@ -46,12 +42,10 @@ export default function PlaylistLikeButton({ playlist }: PlaylistLikeButtonProps
             size='icon'
             aria-label='Лайкнуть'
             onClick={() => {
-                axiosSession
-                    .post(`${import.meta.env.VITE_BACKEND_URL}/playlist/add_like?id=${playlist.id}`)
-                    .then(() => {
-                        setIsLiked(true);
-                        updatePlaylistById(playlist.id, { liked: true });
-                    });
+                axiosSession.post(`playlist/add_like?id=${playlist.id}`).then(() => {
+                    setIsLiked(true);
+                    updatePlaylistById(playlist.id, { liked: true });
+                });
             }}
         >
             <LikeOutlineIcon color='onSurfaceVariant' hoverColor='onSurface' />

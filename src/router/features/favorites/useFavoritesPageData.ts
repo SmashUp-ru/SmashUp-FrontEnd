@@ -18,7 +18,7 @@ export function useFavoritesPageData() {
         setIsError(false);
         setIsLoading(true);
         axiosSession
-            .get(`${import.meta.env.VITE_BACKEND_URL}/mashup/get_all_likes`)
+            .get(`mashup/get_all_likes`)
             .then((r: AxiosResponse<{ status: string; response: number[] }>) => {
                 const ids = r.data.response ?? [];
                 setLikes(ids);

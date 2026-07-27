@@ -10,6 +10,22 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src')
         }
     },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'https://api.smashup.ru',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ''),
+                configure: (proxy) => {
+                    proxy.on('proxyReq', (proxyReq) => {
+                        // Бэкенд валидирует Origin на сервере (403 без учёта CORS-preflight),
+                        // а прокси иначе форвардит origin телефона (LAN IP) как есть.
+                        proxyReq.setHeader('Origin', 'http://localhost:5173');
+                    });
+                }
+            }
+        }
+    },
     build: {
         sourcemap: false,
         rollupOptions: {

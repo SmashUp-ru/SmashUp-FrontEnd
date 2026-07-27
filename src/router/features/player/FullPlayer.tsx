@@ -25,6 +25,19 @@ import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.ts
 import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
+/**
+ * Края плеера уходят в ТОЧНО тот же чёрный, что стоит в `theme-color` (index.html)
+ * и в фоне страницы, — `#020202`. Зону статус-бара и подложку адресной строки
+ * в обычной вкладке Safari рисует сам браузер, содержимое страницы туда не попадает;
+ * подогнать их цвет к плееру надёжно не вышло (Safari кеширует тонировку и
+ * перестаёт перечитывать), поэтому подгоняем наоборот — плеер к ним.
+ *
+ * Середина прозрачная, но задана тем же цветом с alpha=00, а не ключевым словом
+ * `transparent`: так интерполяция гарантированно идёт в пределах одного цвета.
+ */
+const EDGE_FADE =
+    'linear-gradient(to bottom, #020202 0%, #02020200 22%, #02020200 62%, #020202 100%)';
+
 function SeekBar({ duration }: { duration: number }) {
     const seek = usePlayerStore((s) => s.seek);
     const updateChangedSeek = usePlayerStore((s) => s.updateChangedSeek);
@@ -106,6 +119,42 @@ export default function FullPlayer() {
         if (!fullPlayer) setPanel('none');
     }, [fullPlayer]);
 
+    /*
+     * Блокировка скролла документа на время открытого плеера.
+     *
+     * Плеер — `fixed` поверх страницы, но сама страница под ним осталась
+     * прокручиваемой (мобайл скроллит документ — так Safari сворачивает адресную
+     * строку). Из-за этого палец на плеере одновременно тянул фоновую страницу,
+     * что конкурировало со свайпом-закрытием и давало рывки.
+     *
+     * `overflow: hidden` тут недостаточно (iOS Safari его для тач-скролла
+     * игнорирует) — фиксируем body со сдвигом на текущую прокрутку: визуально
+     * страница остаётся на месте, но скроллиться перестаёт. На закрытии
+     * позицию возвращаем. Плеера сдвиг не касается: `position: fixed` у него
+     * считается от вьюпорта, а `fixed` у предка контейнер для этого не создаёт.
+     */
+    useEffect(() => {
+        if (!fullPlayer) return;
+
+        const scrollY = window.scrollY;
+        const { style } = document.body;
+
+        style.position = 'fixed';
+        style.top = `-${scrollY}px`;
+        style.left = '0';
+        style.right = '0';
+        style.width = '100%';
+
+        return () => {
+            style.position = '';
+            style.top = '';
+            style.left = '';
+            style.right = '';
+            style.width = '';
+            window.scrollTo(0, scrollY);
+        };
+    }, [fullPlayer]);
+
     if (!mashup) return null;
 
     const close = () => {
@@ -146,9 +195,7 @@ export default function FullPlayer() {
 
     const toggleLike = () => {
         axiosSession
-            .post(
-                `${import.meta.env.VITE_BACKEND_URL}/mashup/${isLiked ? 'remove' : 'add'}_like?id=${mashup.id}`
-            )
+            .post(`mashup/${isLiked ? 'remove' : 'add'}_like?id=${mashup.id}`)
             .then(() => setIsLiked(!isLiked));
     };
 
@@ -169,19 +216,25 @@ export default function FullPlayer() {
             style={dragY ? { transform: `translateY(${dragY}px)`, transition: 'none' } : undefined}
         >
             {/* Размытый фон из обложки */}
-            <div className='absolute inset-0 -z-10'>
+            <div className='absolute inset-0 -z-10 bg-background'>
                 <img
                     src={coverUrl('mashup', mashup.imageUrl, 800)}
                     alt=''
-                    className='w-full h-full object-cover blur-2xl brightness-[0.35] scale-125'
+                    className='w-full h-full object-cover blur-2xl brightness-[0.45] scale-125'
                     draggable={false}
                 />
-                <div className='absolute inset-0 bg-gradient-to-b from-black/30 to-black/80' />
+                {/* Затемнение краёв до цвета OS-хрома — см. EDGE_FADE */}
+                <div className='absolute inset-0' style={{ background: EDGE_FADE }} />
             </div>
 
             {/* Хваталка + закрыть (зона свайпа вниз) */}
+            {/* touch-none — жест тут полностью наш (свайп вниз), нативная обработка не нужна.
+                На корень вешать НЕЛЬЗЯ: touch-action схлопывается по цепочке предков и
+                убил бы скролл панелей очереди/сурсов. */}
+            {/* Плеер `fixed inset-0`, то есть в standalone он накрывает и зону статус-бара:
+                отступ сверху свой, от родительского padding он не зависит. */}
             <div
-                className='shrink-0 pt-3 px-4'
+                className='shrink-0 pt-[calc(0.75rem+env(safe-area-inset-top))] px-4 touch-none'
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
@@ -202,7 +255,7 @@ export default function FullPlayer() {
             <div className='flex-1 min-h-0 flex flex-col px-6'>
                 {panel === 'none' && (
                     <div
-                        className='flex-1 min-h-0 flex flex-col items-center justify-center gap-7 animate-in fade-in duration-200 motion-reduce:animate-none'
+                        className='flex-1 min-h-0 flex flex-col items-center justify-center gap-7 touch-none animate-in fade-in duration-200 motion-reduce:animate-none'
                         onTouchStart={onTouchStart}
                         onTouchMove={onTouchMove}
                         onTouchEnd={onTouchEnd}
@@ -326,7 +379,7 @@ export default function FullPlayer() {
             </div>
 
             {/* Seek + контролы */}
-            <div className='shrink-0 px-6 pb-6 pt-1 flex flex-col gap-4'>
+            <div className='shrink-0 px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-1 flex flex-col gap-4'>
                 <SeekBar duration={mashup.duration} />
 
                 <div className='flex items-center justify-between'>

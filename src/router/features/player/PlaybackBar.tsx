@@ -8,8 +8,6 @@ import { VkMashup } from '@/store/entities/vkMashup';
 interface PlaybackBarProps {
     /** Источник для seek-слайдера (нужен только `duration`). */
     seekMashup: Mashup | UnpublishedMashup | VkMashup;
-    /** Главный плеер — `absolute` (overlay в MainTab); превью-бары (модерация/VK) — `fixed`. */
-    fixed?: boolean;
     left: ReactNode;
     center: ReactNode;
     right: ReactNode;
@@ -24,7 +22,6 @@ interface PlaybackBarProps {
  */
 export default function PlaybackBar({
     seekMashup,
-    fixed,
     left,
     center,
     right,
@@ -33,9 +30,10 @@ export default function PlaybackBar({
     return (
         <div
             className={cn(
-                'bottom-4 left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface rounded-[30px] shadow-lg z-10',
-                'animate-in fade-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none',
-                fixed ? 'fixed' : 'absolute'
+                // Стекло как у шапки: полупрозрачная подложка + размытие фона под ней.
+                // Блюр обрезается по border-radius, так что скруглённые края остаются чистыми.
+                'fixed bottom-[max(1rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-4 right-4 h-[96px] p-4 flex items-center justify-between bg-surface/80 backdrop-blur-xl rounded-[30px] shadow-lg z-10',
+                'animate-in fade-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none'
             )}
         >
             <MashupSeekSlider mashup={seekMashup} />

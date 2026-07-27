@@ -109,13 +109,9 @@ export default function PlayerBar() {
                             className='hidden md:inline-flex'
                             aria-label='Убрать лайк'
                             onClick={() => {
-                                axiosSession
-                                    .post(
-                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
-                                    )
-                                    .then(() => {
-                                        setIsLiked(false);
-                                    });
+                                axiosSession.post(`mashup/remove_like?id=${mashup.id}`).then(() => {
+                                    setIsLiked(false);
+                                });
                             }}
                         >
                             <span
@@ -131,13 +127,9 @@ export default function PlayerBar() {
                             className='hidden md:inline-flex'
                             aria-label='Лайкнуть'
                             onClick={() => {
-                                axiosSession
-                                    .post(
-                                        `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
-                                    )
-                                    .then(() => {
-                                        setIsLiked(true);
-                                    });
+                                axiosSession.post(`mashup/add_like?id=${mashup.id}`).then(() => {
+                                    setIsLiked(true);
+                                });
                             }}
                         >
                             <LikeOutlineIcon color='onSurface' />

@@ -178,13 +178,9 @@ export default function MashupInfo() {
                         size='control'
                         aria-label='Убрать лайк'
                         onClick={() => {
-                            axiosSession
-                                .post(
-                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/remove_like?id=${mashup.id}`
-                                )
-                                .then(() => {
-                                    setIsLiked(false);
-                                });
+                            axiosSession.post(`mashup/remove_like?id=${mashup.id}`).then(() => {
+                                setIsLiked(false);
+                            });
                         }}
                     >
                         <span
@@ -202,14 +198,10 @@ export default function MashupInfo() {
                         size='control'
                         aria-label='Лайкнуть'
                         onClick={() => {
-                            axiosSession
-                                .post(
-                                    `${import.meta.env.VITE_BACKEND_URL}/mashup/add_like?id=${mashup.id}`
-                                )
-                                .then(() => {
-                                    setIsLiked(true);
-                                    updateMashupById(mashup.id, { liked: true });
-                                });
+                            axiosSession.post(`mashup/add_like?id=${mashup.id}`).then(() => {
+                                setIsLiked(true);
+                                updateMashupById(mashup.id, { liked: true });
+                            });
                         }}
                     >
                         <LikeOutlineIcon color='onSurface' />

@@ -22,7 +22,6 @@ export default function PlayerBarModeration() {
 
     return (
         <PlaybackBar
-            fixed
             seekMashup={moderationSrc}
             left={
                 <>

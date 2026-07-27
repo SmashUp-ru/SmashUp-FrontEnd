@@ -167,7 +167,7 @@ export function createEntityStore<T extends CachingEntity>(
             const fetchPromises = chunks.map((chunk) => {
                 const fetchPromise = axiosSession
                     .get<{ status: string; response: T[] }>(
-                        `${import.meta.env.VITE_BACKEND_URL}/${apiPath}${needToBeModified ? '_many' : ''}?id=${chunk.join(',')}`
+                        `${apiPath}${needToBeModified ? '_many' : ''}?id=${chunk.join(',')}`
                     )
                     .then((response) => {
                         const fetchedData = response.data.response;
@@ -248,9 +248,7 @@ export function createEntityStore<T extends CachingEntity>(
             }
 
             return axiosSession
-                .get<{ status: string; response: T }>(
-                    `${import.meta.env.VITE_BACKEND_URL}/${apiPath}?${keyName}=${key}`
-                )
+                .get<{ status: string; response: T }>(`${apiPath}?${keyName}=${key}`)
                 .then((response) => {
                     const fetchedData = response.data.response;
                     set((state) => {

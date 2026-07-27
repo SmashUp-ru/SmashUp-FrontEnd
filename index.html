@@ -3,7 +3,36 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+        Иконка для «Добавить на экран «Домой»» в iOS. 180x180 — размер под iPhone @3x.
+        Картинка ПОЛНОЭКРАННАЯ, без собственного скругления: маску-суперэллипс
+        накладывает сама система, и скруглённый исходник дал бы двойные углы.
+    -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="SmashUp" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!--
+        Запуск с экрана «Домой» — без адресной строки и кнопок Safari.
+        `apple-mobile-web-app-capable` — то, что реально читает iOS (манифест
+        со `display: standalone` он поддерживает лишь с 16.4, тег надёжнее).
+        `black-translucent` отдаёт странице всю высоту, включая зону статус-бара, —
+        именно поэтому во всех layout'ах нужны отступы `env(safe-area-inset-*)`.
+    -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!--
+        `maximum-scale=1, user-scalable=no` — то, чем гасится АВТОЗУМ при фокусе на поле
+        ввода (iOS приближает страницу, если кегль поля < 16px; кегль менять нельзя,
+        поэтому запрещаем масштабирование). Заодно убирает ручной зум — но только там,
+        где система это уважает: в standalone (с экрана «Домой») да, в обычной вкладке
+        Safari жест «щипок» намеренно неотключаем ради доступности.
+    -->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="theme-color" content="#020202" />
     <meta
         name="description"
         content="SmashUp — платформа для прослушивания мешапов: смешивай любимые треки, открывай новые сочетания и делись с сообществом."
