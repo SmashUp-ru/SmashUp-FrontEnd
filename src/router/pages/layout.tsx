@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { useUserStore } from '@/store/entities/user.ts';
 import { getToken, useGlobalStore } from '@/store/global.ts';
 import { AxiosError } from 'axios';
+import { clearAuthSession } from '@/lib/authSession.ts';
 
 export default function Layout() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
-    const updateToken = useGlobalStore((state) => state.updateToken);
     const updateCurrentUserPlaylists = useGlobalStore((state) => state.updateCurrentUserPlaylists);
 
     const token = getToken();
@@ -23,14 +23,11 @@ export default function Layout() {
                 })
                 .catch((e: AxiosError) => {
                     if (e.status === 404) {
-                        localStorage.removeItem('smashup_token');
-                        sessionStorage.removeItem('smashup_token');
-                        updateToken('');
-                        updateCurrentUser(null);
+                        clearAuthSession();
                     }
                 });
         }
-    }, [getUserByToken, token, updateCurrentUser, updateCurrentUserPlaylists, updateToken]);
+    }, [getUserByToken, token, updateCurrentUser, updateCurrentUserPlaylists]);
 
     return (
         <>

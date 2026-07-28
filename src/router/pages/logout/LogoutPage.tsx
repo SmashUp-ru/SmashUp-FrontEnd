@@ -1,19 +1,13 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useGlobalStore } from '@/store/global.ts';
-import { resetAppState } from '@/store/reset.ts';
+import { clearAuthSession } from '@/lib/authSession.ts';
 
 export default function LogoutPage() {
-    const updateToken = useGlobalStore((state) => state.updateToken);
-
     useEffect(() => {
-        localStorage.removeItem('smashup_token');
-        sessionStorage.removeItem('smashup_token');
+        clearAuthSession();
         localStorage.removeItem('player-storage');
-        updateToken('');
-        resetAppState();
-    }, [updateToken]);
+    }, []);
 
     return (
         <div className='flex justify-center items-center h-full'>

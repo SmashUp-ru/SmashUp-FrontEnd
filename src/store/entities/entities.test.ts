@@ -34,6 +34,19 @@ describe('createEntityStore — характеризация кэша', () => {
         expect(get).toHaveBeenCalledTimes(1);
     });
 
+    it('cache-hit не публикует пустое обновление стора', async () => {
+        get.mockResolvedValueOnce(manyResponse([{ id: 1, name: 'a' }]));
+        const useStore = createEntityStore<Item>('item/get');
+        await useStore.getState().getOneById(1);
+
+        const listener = vi.fn();
+        const unsubscribe = useStore.subscribe(listener);
+        await useStore.getState().getManyByIds([1]);
+        unsubscribe();
+
+        expect(listener).not.toHaveBeenCalled();
+    });
+
     it('getManyByIds возвращает элементы в порядке входных id', async () => {
         get.mockResolvedValueOnce(
             manyResponse([

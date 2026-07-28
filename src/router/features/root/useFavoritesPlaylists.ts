@@ -17,22 +17,31 @@ export function useFavoritesPlaylists() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     useEffect(() => {
-        if (favoritesPlaylists === null) {
-            axiosSession
-                .get('/playlist/get_all_likes')
-                .then((r: AxiosResponse<GetFavoritesPlaylistsResponse>) => {
-                    updateFavoritesPlaylists(r.data.response);
-                });
+        // У гостя endpoint вернёт 401, а понравившиеся плейлисты вообще не нужны.
+        if (currentUser === null) {
+            setIsLoading(false);
+            setPlaylists([]);
+            return;
         }
-    }, [favoritesPlaylists, updateFavoritesPlaylists]);
 
-    useEffect(() => {
-        if (favoritesPlaylists !== null) {
-            getManyPlaylistsByIds(favoritesPlaylists)
-                .then((r) => setPlaylists(r))
-                .finally(() => setIsLoading(false));
-        }
-    }, [favoritesPlaylists, getManyPlaylistsByIds]);
+        setIsLoading(true);
+        const idsPromise: Promise<number[]> =
+            favoritesPlaylists !== null
+                ? Promise.resolve(favoritesPlaylists)
+                : axiosSession
+                      .get('/playlist/get_all_likes')
+                      .then((r: AxiosResponse<GetFavoritesPlaylistsResponse>) => {
+                          updateFavoritesPlaylists(r.data.response);
+                          return r.data.response;
+                      });
+
+        idsPromise
+            .then((ids) => getManyPlaylistsByIds(ids))
+            .then(setPlaylists)
+            // Лайки — второстепенная секция. Ошибка не должна блокировать главную.
+            .catch(() => setPlaylists([]))
+            .finally(() => setIsLoading(false));
+    }, [currentUser, favoritesPlaylists, getManyPlaylistsByIds, updateFavoritesPlaylists]);
 
     return {
         playlists,

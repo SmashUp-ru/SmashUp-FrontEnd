@@ -12,6 +12,7 @@ import UsernameDialog from '@/router/features/settings/UsernameDialog.tsx';
 import EmailDialog from '@/router/features/settings/EmailDialog.tsx';
 import PasswordDialog from '@/router/features/settings/PasswordDialog.tsx';
 import UpdateAvatar from '@/router/features/settings/UpdateAvatar.tsx';
+import AlterEgosSection from '@/router/features/settings/AlterEgosSection.tsx';
 import { BITRATE_OPTIONS, BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { startVkFlow, getVkId } from '@/lib/vk.ts';
 import { axiosSession } from '@/lib/utils.ts';
@@ -73,6 +74,8 @@ export default function SettingsPage() {
                         <EmailDialog email={email} />
 
                         <PasswordDialog email={email} />
+
+                        <AlterEgosSection />
 
                         <div className='grid grid-cols-1 md:grid-cols-3 gap-x-20'>
                             {vkConnected ? (

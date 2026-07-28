@@ -227,11 +227,16 @@ export function createEntityStore<T extends CachingEntity>(
                     .map((id) => get().cache[id])
                     .filter((entity): entity is T => !!entity);
             } finally {
-                set((state) => {
-                    const newPending = { ...state.pendingRequests };
-                    toFetchIds.forEach((id) => delete newPending[id]);
-                    return { pendingRequests: newPending };
-                });
+                // При cache-hit нечего снимать с pendingRequests. Пустой set всё
+                // равно создаёт новое Zustand-состояние и может зациклить эффекты,
+                // которые по ошибке подписаны на весь стор.
+                if (toFetchIds.length > 0) {
+                    set((state) => {
+                        const newPending = { ...state.pendingRequests };
+                        toFetchIds.forEach((id) => delete newPending[id]);
+                        return { pendingRequests: newPending };
+                    });
+                }
             }
         },
 

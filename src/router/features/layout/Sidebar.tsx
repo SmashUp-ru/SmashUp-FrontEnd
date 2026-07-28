@@ -14,6 +14,7 @@ import GavelIcon from '@/components/icons/gavel/Gavel32';
 import SettingsIcon from '@/components/icons/Settings';
 import DoorIcon from '@/components/icons/door/Door32';
 import { isModerator } from '@/lib/bitmask';
+import { clearAuthSession } from '@/lib/authSession.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 
 interface SidebarProps {
@@ -38,8 +39,6 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
     const location = useLocation();
     const navigate = useNavigate();
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const updateToken = useGlobalStore((state) => state.updateToken);
-    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
@@ -53,10 +52,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
     const desktopHeight = playerActive ? 'md:h-[calc(100%-148px)]' : 'md:h-[calc(100%-32px)]';
 
     const logout = () => {
-        localStorage.removeItem('smashup_token');
-        sessionStorage.removeItem('smashup_token');
-        updateToken('');
-        updateCurrentUser(null);
+        clearAuthSession();
         navigate('/');
     };
 

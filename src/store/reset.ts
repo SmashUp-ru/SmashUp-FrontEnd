@@ -4,6 +4,7 @@ import { useMashupStore } from '@/store/entities/mashup.ts';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useTrackStore } from '@/store/entities/track.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { useCurrentUserStore } from '@/store/currentUser.ts';
 
 /**
  * Полный сброс пользовательского состояния в памяти.
@@ -29,6 +30,12 @@ export function resetAppState(): void {
         type: 'search',
         crossoverTracks: [],
         crossoverArtists: []
+    });
+
+    useCurrentUserStore.setState({
+        notifications: null,
+        favoritePlaylists: null,
+        vkMashups: null
     });
 
     useMashupStore.getState().reset();

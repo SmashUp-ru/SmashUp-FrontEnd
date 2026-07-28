@@ -2,12 +2,9 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
-import { useGlobalStore } from '@/store/global.ts';
+import { clearAuthSession } from '@/lib/authSession.ts';
 
 export default function ChangePasswordConfirmPage() {
-    const updateToken = useGlobalStore((state) => state.updateToken);
-    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
-
     const [searchParams] = useSearchParams();
     const confirmationId = searchParams.get('id');
     const confirmedIdRef = useRef<string | null>(null);
@@ -22,16 +19,13 @@ export default function ChangePasswordConfirmPage() {
             .post(`/user/change_password/confirm?id=${confirmationId}`)
             .then(() => {
                 setSuccess(true);
-                localStorage.removeItem('smashup_token');
-                sessionStorage.removeItem('smashup_token');
+                clearAuthSession();
                 localStorage.removeItem('player-storage');
-                updateToken('');
-                updateCurrentUser(null);
             })
             .catch(() => {
                 setSuccess(false);
             });
-    }, [confirmationId, updateCurrentUser, updateToken]);
+    }, [confirmationId]);
 
     if (!confirmationId) {
         throw new Error('No ID');

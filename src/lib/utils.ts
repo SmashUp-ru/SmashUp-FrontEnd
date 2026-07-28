@@ -57,6 +57,8 @@ axiosSession.interceptors.response.use(
         if (error?.response?.status === 401 && getToken()) {
             localStorage.removeItem('smashup_token');
             sessionStorage.removeItem('smashup_token');
+            localStorage.removeItem('smashup_primary_account');
+            sessionStorage.removeItem('smashup_primary_account');
             useGlobalStore.getState().updateToken('');
 
             const onAuthPage = ['/login', '/register', '/user/recover_password'].some((path) =>

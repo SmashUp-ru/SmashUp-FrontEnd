@@ -31,11 +31,12 @@ export default function RootPage() {
 
     const currentUser = useGlobalStore((state) => state.currentUser);
     const { playlists: currentUserPlaylists } = useCurrentUserPlaylists();
-    const { playlists: favoritesPlaylists, isLoading: favoritesPlaylistsLoading } =
-        useFavoritesPlaylists();
+    const { playlists: favoritesPlaylists } = useFavoritesPlaylists();
 
-    const playlistStore = usePlaylistStore();
-    const mashupStore = useMashupStore();
+    // Не подписываем эффект на ВЕСЬ Zustand-стор: изменение кэша меняет ссылку
+    // состояния и перезапускает загрузку, хотя сами методы стора стабильны.
+    const getPlaylistById = usePlaylistStore((state) => state.getOneById);
+    const getMashupsByIds = useMashupStore((state) => state.getManyByIds);
     const [premierePlaylist, setPremierePlaylist] = useState<Playlist>();
     const [premiere, setPremiere] = useState<Mashup[]>();
     const [isPremiereLoading, setPremiereLoading] = useState<boolean>(true);
@@ -46,18 +47,17 @@ export default function RootPage() {
     const loadPremiere = useCallback(() => {
         setPremiereError(false);
         setPremiereLoading(true);
-        playlistStore
-            .getOneById(1)
+        getPlaylistById(1)
             .then((playlist) => {
                 setPremierePlaylist(playlist);
-                return mashupStore.getManyByIds(playlist.mashups);
+                return getMashupsByIds(playlist.mashups);
             })
             .then(setPremiere)
             .catch(() => setPremiereError(true))
             .finally(() => {
                 setPremiereLoading(false);
             });
-    }, [playlistStore, mashupStore]);
+    }, [getPlaylistById, getMashupsByIds]);
 
     useEffect(() => {
         loadPremiere();
@@ -73,8 +73,7 @@ export default function RootPage() {
     // показываем ошибку с возможностью повтора, а не пустую главную.
     if (isCompilationsError || isPremiereError) return <ErrorState onRetry={reloadCritical} />;
 
-    if (isDataLoading || isRecommendationsLoading || favoritesPlaylistsLoading || isPremiereLoading)
-        return <RootPageSkeleton />;
+    if (isDataLoading || isRecommendationsLoading || isPremiereLoading) return <RootPageSkeleton />;
 
     return (
         <div className='flex flex-col gap-8 pb-12'>

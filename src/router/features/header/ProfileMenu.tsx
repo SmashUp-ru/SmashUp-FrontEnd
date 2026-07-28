@@ -15,11 +15,10 @@ import { isModerator } from '@/lib/bitmask';
 import SettingsIcon from '@/components/icons/Settings';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
+import { clearAuthSession } from '@/lib/authSession.ts';
 
 export default function ProfileMenu() {
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const updateToken = useGlobalStore((state) => state.updateToken);
-    const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
 
     const navigate = useNavigate();
     const isMobile = useIsMobile();
@@ -87,11 +86,8 @@ export default function ProfileMenu() {
                         size='control'
                         aria-label='Выйти'
                         onClick={() => {
-                            localStorage.removeItem('smashup_token');
-                            sessionStorage.removeItem('smashup_token');
-                            updateToken('');
+                            clearAuthSession();
                             navigate('/');
-                            updateCurrentUser(null);
                         }}
                     >
                         <DoorIcon color='error' />
