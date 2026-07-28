@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { useGlobalStore } from '@/store/global.ts';
 
@@ -9,28 +9,31 @@ export default function ChangePasswordConfirmPage() {
     const updateCurrentUser = useGlobalStore((state) => state.updateCurrentUser);
 
     const [searchParams] = useSearchParams();
+    const confirmationId = searchParams.get('id');
+    const confirmedIdRef = useRef<string | null>(null);
 
     const [success, setSuccess] = useState<boolean | null>(null);
 
     useEffect(() => {
-        if (searchParams.has('id')) {
-            axiosSession
-                .post(`/user/change_password/confirm?id=${searchParams.get('id')}`)
-                .then(() => {
-                    setSuccess(true);
-                    localStorage.removeItem('smashup_token');
-                    sessionStorage.removeItem('smashup_token');
-                    localStorage.removeItem('player-storage');
-                    updateToken('');
-                    updateCurrentUser(null);
-                })
-                .catch(() => {
-                    setSuccess(false);
-                });
-        }
-    }, []);
+        if (!confirmationId || confirmedIdRef.current === confirmationId) return;
+        confirmedIdRef.current = confirmationId;
 
-    if (!searchParams.has('id')) {
+        axiosSession
+            .post(`/user/change_password/confirm?id=${confirmationId}`)
+            .then(() => {
+                setSuccess(true);
+                localStorage.removeItem('smashup_token');
+                sessionStorage.removeItem('smashup_token');
+                localStorage.removeItem('player-storage');
+                updateToken('');
+                updateCurrentUser(null);
+            })
+            .catch(() => {
+                setSuccess(false);
+            });
+    }, [confirmationId, updateCurrentUser, updateToken]);
+
+    if (!confirmationId) {
         throw new Error('No ID');
     }
 

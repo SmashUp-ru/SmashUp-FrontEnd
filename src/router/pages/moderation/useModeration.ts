@@ -16,7 +16,7 @@ export function useModeration() {
                 .then(updateUnpublishedMashups)
                 .finally(() => setMashupsLoading(false));
         }
-    }, []);
+    }, [unpublishedMashups, updateUnpublishedMashups]);
 
     return {
         isLoading: mashupsLoading,

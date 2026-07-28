@@ -11,7 +11,7 @@ export default function RegisterEmailPage() {
         if (token) {
             navigate('/');
         }
-    }, [token]);
+    }, [navigate, token]);
 
     return (
         <div className='flex justify-center items-center h-full'>

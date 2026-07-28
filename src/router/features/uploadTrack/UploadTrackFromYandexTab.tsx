@@ -93,7 +93,7 @@ export default function UploadTrackFromYandexTab() {
 
         setAlbum(undefined);
         setTracks([]);
-    }, [link]);
+    }, [cache, link, toast]);
 
     const send = () => {
         if (album === undefined) {

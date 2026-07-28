@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { AxiosResponse } from 'axios';
 import { RegisterResponse } from '@/router/shared/types/register.ts';
@@ -14,29 +14,32 @@ export default function RegisterConfirmPage() {
     const { updateCurrentUser, updateToken } = useGlobalStore();
     const getUserByToken = useUserStore((state) => state.getOneByStringKey);
     const [searchParams] = useSearchParams();
+    const confirmationId = searchParams.get('id');
+    const confirmedIdRef = useRef<string | null>(null);
 
     const [success, setSuccess] = useState<boolean | null>(null);
 
     useEffect(() => {
-        if (searchParams.has('id')) {
-            axiosSession
-                .post(`/register/confirm?id=${searchParams.get('id')}`)
-                .then((r: AxiosResponse<RegisterResponse>) => {
-                    updateToken(r.data.response.token);
-                    sessionStorage.setItem('smashup_token', r.data.response.token);
-                    getUserByToken('token', r.data.response.token).then((r) => {
-                        updateCurrentUser(r);
-                    });
-                    setSuccess(true);
-                })
-                .catch((e) => {
-                    axiosCatcher(toast, 'при завершении регистрации.')(e);
-                    setSuccess(false);
-                });
-        }
-    }, []);
+        if (!confirmationId || confirmedIdRef.current === confirmationId) return;
+        confirmedIdRef.current = confirmationId;
 
-    if (!searchParams.has('id')) {
+        axiosSession
+            .post(`/register/confirm?id=${confirmationId}`)
+            .then((r: AxiosResponse<RegisterResponse>) => {
+                updateToken(r.data.response.token);
+                sessionStorage.setItem('smashup_token', r.data.response.token);
+                getUserByToken('token', r.data.response.token).then((r) => {
+                    updateCurrentUser(r);
+                });
+                setSuccess(true);
+            })
+            .catch((e) => {
+                axiosCatcher(toast, 'при завершении регистрации.')(e);
+                setSuccess(false);
+            });
+    }, [confirmationId, getUserByToken, toast, updateCurrentUser, updateToken]);
+
+    if (!confirmationId) {
         throw new Error('No ID');
     }
 

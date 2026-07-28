@@ -72,13 +72,13 @@ export function UnpublishedMashupAccordionItem({
 
             loadSelectedTracks(mashup, trackStore).then(setTracks);
         }
-    }, [accordionValue]);
+    }, [accordionValue, loading, mashup, trackStore, value]);
 
     useEffect(() => {
         if (accordionValue === value) {
             loadSelectedTracks(mashup, trackStore).then(setTracks);
         }
-    }, [mashup]);
+    }, [accordionValue, mashup, trackStore, value]);
 
     const statusUrl = mashup.statusesUrls ? mashup.statusesUrls[0] : undefined;
 

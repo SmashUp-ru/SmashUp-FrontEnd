@@ -13,7 +13,7 @@ export default function LogoutPage() {
         localStorage.removeItem('player-storage');
         updateToken('');
         resetAppState();
-    }, []);
+    }, [updateToken]);
 
     return (
         <div className='flex justify-center items-center h-full'>

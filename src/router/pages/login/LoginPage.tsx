@@ -77,7 +77,7 @@ export default function LoginPage() {
                 duration: 4000
             });
         }
-    }, [currentUser]);
+    }, [currentUser, navigate, toast]);
 
     return (
         <div className='flex justify-center items-center h-full'>

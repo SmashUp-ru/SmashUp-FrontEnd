@@ -20,12 +20,12 @@ export default function MashupSeekSlider({ mashup }: MashupSeekSliderProps) {
         if (!localSeekChanging && seek !== localSeek) {
             setLocalSeek(seek);
         }
-    }, [seek]);
+    }, [localSeek, localSeekChanging, seek]);
 
     useEffect(() => {
         updateSeek(0);
         updateChangedSeek(0);
-    }, []);
+    }, [updateChangedSeek, updateSeek]);
 
     return (
         <div className='absolute top-0 w-full pr-8'>

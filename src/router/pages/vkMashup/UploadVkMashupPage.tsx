@@ -32,7 +32,7 @@ export default function UploadVkMashupPage() {
             audioId,
             ownerId
         };
-    }, [params]);
+    }, [navigate, params.audioId, params.ownerId]);
 
     useEffect(() => {
         if (vkMashups !== null && vkMashupKey !== undefined) {

@@ -24,7 +24,7 @@ export function useFavoritesPlaylists() {
                     updateFavoritesPlaylists(r.data.response);
                 });
         }
-    }, []);
+    }, [favoritesPlaylists, updateFavoritesPlaylists]);
 
     useEffect(() => {
         if (favoritesPlaylists !== null) {
@@ -32,7 +32,7 @@ export function useFavoritesPlaylists() {
                 .then((r) => setPlaylists(r))
                 .finally(() => setIsLoading(false));
         }
-    }, [favoritesPlaylists]);
+    }, [favoritesPlaylists, getManyPlaylistsByIds]);
 
     return {
         playlists,

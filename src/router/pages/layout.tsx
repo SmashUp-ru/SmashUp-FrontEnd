@@ -30,7 +30,7 @@ export default function Layout() {
                     }
                 });
         }
-    }, [token]);
+    }, [getUserByToken, token, updateCurrentUser, updateCurrentUserPlaylists, updateToken]);
 
     return (
         <>

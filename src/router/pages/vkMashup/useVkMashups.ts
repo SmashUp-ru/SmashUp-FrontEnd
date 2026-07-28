@@ -1,10 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { axiosSession, removeItem, replaceItem } from '@/lib/utils.ts';
 import { useCurrentUserStore } from '@/store/currentUser';
 import { CachedVkMashup, VkMashup, VkMashups, VkMashupsResponse } from '@/store/entities/vkMashup';
 import { axiosCatcher } from '@/router/shared/toasts/axios';
 import { AxiosSmashUpError, AxiosSmashUpResponse } from '@/router/shared/types/smashup';
 import { useToast } from '@/router/shared/hooks/use-toast';
+
+function copyVkMashups(vkMashups: VkMashups): VkMashups {
+    const newPages = new Map<number, VkMashup[]>();
+    for (const [index, oldPage] of vkMashups.pages.entries()) {
+        newPages.set(index, [...oldPage]);
+    }
+    const newMashups = new Map(vkMashups.mashups);
+
+    return {
+        total: vkMashups.total,
+        pages: newPages,
+        mashups: newMashups
+    };
+}
 
 // autoLoad=false: только читать список VK из стора, НЕ инициировать загрузку.
 // Нужно для PlayerBarVkMashup, который висит глобально в RootLayout — иначе он
@@ -20,6 +34,37 @@ export function useVkMashups(autoLoad: boolean = true) {
     const [notConnected, setNotConnected] = useState(false);
 
     const { toast } = useToast();
+
+    const loadVkMashups = useCallback(
+        async (vkMashups: VkMashups, page: number): Promise<VkMashups> => {
+            return axiosSession
+                .get(`/mashup/list/vk?page=${page}`)
+                .then((response: AxiosSmashUpResponse<VkMashupsResponse>) => {
+                    const total = response.data.response.total;
+                    const mashups = response.data.response.mashups;
+
+                    vkMashups = copyVkMashups(vkMashups);
+
+                    vkMashups.total = total;
+                    vkMashups.pages.set(page, mashups);
+                    for (const mashup of mashups) {
+                        vkMashups.mashups.set(
+                            JSON.stringify({
+                                audioId: mashup.audioId,
+                                ownerId: mashup.ownerId
+                            }),
+                            {
+                                ...mashup,
+                                page
+                            }
+                        );
+                    }
+
+                    return vkMashups;
+                });
+        },
+        []
+    );
 
     useEffect(() => {
         if (!autoLoad) return;
@@ -45,7 +90,7 @@ export function useVkMashups(autoLoad: boolean = true) {
                 })
                 .finally(() => setMashupsLoading(false));
         }
-    }, [vkMashups]);
+    }, [autoLoad, loadVkMashups, toast, updateVkMashups, vkMashups]);
 
     const removeVkMashup = (vkMashups: VkMashups, vkMashup: CachedVkMashup): VkMashups => {
         vkMashups = copyVkMashups(vkMashups);
@@ -79,48 +124,6 @@ export function useVkMashups(autoLoad: boolean = true) {
         }
 
         return vkMashups;
-    };
-
-    const loadVkMashups = async (vkMashups: VkMashups, page: number): Promise<VkMashups> => {
-        return axiosSession
-            .get(`/mashup/list/vk?page=${page}`)
-            .then((response: AxiosSmashUpResponse<VkMashupsResponse>) => {
-                const total = response.data.response.total;
-                const mashups = response.data.response.mashups;
-
-                vkMashups = copyVkMashups(vkMashups);
-
-                vkMashups.total = total;
-                vkMashups.pages.set(page, mashups);
-                for (const mashup of mashups) {
-                    vkMashups.mashups.set(
-                        JSON.stringify({
-                            audioId: mashup.audioId,
-                            ownerId: mashup.ownerId
-                        }),
-                        {
-                            ...mashup,
-                            page
-                        }
-                    );
-                }
-
-                return vkMashups;
-            });
-    };
-
-    const copyVkMashups = (vkMashups: VkMashups): VkMashups => {
-        const newPages = new Map<number, VkMashup[]>();
-        for (const [index, oldPage] of vkMashups.pages.entries()) {
-            newPages.set(index, [...oldPage]);
-        }
-        const newMashups = new Map(vkMashups.mashups);
-
-        return {
-            total: vkMashups.total,
-            pages: newPages,
-            mashups: newMashups
-        };
     };
 
     const updateVkMashup = (vkMashups: VkMashups, vkMashup: VkMashup): VkMashups => {

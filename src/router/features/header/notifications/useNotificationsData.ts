@@ -18,7 +18,7 @@ export function useNotificationsData() {
                 })
                 .finally(() => setIsLoading(false));
         }
-    }, [notifications]);
+    }, [notifications, updateNotifications]);
 
     return {
         notifications,

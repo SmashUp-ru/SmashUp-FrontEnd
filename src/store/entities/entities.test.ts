@@ -65,6 +65,54 @@ describe('createEntityStore — характеризация кэша', () => {
         expect(get).toHaveBeenCalledTimes(1);
     });
 
+    it('ждёт уже начатый запрос при частичном пересечении batch-запросов', async () => {
+        let resolveFirst: (value: unknown) => void = () => {};
+        get.mockImplementationOnce(
+            () =>
+                new Promise((resolve) => {
+                    resolveFirst = resolve;
+                })
+        );
+        get.mockResolvedValueOnce(manyResponse([{ id: 3, name: 'c' }]));
+        const useStore = createEntityStore<Item>('item/get');
+
+        const first = useStore.getState().getManyByIds([1, 2]);
+        const second = useStore.getState().getManyByIds([2, 3]);
+        let secondSettled = false;
+        void second.then(() => {
+            secondSettled = true;
+        });
+
+        await Promise.resolve();
+        expect(secondSettled).toBe(false);
+
+        resolveFirst(
+            manyResponse([
+                { id: 1, name: 'a' },
+                { id: 2, name: 'b' }
+            ])
+        );
+
+        await expect(first).resolves.toEqual([
+            { id: 1, name: 'a' },
+            { id: 2, name: 'b' }
+        ]);
+        await expect(second).resolves.toEqual([
+            { id: 2, name: 'b' },
+            { id: 3, name: 'c' }
+        ]);
+        expect(get).toHaveBeenCalledTimes(2);
+    });
+
+    it('не возвращает undefined, если API не прислал часть запрошенных id', async () => {
+        get.mockResolvedValueOnce(manyResponse([{ id: 1, name: 'a' }]));
+        const useStore = createEntityStore<Item>('item/get');
+
+        await expect(useStore.getState().getManyByIds([1, 2])).resolves.toEqual([
+            { id: 1, name: 'a' }
+        ]);
+    });
+
     it('батчит id чанками по 100', async () => {
         get.mockImplementation((url: string) => {
             const idPart = url.split('id=')[1] ?? '';

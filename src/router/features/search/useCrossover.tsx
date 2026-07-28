@@ -37,7 +37,7 @@ export function useCrossover(tracks: Track[], trackAuthors: TrackAuthor[]) {
         } else {
             setMashups([]);
         }
-    }, [mashupsIds]);
+    }, [getMashupsByIds, mashupsIds]);
 
     return {
         isLoading: mashupsFetching || mashupsIdsFetching,

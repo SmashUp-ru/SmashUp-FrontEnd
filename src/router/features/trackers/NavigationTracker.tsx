@@ -64,7 +64,7 @@ export default function NavigationTracker() {
             handleLocationChange(location.pathname, searchId);
             setLastLocation(location.pathname);
         }
-    }, [location]);
+    }, [handleLocationChange, lastLocation, location]);
 
     return null;
 }

@@ -19,7 +19,7 @@ export function useEmail() {
                 )
                 .finally(() => setEmailLoading(false));
         }
-    }, []);
+    }, [email, updateEmail]);
 
     return {
         isLoading: isEmailLoading,

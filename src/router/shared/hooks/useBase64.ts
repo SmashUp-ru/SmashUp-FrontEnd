@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 function encode(
     file: File,
@@ -38,31 +38,39 @@ export function useBase64(
     setProgress?: (processed: number, total: number) => unknown,
     setResult?: (result: string | null) => unknown
 ) {
-    const [reader, setReader] = useState<FileReader>();
+    const readerRef = useRef<FileReader>();
+    const setProgressRef = useRef(setProgress);
+    const setResultRef = useRef(setResult);
+
+    setProgressRef.current = setProgress;
+    setResultRef.current = setResult;
 
     useEffect(() => {
-        reader?.abort();
+        readerRef.current?.abort();
+
+        const currentSetProgress = setProgressRef.current;
+        const currentSetResult = setResultRef.current;
 
         if (file) {
-            if (setProgress) {
-                setProgress(0, file.size);
+            if (currentSetProgress) {
+                currentSetProgress(0, file.size);
             }
 
-            if (setResult) {
-                setResult(null);
+            if (currentSetResult) {
+                currentSetResult(null);
             }
 
-            setReader(encode(file, setProgress, setResult));
+            readerRef.current = encode(file, currentSetProgress, currentSetResult);
         } else {
-            if (setProgress) {
-                setProgress(0, 1);
+            if (currentSetProgress) {
+                currentSetProgress(0, 1);
             }
 
-            if (setResult) {
-                setResult(null);
+            if (currentSetResult) {
+                currentSetResult(null);
             }
 
-            setReader(undefined);
+            readerRef.current = undefined;
         }
     }, [file]);
 }

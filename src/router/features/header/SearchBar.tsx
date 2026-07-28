@@ -30,7 +30,7 @@ export default function SearchBar() {
 
     useEffect(() => {
         updateSearchValue(debouncedValue);
-    }, [debouncedValue]);
+    }, [debouncedValue, updateSearchValue]);
 
     const [crossoverOpened, setCrossoverOpened] = useState(false);
 

@@ -81,7 +81,7 @@ export default function PlayerBarVkMashup() {
                     .catch(axiosCatcher(toast, 'при загрузке аудио'));
             }
         }
-    }, [vkMashups, vkMashupSrc]);
+    }, [toast, updateVkMashup, updateVkMashupSrc, updateVkMashups, vkMashups, vkMashupSrc]);
 
     if (!vkMashupSrc) return null;
 

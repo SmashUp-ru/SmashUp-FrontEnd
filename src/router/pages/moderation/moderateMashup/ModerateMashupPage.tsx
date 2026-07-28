@@ -32,7 +32,7 @@ export default function ModerateMashupPage() {
                 setMashup(mashup[0]);
             }
         }
-    }, [unpublishedMashups]);
+    }, [params.mashupId, unpublishedMashups]);
 
     const [users, setUsers] = useState<User[]>();
     const [tracks, setTracks] = useState<SelectedTrack[]>();
@@ -49,7 +49,7 @@ export default function ModerateMashupPage() {
         userStore.getManyByIds(mashup.authorsIds, true).then(setUsers);
 
         loadSelectedTracks(mashup, trackStore).then(setTracks);
-    }, [mashup]);
+    }, [mashup, trackStore, userStore]);
 
     if (
         unpublishedMashups === undefined ||

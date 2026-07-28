@@ -124,14 +124,12 @@ export function createEntityStore<T extends CachingEntity>(
          * включая дубликаты исходного массива. `needToBeModified` проксируется в `fetchAndCacheMany`.
          */
         getManyByIds: async (ids: number[], needToBeModified: boolean = false): Promise<T[]> => {
-            const missingIds = ids.filter((id) => !get().cache[id]);
+            await get().fetchAndCacheMany(ids, needToBeModified);
 
-            if (!missingIds.length) {
-                return ids.map((id) => get().cache[id]);
-            }
-
-            await get().fetchAndCacheMany(missingIds, needToBeModified);
-            return ids.map((id) => get().cache[id]);
+            // Бек может не вернуть часть запрошенных удалённых/недоступных сущностей.
+            // Не пропускаем undefined в UI: вызывающий код получает только реально
+            // существующие записи, сохраняя порядок и дубликаты входного списка.
+            return ids.map((id) => get().cache[id]).filter((entity): entity is T => !!entity);
         },
 
         /**
@@ -150,14 +148,12 @@ export function createEntityStore<T extends CachingEntity>(
             const toFetchIds = uniqueIds.filter(
                 (id) => !get().cache[id] && !get().pendingRequests[id]
             );
-
-            if (!toFetchIds.length) {
-                const pendingIds = uniqueIds.filter((id) => get().pendingRequests[id]);
-                if (pendingIds.length) {
-                    await Promise.all(pendingIds.map((id) => get().pendingRequests[id]));
-                }
-                return uniqueIds.map((id) => get().cache[id]).filter(Boolean);
-            }
+            // Важно ждать и уже начатые запросы. Иначе второй частично
+            // пересекающийся getManyByIds (например, «Премьера» и рекомендации)
+            // дожидался только своих новых id и возвращал undefined для общих.
+            const pendingPromises = uniqueIds
+                .filter((id) => !get().cache[id] && get().pendingRequests[id] !== undefined)
+                .map((id) => get().pendingRequests[id]);
 
             const chunks = [];
             for (let i = 0; i < toFetchIds.length; i += 100) {
@@ -226,8 +222,10 @@ export function createEntityStore<T extends CachingEntity>(
             // оставался отклонённый промис, и повторная загрузка (retry) вечно
             // падала на `await pendingRequests[id]` вместо нового запроса.
             try {
-                const results = await Promise.all(fetchPromises);
-                return results.flat();
+                await Promise.all([...fetchPromises, ...pendingPromises]);
+                return uniqueIds
+                    .map((id) => get().cache[id])
+                    .filter((entity): entity is T => !!entity);
             } finally {
                 set((state) => {
                     const newPending = { ...state.pendingRequests };

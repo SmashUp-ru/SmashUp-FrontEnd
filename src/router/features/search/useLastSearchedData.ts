@@ -91,7 +91,15 @@ export function useLastSearchedData() {
         };
 
         loadHistoryObjects();
-    }, [searchHistory]);
+    }, [
+        getMashupById,
+        getMashupsByIds,
+        getPlaylistById,
+        getPlaylistsByIds,
+        getUserById,
+        getUsersByIds,
+        searchHistory
+    ]);
 
     return {
         isLoading: isHistoryLoading,

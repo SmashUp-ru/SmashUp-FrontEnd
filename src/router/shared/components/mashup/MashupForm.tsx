@@ -1,7 +1,7 @@
 import { axiosSession, cn, removeItem, validateImageDimensions } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { Track } from '@/store/entities/track.ts';
@@ -117,6 +117,36 @@ interface MashupFormTextProps {
     };
 }
 
+function calculateSelectedTracksKeys(selectedTracks: SelectedTrack[]) {
+    const selectedTracksKeys = new Map<TrackType, Set<unknown>>();
+    for (const selectedTrack of selectedTracks) {
+        let keys = selectedTracksKeys.get(selectedTrack.keyType);
+        if (keys === undefined) {
+            keys = new Set();
+            selectedTracksKeys.set(selectedTrack.keyType, keys);
+        }
+
+        keys.add(selectedTrack.key);
+    }
+    return selectedTracksKeys;
+}
+
+function calculateNonSelectedTracks(
+    tracks: SearchTrack[],
+    selectedTracks: SelectedTrack[]
+): SearchTrack[] {
+    const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
+    return tracks.filter((track) => {
+        const keys = selectedTracksKeys.get(track.keyType);
+        return keys === undefined || keys === null || !keys.has(track.key);
+    });
+}
+
+function calculateNonSelectedUsers(users: User[], selectedUsers: User[]): User[] {
+    const selectedUsersSet = new Set<number>(selectedUsers.map((user) => user.id));
+    return users.filter((user) => !selectedUsersSet.has(user.id));
+}
+
 export default function MashupForm({
     initial,
     text,
@@ -162,7 +192,7 @@ export default function MashupForm({
                 setLoading(false);
             });
         }
-    }, []);
+    }, [allGenres.length, globalUpdateAllGenres]);
 
     // Track search
 
@@ -176,11 +206,36 @@ export default function MashupForm({
     const [youTubeTrack, setYouTubeTrack] = useState<YouTubeTrack | null>(null);
 
     const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>(initial.selectedTracks);
+    const [users, setUsers] = useState<User[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<User[]>(initial.selectedUsers);
+
+    const initialSelectedTracksRef = useRef(initial.selectedTracks);
+    const initialSelectedUsersRef = useRef(initial.selectedUsers);
 
     const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
     const [startSelectedTracksLength, setStartSelectedTracksLength] = useState<number>(0);
     const [renderTracksNodes, setRenderTracksNodes] = useState<ReactNode[]>([]);
     const [showMoreCategories, setShowMoreCategories] = useState<TrackType[]>([]);
+    const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
+
+    const trackStatefulOnClick = useCallback(
+        (track: SelectedTrack, currentSelectedTracks: SelectedTrack[]) => {
+            if (isTrackSelected(track, currentSelectedTracks)) {
+                setSelectedTracks(removeItem(currentSelectedTracks, track, areTracksEqual));
+            } else {
+                setSelectedTracks(currentSelectedTracks.concat([track]));
+            }
+        },
+        []
+    );
+
+    const userStatefulOnClick = useCallback((user: User, currentSelectedUsers: User[]) => {
+        if (isUserSelected(user, currentSelectedUsers)) {
+            setSelectedUsers(removeItem(currentSelectedUsers, user, areUsersEqual));
+        } else {
+            setSelectedUsers(currentSelectedUsers.concat([user]));
+        }
+    }, []);
 
     const searchYouTube = (link: string) => {
         setYouTubeTrackLoading(true);
@@ -190,38 +245,44 @@ export default function MashupForm({
             .then(() => setYouTubeTrackLoading(false));
     };
 
-    function renderSelectedTracks(selectedTracks: SelectedTrack[]): RenderTrack[] {
-        return selectedTracks.map((track) => {
-            let icon;
-            const type = track.keyType;
-            if (type === TrackType.SmashUp) {
-                icon = <SmashUpIcon />;
-            } else if (type === TrackType.YouTube) {
-                icon = <YouTubeIcon />;
-            } else if (type === TrackType.YandexMusic) {
-                icon = <YandexMusicIcon />;
-            } else if (type === TrackType.Spotify) {
-                icon = <SpotifyIcon />;
-            } else {
-                throw new Error(`${track.constructor.name} not supported`);
-            }
+    const renderSelectedTracks = useCallback(
+        (selectedTracks: SelectedTrack[]): RenderTrack[] => {
+            return selectedTracks.map((track) => {
+                let icon;
+                const type = track.keyType;
+                if (type === TrackType.SmashUp) {
+                    icon = <SmashUpIcon />;
+                } else if (type === TrackType.YouTube) {
+                    icon = <YouTubeIcon />;
+                } else if (type === TrackType.YandexMusic) {
+                    icon = <YandexMusicIcon />;
+                } else if (type === TrackType.Spotify) {
+                    icon = <SpotifyIcon />;
+                } else {
+                    throw new Error(`${track.constructor.name} not supported`);
+                }
 
-            return {
-                keyType: type,
-                key: track.key,
-                icon: icon,
-                track: track.track,
-                selected: true,
-                statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                    trackStatefulOnClick(track, selectedTracks)
-            };
-        });
-    }
+                return {
+                    keyType: type,
+                    key: track.key,
+                    icon: icon,
+                    track: track.track,
+                    selected: true,
+                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
+                        trackStatefulOnClick(track, selectedTracks)
+                };
+            });
+        },
+        [trackStatefulOnClick]
+    );
 
     useEffect(() => {
-        setRenderTracks(renderSelectedTracks(selectedTracks));
+        const initialSelectedTracks = initialSelectedTracksRef.current;
+        const initialSelectedUsers = initialSelectedUsersRef.current;
+
+        setRenderTracks(renderSelectedTracks(initialSelectedTracks));
         setRenderUsers(
-            selectedUsers.map((user) => {
+            initialSelectedUsers.map((user) => {
                 return {
                     user: user,
                     selected: true,
@@ -230,7 +291,7 @@ export default function MashupForm({
                 };
             })
         );
-    }, []);
+    }, [renderSelectedTracks, userStatefulOnClick]);
 
     useEffect(() => {
         if (handleTracksUrls && RegEx.YOUTUBE.test(debouncedTracksQuery)) {
@@ -341,7 +402,7 @@ export default function MashupForm({
             setTracksLoading(false);
             setYouTubeTrack(null);
         }
-    }, [debouncedTracksQuery]);
+    }, [debouncedTracksQuery, handleTracksUrls]);
 
     useEffect(() => {
         const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
@@ -385,23 +446,21 @@ export default function MashupForm({
         setRenderTracks(renderSelectedTracks(selectedTracks).concat(renderTracks));
         setShowMoreCategories([]);
         setStartSelectedTracksLength(selectedTracks.length);
-    }, [tracks]);
+    }, [renderSelectedTracks, selectedTracks, trackStatefulOnClick, tracks]);
 
     useEffect(() => {
         const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
-        const newRenderTracks: RenderTrack[] = [];
-        for (const renderTrack of renderTracks) {
-            const keys = selectedTracksKeys.get(renderTrack.keyType);
+        setRenderTracks((currentRenderTracks) =>
+            currentRenderTracks.map((renderTrack) => {
+                const keys = selectedTracksKeys.get(renderTrack.keyType);
+                const selected = keys !== undefined && keys !== null && keys.has(renderTrack.key);
 
-            const selected = keys !== undefined && keys !== null && keys.has(renderTrack.key);
-
-            newRenderTracks.push({
-                ...renderTrack,
-                selected: selected
-            });
-        }
-
-        setRenderTracks(newRenderTracks);
+                return {
+                    ...renderTrack,
+                    selected: selected
+                };
+            })
+        );
     }, [selectedTracks]);
 
     useEffect(() => {
@@ -485,52 +544,18 @@ export default function MashupForm({
         }
 
         setRenderTracksNodes(renderTracksNodes);
-    }, [renderTracks, showMoreCategories]);
-
-    const trackStatefulOnClick = (track: SelectedTrack, selectedTracks: SelectedTrack[]) => {
-        if (isTrackSelected(track, selectedTracks)) {
-            setSelectedTracks(removeItem(selectedTracks, track, areTracksEqual));
-        } else {
-            setSelectedTracks(selectedTracks.concat([track]));
-        }
-    };
-
-    const calculateSelectedTracksKeys = (selectedTracks: SelectedTrack[]) => {
-        const selectedTracksKeys = new Map<TrackType, Set<unknown>>();
-        for (const selectedTrack of selectedTracks) {
-            let keys = selectedTracksKeys.get(selectedTrack.keyType);
-            if (keys === undefined) {
-                keys = new Set();
-                selectedTracksKeys.set(selectedTrack.keyType, keys);
-            }
-
-            keys.add(selectedTrack.key);
-        }
-        return selectedTracksKeys;
-    };
-
-    const calculateNonSelectedTracks = (
-        tracks: SearchTrack[],
-        selectedTracks: SelectedTrack[]
-    ): SearchTrack[] => {
-        const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
-
-        const newNonSelectedTracks = tracks.filter((track) => {
-            const keys = selectedTracksKeys.get(track.keyType);
-            return keys === undefined || keys === null || !keys.has(track.key);
-        });
-        return newNonSelectedTracks;
-    };
+    }, [
+        renderTracks,
+        selectedTracks,
+        showMoreCategories,
+        showTracksIcons,
+        startSelectedTracksLength
+    ]);
 
     // User search
 
     const [usersQuery, setUsersQuery] = useState<string>('');
     const [debouncedUserQuery] = useDebounce(usersQuery, 500);
-
-    const [users, setUsers] = useState<User[]>([]);
-    const [selectedUsers, setSelectedUsers] = useState<User[]>(initial.selectedUsers);
-
-    const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
 
     const loggedUser = useGlobalStore((state) => state.currentUser);
 
@@ -564,51 +589,17 @@ export default function MashupForm({
         });
 
         setRenderUsers(renderSelectedUsers.concat(renderUsers));
-    }, [users]);
+    }, [selectedUsers, userStatefulOnClick, users]);
 
     useEffect(() => {
-        const selectedUsersSet = new Set<number>(selectedUsers.map((user) => user.id));
-        const newRenderUsers: RenderUser[] = [];
-        for (const renderUser of renderUsers) {
-            const selected = selectedUsersSet.has(renderUser.user.id);
-
-            newRenderUsers.push({
-                ...renderUser,
-                selected: selected
-            });
+        if (handleLoggedUser && loggedUser) {
+            setSelectedUsers((currentSelectedUsers) =>
+                isUserSelected(loggedUser, currentSelectedUsers)
+                    ? currentSelectedUsers
+                    : currentSelectedUsers.concat([loggedUser])
+            );
         }
-
-        setRenderUsers(newRenderUsers);
-    }, [selectedUsers]);
-
-    useEffect(() => {
-        if (handleLoggedUser && loggedUser && !isUserSelected(loggedUser, selectedUsers)) {
-            const newRenderUsers = [
-                {
-                    user: loggedUser,
-                    selected: true,
-                    statefulOnClick: (selectedUsers: User[]) =>
-                        userStatefulOnClick(loggedUser, selectedUsers)
-                }
-            ].concat(renderUsers);
-
-            setRenderUsers(newRenderUsers);
-            setSelectedUsers(selectedUsers.concat([loggedUser]));
-        }
-    }, [loggedUser]);
-
-    const userStatefulOnClick = (user: User, selectedUsers: User[]) => {
-        if (isUserSelected(user, selectedUsers)) {
-            setSelectedUsers(removeItem(selectedUsers, user, areUsersEqual));
-        } else {
-            setSelectedUsers(selectedUsers.concat([user]));
-        }
-    };
-
-    const calculateNonSelectedUsers = (users: User[], selectedUsers: User[]): User[] => {
-        const selectedUsersSet = new Set<number>(selectedUsers.map((user) => user.id));
-        return users.filter((user) => !selectedUsersSet.has(user.id));
-    };
+    }, [handleLoggedUser, loggedUser]);
 
     // Mashup file handle
 
@@ -634,7 +625,7 @@ export default function MashupForm({
         if (!imageFile) {
             setBasedImageFile(initial.basedImage || null);
         }
-    }, [imageFile]);
+    }, [imageFile, initial.basedImage]);
 
     const imageSrc = useMemo(() => {
         if (!basedImageFile) {

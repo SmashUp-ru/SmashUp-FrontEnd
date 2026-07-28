@@ -16,7 +16,7 @@ export function useConfirmCoAuthorshipNotificationData(
         if (!mashupCache[notification.meta.mashupId]) {
             getMashupById(notification.meta.mashupId).catch(console.error);
         }
-    }, [mashup, getMashupById, notification]);
+    }, [getMashupById, mashupCache, notification.meta.mashupId]);
 
     return {
         mashup,
