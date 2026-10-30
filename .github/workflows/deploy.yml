@@ -1,0 +1,52 @@
+name: Deploy
+
+# main -> smashup.ru, beta -> test.smashup.ru
+on:
+  push:
+    branches: [main, beta]
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_USER: ${{ github.ref_name == 'main' && 'smashup-frontend' || 'smashup-frontend-test' }}
+      VITE_BACKEND_URL: ${{ github.ref_name == 'main' && 'https://api.smashup.ru' || 'https://testapi.smashup.ru' }}
+      VITE_FRONTEND_URL: ${{ github.ref_name == 'main' && 'https://smashup.ru' || 'https://test.smashup.ru' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # vite preview читает dist с диска на каждый запрос, поэтому перезапуск не нужен.
+      # Ключ на сервере ограничен записью в dist (rrsync -wo).
+      - name: Upload dist
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_SSH_KEY: ${{ github.ref_name == 'main' && secrets.DEPLOY_SSH_KEY_PROD || secrets.DEPLOY_SSH_KEY_TEST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          rsync -rlptz --delete-delay --delay-updates \
+            -e 'ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes' \
+            dist/ "$DEPLOY_USER@$DEPLOY_HOST:"
