@@ -1,42 +1,22 @@
 import { z } from 'zod';
 import { RegEx } from '@/lib/regex.ts';
+import { newPasswordField } from '@/router/shared/schemas/fields.ts';
 
 export const recoverFormSchema = z.object({
     email: z
         .string()
-        .min(4, { message: 'Электронная почта должна быть длиннее 4 см.' })
-        .max(32, { message: 'Электронная почта должна быть короче 32 символов.' })
-        .regex(RegEx.EMAIL_OR_USERNAME, {
-            message:
-                'В электронной почте должны быть только буквы, цифры, а так же специальные символы.'
-        })
+        .trim()
+        .min(2, { message: 'Введи почту или ник' })
+        .max(254, { message: 'Слишком длинный адрес' })
+        .regex(RegEx.EMAIL_OR_USERNAME, { message: 'Это не похоже на почту или ник' })
 });
 
 export const recoverConfirmFormSchema = z
     .object({
-        password: z
-            .string()
-            .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-            .max(32, {
-                message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).'
-            })
-            .regex(RegEx.PASSWORD, {
-                message:
-                    'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-            }),
-
-        confirmPassword: z
-            .string()
-            .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-            .max(32, {
-                message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).'
-            })
-            .regex(RegEx.PASSWORD, {
-                message:
-                    'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-            })
+        password: newPasswordField,
+        confirmPassword: z.string()
     })
     .refine((schema) => schema.password === schema.confirmPassword, {
-        message: 'Введенные пароли должны совпадать.',
+        message: 'Пароли не совпадают',
         path: ['confirmPassword']
     });

@@ -11,7 +11,7 @@ export function useFavoritesPageData() {
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
 
-    // Единая (ретраябельная) загрузка: лайки → мэшапы по ним. Раньше было два
+    // Единая (ретраябельная) загрузка: лайки → мешапы по ним. Раньше было два
     // отдельных useEffect без .catch — на ошибке сети isLoading не сбрасывался
     // корректно и не было обратной связи.
     const load = useCallback(() => {

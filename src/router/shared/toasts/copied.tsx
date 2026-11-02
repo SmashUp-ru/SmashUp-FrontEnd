@@ -6,12 +6,5 @@ interface CopiedToastProps {
 }
 
 export default function CopiedToast({ img, name }: CopiedToastProps) {
-    return (
-        <BaseToast
-            image={img}
-            before='Ссылка на'
-            field={name}
-            after='скопирована в буфер обмена!'
-        />
-    );
+    return <BaseToast image={img} before='Ссылка на' field={name} after='скопирована' />;
 }

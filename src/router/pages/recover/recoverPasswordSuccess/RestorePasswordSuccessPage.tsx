@@ -7,9 +7,9 @@ export default function RestorePasswordSuccessPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>Восстановление пароля</h1>
+                    <h1 className='text-onSurface font-semibold text-2xl'>Пароль обновлён</h1>
                     <span className='font-medium text-onSurfaceVariant'>
-                        Пароль успешно восстановлен!
+                        Можно заходить с новым паролем
                     </span>
                 </div>
 

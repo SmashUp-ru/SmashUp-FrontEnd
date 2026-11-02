@@ -71,14 +71,14 @@ export default function PlayerBar() {
                         <Button
                             variant='nothing'
                             size='icon'
-                            aria-label='Информация о мэшапе'
+                            aria-label='Информация о мешапе'
                             onClick={() => {
                                 if (!isMobile) {
                                     if (info) closeInfo();
                                     else openInfo();
                                 }
                             }}
-                            className='block w-full truncate text-left font-bold text-[15px] text-onSurface transition-colors hover:text-primary'
+                            className='block w-full truncate text-left font-medium text-[15px] text-onSurface transition-colors hover:text-primary'
                         >
                             {mashup.name}
                         </Button>
@@ -261,7 +261,7 @@ export default function PlayerBar() {
                             variant='ghost'
                             size='control'
                             className='hidden md:inline-flex'
-                            aria-label='Повторять мэшап'
+                            aria-label='Повторять мешап'
                             onClick={() => updateLoop('mashup')}
                         >
                             <RepeatIcon repeating={false} color='primary' />
@@ -290,7 +290,7 @@ export default function PlayerBar() {
                         aria-label='Информация о треке'
                         onClick={() => (info ? closeInfo() : openInfo())}
                     >
-                        <InfoIcon color={info ? 'primary' : 'onSurface'} />
+                        <InfoIcon size={32} color={info ? 'primary' : 'onSurface'} />
                     </Button>
 
                     <VolumeControl />

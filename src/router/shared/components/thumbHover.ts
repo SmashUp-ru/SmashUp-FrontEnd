@@ -16,8 +16,14 @@ export const THUMB_ROW_HOVER = 'transition-colors duration-200 motion-reduce:tra
  * прозрачностью, а `pointer-events-none` в покое обязателен: невидимая кнопка
  * иначе перехватывала бы клики по обложке (под ней ссылка на страницу мешапа).
  *
- * `group-focus-within` — чтобы кнопка проявлялась и при переходе на неё с
- * клавиатуры: с `display:none` она вообще не попадала в таб-порядок.
+ * `group-has-[:focus-visible]` — чтобы кнопка проявлялась при переходе на неё с
+ * клавиатуры (с `display:none` она вообще не попадала в таб-порядок). Именно
+ * focus-visible, а не focus-within: закрывая меню, Radix возвращает фокус на
+ * «ещё», и после клика МЫШЬЮ кнопка висела бы видимой, пока не кликнешь мимо.
+ *
+ * `group-has-[[aria-expanded=true]]` — пока открыто меню «ещё» (или другой Radix-оверлей
+ * с триггером внутри строки), строка остаётся «наведённой»: курсор ушёл в меню, а
+ * фокус — в портал, поэтому ни hover, ни focus-within уже не срабатывают.
  *
  * На мобайле (до `md`) элемент виден всегда — там ховера нет.
  *
@@ -29,7 +35,7 @@ export const THUMB_ROW_HOVER = 'transition-colors duration-200 motion-reduce:tra
  * Одинаковая форма записи заставляет merge оставить одну.
  */
 export const THUMB_REVEAL =
-    'transition-opacity [transition-duration:200ms] motion-reduce:transition-none md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-focus-within:opacity-100 md:group-focus-within:pointer-events-auto';
+    'transition-opacity [transition-duration:200ms] motion-reduce:transition-none md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-has-[:focus-visible]:opacity-100 md:group-has-[:focus-visible]:pointer-events-auto md:group-has-[[aria-expanded=true]]:opacity-100 md:group-has-[[aria-expanded=true]]:pointer-events-auto';
 
 /** То же, но на мобайле элемент скрыт совсем (бывшее `hidden md:group-hover:block`). */
 export const THUMB_REVEAL_DESKTOP = `hidden md:block ${THUMB_REVEAL}`;

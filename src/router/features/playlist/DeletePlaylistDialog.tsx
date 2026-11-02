@@ -44,7 +44,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
                         image={coverUrl('playlist', playlist.imageUrl, 800)}
                         before='Плейлист'
                         field={playlist.name}
-                        after='успешно удалён!'
+                        after='удалён'
                     />
                 ),
                 duration: 2000

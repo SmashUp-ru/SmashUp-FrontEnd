@@ -54,7 +54,7 @@ export default function MashupPage() {
                 <div className='flex flex-col gap-y-6'>
                     <div>
                         <span className='font-medium text-[15px] text-additionalText'>
-                            Мэшап{' '}
+                            Мешап{' '}
                             {mashup.authors.map((author) => (
                                 <Link
                                     key={author}
@@ -66,7 +66,7 @@ export default function MashupPage() {
                             ))}
                         </span>
                         <div className='flex items-center gap-x-1'>
-                            <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
+                            <h1 className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                                 {mashup.name}
                             </h1>
                             <div className='flex items-center gap-x-0'>

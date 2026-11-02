@@ -494,12 +494,12 @@ export default function MashupForm({
                         <div className='flex flex-row items-center gap-1'>
                             {renderTrack.icon}
                             <Label>
-                                Лучшие результаты в <span className='font-bold'>{name}</span>
+                                Лучшие результаты в <span className='font-medium'>{name}</span>
                             </Label>
                         </div>
 
                         <Label
-                            className='font-bold mr-1 cursor-pointer'
+                            className='font-medium mr-1 cursor-pointer'
                             onClick={() => {
                                 if (showLess) {
                                     setShowMoreCategories(showMoreCategories.concat([keyType]));
@@ -508,7 +508,7 @@ export default function MashupForm({
                                 }
                             }}
                         >
-                            {showLess ? 'ПОКАЗАТЬ ЕЩЁ' : 'НЕ ПОКАЗЫВАТЬ ЕЩЁ'}
+                            {showLess ? 'Показать ещё' : 'Свернуть'}
                         </Label>
                     </div>
                 );
@@ -649,8 +649,8 @@ export default function MashupForm({
                         <ErrorToast
                             icon
                             before='Ошибка'
-                            field='при загрузке мэшапа.'
-                            after='Загрузите .mp3 с мэшапом!'
+                            field='при загрузке мешапа.'
+                            after='Нужен .mp3 с мешапом'
                         />
                     ),
                     duration: 2000,
@@ -665,8 +665,8 @@ export default function MashupForm({
                         <ErrorToast
                             icon
                             before='Ошибка'
-                            field='при загрузке мэшапа.'
-                            after='Мэшап должен весить не более, чем 20мб.'
+                            field='при загрузке мешапа.'
+                            after='Мешап должен весить не более, чем 20мб.'
                         />
                     ),
                     duration: 2000,
@@ -690,7 +690,7 @@ export default function MashupForm({
                             icon
                             before='Ошибка'
                             field='при загрузке обложки.'
-                            after='Загрузите обложку мэшапа!'
+                            after='Нужна обложка'
                         />
                     ),
                     duration: 2000,
@@ -707,7 +707,7 @@ export default function MashupForm({
                             icon
                             before='Ошибка'
                             field='при загрузке обложки.'
-                            after='Обложка мэшапа должна быть размером больше 800px.'
+                            after='Обложка мешапа должна быть размером больше 800px.'
                         />
                     ),
                     duration: 2000,
@@ -723,7 +723,7 @@ export default function MashupForm({
                             icon
                             before='Ошибка'
                             field='при загрузке обложки.'
-                            after='Обложка мэшапа должна весить не более, чем 5мб.'
+                            after='Обложка мешапа должна весить не более, чем 5мб.'
                         />
                     ),
                     duration: 2000,
@@ -832,7 +832,7 @@ export default function MashupForm({
         <section className='flex flex-col gap-y-6 md:pr-[35px] h-full'>
             {text.title && (
                 <div className='flex items-center justify-between'>
-                    <h1 className='font-bold text-[28px] text-onSurface'>{text.title}</h1>
+                    <h1 className='font-semibold text-[28px] text-onSurface'>{text.title}</h1>
                 </div>
             )}
             <div className='w-full flex flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-12 flex-1'>
@@ -846,7 +846,7 @@ export default function MashupForm({
                                     'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
                                 )}
                                 draggable={false}
-                                alt='Обложка загружаемого мэшапа'
+                                alt='Обложка загружаемого мешапа'
                             />
                         ) : (
                             <div className='w-[200px] h-[200px] rounded-[30px] bg-surfaceVariant' />
@@ -885,7 +885,7 @@ export default function MashupForm({
                                     Добавьте использованные треки
                                 </Label>
                                 <Input
-                                    placeholder='Введите название трека'
+                                    placeholder='Название трека'
                                     startIcon={SearchIcon}
                                     value={tracksQuery}
                                     onChange={(e) => setTracksQuery(e.target.value)}
@@ -924,12 +924,12 @@ export default function MashupForm({
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Название мэшапа
+                                    Название мешапа
                                 </Label>
                                 <Input
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    placeholder='Введите название мэшапа'
+                                    placeholder='Название мешапа'
                                 />
                             </div>
 
@@ -945,13 +945,13 @@ export default function MashupForm({
                             {handleMashupFile && (
                                 <div className='flex flex-col gap-y-2.5'>
                                     <Label className='font-medium text-onSurfaceVariant'>
-                                        Загрузите ваш мэшап (.mp3)
+                                        Файл мешапа (.mp3)
                                     </Label>
 
                                     <label className='relative'>
-                                        <span className='text-xl font-bold text-primary cursor-pointer'>
+                                        <span className='text-[15px] font-medium text-primary cursor-pointer hover:underline underline-offset-4'>
                                             {mashupFile === null || mashupFile === undefined
-                                                ? 'Нажмите для загрузки'
+                                                ? 'Выбрать файл'
                                                 : mashupFile.name}
                                         </span>
                                         <Input
@@ -1061,18 +1061,18 @@ export default function MashupForm({
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <span className='font-bold text-xl text-onSurfaceVariant'>
+                                <span className='font-semibold text-xl text-onSurfaceVariant'>
                                     {selectedUsers.map((user) => user.username).join(', ')}
                                 </span>
                             </div>
 
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Добавьте соавторов мэшапа
+                                    Добавьте соавторов мешапа
                                 </Label>
 
                                 <Input
-                                    placeholder='Введите ник мэшапера'
+                                    placeholder='Ник мешапера'
                                     startIcon={SearchIcon}
                                     value={usersQuery}
                                     onChange={(e) => setUsersQuery(e.target.value)}
@@ -1088,7 +1088,9 @@ export default function MashupForm({
                                                 key={user.id}
                                                 className={cn(
                                                     'flex items-center gap-x-4 rounded-2xl p-[6px] mr-[7px] cursor-pointer',
-                                                    selected ? 'bg-badge' : 'hover:bg-onPrimary'
+                                                    selected
+                                                        ? 'bg-badge'
+                                                        : 'hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary'
                                                 )}
                                                 onClick={() => {
                                                     if (
@@ -1102,7 +1104,7 @@ export default function MashupForm({
                                                                     icon
                                                                     before='Ошибка в поле'
                                                                     field='авторов.'
-                                                                    after='Вы не можете убрать себя!'
+                                                                    after='Себя из авторов убрать нельзя'
                                                                 />
                                                             ),
                                                             duration: 2000,
@@ -1121,7 +1123,7 @@ export default function MashupForm({
                                                 />
                                                 <span
                                                     className={cn(
-                                                        'font-bold',
+                                                        'font-medium',
                                                         selected ? 'text-primary' : 'text-onSurface'
                                                     )}
                                                 >
@@ -1142,7 +1144,7 @@ export default function MashupForm({
                                                 if (typeof v === 'boolean') setExplicit(v);
                                             }}
                                         />
-                                        <Label className='font-bold text-[15px] text-onSurface'>
+                                        <Label className='font-medium text-[15px] text-onSurface'>
                                             Explicit (Мат)
                                         </Label>
                                     </div>
@@ -1156,7 +1158,7 @@ export default function MashupForm({
                                                 if (typeof v === 'boolean') setBanWords(v);
                                             }}
                                         />
-                                        <Label className='font-bold text-[15px] text-onSurface'>
+                                        <Label className='font-medium text-[15px] text-onSurface'>
                                             Бан-ворды Twitch
                                         </Label>
                                     </div>
@@ -1253,7 +1255,7 @@ export default function MashupForm({
                                         <BaseToast
                                             icon
                                             before='Ваш'
-                                            field='мэшап'
+                                            field='мешап'
                                             after='загружается...'
                                         />
                                     ),

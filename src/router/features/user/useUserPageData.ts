@@ -2,6 +2,7 @@ import { User as UserType, useUserStore } from '@/store/entities/user.ts';
 import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
 import { Playlist, usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useCallback, useEffect, useState } from 'react';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 
 export function useUserPageData(username?: string) {
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
@@ -15,14 +16,16 @@ export function useUserPageData(username?: string) {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
+    const [notFound, setNotFound] = useState<boolean>(false);
 
-    // Единая (ретраябельная) загрузка: пользователь → его мэшапы (топ-5 + последний)
+    // Единая (ретраябельная) загрузка: пользователь → его мешапы (топ-5 + последний)
     // и плейлисты параллельно. Раньше было два отдельных useEffect без .catch —
     // на ошибке сети isLoading зависал и не было обратной связи.
     const load = useCallback(() => {
         if (!username) return;
 
         setIsError(false);
+        setNotFound(false);
         setIsLoading(true);
 
         getUserByUsername('username', username)
@@ -48,7 +51,11 @@ export function useUserPageData(username?: string) {
 
                 return Promise.all([mashupsPromise, playlistsPromise]);
             })
-            .catch(() => setIsError(true))
+            .catch((e: AxiosSmashUpError) => {
+                // Несуществующий ник — не сбой сети: «Повторить» тут бессмысленна.
+                if (e?.response?.status === 404) setNotFound(true);
+                else setIsError(true);
+            })
             .finally(() => setIsLoading(false));
     }, [username, getUserByUsername, getMashupsByIds, getManyPlaylistsByIds]);
 
@@ -59,6 +66,7 @@ export function useUserPageData(username?: string) {
     return {
         isLoading,
         isError,
+        notFound,
         reload: load,
         user,
         mashups,

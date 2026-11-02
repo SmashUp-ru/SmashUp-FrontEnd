@@ -1,40 +1,17 @@
 import { z } from 'zod';
-import { RegEx } from '@/lib/regex.ts';
+import { currentPasswordField, newPasswordField } from '@/router/shared/schemas/fields.ts';
 
 export const changePasswordFormSchema = z
     .object({
-        oldPassword: z
-            .string()
-            .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-            .max(32, {
-                message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).'
-            })
-            .regex(RegEx.PASSWORD, {
-                message:
-                    'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-            }),
-        newPassword: z
-            .string()
-            .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-            .max(32, {
-                message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).'
-            })
-            .regex(RegEx.PASSWORD, {
-                message:
-                    'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-            }),
-        newPasswordAgain: z
-            .string()
-            .min(8, { message: 'Пароль должен быть длиннее 8 см.' })
-            .max(32, {
-                message: 'Слишком длинный пароль (мы принимаем только пароли короче 32 см).'
-            })
-            .regex(RegEx.PASSWORD, {
-                message:
-                    'В пароле должны быть только буквы, цифры, а так же специальные символы (-_=+()*&^%$#@!).'
-            })
+        oldPassword: currentPasswordField,
+        newPassword: newPasswordField,
+        newPasswordAgain: z.string()
     })
     .refine((schema) => schema.newPassword === schema.newPasswordAgain, {
-        message: 'Введенные пароли должны совпадать.',
+        message: 'Пароли не совпадают',
         path: ['newPasswordAgain']
+    })
+    .refine((schema) => schema.newPassword !== schema.oldPassword, {
+        message: 'Новый пароль совпадает с текущим',
+        path: ['newPassword']
     });

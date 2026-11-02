@@ -18,9 +18,9 @@ export default function ListVkMashupPage() {
         return (
             <div className='flex flex-col items-center justify-center gap-y-4 py-16 text-center'>
                 <VKIcon size={48} />
-                <span className='font-bold text-xl text-onSurface'>VK не подключён</span>
+                <span className='font-semibold text-xl text-onSurface'>VK не подключён</span>
                 <span className='max-w-[420px] font-medium text-onSurfaceVariant'>
-                    Импорт мэшапов доступен, если к аккаунту привязан VK ID. Привязать VK можно
+                    Импорт мешапов доступен, если к аккаунту привязан VK ID. Привязать VK можно
                     будет в настройках профиля.
                 </span>
             </div>
@@ -54,9 +54,9 @@ export default function ListVkMashupPage() {
         return (
             <div className='flex flex-col items-center justify-center gap-y-3 py-16 text-center'>
                 <VKIcon size={48} />
-                <span className='font-bold text-xl text-onSurface'>Пока нет мэшапов</span>
+                <span className='font-semibold text-xl text-onSurface'>Пока нет мешапов</span>
                 <span className='max-w-[420px] font-medium text-onSurfaceVariant'>
-                    Новые мэшапы из вашего VK появятся здесь автоматически.
+                    Новые мешапы из вашего VK появятся здесь автоматически.
                 </span>
             </div>
         );
@@ -74,7 +74,7 @@ export default function ListVkMashupPage() {
                 <Button
                     variant='default'
                     disabled={isLoading}
-                    className='py-[7px] w-full font-bold text-sm rounded-xl'
+                    className='py-[7px] w-full font-medium text-sm rounded-xl'
                     onClick={() => {
                         if (isLoading) {
                             return;
@@ -83,7 +83,7 @@ export default function ListVkMashupPage() {
                         setLoading(true);
                         loadVkMashups(vkMashups, index)
                             .then(updateVkMashups)
-                            .catch(axiosCatcher(toast, 'при загрузке мэшапов из VK'))
+                            .catch(axiosCatcher(toast, 'при загрузке мешапов из VK'))
                             .finally(() => setLoading(false));
                     }}
                 >

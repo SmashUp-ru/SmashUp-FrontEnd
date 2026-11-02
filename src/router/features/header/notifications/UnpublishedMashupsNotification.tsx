@@ -25,9 +25,9 @@ export default function UnpublishedMashupsNotification({
             <VKIcon size={40} />
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit flex flex-col'>
-                    <span className='font-bold text-[12px] text-onSurface'>
+                    <span className='font-medium text-[12px] text-onSurface'>
                         <span>
-                            Загрузите ваши мэшапы с <span className='text-primary'>VK</span>!
+                            Загрузите ваши мешапы с <span className='text-primary'>VK</span>!
                         </span>
                     </span>
 

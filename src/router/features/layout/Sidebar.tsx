@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LogoIcon from '@/components/icons/Logo.tsx';
 import { useGlobalStore } from '@/store/global.ts';
@@ -14,7 +15,7 @@ import GavelIcon from '@/components/icons/gavel/Gavel32';
 import SettingsIcon from '@/components/icons/Settings';
 import DoorIcon from '@/components/icons/door/Door32';
 import { isModerator } from '@/lib/bitmask';
-import { clearAuthSession } from '@/lib/authSession.ts';
+import LogoutDialog from '@/router/features/auth/LogoutDialog.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 
 interface SidebarProps {
@@ -26,7 +27,7 @@ interface SidebarProps {
 /** Подпись пункта меню — видна только в мобильном drawer (на десктопе icon-rail). */
 function RowLabel({ children }: { children: string }) {
     return (
-        <span className='md:hidden font-bold text-sm text-onSurface whitespace-nowrap'>
+        <span className='md:hidden font-medium text-sm text-onSurface whitespace-nowrap'>
             {children}
         </span>
     );
@@ -51,10 +52,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
         queue.length > 0 || queueIndex >= 0 || moderationSrc !== null || vkMashupSrc !== null;
     const desktopHeight = playerActive ? 'md:h-[calc(100%-148px)]' : 'md:h-[calc(100%-32px)]';
 
-    const logout = () => {
-        clearAuthSession();
-        navigate('/');
-    };
+    const [logoutOpen, setLogoutOpen] = useState(false);
 
     return (
         <>
@@ -103,7 +101,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                         <Link
                             draggable={false}
                             to={'/favorites'}
-                            aria-label='Любимые мэшапы'
+                            aria-label='Любимые мешапы'
                             className={rowClass}
                         >
                             <LikeOutlineIcon
@@ -124,7 +122,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                         <TooltipProvider>
                             <Tooltip delayDuration={100}>
                                 <TooltipTrigger
-                                    aria-label='Любимые мэшапы (требуется вход)'
+                                    aria-label='Любимые мешапы (требуется вход)'
                                     onClick={() => navigate('/login')}
                                     className={rowClass}
                                 >
@@ -138,7 +136,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                                 >
                                     <p>
                                         Зарегистрируйся, чтобы иметь возможность сохранять любимые
-                                        мэшапы
+                                        мешапы
                                     </p>
                                 </TooltipContent>
                             </Tooltip>
@@ -189,19 +187,19 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                                 <AvatarImage src={coverUrl('user', currentUser.imageUrl, 100)} />
                                 <AvatarFallback>{currentUser.username.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            <span className='font-bold text-sm text-onSurface truncate'>
+                            <span className='font-medium text-sm text-onSurface truncate'>
                                 {currentUser.username}
                             </span>
                         </Link>
                         <Link
                             draggable={false}
                             to='/mashup/upload'
-                            aria-label='Загрузить мэшап'
+                            aria-label='Загрузить мешап'
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <AddMashupIcon />
-                            <span className='font-bold text-sm text-onSurface'>
-                                Загрузить мэшап
+                            <span className='font-medium text-sm text-onSurface'>
+                                Загрузить мешап
                             </span>
                         </Link>
                         {isModerator(currentUser.permissions) && (
@@ -212,7 +210,9 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                                 className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                             >
                                 <GavelIcon />
-                                <span className='font-bold text-sm text-onSurface'>Модерация</span>
+                                <span className='font-medium text-sm text-onSurface'>
+                                    Модерация
+                                </span>
                             </Link>
                         )}
                         <Link
@@ -222,15 +222,14 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <SettingsIcon />
-                            <span className='font-bold text-sm text-onSurface'>Настройки</span>
+                            <span className='font-medium text-sm text-onSurface'>Настройки</span>
                         </Link>
                         <button
-                            aria-label='Выйти'
-                            onClick={logout}
+                            onClick={() => setLogoutOpen(true)}
                             className='flex items-center gap-x-4 w-full px-4 py-2.5 rounded-2xl hover:bg-onPrimary/[0.15]'
                         >
                             <DoorIcon color='error' />
-                            <span className='font-bold text-sm text-error'>Выйти</span>
+                            <span className='font-medium text-sm text-error'>Выйти</span>
                         </button>
                     </div>
                 )}
@@ -240,13 +239,14 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                         <Link
                             draggable={false}
                             to='/login'
-                            className='w-full text-center whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-3 text-sm font-bold'
+                            className='w-full text-center whitespace-nowrap bg-primary text-surface rounded-2xl px-3 py-3 text-sm font-medium'
                         >
                             Войти
                         </Link>
                     </div>
                 )}
             </div>
+            <LogoutDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
         </>
     );
 }

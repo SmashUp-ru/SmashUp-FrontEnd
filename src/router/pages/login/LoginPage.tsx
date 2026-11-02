@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form.tsx';
 import { AxiosResponse } from 'axios';
 import { axiosSession } from '@/lib/utils.ts';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 import { LoginResponse } from '@/router/shared/types/login.ts';
 import { useEffect } from 'react';
 import { startVkFlow } from '@/lib/vk.ts';
@@ -61,7 +62,28 @@ export default function LoginPage() {
                 });
             })
             .then(() => navigate('/'))
-            .catch(axiosCatcher(toast, 'при попытке входа.'));
+            .catch((e: AxiosSmashUpError) => {
+                // Неверные данные — подсвечиваем конкретное поле, а не тост: так видно, что
+                // именно поправить. Ошибка снимается сама, как только поле изменят.
+                const message = e.response?.data.message;
+                if (message === 'login.wrong_password') {
+                    form.setError(
+                        'password',
+                        { message: 'Неверный пароль' },
+                        { shouldFocus: true }
+                    );
+                    return;
+                }
+                if (message === 'login.unknown_user' || message === 'login.unknown_email') {
+                    form.setError(
+                        'email',
+                        { message: 'Нет такого пользователя' },
+                        { shouldFocus: true }
+                    );
+                    return;
+                }
+                return axiosCatcher(toast, 'при попытке входа')(e);
+            });
     }
 
     useEffect(() => {
@@ -84,9 +106,9 @@ export default function LoginPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>Вход</h1>
+                    <h1 className='text-onSurface font-semibold text-2xl'>Вход</h1>
                     <span className='font-medium text-onSurfaceVariant'>
-                        Добро пожаловать снова!
+                        Твои лайки и плейлисты на месте
                     </span>
                 </div>
 
@@ -114,7 +136,7 @@ export default function LoginPage() {
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage className='text-onSurfaceVariant font-medium text-[13px]' />
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -159,12 +181,13 @@ export default function LoginPage() {
                                 <FormItem className='flex items-center gap-x-4'>
                                     <FormControl>
                                         <Checkbox
-                                            id='remember'
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
                                         />
                                     </FormControl>
-                                    <FormLabel className='text-onSurface font-medium mt-0'>
+                                    {/* Метка тянется на всю строку и захватывает зазор (-ml-4 pl-4), поэтому
+                                        клик в любом месте блока переключает чекбокс. */}
+                                    <FormLabel className='flex-1 self-stretch flex items-center -ml-4 pl-4 cursor-pointer select-none text-onSurface font-medium mt-0'>
                                         Запомнить меня
                                     </FormLabel>
                                     <FormMessage />
@@ -204,8 +227,8 @@ export default function LoginPage() {
                     {/*Нет аккаунта?*/}
                     <div className='flex items-center gap-x-2.5'>
                         <span className='font-medium text-onSurfaceVariant'>Нет аккаунта?</span>
-                        <Link draggable={false} className='font-bold text-primary' to='/register'>
-                            Зарегистрируйтесь
+                        <Link draggable={false} className='font-medium text-primary' to='/register'>
+                            Зарегистрируйся
                         </Link>
                     </div>
                 </div>

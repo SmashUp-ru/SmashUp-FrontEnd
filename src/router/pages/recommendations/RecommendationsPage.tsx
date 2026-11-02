@@ -55,7 +55,7 @@ export default function RecommendationsPage() {
                         <span className='font-medium text-[15px] text-additionalText'>
                             Коллекция
                         </span>
-                        <h1 className='font-bold text-[28px] text-onSurface'>
+                        <h1 className='font-semibold text-[28px] text-onSurface'>
                             Рекомендации{' '}
                             <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
                                 {currentUser.username}
@@ -100,7 +100,7 @@ export default function RecommendationsPage() {
                 <StateView
                     icon={<LikeOutlineIcon color='onSurfaceVariant' size={48} />}
                     title='Пока нет рекомендаций'
-                    description='Слушайте и лайкайте мэшапы — и здесь появятся персональные подборки.'
+                    description='Слушайте и лайкайте мешапы — и здесь появятся персональные подборки.'
                 />
             ) : (
                 <div className='flex flex-col gap-y-1'>

@@ -42,7 +42,7 @@ export default function RootPage() {
     const [isPremiereLoading, setPremiereLoading] = useState<boolean>(true);
     const [isPremiereError, setPremiereError] = useState<boolean>(false);
 
-    // Ретраябельная загрузка «Премьеры»: playlist/1 → его мэшапы. Без .catch
+    // Ретраябельная загрузка «Премьеры»: playlist/1 → его мешапы. Без .catch
     // ошибка сети оставляла isPremiereLoading=true (бесконечный скелетон).
     const loadPremiere = useCallback(() => {
         setPremiereError(false);
@@ -103,7 +103,7 @@ export default function RootPage() {
             </Section>
 
             {premierePlaylist && premiere && premiere.length > 0 && (
-                <Section title='Премьера!' link={{ href: 'playlist/1', title: 'ПОКАЗАТЬ ВСЕ' }}>
+                <Section title='Премьера' link={{ href: 'playlist/1', title: 'Показать все' }}>
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                         {premiere.slice(0, 6).map((mashup, idx) => (
                             <MashupSmallThumb
@@ -122,7 +122,7 @@ export default function RootPage() {
             {currentUser && recommendationsIds && recommendationsIds.length > 0 && (
                 <Section
                     title='Рекомендации'
-                    link={{ href: 'recommendations', title: 'ПОКАЗАТЬ ВСЕ' }}
+                    link={{ href: 'recommendations', title: 'Показать все' }}
                 >
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-[25px] gap-y-[15px]'>
                         {recommendations.slice(0, 6).map((recommendation, idx) => (

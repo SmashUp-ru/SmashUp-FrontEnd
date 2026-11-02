@@ -46,14 +46,14 @@ export default function ChangeUsernameConfirmPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>
-                        {success === true ? 'Поздравляем!' : success === false ? 'Упс...' : ''}
+                    <h1 className='text-onSurface font-semibold text-2xl'>
+                        {success === true ? 'Ник обновлён' : success === false ? 'Не вышло' : ''}
                     </h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         {success === true
-                            ? 'Никнейм успешно изменен.'
+                            ? 'Теперь все видят тебя под новым ником'
                             : success === false
-                              ? 'Что-то пошло не так'
+                              ? 'Ссылка не сработала. Попробуй ещё раз'
                               : ''}
                     </span>
                 </div>

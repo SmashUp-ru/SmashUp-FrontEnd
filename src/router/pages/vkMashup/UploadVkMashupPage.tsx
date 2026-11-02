@@ -64,11 +64,11 @@ export default function UploadVkMashupPage() {
                 basedImage: vkMashup.imageUrl || undefined
             }}
             text={{
-                title: 'Загрузка мэшапа с VK',
+                title: 'Загрузка мешапа с VK',
                 button: 'Опубликовать',
                 toast: {
                     before: 'Ваш',
-                    field: 'мэшап',
+                    field: 'мешап',
                     after: 'загружается...'
                 }
             }}
@@ -94,7 +94,7 @@ export default function UploadVkMashupPage() {
                             `/mashup/upload/success/${newMashup !== undefined ? newMashup.id : '0'}`
                         );
                     })
-                    .catch(axiosCatcher(toast, 'при загрузке мэшапа'));
+                    .catch(axiosCatcher(toast, 'при загрузке мешапа'));
             }}
         />
     );

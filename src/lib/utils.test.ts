@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { shuffleQueue, declOfNum, maskEmail } from '@/lib/utils.ts';
+import { shuffleQueue, declOfNum, maskEmail, safeExternalUrl } from '@/lib/utils.ts';
 
 describe('shuffleQueue', () => {
     it('сохраняет все элементы очереди', () => {
@@ -42,5 +42,23 @@ describe('maskEmail', () => {
 
     it('оставляет короткую (≤2) локальную часть как есть', () => {
         expect(maskEmail('ab@x.com')).toBe('ab@x.com');
+    });
+});
+
+describe('safeExternalUrl', () => {
+    it('пропускает http(s)', () => {
+        expect(safeExternalUrl('https://vk.com/wall-1_2')).toBe('https://vk.com/wall-1_2');
+        expect(safeExternalUrl('http://example.com')).toBe('http://example.com/');
+    });
+    it('дополняет ссылку без схемы до https', () => {
+        expect(safeExternalUrl('vk.com/wall-1_2')).toBe('https://vk.com/wall-1_2');
+    });
+    it('отбрасывает опасные схемы и пустое', () => {
+        expect(safeExternalUrl('javascript:alert(1)')).toBeNull();
+        expect(safeExternalUrl(' JavaScript:alert(1)')).toBeNull();
+        expect(safeExternalUrl('data:text/html,<script>1</script>')).toBeNull();
+        expect(safeExternalUrl('vbscript:x')).toBeNull();
+        expect(safeExternalUrl('')).toBeNull();
+        expect(safeExternalUrl(undefined)).toBeNull();
     });
 });

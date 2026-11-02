@@ -18,8 +18,8 @@ import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useState } from 'react';
+import { changeEmailFormSchema } from '@/router/shared/schemas/changeEmail.ts';
 import EmailDialogSentContent from '@/router/features/settings/EmailDialogSentContent.tsx';
-import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
@@ -28,28 +28,20 @@ interface EmailDialogProps {
     email: string | null;
 }
 
-const formSchema = z.object({
-    email: z.string().min(3, { message: 'минимум 3 бля' }).max(50, { message: 'максимум 50 бля' }),
-    password: z
-        .string()
-        .min(3, { message: 'минимум 3 бля' })
-        .max(50, { message: 'максимум 50 бля' })
-});
-
 export default function EmailDialog({ email }: EmailDialogProps) {
     const { toast } = useToast();
 
     const [submitted, setSubmitted] = useState(false);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof changeEmailFormSchema>>({
+        resolver: zodResolver(changeEmailFormSchema),
         defaultValues: {
             email: '',
             password: ''
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof changeEmailFormSchema>) {
         axiosSession
             .post('/user/change_email', {
                 password: values.password,
@@ -59,23 +51,25 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                 setSubmitted(true);
             })
             .catch((e: AxiosSmashUpError) => {
-                if (e.status === 403) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при обновлении почты.'
-                                after='Указанный пароль неправильный.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
+                // Ошибки данных — под полем, как на входе; остальное — тостом.
+                const status = e.response?.status;
+                if (status === 403) {
+                    form.setError(
+                        'password',
+                        { message: 'Неверный пароль' },
+                        { shouldFocus: true }
+                    );
                     return;
                 }
-
-                axiosCatcher(toast, 'при обновлении почты.')(e);
+                if (status === 409) {
+                    form.setError(
+                        'email',
+                        { message: 'Эта почта уже занята' },
+                        { shouldFocus: true }
+                    );
+                    return;
+                }
+                return axiosCatcher(toast, 'при обновлении почты')(e);
             });
     }
 
@@ -83,12 +77,17 @@ export default function EmailDialog({ email }: EmailDialogProps) {
         <div className='w-full flex flex-col gap-y-2.5'>
             <Label className='font-medium text-onSurfaceVariant'>Почта</Label>
             <div className='flex items-center gap-x-2.5'>
-                <span className='font-bold text-xl'>{email && maskEmail(email)}</span>
+                <span className='font-semibold text-xl'>{email && maskEmail(email)}</span>
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant='ghost' size='icon' disabled={email === null}>
-                            <EditIcon color='onSurface' />
+                        <Button
+                            variant='ghost'
+                            size='control'
+                            aria-label='Изменить почту'
+                            disabled={email === null}
+                        >
+                            <EditIcon color='onSurfaceVariant' />
                         </Button>
                     </DialogTrigger>
                     <DialogContent className='w-[460px]'>
@@ -132,7 +131,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                                                                         form.formState.errors
                                                                             .email !== undefined
                                                                     }
-                                                                    placeholder='Введите новую почту...'
+                                                                    placeholder='Новая почта'
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -155,7 +154,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                                                                         form.formState.errors
                                                                             .password !== undefined
                                                                     }
-                                                                    placeholder='Введите пароль...'
+                                                                    placeholder='Пароль'
                                                                     type='password'
                                                                     {...field}
                                                                 />

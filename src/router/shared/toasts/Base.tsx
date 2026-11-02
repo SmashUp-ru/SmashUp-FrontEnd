@@ -24,7 +24,7 @@ export default function BaseToast({
             {image && (
                 <img src={image} alt='Картинка в уведомлении' className='w-8 h-8 rounded-[10px]' />
             )}
-            <span className='font-bold text-additionalText'>
+            <span className='font-medium text-additionalText'>
                 {before} <span className='text-onSurface'>{field}</span> {after}
             </span>
         </div>

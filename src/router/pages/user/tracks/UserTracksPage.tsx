@@ -49,7 +49,7 @@ export default function UserTracksPage() {
 
     const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
-    useDocumentTitle(user ? `Мэшапы ${user.username}` : (params.profileUsername ?? null));
+    useDocumentTitle(user ? `Мешапы ${user.username}` : (params.profileUsername ?? null));
 
     if (!params.profileUsername) return;
     if (isUserError) return <ErrorState onRetry={loadUser} />;
@@ -71,8 +71,8 @@ export default function UserTracksPage() {
                         <span className='font-medium text-[15px] text-additionalText'>
                             Коллекция
                         </span>
-                        <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
-                            Мэшапы{' '}
+                        <h1 className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
+                            Мешапы{' '}
                             <Link draggable={false} to={`/user/${user.username}`}>
                                 {user.username}
                             </Link>
@@ -100,7 +100,7 @@ export default function UserTracksPage() {
                                                   .filter((mashup) => !isExplicit(mashup.statuses))
                                                   .map((mashup) => mashup.id)
                                             : user.mashups,
-                                        `Мэшапы ${user.username}`,
+                                        `Мешапы ${user.username}`,
                                         `user/${user.username}/tracks`
                                     );
                                 }}
@@ -123,7 +123,7 @@ export default function UserTracksPage() {
                                                     image={coverUrl('user', user.imageUrl, 800)}
                                                     before='Ссылка на треки пользователя'
                                                     field={user.username}
-                                                    after='скопирована в буфер обмена!'
+                                                    after='скопирована'
                                                 />
                                             ),
                                             duration: 2000
@@ -140,7 +140,7 @@ export default function UserTracksPage() {
             <div className='flex flex-col gap-y-1'>
                 {mashups.length === 0 && (
                     <p className='text-additionalText text-center py-12'>
-                        У пользователя пока нет мэшапов
+                        У пользователя пока нет мешапов
                     </p>
                 )}
                 {mashups.map((mashup, idx) => (
@@ -149,7 +149,7 @@ export default function UserTracksPage() {
                         mashup={mashup}
                         playlist={user.mashups}
                         indexInPlaylist={idx}
-                        playlistName={`Мэшапы ${user.username}`}
+                        playlistName={`Мешапы ${user.username}`}
                         queueId={`user/${user.username}/tracks`}
                     />
                 ))}

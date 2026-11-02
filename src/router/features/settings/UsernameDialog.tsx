@@ -18,8 +18,8 @@ import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import { AxiosError } from 'axios';
-import ErrorToast from '@/router/shared/toasts/error.tsx';
+import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useState } from 'react';
 import UsernameDialogSentContent from '@/router/features/settings/UsernameDialogSentContent.tsx';
 import { changeUsernameFormSchema } from '@/router/shared/schemas/changeUsername.ts';
@@ -50,35 +50,27 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
             .then(() => {
                 setSubmitted(true);
             })
-            .catch((e: AxiosError) => {
-                if (e.status === 403) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при обновлении никнейма.'
-                                after='Указанный пароль неправильный.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
+            .catch((e: AxiosSmashUpError) => {
+                // Раньше любая ошибка, кроме неверного пароля, превращалась в «Что-то
+                // пошло не так» — в том числе занятый ник, самая частая.
+                const status = e.response?.status;
+                if (status === 403) {
+                    form.setError(
+                        'password',
+                        { message: 'Неверный пароль' },
+                        { shouldFocus: true }
+                    );
                     return;
                 }
-
-                toast({
-                    element: (
-                        <ErrorToast
-                            icon
-                            before='Что-то пошло не так'
-                            field='при обновлении никнейма.'
-                            after='Попробуйте снова.'
-                        />
-                    ),
-                    duration: 2000,
-                    variant: 'destructive'
-                });
+                if (status === 409) {
+                    form.setError(
+                        'username',
+                        { message: 'Этот ник уже занят' },
+                        { shouldFocus: true }
+                    );
+                    return;
+                }
+                return axiosCatcher(toast, 'при обновлении ника')(e);
             });
     }
 
@@ -86,10 +78,10 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
         <div className='w-full flex flex-col gap-y-2.5'>
             <Label className='font-medium text-onSurfaceVariant'>Отображаемый никнейм</Label>
             <div className='flex items-center gap-x-2.5'>
-                <span className='font-bold text-xl'>{username}</span>
+                <span className='font-semibold text-xl'>{username}</span>
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant='ghost' size='icon'>
+                        <Button variant='ghost' size='control' aria-label='Изменить ник'>
                             <EditIcon color='onSurfaceVariant' />
                         </Button>
                     </DialogTrigger>
@@ -134,7 +126,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                                                         form.formState.errors
                                                                             .username !== undefined
                                                                     }
-                                                                    placeholder='Введите новый никнейм...'
+                                                                    placeholder='Новый ник'
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -157,7 +149,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                                                         form.formState.errors
                                                                             .password !== undefined
                                                                     }
-                                                                    placeholder='Введите пароль...'
+                                                                    placeholder='Пароль'
                                                                     {...field}
                                                                 />
                                                             </FormControl>

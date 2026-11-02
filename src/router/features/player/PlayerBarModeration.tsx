@@ -16,7 +16,8 @@ export default function PlayerBarModeration() {
     const moderationIsPlaying = usePlayerStore((state) => state.moderationIsPlaying);
     const updateModerationIsPlaying = usePlayerStore((state) => state.updateModerationIsPlaying);
 
-    const moderationPlayer = usePlaybackEngine(moderationIsPlaying);
+    const { playerRef: moderationPlayer, onLoad: onModerationPlayerLoad } =
+        usePlaybackEngine(moderationIsPlaying);
 
     if (!moderationSrc) return null;
 
@@ -32,7 +33,7 @@ export default function PlayerBarModeration() {
                     />
 
                     <div className='flex flex-col min-w-0'>
-                        <span className='font-bold text-[15px] text-onSurface truncate'>
+                        <span className='font-medium text-[15px] text-onSurface truncate'>
                             {moderationSrc.name}
                         </span>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
@@ -83,6 +84,7 @@ export default function PlayerBarModeration() {
                 playing={moderationIsPlaying}
                 volume={volume}
                 ref={(ref) => (moderationPlayer.current = ref)}
+                onLoad={onModerationPlayerLoad}
                 html5={true}
             />
         </PlaybackBar>

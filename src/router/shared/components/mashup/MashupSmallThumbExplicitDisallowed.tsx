@@ -10,8 +10,8 @@ import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { Link } from 'react-router-dom';
-import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
-import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
+import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
@@ -32,7 +32,7 @@ export default function MashupSmallThumbExplicitDisallowed({
                 <TooltipTrigger>
                     <div
                         className={cn(
-                            'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary rounded-2xl opacity-50',
+                            'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl opacity-50',
                             THUMB_ROW_HOVER
                         )}
                     >
@@ -47,7 +47,7 @@ export default function MashupSmallThumbExplicitDisallowed({
                             </div>
                             <div className='flex flex-col'>
                                 <div className='flex items-center gap-x-1'>
-                                    <div className='font-bold text-sm text-onSurface line-clamp-1'>
+                                    <div className='font-medium text-sm text-onSurface line-clamp-1'>
                                         {mashup.name}
                                     </div>
                                     <div className='flex items-center gap-x-0'>

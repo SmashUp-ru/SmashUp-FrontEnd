@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom';
 import { useSettingsPageData } from '@/router/features/settings/useSettingsPageData.ts';
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
@@ -32,6 +33,7 @@ export default function SettingsPage() {
     const updateSettings = useSettingsStore((state) => state.updateSettingsBitmask);
 
     const currentUser = useGlobalStore((state) => state.currentUser);
+    const token = useGlobalStore((state) => state.token);
 
     const [allowMultisessions, setAllowMultisessions] = useState(false);
     const [showExplicit, setShowExplicit] = useState(false);
@@ -53,13 +55,15 @@ export default function SettingsPage() {
             .catch(() => setVkId(null));
     }, []);
 
-    if (!currentUser) return null;
-    if (isLoading) return <SettingsPageSkeleton />;
+    // Гость — на вход (раньше видел пустую страницу). С токеном, но пока профиль
+    // ещё грузится (сразу после перезагрузки) — скелетон, а не редирект.
+    if (!token) return <Navigate to='/login' replace />;
+    if (!currentUser || isLoading) return <SettingsPageSkeleton />;
 
     return (
         <section className='flex flex-col gap-y-6 md:pr-[35px] min-h-full'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-[28px] text-onSurface'>Настройки</h1>
+                <h1 className='font-semibold text-[28px] text-onSurface'>Настройки</h1>
             </div>
             <div className='w-full flex flex-col items-center md:items-start md:flex-row gap-8 md:gap-x-12'>
                 <UpdateAvatar />
@@ -68,7 +72,7 @@ export default function SettingsPage() {
                 <div className='w-full flex flex-col gap-y-10 md:gap-y-[75px]'>
                     {/*настройки профиля*/}
                     <div className='w-full flex flex-col gap-y-[30px]'>
-                        <h2 className='font-bold text-2xl'>Настройки профиля</h2>
+                        <h2 className='font-semibold text-2xl'>Настройки профиля</h2>
                         <UsernameDialog username={currentUser.username} email={email} />
 
                         <EmailDialog email={email} />
@@ -86,7 +90,7 @@ export default function SettingsPage() {
                                             <span className='font-medium text-onSurfaceVariant'>
                                                 Подключено
                                             </span>
-                                            <span className='font-bold text-xl text-onSurface'>
+                                            <span className='font-semibold text-xl text-onSurface'>
                                                 VK
                                             </span>
                                         </div>
@@ -108,7 +112,7 @@ export default function SettingsPage() {
                                             <span className='font-medium text-onSurfaceVariant'>
                                                 Не подключено
                                             </span>
-                                            <span className='font-bold text-xl text-onSurface'>
+                                            <span className='font-semibold text-xl text-onSurface'>
                                                 VK
                                             </span>
                                         </div>
@@ -121,18 +125,18 @@ export default function SettingsPage() {
 
                     {/*настройки приложения*/}
                     <div className='w-full flex flex-col gap-y-[30px] mb-[30px]'>
-                        <h2 className='font-bold text-2xl'>Настройки приложения</h2>
+                        <h2 className='font-semibold text-2xl'>Настройки приложения</h2>
                         <div className='grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-x-20 lg:gap-y-20 items-center'>
                             {/* Лейбл НАД контролом: так сегменты получают всю ширину
                                 ячейки (при label-сбоку «Ориг» клипался в узкой
                                 grid-ячейке). Настройки остаются в одну строку. */}
                             <div className='flex flex-col items-start gap-y-3'>
                                 <Label className='shrink-0 font-medium text-[15px] text-onSurfaceVariant'>
-                                    Битрейт мэшапов
+                                    Битрейт мешапов
                                 </Label>
                                 <div className='w-full min-w-0 max-w-[360px]'>
                                     <SegmentedControl
-                                        aria-label='Битрейт мэшапов'
+                                        aria-label='Битрейт мешапов'
                                         value={bitrate}
                                         onChange={(v) => updateBitrate(v as keyof typeof BITRATES)}
                                         options={BITRATE_OPTIONS}
@@ -158,13 +162,21 @@ export default function SettingsPage() {
                                                         <BaseToast
                                                             icon
                                                             field='Настройки'
-                                                            after='успешно изменены!'
+                                                            after='сохранены'
                                                         />
                                                     )
                                                 });
                                                 updateSettings(null);
                                             })
-                                            .catch(axiosCatcher(toast, 'при обновлении настроек.'));
+                                            .catch((e) => {
+                                                // Тумблер уже переключился — при ошибке вернуть,
+                                                // иначе он показывает то, что не сохранилось.
+                                                setAllowMultisessions(!v);
+                                                return axiosCatcher(
+                                                    toast,
+                                                    'при обновлении настроек'
+                                                )(e);
+                                            });
                                     }}
                                     className='h-8 w-16 '
                                     thumbClassName='h-8 w-8 data-[state=checked]:translate-x-7'
@@ -190,13 +202,21 @@ export default function SettingsPage() {
                                                         <BaseToast
                                                             icon
                                                             field='Настройки'
-                                                            after='успешно изменены!'
+                                                            after='сохранены'
                                                         />
                                                     )
                                                 });
                                                 updateSettings(null);
                                             })
-                                            .catch(axiosCatcher(toast, 'при обновлении настроек.'));
+                                            .catch((e) => {
+                                                // Тумблер уже переключился — при ошибке вернуть,
+                                                // иначе он показывает то, что не сохранилось.
+                                                setShowExplicit(!v);
+                                                return axiosCatcher(
+                                                    toast,
+                                                    'при обновлении настроек'
+                                                )(e);
+                                            });
                                     }}
                                     thumbClassName='h-8 w-8 data-[state=checked]:translate-x-7'
                                 />

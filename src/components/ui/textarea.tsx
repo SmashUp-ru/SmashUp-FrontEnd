@@ -22,7 +22,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'tex
                 />
                 <textarea
                     className={cn(
-                        'relative flex min-h-[80px] w-full rounded-[15px] bg-transparent px-3 py-2 text-[15px] font-bold placeholder:text-onSurfaceVariant text-onSurface disabled:cursor-not-allowed disabled:opacity-50',
+                        'relative flex min-h-[80px] w-full rounded-[15px] bg-transparent px-3 py-2 text-[15px] font-medium placeholder:text-onSurfaceVariant text-onSurface disabled:cursor-not-allowed disabled:opacity-50',
                         // То же кольцо, что у Input (раньше здесь было ring/box-shadow).
                         'outline outline-2 outline-transparent outline-offset-[6px]',
                         'transition-[outline-color,outline-offset] [transition-duration:200ms] ease-spring motion-reduce:transition-none',

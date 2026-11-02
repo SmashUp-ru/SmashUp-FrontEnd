@@ -14,7 +14,7 @@ export default function NotFound() {
             />
 
             <div className='z-10 flex flex-col items-center '>
-                <h1 className='font-bold text-[369px] leading-[369px] text-onSurface pt-10'>
+                <h1 className='font-medium text-[369px] leading-[369px] text-onSurface pt-10'>
                     {typedError.status || '???'}
                 </h1>
                 <div className='flex flex-col items-center gap-y-[34px]'>

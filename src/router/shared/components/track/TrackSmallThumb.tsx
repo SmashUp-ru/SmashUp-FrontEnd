@@ -23,7 +23,9 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
             className={cn(
                 'flex justify-between p-1.5 w-full group rounded-2xl items-center gap-x-4 cursor-pointer',
                 THUMB_ROW_HOVER,
-                selected ? 'bg-badge' : 'hover:bg-onPrimary',
+                selected
+                    ? 'bg-badge'
+                    : 'hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary',
                 className
             )}
             onClick={onClick}
@@ -41,7 +43,7 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
             <div className='flex flex-col min-w-0 w-full text-left'>
                 <span
                     className={cn(
-                        'font-bold text-sm truncate',
+                        'font-medium text-sm truncate',
                         selected ? 'text-primary' : 'text-onSurface'
                     )}
                 >
@@ -59,7 +61,7 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
 
             {icon}
 
-            {/* ⋯ как в строке мэшапа: круглая обводка size='control' */}
+            {/* ⋯ как в строке мешапа: круглая обводка size='control' */}
             <TrackMoreDropdown track={track}>
                 <Button variant='ghost' size='control' aria-label='Опции трека'>
                     <div className={cn('w-6 h-6 min-w-6 min-h-6', THUMB_REVEAL)}>

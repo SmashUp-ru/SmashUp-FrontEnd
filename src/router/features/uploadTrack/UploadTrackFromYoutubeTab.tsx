@@ -53,7 +53,7 @@ export default function UploadTrackFromYoutubeTab() {
                                 <Label className='font-medium text-onSurfaceVariant'>
                                     Название
                                 </Label>
-                                <Input placeholder='Введите название трека' />
+                                <Input placeholder='Название трека' />
                             </div>
 
                             <div className='flex flex-col gap-y-[35px]'>
@@ -61,7 +61,7 @@ export default function UploadTrackFromYoutubeTab() {
                                     <Label className='font-medium text-onSurfaceVariant'>
                                         Авторы
                                     </Label>
-                                    <span className='font-bold text-xl text-onSurfaceVariant'>
+                                    <span className='font-semibold text-xl text-onSurfaceVariant'>
                                         Автор, Авторка, Авториня, Авторесса, Авторогиня
                                     </span>
                                 </div>
@@ -71,10 +71,7 @@ export default function UploadTrackFromYoutubeTab() {
                                         Добавьте соавторов трека
                                     </Label>
 
-                                    <Input
-                                        placeholder='Введите ник автора'
-                                        startIcon={SearchIcon}
-                                    />
+                                    <Input placeholder='Ник автора' startIcon={SearchIcon} />
 
                                     <div className='flex flex-col gap-y-2.5 max-h-[200px] overflow-y-scroll'>
                                         <div
@@ -82,7 +79,7 @@ export default function UploadTrackFromYoutubeTab() {
                                                 'flex items-center gap-x-4 rounded-2xl p-4 mr-[7px] cursor-pointer bg-badge'
                                             )}
                                         >
-                                            <span className={cn('font-bold text-onSurface')}>
+                                            <span className={cn('font-medium text-onSurface')}>
                                                 Авторша
                                             </span>
                                         </div>

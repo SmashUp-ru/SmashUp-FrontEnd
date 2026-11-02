@@ -26,7 +26,8 @@ export default function PlayerBarVkMashup() {
     const vkMashupIsPlaying = usePlayerStore((state) => state.vkMashupIsPlaying);
     const updateVkMashupIsPlaying = usePlayerStore((state) => state.updateVkMashupIsPlaying);
 
-    const vkMashupPlayer = usePlaybackEngine(vkMashupIsPlaying);
+    const { playerRef: vkMashupPlayer, onLoad: onVkMashupPlayerLoad } =
+        usePlaybackEngine(vkMashupIsPlaying);
 
     const { vkMashups, updateVkMashup, updateVkMashups } = useVkMashups(false);
 
@@ -59,7 +60,7 @@ export default function PlayerBarVkMashup() {
                                             icon
                                             before='Ошибка'
                                             field='при загрузке аудио.'
-                                            after='Свяжитесь с нами!'
+                                            after='Напиши нам'
                                         />
                                     ),
                                     duration: 2000,
@@ -97,7 +98,7 @@ export default function PlayerBarVkMashup() {
                     />
 
                     <div className='flex flex-col min-w-0'>
-                        <span className='font-bold text-[15px] text-onSurface truncate'>
+                        <span className='font-medium text-[15px] text-onSurface truncate'>
                             {vkMashupSrc.name}
                         </span>
                         <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
@@ -135,6 +136,7 @@ export default function PlayerBarVkMashup() {
                     playing={vkMashupIsPlaying}
                     volume={volume}
                     ref={(ref) => (vkMashupPlayer.current = ref)}
+                    onLoad={onVkMashupPlayerLoad}
                     html5={true}
                 />
             )}

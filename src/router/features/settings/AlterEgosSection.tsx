@@ -142,7 +142,7 @@ export default function AlterEgosSection() {
                             icon
                             before='Альтер-эго'
                             field={alterEgo.username}
-                            after='создано!'
+                            after='создано'
                         />
                     )
                 });
@@ -239,7 +239,9 @@ export default function AlterEgosSection() {
             <div className='w-full flex flex-col gap-y-2.5'>
                 {sectionTitle}
                 <div className='flex flex-wrap items-center gap-3'>
-                    <span className='font-bold text-xl text-onSurface'>{currentUser.username}</span>
+                    <span className='font-semibold text-xl text-onSurface'>
+                        {currentUser.username}
+                    </span>
                     <Button
                         type='button'
                         variant='outline'
@@ -270,7 +272,7 @@ export default function AlterEgosSection() {
                             key={alterEgosIds[index] ?? name}
                             className='flex flex-wrap items-center gap-3'
                         >
-                            <span className='max-w-full truncate font-bold text-xl text-onSurface'>
+                            <span className='max-w-full truncate font-semibold text-xl text-onSurface'>
                                 {name}
                             </span>
                             <Button

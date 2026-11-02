@@ -31,14 +31,14 @@ export default function ChangeEmailConfirmPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>
-                        {success === true ? 'Поздравляем!' : success === false ? 'Упс...' : ''}
+                    <h1 className='text-onSurface font-semibold text-2xl'>
+                        {success === true ? 'Почта обновлена' : success === false ? 'Не вышло' : ''}
                     </h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         {success === true
-                            ? 'Почта успешно изменена.'
+                            ? 'Письма теперь будут приходить на новый адрес'
                             : success === false
-                              ? 'Что-то пошло не так'
+                              ? 'Ссылка не сработала. Попробуй ещё раз'
                               : ''}
                     </span>
                 </div>

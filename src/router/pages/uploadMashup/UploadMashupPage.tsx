@@ -56,7 +56,7 @@ export default function UploadMashupPage() {
 
     return (
         <div className='flex flex-col gap-y-7 h-full'>
-            <h1 className='font-bold text-[28px] text-onSurface'>Загрузка мэшапа</h1>
+            <h1 className='font-semibold text-[28px] text-onSurface'>Загрузка мешапа</h1>
 
             <TabsSeparated
                 value={source}
@@ -106,7 +106,7 @@ export default function UploadMashupPage() {
                             button: 'Опубликовать',
                             toast: {
                                 before: 'Ваш',
-                                field: 'мэшап',
+                                field: 'мешап',
                                 after: 'загружается...'
                             }
                         }}
@@ -127,7 +127,7 @@ export default function UploadMashupPage() {
                                         `/mashup/upload/success/${r.data.response !== undefined ? r.data.response.id : '0'}`
                                     )
                                 )
-                                .catch(axiosCatcher(toast, 'при загрузке мэшапа'));
+                                .catch(axiosCatcher(toast, 'при загрузке мешапа'));
                         }}
                     />
                 </TabsContent>

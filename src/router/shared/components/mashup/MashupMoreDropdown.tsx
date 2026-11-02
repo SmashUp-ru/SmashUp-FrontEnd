@@ -32,7 +32,7 @@ import InfoIcon from '@/components/icons/Info.tsx';
 interface MashupMoreDropdownProps {
     mashup: Mashup;
     children: ReactNode;
-    /** Скрыть пункт «Открыть мэшап» (когда мэшап уже открыт, напр. в MashupInfo). */
+    /** Скрыть пункт «Открыть мешап» (когда мешап уже открыт, напр. в MashupInfo). */
     hideOpen?: boolean;
 }
 
@@ -51,7 +51,7 @@ export default function MashupMoreDropdown({
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild aria-label='Опции мэшапа'>
+            <DropdownMenuTrigger asChild aria-label='Опции мешапа'>
                 {children}
             </DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
@@ -67,7 +67,7 @@ export default function MashupMoreDropdown({
                                 size={24}
                                 hoverColor='primary'
                             />
-                            <span>Открыть мэшап</span>
+                            <span>Открыть мешап</span>
                         </DropdownMenuItem>
                     )}
 
@@ -167,8 +167,8 @@ export default function MashupMoreDropdown({
                                                                         }
                                                                         after={
                                                                             includes
-                                                                                ? 'из плейлиста!'
-                                                                                : 'в плейлист!'
+                                                                                ? 'из плейлиста'
+                                                                                : 'в плейлист'
                                                                         }
                                                                     />
                                                                 ),

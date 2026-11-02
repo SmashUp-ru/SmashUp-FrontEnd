@@ -103,7 +103,7 @@ export default function UploadTrackFromYandexTab() {
                         icon
                         before='Ошибка'
                         field='при загрузке альбома.'
-                        after='Введите валидную ссылку!'
+                        after='Это не похоже на ссылку на трек'
                     />
                 ),
                 duration: 2000,

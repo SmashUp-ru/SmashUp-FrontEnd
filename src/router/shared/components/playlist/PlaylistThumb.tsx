@@ -33,7 +33,7 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
     return (
         <div
             className={cn(
-                'w-full md:w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                'w-full md:w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
                 THUMB_ROW_HOVER
             )}
         >
@@ -49,7 +49,7 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                     <ImageWithSkeleton
                         src={image ? image : coverUrl('playlist', playlist.imageUrl, 400)}
                         alt={playlist.name}
-                        className='transition-opacity duration-200 motion-reduce:transition-none w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30'
+                        className='transition-opacity duration-200 motion-reduce:transition-none w-full aspect-square md:w-[216px] md:h-[216px] md:aspect-auto rounded-[30px] object-cover md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                         loading='lazy'
                     />
                 </Link>
@@ -81,7 +81,7 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                             ? link
                             : `/playlist/${playlist.id}${searchMode ? `?searchId=${playlist.id}` : ''}`
                     }
-                    className='font-bold text-[15px] text-onSurface truncate w-full md:w-[216px]'
+                    className='font-medium text-[15px] text-onSurface truncate w-full md:w-[216px]'
                     title={playlist.name}
                 >
                     {playlist.name}

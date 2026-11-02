@@ -68,14 +68,43 @@ const DropdownMenuSubContent = React.forwardRef<
 ));
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
 
+// Чем пользователь взаимодействовал последним — мышью/тачем или клавиатурой.
+let lastInputWasPointer = false;
+if (typeof window !== 'undefined') {
+    window.addEventListener('pointerdown', () => (lastInputWasPointer = true), true);
+    window.addEventListener('keydown', () => (lastInputWasPointer = false), true);
+}
+
+/**
+ * Закрывая меню, Radix возвращает фокус на триггер (это правильно для клавиатуры).
+ * Но Chrome помечает такой программный фокус как `:focus-visible` даже после клика
+ * МЫШЬЮ — и всё, что проявляется по фокусу («ещё» в строке мешапа), оставалось
+ * висеть после закрытия, пока не кликнешь мимо. После мыши возвращаем фокус без
+ * клавиатурной подсветки; после клавиатуры — штатное поведение Radix.
+ */
+function returnFocusQuietly(event: Event) {
+    if (!lastInputWasPointer) return;
+    const content = event.target as HTMLElement | null;
+    const triggerId = content?.getAttribute('aria-labelledby');
+    const trigger = triggerId ? document.getElementById(triggerId) : null;
+    if (!trigger) return;
+    event.preventDefault();
+    // focusVisible: false — Chrome/Firefox; где опция не поддержана, просто фокус.
+    trigger.focus({ focusVisible: false } as FocusOptions);
+}
+
 const DropdownMenuContent = React.forwardRef<
     React.ElementRef<typeof DropdownMenuPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
+>(({ className, sideOffset = 4, onCloseAutoFocus, ...props }, ref) => (
     <DropdownMenuPrimitive.Portal>
         <DropdownMenuPrimitive.Content
             ref={ref}
             sideOffset={sideOffset}
+            onCloseAutoFocus={(e) => {
+                onCloseAutoFocus?.(e);
+                if (!e.defaultPrevented) returnFocusQuietly(e);
+            }}
             className={cn(
                 'z-50 min-w-[10rem] rounded-[18px] bg-surface p-1 text-onSurface font-medium',
                 'shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]',
@@ -171,7 +200,7 @@ const DropdownMenuLabel = React.forwardRef<
     <DropdownMenuPrimitive.Label
         ref={ref}
         className={cn(
-            'px-4 pb-1 pt-2 text-xs font-bold uppercase tracking-wide text-onSurfaceVariant',
+            'px-4 pb-1 pt-2 text-xs font-medium text-onSurfaceVariant',
             inset && 'pl-8',
             className
         )}

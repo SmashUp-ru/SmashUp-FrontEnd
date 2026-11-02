@@ -8,6 +8,7 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label.tsx';
+import EditIcon from '@/components/icons/edit/Edit24';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -16,7 +17,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { axiosSession, maskEmail } from '@/lib/utils.ts';
-import ErrorToast from '@/router/shared/toasts/error.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useState } from 'react';
 import PasswordDialogSentContent from '@/router/features/settings/PasswordDialogSentContent.tsx';
@@ -51,38 +51,31 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                 setSubmitted(true);
             })
             .catch((e: AxiosSmashUpError) => {
-                if (e.status === 403) {
-                    toast({
-                        element: (
-                            <ErrorToast
-                                icon
-                                before='Ошибка'
-                                field='при обновлении пароля.'
-                                after='Указанный пароль от аккаунта неправильный.'
-                            />
-                        ),
-                        duration: 2000,
-                        variant: 'destructive'
-                    });
+                if (e.response?.status === 403) {
+                    form.setError(
+                        'oldPassword',
+                        { message: 'Неверный пароль' },
+                        { shouldFocus: true }
+                    );
                     return;
                 }
-
-                axiosCatcher(toast, 'при обновлении пароля.')(e);
+                return axiosCatcher(toast, 'при обновлении пароля')(e);
             });
     }
 
     return (
         <div className='w-full flex flex-col gap-y-2.5'>
-            <Label className='font-medium text-onSurfaceVariant'>Текущий пароль</Label>
+            <Label className='font-medium text-onSurfaceVariant'>Пароль</Label>
+            {/* Та же строка, что у ника и почты: значение + карандаш. Раньше здесь была
+                текстовая ссылка внутри icon-кнопки — узкая капсула-ховер и подчёркивание. */}
             <div className='flex items-center gap-x-2.5'>
+                <span className='font-semibold text-xl tracking-[0.2em]' aria-hidden>
+                    ••••••••
+                </span>
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button
-                            variant='ghost'
-                            size='icon'
-                            className='font-bold text-xl text-primary'
-                        >
-                            Изменить пароль
+                        <Button variant='ghost' size='control' aria-label='Изменить пароль'>
+                            <EditIcon color='onSurfaceVariant' />
                         </Button>
                     </DialogTrigger>
                     <DialogContent className='w-[460px]'>
@@ -128,7 +121,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                                                                             .oldPassword !==
                                                                         undefined
                                                                     }
-                                                                    placeholder='Введите пароль...'
+                                                                    placeholder='Пароль'
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -152,7 +145,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                                                                             .newPassword !==
                                                                         undefined
                                                                     }
-                                                                    placeholder='Введите новый пароль...'
+                                                                    placeholder='Новый пароль'
                                                                     type='password'
                                                                     {...field}
                                                                 />
@@ -177,7 +170,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                                                                             .newPassword !==
                                                                         undefined
                                                                     }
-                                                                    placeholder='Введите новый пароль...'
+                                                                    placeholder='Новый пароль'
                                                                     type='password'
                                                                     {...field}
                                                                 />

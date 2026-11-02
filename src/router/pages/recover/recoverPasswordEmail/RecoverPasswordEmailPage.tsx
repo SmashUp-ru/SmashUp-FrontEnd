@@ -7,9 +7,9 @@ export default function RecoverPasswordEmailPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>Восстановление пароля</h1>
+                    <h1 className='text-onSurface font-semibold text-2xl'>Восстановление пароля</h1>
                     <span className='font-medium text-onSurfaceVariant'>
-                        На вашу почту было отправлено письмо с ссылкой на восстановление пароля.
+                        Мы отправили на почту письмо со ссылкой для нового пароля.
                     </span>
                 </div>
 

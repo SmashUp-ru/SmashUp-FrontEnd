@@ -6,7 +6,7 @@ export default function TrackSmallThumbSkeleton() {
     return (
         <div
             className={cn(
-                'flex p-1.5 w-full group hover:bg-onPrimary rounded-2xl items-center gap-x-4',
+                'flex p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl items-center gap-x-4',
                 THUMB_ROW_HOVER
             )}
         >

@@ -31,8 +31,8 @@ export default function MashupStatusNotification({ notification }: MashupStatusN
             )}
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit'>
-                    <span className='font-bold text-[12px] text-onSurface'>
-                        <span>Ваш мэшап </span>
+                    <span className='font-medium text-[12px] text-onSurface'>
+                        <span>Ваш мешап </span>
                         <span className='text-primary'>{notification.meta.mashupName} </span>
                         <span>
                             был {notification.meta.published ? ' опубликован.' : ' отклонён '}

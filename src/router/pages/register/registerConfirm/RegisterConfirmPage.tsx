@@ -48,21 +48,21 @@ export default function RegisterConfirmPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>
-                        {success === true ? 'Поздравляем!' : success === false ? 'Упс...' : ''}
+                    <h1 className='text-onSurface font-semibold text-2xl'>
+                        {success === true ? 'Ты с нами' : success === false ? 'Не вышло' : ''}
                     </h1>
                     <span className='font-medium text-onSurfaceVariant'>
                         {success === true
-                            ? 'Регистрация успешно завершена.'
+                            ? 'Аккаунт подтверждён — можно слушать, лайкать и собирать плейлисты'
                             : success === false
-                              ? 'Что-то пошло не так'
+                              ? 'Ссылка не сработала. Попробуй ещё раз'
                               : ''}
                     </span>
                 </div>
 
                 <Button asChild className='w-full'>
                     <Link draggable={false} to='/'>
-                        Вернуться на главную
+                        Слушать
                     </Link>
                 </Button>
             </div>

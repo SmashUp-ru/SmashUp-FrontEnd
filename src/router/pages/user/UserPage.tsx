@@ -3,7 +3,6 @@ import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useUserPageData } from '@/router/features/user/useUserPageData.ts';
 import UserPageSkeleton from '@/router/pages/user/UserPageSkeleton.tsx';
 import { cn, declOfNum } from '@/lib/utils.ts';
-import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
@@ -14,7 +13,8 @@ import PlaylistThumb from '@/router/shared/components/playlist/PlaylistThumb.tsx
 import { useGlobalStore } from '@/store/global.ts';
 import SettingsIcon from '@/components/icons/Settings.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
-import { ErrorState } from '@/router/shared/components/StateView.tsx';
+import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
+import ProfileIcon from '@/components/icons/Profile.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
@@ -23,14 +23,21 @@ export default function UserPage() {
     const { toast } = useToast();
 
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const { user, mashups, latestMashup, playlists, isLoading, isError, reload } = useUserPageData(
-        params.profileUsername
-    );
+    const { user, mashups, latestMashup, playlists, isLoading, isError, notFound, reload } =
+        useUserPageData(params.profileUsername);
 
     useDocumentTitle(user?.username);
 
     if (!params.profileUsername) return;
     if (isLoading) return <UserPageSkeleton />;
+    if (notFound)
+        return (
+            <StateView
+                icon={<ProfileIcon size={48} color='onSurfaceVariant' />}
+                title='Такого пользователя нет'
+                description={`Ник «${params.profileUsername}» не найден — возможно, его сменили`}
+            />
+        );
     if (isError) return <ErrorState onRetry={reload} />;
     if (!user) return null;
 
@@ -48,57 +55,73 @@ export default function UserPage() {
                     alt={user.username}
                     className='w-[200px] h-[200px] rounded-full'
                 />
-                <div className='flex flex-col gap-y-4'>
+                {/* gap-y-2: у кнопок-значков 44px свои поля сверху — с gap-y-4 ряд отрывался от ника */}
+                <div className='flex flex-col gap-y-2'>
                     <div>
                         <span className='font-medium text-[15px] text-onSurfaceVariant'>
                             Профиль
                         </span>
                         <div className='flex flex-col md:flex-row items-center gap-3 md:gap-x-6'>
-                            <span className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface break-all md:break-normal'>
+                            <span className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface break-all md:break-normal'>
                                 {user.username}
                             </span>
-                            <div className='flex flex-wrap items-center justify-center gap-x-5 gap-y-2'>
-                                <Badge>
+                            <div className='flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[15px] text-onSurfaceVariant tabular-nums'>
+                                <span>
                                     {user.mashups.length}{' '}
-                                    {declOfNum(user.mashups.length, ['Мэшап', 'Мэшапа', 'Мэшапов'])}
-                                </Badge>
-                                <Badge>
+                                    {declOfNum(user.mashups.length, ['мешап', 'мешапа', 'мешапов'])}
+                                </span>
+                                <span>
                                     {user.playlists.length}{' '}
                                     {declOfNum(user.playlists.length, [
-                                        'Плейлист',
-                                        'Плейлиста',
-                                        'Плейлистов'
+                                        'плейлист',
+                                        'плейлиста',
+                                        'плейлистов'
                                     ])}
-                                </Badge>
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div className='flex items-center gap-x-5'>
+                    {/* Кнопки 44×44 со своими полями: gap-x-1 вместо 5 (иначе между значками
+                        ~40px), а -ml на десктопе выравнивает первый значок по левому краю ника —
+                        иначе он «висел» на ширину поля кнопки правее текста. */}
+                    <div className='flex items-center justify-center md:justify-start gap-x-1 md:-ml-2.5'>
                         {currentUser && currentUser.username === params.profileUsername && (
-                            <Link to='/settings'>
-                                <SettingsIcon />
-                            </Link>
+                            <Button asChild variant='ghost' size='control' aria-label='Настройки'>
+                                <Link to='/settings'>
+                                    <SettingsIcon size={24} />
+                                </Link>
+                            </Button>
                         )}
 
                         <Button
                             variant='ghost'
-                            size='icon'
+                            size='control'
+                            aria-label='Поделиться профилем'
                             onClick={() => {
-                                navigator.clipboard
-                                    .writeText(
-                                        `${import.meta.env.VITE_FRONTEND_URL}/user/${user.username}`
-                                    )
-                                    .then(() => {
-                                        toast({
-                                            element: (
-                                                <CopiedToast
-                                                    img={coverUrl('user', user.imageUrl, 800)}
-                                                    name={user.username}
-                                                />
-                                            ),
-                                            duration: 2000
-                                        });
+                                // Ник может содержать пробел и кириллицу: без кодирования
+                                // ссылка рвалась на пробеле при вставке в мессенджер.
+                                const url = `${import.meta.env.VITE_FRONTEND_URL}/user/${encodeURIComponent(user.username)}`;
+                                // Телефон — системное меню «Поделиться», десктоп — буфер обмена.
+                                if (
+                                    navigator.share &&
+                                    window.matchMedia('(pointer: coarse)').matches
+                                ) {
+                                    navigator
+                                        .share({ title: user.username, url })
+                                        .catch(() => undefined);
+                                    return;
+                                }
+                                navigator.clipboard.writeText(url).then(() => {
+                                    toast({
+                                        element: (
+                                            <CopiedToast
+                                                img={coverUrl('user', user.imageUrl, 800)}
+                                                name={user.username}
+                                            />
+                                        ),
+                                        duration: 2000
                                     });
+                                });
                             }}
                         >
                             <ShareIcon />
@@ -111,12 +134,12 @@ export default function UserPage() {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6'>
                 {mashups.length > 0 && (
                     <Section
-                        title='Популярные мэшапы'
+                        title='Популярные мешапы'
                         link={
                             user.mashups.length > 5
                                 ? {
                                       href: `/user/${user.username}/tracks`,
-                                      title: 'ПОКАЗАТЬ ВСЕ'
+                                      title: 'Показать все'
                                   }
                                 : undefined
                         }
@@ -128,7 +151,7 @@ export default function UserPage() {
                                     mashup={mashup}
                                     playlist={user.mashups}
                                     indexInPlaylist={idx}
-                                    playlistName={`Мэшапы ${user.username}`}
+                                    playlistName={`Мешапы ${user.username}`}
                                     queueId={`user/${user.username}/tracks`}
                                 />
                             ))}

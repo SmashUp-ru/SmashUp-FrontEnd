@@ -13,6 +13,40 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Приводит пользовательскую ссылку (ссылка на основу/альт, ссылка трека) к
+ * безопасному внешнему URL: только `http:`/`https:`, иначе `null`.
+ * `javascript:`, `data:` и прочие схемы отбрасываются — строку задаёт автор
+ * загрузки, а открывает её модератор. Ссылку без схемы (`vk.com/…`) дополняем
+ * до `https://` — иначе браузер счёл бы её относительным путём на нашем сайте.
+ */
+export function safeExternalUrl(raw: string | null | undefined): string | null {
+    const value = raw?.trim();
+    if (!value) return null;
+
+    let url: URL;
+    try {
+        url = new URL(value);
+    } catch {
+        try {
+            url = new URL(`https://${value}`);
+        } catch {
+            return null;
+        }
+    }
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
+}
+
+/**
+ * Открывает внешнюю ссылку в новой вкладке. `noopener,noreferrer` обязательны:
+ * без них открытая страница получает `window.opener` и может увести исходную
+ * вкладку (например, модерацию) на фишинговую копию сайта.
+ */
+export function openExternal(raw: string | null | undefined): void {
+    const url = safeExternalUrl(raw);
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+/**
  * Форматирует длительность в миллисекундах как `M:SS` (например `3:07`).
  * Минуты НЕ обнуляются на границе часа: для треков >= 60 мин выводится 60+, а не
  * остаток. См. комментарий ниже про отказ от `new Date(ms).getMinutes()`.

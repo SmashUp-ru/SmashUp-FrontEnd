@@ -57,9 +57,14 @@ interface PlayerState {
     /** Текущая позиция воспроизведения в секундах (опрашивается раз в 500мс). Эфемерно — НЕ персистится. */
     seek: number;
     updateSeek: (newSeek: number) => void;
-    /** Целевая позиция перемотки: запись сюда заставляет Howler сделать seek. Эфемерно. */
-    changedSeek: number;
-    updateChangedSeek: (newChangedSeek: number) => void;
+    /**
+     * Запрос перемотки (мс): движок применяет его, когда трек загружен, и сбрасывает в `null`.
+     * `null` = запроса нет; `0` = честная просьба «в начало» (next/prev). Раньше «нет запроса»
+     * тоже кодировалось нулём, и сброс после перемотки исполнялся как seek(0) — на паузе трек
+     * улетал в начало, у конца трека — тоже. Эфемерно.
+     */
+    changedSeek: number | null;
+    updateChangedSeek: (newChangedSeek: number | null) => void;
 
     /** Открыта ли side-панель с информацией о мешапе (`MashupInfo`). */
     info: boolean;
@@ -132,8 +137,9 @@ export const usePlayerStore = create<PlayerState>()(
 
             seek: 0,
             updateSeek: (newSeek: number) => set({ seek: newSeek }),
-            changedSeek: 0,
-            updateChangedSeek: (newChangedSeek: number) => set({ changedSeek: newChangedSeek }),
+            changedSeek: null,
+            updateChangedSeek: (newChangedSeek: number | null) =>
+                set({ changedSeek: newChangedSeek }),
 
             info: false,
             updateInfo: (newInfo: boolean) => set({ info: newInfo }),

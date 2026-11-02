@@ -26,7 +26,7 @@ export default function MashupThumbExplicitDisallowed({
                 <TooltipTrigger>
                     <div
                         className={cn(
-                            'opacity-50 w-fit flex flex-col gap-y-4 p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                            'opacity-50 w-fit flex flex-col gap-y-4 p-4 group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
                             THUMB_ROW_HOVER
                         )}
                     >
@@ -34,7 +34,7 @@ export default function MashupThumbExplicitDisallowed({
                             <ImageWithSkeleton
                                 src={coverUrl('mashup', mashup.imageUrl, 400)}
                                 alt={mashup.name}
-                                className='transition-opacity duration-200 motion-reduce:transition-none w-[216px] h-[216px] rounded-[30px] md:group-hover:opacity-30'
+                                className='transition-opacity duration-200 motion-reduce:transition-none w-[216px] h-[216px] rounded-[30px] md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                                 loading='lazy'
                             />
                         </div>
@@ -43,7 +43,7 @@ export default function MashupThumbExplicitDisallowed({
                                 <Link
                                     draggable={false}
                                     to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
-                                    className='font-bold text-[15px] text-onSurface truncate'
+                                    className='font-medium text-[15px] text-onSurface truncate'
                                 >
                                     {mashup.name}
                                 </Link>

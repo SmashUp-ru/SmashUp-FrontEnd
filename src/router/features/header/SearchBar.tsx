@@ -48,7 +48,7 @@ export default function SearchBar() {
                             location.pathname.startsWith('/mashup/moderation/')
                         }
                         startIcon={SearchIcon}
-                        className={cn('font-bold text-[15px]', 'w-full')}
+                        className={cn('font-medium text-[15px]', 'w-full')}
                         placeholder='Поиск'
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}

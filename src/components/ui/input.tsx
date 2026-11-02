@@ -32,6 +32,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         },
         ref
     ) => {
+        // Ошибка поля: либо явный проп, либо aria-invalid от FormControl (react-hook-form
+        // ставит его при ошибке валидации или form.setError — напр. «неверный пароль»).
+        const invalid = error || props['aria-invalid'] === true || props['aria-invalid'] === 'true';
         const StartIcon = startIcon;
         const EndIcon = endIcon;
 
@@ -75,7 +78,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         // над ней в порядке отрисовки
                         // placeholder приглушён (additionalText, не onSurfaceVariant):
                         // при 188 он почти сливался с реальным значением (235).
-                        'relative flex w-full rounded-2xl bg-transparent text-onSurface py-[11px] px-5 text-[15px] font-bold placeholder:text-additionalText',
+                        'relative flex w-full rounded-2xl bg-transparent text-onSurface py-[11px] px-5 text-[15px] font-medium placeholder:text-additionalText',
                         // Кольцо есть всегда, но прозрачное и с отступом — на фокусе
                         // оно проявляется и «схлопывается» к краю поля. Так переход
                         // анимируется (outline-color/offset), а не появляется рывком.
@@ -84,7 +87,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         'outline outline-2 outline-transparent outline-offset-[6px]',
                         'transition-[outline-color,outline-offset] [transition-duration:200ms] ease-spring motion-reduce:transition-none',
                         'focus:outline-offset-[2px]',
-                        error ? 'focus:outline-error' : 'focus:outline-primary',
+                        // При ошибке кольцо видно и без фокуса: поле подсвечено красным,
+                        // пока его не исправят (rhf перепроверит поле на onChange).
+                        invalid
+                            ? 'outline-error/80 outline-offset-[2px] focus:outline-error'
+                            : 'focus:outline-primary',
                         startIcon || type === 'password' ? 'pl-[48px]' : '',
                         endIcon || type === 'password' ? 'pr-11' : ''
                     )}

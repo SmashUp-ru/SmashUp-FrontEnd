@@ -203,7 +203,9 @@ export function createEntityStore<T extends CachingEntity>(
                     })
                     .catch((error) => {
                         console.error(`Failed to fetch data for chunk: ${chunk}`, error);
-                        throw new Error('Failed to fetch data');
+                        // Пробрасываем ИСХОДНУЮ ошибку axios: вызывающим нужен статус
+                        // (404 → «нет такого пользователя», logout по битому токену).
+                        throw error;
                     });
 
                 chunk.forEach((id) => {
@@ -275,7 +277,10 @@ export function createEntityStore<T extends CachingEntity>(
                 })
                 .catch((error) => {
                     console.error(`Failed to fetch data for key: ${keyName}=${key}`, error);
-                    throw new Error('Failed to fetch data');
+                    // Исходная ошибка, а не new Error(): раньше статус терялся, и проверка
+                    // `e.status === 404` в Layout (выкинуть недействительный токен) не
+                    // срабатывала никогда, а профиль не мог отличить «нет юзера» от сбоя сети.
+                    throw error;
                 });
         },
 

@@ -7,6 +7,7 @@ import { useMashupStore } from '@/store/entities/mashup.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { axiosSession, cn, msToMinutesAndSeconds, shuffleQueue } from '@/lib/utils.ts';
 import { Slider } from '@/components/ui/slider.tsx';
+import { SEEK_STEP_MS, useSmoothSeek } from '@/router/features/player/usePlaybackEngine.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
@@ -39,31 +40,29 @@ const EDGE_FADE =
     'linear-gradient(to bottom, #020202 0%, #02020200 22%, #02020200 62%, #020202 100%)';
 
 function SeekBar({ duration }: { duration: number }) {
-    const seek = usePlayerStore((s) => s.seek);
+    const position = useSmoothSeek(duration);
+    const updateSeek = usePlayerStore((s) => s.updateSeek);
     const updateChangedSeek = usePlayerStore((s) => s.updateChangedSeek);
 
-    const [changing, setChanging] = useState(false);
-    const [local, setLocal] = useState(0);
-    useEffect(() => {
-        if (!changing) setLocal(seek);
-    }, [seek, changing]);
+    // Пока тянут бегунок — показываем палец пользователя (и время под ним).
+    const [dragValue, setDragValue] = useState<number | null>(null);
+    const local = dragValue ?? position;
 
     return (
         <div className='w-full'>
             <Slider
                 min={0}
                 max={duration || 0}
+                step={SEEK_STEP_MS}
+                aria-label='Позиция в треке'
                 trackClassName='h-[6px]'
                 thumbClassName='w-5 h-5'
                 value={[local]}
-                onValueChange={(v) => {
-                    setChanging(true);
-                    setLocal(v[0]);
-                }}
+                onValueChange={(v) => setDragValue(v[0])}
                 onValueCommit={(v) => {
-                    setLocal(v[0]);
+                    updateSeek(v[0]);
                     updateChangedSeek(v[0]);
-                    setChanging(false);
+                    setDragValue(null);
                 }}
             />
             <div className='flex justify-between mt-2 text-[13px] text-onSurfaceVariant'>
@@ -244,7 +243,7 @@ export default function FullPlayer() {
                     <Button variant='ghost' size='icon' aria-label='Свернуть плеер' onClick={close}>
                         <ChevronDownIcon color='onSurface' size={28} />
                     </Button>
-                    <span className='font-bold text-[13px] text-onSurfaceVariant truncate max-w-[55%]'>
+                    <span className='font-medium text-[13px] text-onSurfaceVariant truncate max-w-[55%]'>
                         {queueName}
                     </span>
                     <div className='w-10' />
@@ -267,7 +266,9 @@ export default function FullPlayer() {
                         />
                         <div className='w-full flex flex-col items-center gap-1'>
                             <div className='flex items-center gap-x-1 max-w-full'>
-                                <span className='font-bold text-xl truncate'>{mashup.name}</span>
+                                <span className='font-semibold text-xl truncate'>
+                                    {mashup.name}
+                                </span>
                                 {isExplicit(mashup.statuses) && (
                                     <div className='w-6 h-6 shrink-0'>
                                         <ExplicitIcon />
@@ -311,13 +312,13 @@ export default function FullPlayer() {
                                 className='w-12 h-12 rounded-lg object-cover bg-surface shrink-0'
                             />
                             <div className='flex flex-col min-w-0'>
-                                <span className='font-bold truncate'>{mashup.name}</span>
+                                <span className='font-medium truncate'>{mashup.name}</span>
                                 <span className='text-[13px] text-onSurfaceVariant truncate'>
                                     {mashup.authors.join(', ')}
                                 </span>
                             </div>
                         </div>
-                        <h2 className='font-bold text-[15px] mb-3 px-1.5'>Следующие в очереди</h2>
+                        <h2 className='font-medium text-[15px] mb-3 px-1.5'>Следующие в очереди</h2>
                         {upcomingIds.length === 0 && (
                             <p className='text-onSurfaceVariant'>Очередь пуста</p>
                         )}
@@ -359,13 +360,15 @@ export default function FullPlayer() {
                                 className='w-12 h-12 rounded-lg object-cover bg-surface shrink-0'
                             />
                             <div className='flex flex-col min-w-0'>
-                                <span className='font-bold truncate'>{mashup.name}</span>
+                                <span className='font-medium truncate'>{mashup.name}</span>
                                 <span className='text-[13px] text-onSurfaceVariant truncate'>
                                     {mashup.authors.join(', ')}
                                 </span>
                             </div>
                         </div>
-                        <h2 className='font-bold text-[15px] mb-3 px-1.5'>Использованные треки</h2>
+                        <h2 className='font-medium text-[15px] mb-3 px-1.5'>
+                            Использованные треки
+                        </h2>
                         {tracks.length === 0 && (
                             <p className='text-onSurfaceVariant'>Сурсы не указаны</p>
                         )}

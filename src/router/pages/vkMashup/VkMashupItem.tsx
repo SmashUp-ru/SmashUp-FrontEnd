@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { coverUrl } from '@/lib/cdn.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import { openExternal } from '@/lib/utils.ts';
 
 interface VkMashupItemProps {
     mashup: VkMashup;
@@ -53,7 +54,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                 className='w-12 h-12 shrink-0 rounded-[10px]'
                             />
                             <div className='flex min-w-0 flex-col items-start'>
-                                <span className='truncate font-bold text-onSurface'>
+                                <span className='truncate font-medium text-onSurface'>
                                     {mashup.name}
                                 </span>
                                 <span className='truncate font-medium text-onSurfaceVariant'>
@@ -96,7 +97,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                             )}
                         </Button>
 
-                        <Button className='md:mr-7 py-[7px] font-bold text-sm rounded-xl' asChild>
+                        <Button className='md:mr-7 py-[7px] font-medium text-sm rounded-xl' asChild>
                             <Link to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}>
                                 Редактировать
                             </Link>
@@ -115,14 +116,14 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                         <div className='flex flex-col gap-y-7'>
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Название мэшапа
+                                    Название мешапа
                                 </Label>
-                                <span className='font-bold text-xl'>{mashup.name}</span>
+                                <span className='font-semibold text-xl'>{mashup.name}</span>
                             </div>
 
                             <div className='w-full flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <span className='font-bold text-xl'>{mashup.artist}</span>
+                                <span className='font-semibold text-xl'>{mashup.artist}</span>
                             </div>
                         </div>
 
@@ -136,9 +137,7 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                                     variant='ghost'
                                     size='icon'
                                     className='cursor-pointer'
-                                    onClick={() => {
-                                        window.open(postUrl, '_blank');
-                                    }}
+                                    onClick={() => openExternal(postUrl)}
                                 >
                                     <div className='w-full min-w-0 bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-4 py-[11px] flex items-center gap-x-3 md:gap-x-4 md:px-5'>
                                         <span className='shrink-0'>

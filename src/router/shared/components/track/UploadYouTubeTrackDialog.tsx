@@ -96,7 +96,7 @@ export function UploadYouTubeTrackDialog({
                                 element: (
                                     <BaseToast
                                         image={imageUrl}
-                                        field='Мэшап'
+                                        field='Мешап'
                                         after='успешно изменён'
                                     />
                                 ),
@@ -105,7 +105,7 @@ export function UploadYouTubeTrackDialog({
 
                             setOpen(false);
                         })
-                        .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
+                        .catch(axiosCatcher(toast, 'при редактировании мешапа'));
                 })
                 .catch(axiosCatcher(toast, 'при загрузки трека'));
         });
@@ -117,7 +117,7 @@ export function UploadYouTubeTrackDialog({
             <DialogContent className='w-fit'>
                 <div className='flex flex-col space-y-1.5 text-left gap-y-5'>
                     <DialogTitle>
-                        <div className='text-onSurface font-bold text-[22px] pb-0'>
+                        <div className='text-onSurface font-semibold text-[22px] pb-0'>
                             Добавления трека с YouTube
                         </div>
                     </DialogTitle>

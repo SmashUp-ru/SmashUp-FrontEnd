@@ -22,7 +22,7 @@ interface ProfileThumbProps {
 function UserThumb({ user, searchMode }: ProfileThumbProps) {
     const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         user.mashups,
-        `Мэшапы ${user.username}`,
+        `Мешапы ${user.username}`,
         `user/${user.username}/tracks`
     );
 
@@ -31,7 +31,7 @@ function UserThumb({ user, searchMode }: ProfileThumbProps) {
     return (
         <div
             className={cn(
-                'w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                'w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
                 THUMB_ROW_HOVER
             )}
         >
@@ -39,7 +39,7 @@ function UserThumb({ user, searchMode }: ProfileThumbProps) {
                 <ImageWithSkeleton
                     src={coverUrl('user', user.imageUrl, 400)}
                     alt={user.username}
-                    className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] object-cover rounded-full md:group-hover:opacity-30'
+                    className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] object-cover rounded-full md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                     loading='lazy'
                 />
                 <Button
@@ -64,11 +64,11 @@ function UserThumb({ user, searchMode }: ProfileThumbProps) {
                 <Link
                     draggable={false}
                     to={`/user/${user.username}${searchMode ? `?searchId=${user.id}` : ''}`}
-                    className='font-bold text-[15px] text-onSurface truncate max-w-[42vw] md:max-w-[216px]'
+                    className='font-medium text-[15px] text-onSurface truncate max-w-[42vw] md:max-w-[216px]'
                 >
                     {user.username}
                 </Link>
-                <span className='font-medium text-[13px] text-onSurfaceVariant'>Мэшапер</span>
+                <span className='font-medium text-[13px] text-onSurfaceVariant'>Мешапер</span>
             </div>
         </div>
     );

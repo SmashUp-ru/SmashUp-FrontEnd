@@ -15,7 +15,7 @@ export function useRecommendations() {
     const [isError, setIsError] = useState(false);
     const [mashups, setMashups] = useState<Mashup[]>([]);
 
-    // Единая (ретраябельная) загрузка: список рекомендаций → мэшапы по ним.
+    // Единая (ретраябельная) загрузка: список рекомендаций → мешапы по ним.
     // Раньше было два отдельных useEffect без .catch — на ошибке сети isLoading
     // зависал. Рекомендации грузятся только для авторизованного пользователя;
     // для гостя — isLoading=false, запрос не делаем.

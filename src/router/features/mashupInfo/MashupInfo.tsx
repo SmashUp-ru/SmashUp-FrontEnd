@@ -74,7 +74,7 @@ export default function MashupInfo() {
         >
             <div className='w-full flex items-center justify-between gap-x-[30px]'>
                 <div className=' overflow-hidden'>
-                    <span className='truncate block font-bold text-[15px] text-onSurface'>
+                    <span className='truncate block font-medium text-[15px] text-onSurface'>
                         {queueName}
                     </span>
                 </div>
@@ -96,7 +96,7 @@ export default function MashupInfo() {
 
             <div className='flex flex-col w-full'>
                 <div className='flex items-center gap-x-2'>
-                    <span className='font-bold text-[15px] text-onSurface truncate'>
+                    <span className='font-medium text-[15px] text-onSurface truncate'>
                         {mashup.name}
                     </span>
                     <div className='flex items-center gap-x-0'>
@@ -208,16 +208,16 @@ export default function MashupInfo() {
                     </Button>
                 )}
 
-                {/* hideOpen — «Открыть мэшап» тут лишний, мэшап уже открыт */}
+                {/* hideOpen — «Открыть мешап» тут лишний, мешап уже открыт */}
                 <MashupMoreDropdown mashup={mashup} hideOpen>
-                    <Button variant='ghost' size='control' aria-label='Опции мэшапа'>
+                    <Button variant='ghost' size='control' aria-label='Опции мешапа'>
                         <MoreHorizontalIcon size={24} />
                     </Button>
                 </MashupMoreDropdown>
             </div>
 
             <div className='flex flex-col gap-y-2.5 w-full'>
-                <span className='font-bold text-[15px] text-onSurfaceVariant'>
+                <span className='font-medium text-[15px] text-onSurfaceVariant'>
                     Использованные треки
                 </span>
 

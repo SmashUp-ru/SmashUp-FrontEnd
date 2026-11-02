@@ -11,7 +11,7 @@ export default function PasswordDialogSentContent({ email }: PasswordDialogSentC
             <span className='font-medium text-[15px] text-onSurfaceVariant text-center'>
                 Мы отправили письмо на:
                 <br />
-                <span className='font-bold text-primary'>{email}</span>
+                <span className='font-medium text-primary'>{email}</span>
                 <br />
                 Подтвердите изменение пароля, нажав на кнопку внутри письма.
             </span>

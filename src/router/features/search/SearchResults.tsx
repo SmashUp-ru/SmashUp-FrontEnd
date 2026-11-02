@@ -30,7 +30,7 @@ export default function SearchResults() {
             <div className='flex items-center justify-between'>
                 <TabsList>
                     <TabsTrigger value='все'>Все</TabsTrigger>
-                    <TabsTrigger value='мэшапы'>Мэшапы</TabsTrigger>
+                    <TabsTrigger value='мешапы'>Мешапы</TabsTrigger>
                     <TabsTrigger value='авторы'>Авторы</TabsTrigger>
                     <TabsTrigger value='плейлисты'>Плейлисты</TabsTrigger>
                 </TabsList>
@@ -60,7 +60,7 @@ export default function SearchResults() {
             {/*все*/}
             <TabsContent value='все'>
                 {mashups && mashups.length > 0 && (
-                    <Section title='Мэшапы'>
+                    <Section title='Мешапы'>
                         <div className='flex flex-wrap items-center'>
                             {mashups.map((mashup, idx) => (
                                 <MashupThumb
@@ -98,10 +98,10 @@ export default function SearchResults() {
                 )}
             </TabsContent>
 
-            {/*мэшапы*/}
+            {/*мешапы*/}
             {mashups && (
-                <TabsContent value='мэшапы'>
-                    <Section title='Мэшапы'>
+                <TabsContent value='мешапы'>
+                    <Section title='Мешапы'>
                         <div className='flex flex-wrap items-center'>
                             {mashups.map((mashup, idx) => (
                                 <MashupThumb

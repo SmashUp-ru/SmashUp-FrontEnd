@@ -22,7 +22,7 @@ interface ProfileThumbProps {
 function UserSmallThumb({ user }: ProfileThumbProps) {
     const { isThisPlaying, togglePlay, isLoading } = useEntityThumb(
         user.mashups,
-        `Мэшапы ${user.username}`,
+        `Мешапы ${user.username}`,
         `user/${user.username}/tracks`
     );
 
@@ -31,7 +31,7 @@ function UserSmallThumb({ user }: ProfileThumbProps) {
     return (
         <div
             className={cn(
-                'flex justify-between p-1.5 w-full group hover:bg-onPrimary rounded-2xl',
+                'flex justify-between p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl',
                 THUMB_ROW_HOVER
             )}
         >
@@ -40,7 +40,7 @@ function UserSmallThumb({ user }: ProfileThumbProps) {
                     <ImageWithSkeleton
                         src={coverUrl('user', user.imageUrl, 100)}
                         alt={user.username}
-                        className='transition-opacity duration-200 motion-reduce:transition-none w-11 h-11 rounded-full md:group-hover:opacity-30 object-cover'
+                        className='transition-opacity duration-200 motion-reduce:transition-none w-11 h-11 rounded-full md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30 object-cover'
                         loading='lazy'
                     />
                     <Button
@@ -64,7 +64,7 @@ function UserSmallThumb({ user }: ProfileThumbProps) {
                 <Link
                     draggable={false}
                     to={`/user/${user.username}`}
-                    className='font-bold text-sm text-onSurface'
+                    className='font-medium text-sm text-onSurface'
                 >
                     {user.username}
                 </Link>

@@ -27,7 +27,7 @@ function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
     return (
         <div
             className={cn(
-                'flex justify-between p-1.5 w-full group hover:bg-onPrimary rounded-2xl',
+                'flex justify-between p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl',
                 THUMB_ROW_HOVER
             )}
         >
@@ -39,7 +39,9 @@ function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                         alt={playlist.name}
                         className={cn(
                             'w-11 h-11 rounded-xl transition-opacity duration-200 motion-reduce:transition-none',
-                            isThisPlaying ? 'opacity-30' : 'md:group-hover:opacity-30'
+                            isThisPlaying
+                                ? 'opacity-30'
+                                : 'md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                         )}
                     />
                     <Button
@@ -65,7 +67,7 @@ function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                     <div className='flex items-center gap-x-2'>
                         <Link
                             to={`/playlist/${playlist.id}`}
-                            className='font-bold text-sm text-onSurface line-clamp-1'
+                            className='font-medium text-sm text-onSurface line-clamp-1'
                         >
                             {playlist.name}
                         </Link>

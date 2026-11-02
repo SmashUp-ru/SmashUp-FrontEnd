@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { clearAuthSession } from '@/lib/authSession.ts';
+import { clearLocalUserData } from '@/lib/authSession.ts';
 
 export default function LogoutPage() {
     useEffect(() => {
-        clearAuthSession();
-        localStorage.removeItem('player-storage');
+        clearLocalUserData();
     }, []);
 
     return (
@@ -14,9 +13,9 @@ export default function LogoutPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>Поздравляем!</h1>
+                    <h1 className='text-onSurface font-semibold text-2xl'>Ты вышел из аккаунта</h1>
                     <span className='font-medium text-onSurfaceVariant'>
-                        Вы успешно вышли из аккаунта.
+                        Слушать можно и без него, а лайки и плейлисты дождутся
                     </span>
                 </div>
 

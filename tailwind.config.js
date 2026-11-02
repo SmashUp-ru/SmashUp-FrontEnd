@@ -151,6 +151,17 @@ export default {
     					animationTimingFunction: SPRING
     				},
     				'100%': { translate: '0' }
+    			},
+    			// Бесконечная лента обложек на входе (CoverWall): колонка содержит
+    			// список дважды, сдвиг на -50% возвращает её ровно в начало — шва нет.
+    			wall: {
+    				'0%': { transform: 'translateY(0)' },
+    				'100%': { transform: 'translateY(-50%)' }
+    			},
+    			// Загрузчик CoverWall: знак «дышит» — медленно растёт и тускнеет обратно.
+    			'logo-pulse': {
+    				'0%, 100%': { scale: '1', opacity: '0.6' },
+    				'50%': { scale: '1.12', opacity: '1' }
     			}
     		},
     		animation: {
@@ -163,7 +174,10 @@ export default {
     			press: `press 0.24s ${SPRING}`,
     			'press-input': `press-input 0.24s ${SPRING}`,
     			// Тайминги — покадрово внутри keyframe `skip`.
-    			skip: 'skip 0.36s'
+    			skip: 'skip 0.36s',
+    			// Длительность и направление колонки задаются инлайном в CoverWall.
+    			wall: 'wall 60s linear infinite',
+    			'logo-pulse': 'logo-pulse 3s ease-in-out infinite'
     		}
     	}
     },

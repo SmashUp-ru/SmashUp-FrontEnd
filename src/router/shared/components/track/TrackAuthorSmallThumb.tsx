@@ -11,7 +11,7 @@ export default function TrackAuthorSmallThumb({ trackAuthor }: TrackAuthorThumbP
     return (
         <div
             className={cn(
-                'flex justify-between p-1.5 w-full group hover:bg-onPrimary rounded-2xl items-center gap-x-4',
+                'flex justify-between p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl items-center gap-x-4',
                 THUMB_ROW_HOVER
             )}
         >
@@ -21,7 +21,7 @@ export default function TrackAuthorSmallThumb({ trackAuthor }: TrackAuthorThumbP
                 className='w-11 h-11 rounded-xl object-cover'
             />
             <div className='flex flex-col min-w-0 w-full text-left'>
-                <span className='font-bold text-sm text-onSurface truncate'>
+                <span className='font-medium text-sm text-onSurface truncate'>
                     {trackAuthor.name}
                 </span>
             </div>

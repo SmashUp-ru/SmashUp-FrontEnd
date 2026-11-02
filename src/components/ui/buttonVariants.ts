@@ -13,18 +13,20 @@ const buttonVariants = cva(
             variant: {
                 // Залитые (светлые) кнопки на ховере ТЕМНЕЮТ (brightness < 1) — заметно
                 // и по конвенции; /90 (прозрачность) на тёмном фоне почти не читался.
-                default: 'bg-primary text-surface font-bold text-[15px] hover:brightness-75',
-                error: 'bg-error text-onError hover:brightness-75  font-bold text-[15px]',
+                default: 'bg-primary text-surface font-semibold text-[15px] hover:brightness-75',
+                error: 'bg-error text-onError hover:brightness-75  font-semibold text-[15px]',
                 outline:
-                    'font-bold text-[15px] border border-primary bg-transparent text-onBackground hover:bg-primary/10',
-                ghost: 'rounded-full hover:bg-onSurface/10',
+                    'font-semibold text-[15px] border border-primary bg-transparent text-onBackground hover:bg-primary/10',
+                // aria-expanded ставит Radix на триггер открытого меню/поповера/диалога —
+                // подсветка держится, пока меню открыто, а не гаснет, как только курсор ушёл в меню.
+                ghost: 'rounded-full hover:bg-onSurface/10 aria-expanded:bg-onSurface/10',
                 link: 'text-primary underline-offset-4 hover:underline',
                 nothing: 'text-inherit font-inherit'
             },
             size: {
                 default: 'rounded-2xl px-4 py-[11px]',
-                sm: 'px-4 py-2 font-bold text-[13px] rounded-xl',
-                classic: 'rounded-2xl font-bold text-[15px] px-6 py-[11px] w-fit',
+                sm: 'px-4 py-2 font-semibold text-[13px] rounded-xl',
+                classic: 'rounded-2xl font-semibold text-[15px] px-6 py-[11px] w-fit',
                 icon: 'p-0',
                 // Icon-кнопка с полем вокруг: круглая подсветка (ghost) шире
                 // самой иконки и одинакова для иконок 24/32px. 44px = таргет

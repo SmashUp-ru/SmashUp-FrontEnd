@@ -26,7 +26,7 @@ export function StateView({ icon, title, description, action, className }: State
             )}
         >
             {icon}
-            <h2 className='text-[15px] font-bold text-onSurface'>{title}</h2>
+            <h2 className='text-[15px] font-medium text-onSurface'>{title}</h2>
             {description && (
                 <p className='max-w-[360px] text-[13px] text-onSurfaceVariant'>{description}</p>
             )}

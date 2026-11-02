@@ -23,9 +23,9 @@ export default function Section({ children, title, link, className }: SectionPro
                     <Link
                         draggable={false}
                         to={link.href}
-                        className='font-bold text-additionalText shrink-0 whitespace-nowrap text-[13px] md:text-sm'
+                        className='font-medium text-additionalText shrink-0 whitespace-nowrap text-[13px] md:text-sm'
                     >
-                        <span className='hover:text-onSurface'>{link.title}</span>
+                        <span className='transition-colors hover:text-onSurface'>{link.title}</span>
                     </Link>
                 )}
             </div>

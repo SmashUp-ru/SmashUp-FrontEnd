@@ -9,6 +9,7 @@ import { ReactNode, useMemo } from 'react';
 import { TrackLike } from '@/store/entities/track.ts';
 import LinkExternalIcon from '@/components/icons/LinkExternal.tsx';
 import { Link } from 'react-router-dom';
+import { safeExternalUrl } from '@/lib/utils.ts';
 
 interface TrackMoreDropdownProps {
     track: TrackLike;
@@ -33,14 +34,21 @@ export default function TrackMoreDropdown({ track, children }: TrackMoreDropdown
 
         return track.link;
     }, [track]);
+    // Ссылку трека задаёт тот, кто его загрузил: пропускаем только http(s).
+    const safeLink = safeExternalUrl(link);
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent side='left'>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        <Link className='flex items-center gap-x-2.5' to={link} target='_blank'>
+                    <DropdownMenuItem disabled={!safeLink} onClick={(e) => e.stopPropagation()}>
+                        <Link
+                            className='flex items-center gap-x-2.5'
+                            to={safeLink ?? '#'}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                        >
                             <LinkExternalIcon
                                 className='group-data-[highlighted]:text-primary'
                                 color='onSurface'

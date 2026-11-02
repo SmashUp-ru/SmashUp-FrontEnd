@@ -58,7 +58,7 @@ export default function PlaylistPage() {
                                 </Link>
                             ))}
                         </span>
-                        <h1 className='font-bold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
+                        <h1 className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                             {playlist.name}
                         </h1>
                     </div>
@@ -112,7 +112,7 @@ export default function PlaylistPage() {
                 <StateView
                     icon={<QueueIcon color='onSurfaceVariant' size={48} />}
                     title='Плейлист пуст'
-                    description='Здесь пока нет мэшапов.'
+                    description='Здесь пока нет мешапов.'
                 />
             ) : (
                 <div className='flex flex-col gap-y-1'>

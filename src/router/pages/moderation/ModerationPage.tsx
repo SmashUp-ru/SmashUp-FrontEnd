@@ -18,12 +18,12 @@ export default function ModerationPage() {
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-[28px] text-onSurface'>Модерация</h1>
+                <h1 className='font-semibold text-[28px] text-onSurface'>Модерация</h1>
             </div>
 
             <TabsSeparated defaultValue='все' className='flex flex-col gap-y-6'>
                 <TabsList className='justify-start'>
-                    <TabsTrigger value='все'>Все мэшапы</TabsTrigger>
+                    <TabsTrigger value='все'>Все мешапы</TabsTrigger>
                     <TabsTrigger value='ссылка'>С ссылкой на VK</TabsTrigger>
                     <TabsTrigger value='принятые'>Принятые</TabsTrigger>
                 </TabsList>

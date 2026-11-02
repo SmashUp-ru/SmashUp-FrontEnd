@@ -19,7 +19,7 @@ export default function CrossoverResults() {
         <div className='flex-1'>
             <div className='flex items-center justify-between'>
                 <Button size='sm' variant='ghost' className='bg-primary text-surfaceVariant'>
-                    Мэшапы
+                    Мешапы
                 </Button>
 
                 <div className='flex items-center justify-between'>
@@ -43,7 +43,7 @@ export default function CrossoverResults() {
                 </div>
             </div>
 
-            <Section title='Мэшапы' className='mt-2'>
+            <Section title='Мешапы' className='mt-2'>
                 <div className='flex items-center '>
                     <div className='flex flex-wrap items-center'>
                         {mashups.map((mashup, idx) => (

@@ -49,7 +49,7 @@ export default function FavoritesPage() {
                         <span className='font-medium text-[15px] text-additionalText'>
                             Коллекция
                         </span>
-                        <h1 className='font-bold text-[28px] text-onSurface'>
+                        <h1 className='font-semibold text-[28px] text-onSurface'>
                             Любимое{' '}
                             <Link to={`/user/${currentUser.username}`} className='text-onSurface'>
                                 {currentUser.username}
@@ -93,8 +93,8 @@ export default function FavoritesPage() {
             {mashups.length === 0 ? (
                 <StateView
                     icon={<LikeOutlineIcon color='onSurfaceVariant' size={48} />}
-                    title='Пока нет любимых мэшапов'
-                    description='Лайкните мэшап — и он появится здесь.'
+                    title='Пока нет любимых мешапов'
+                    description='Лайкните мешап — и он появится здесь.'
                 />
             ) : (
                 <div className='flex flex-col gap-y-1'>

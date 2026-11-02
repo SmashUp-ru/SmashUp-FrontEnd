@@ -70,8 +70,10 @@ export default function RegisterPage() {
             <div className='w-full flex flex-col items-center gap-y-8 max-w-[460px]'>
                 {/*Заголовок*/}
                 <div className='text-center'>
-                    <h1 className='text-primary font-bold text-2xl'>Регистрация</h1>
-                    <span className='font-medium text-onSurfaceVariant'>Рады знакомству!</span>
+                    <h1 className='text-onSurface font-semibold text-2xl'>Регистрация</h1>
+                    <span className='font-medium text-onSurfaceVariant'>
+                        Лайкай мешапы, собирай плейлисты, загружай свои
+                    </span>
                 </div>
 
                 {/*Форма*/}
@@ -157,7 +159,6 @@ export default function RegisterPage() {
                                 <FormItem className='flex items-center gap-x-4'>
                                     <FormControl>
                                         <Checkbox
-                                            id='accept'
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
                                         />
@@ -221,8 +222,8 @@ export default function RegisterPage() {
                         <span className='font-medium text-onSurfaceVariant'>
                             Уже зарегистрированы?
                         </span>
-                        <Link draggable={false} className='font-bold text-primary' to='/login'>
-                            Войдите
+                        <Link draggable={false} className='font-medium text-primary' to='/login'>
+                            Войди
                         </Link>
                     </div>
                 </div>

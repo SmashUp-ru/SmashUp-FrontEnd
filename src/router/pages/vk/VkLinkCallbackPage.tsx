@@ -4,7 +4,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
-import { vkRedirectUri } from '@/lib/vk.ts';
+import { consumeVkState, vkRedirectUri } from '@/lib/vk.ts';
 
 // Callback, на который VK возвращает пользователя после привязки: /vk/link?code=...
 // Меняем code на привязку у бэка и уводим обратно в настройки.
@@ -25,10 +25,17 @@ export default function VkLinkCallbackPage() {
             return;
         }
 
+        // Код не из потока, начатого в этой вкладке (подброшенная ссылка) — на бэк не шлём.
+        const state = searchParams.get('state');
+        if (!consumeVkState('link', state)) {
+            setFailed(true);
+            return;
+        }
+
         axiosSession
-            .get('/vk/link', { params: { code, redirect_uri: vkRedirectUri('link') } })
+            .get('/vk/link', { params: { code, state, redirect_uri: vkRedirectUri('link') } })
             .then(() => {
-                toast({ element: <BaseToast icon field='VK ID' after='успешно привязан!' /> });
+                toast({ element: <BaseToast icon field='VK ID' after='привязан' /> });
                 navigate('/settings', { replace: true });
             })
             .catch((e) => {
@@ -43,14 +50,14 @@ export default function VkLinkCallbackPage() {
 
     return (
         <section className='flex flex-col items-center justify-center gap-y-4 h-full py-20 text-center'>
-            <span className='font-bold text-xl text-onSurface'>
+            <span className='font-semibold text-xl text-onSurface'>
                 {failed ? 'Не удалось привязать VK' : 'Привязываем VK…'}
             </span>
             {failed && (
                 <button
                     type='button'
                     onClick={() => navigate('/settings', { replace: true })}
-                    className='font-bold text-primary hover:text-hoverPrimary'
+                    className='font-medium text-primary hover:text-hoverPrimary'
                 >
                     Вернуться в настройки
                 </button>

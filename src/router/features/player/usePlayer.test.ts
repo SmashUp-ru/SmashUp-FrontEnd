@@ -17,7 +17,7 @@ function resetPlayer() {
         loop: 'none',
         shuffle: false,
         seek: 0,
-        changedSeek: 0,
+        changedSeek: null,
         info: false,
         mashupInfo: null,
         moderationSrc: null,

@@ -10,7 +10,7 @@ export default function UsernameDialogSentContent({ email }: UsernameDialogSentC
         <DialogDescription className='pt-0 flex flex-col gap-y-[30px]'>
             <span className='font-medium text-[15px] text-onSurfaceVariant text-center'>
                 Мы отправили письмо на
-                <span className='font-bold text-primary'>{email}</span>
+                <span className='font-medium text-primary'>{email}</span>
                 <br />
                 Подтвердите изменение никнейма, нажав на кнопку внутри письма.
             </span>

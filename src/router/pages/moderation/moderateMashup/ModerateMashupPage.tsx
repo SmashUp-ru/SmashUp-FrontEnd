@@ -79,11 +79,11 @@ export default function ModerateMashupPage() {
                 basedImage: `${import.meta.env.VITE_BACKEND_URL}/uploads/moderation/mashup/${mashup.id}_800x800.png?token=${getToken()}`
             }}
             text={{
-                title: 'Редактирование неопубликованного мэшапа',
+                title: 'Редактирование неопубликованного мешапа',
                 button: 'Изменить',
                 toast: {
                     before: '',
-                    field: 'Мэшап',
+                    field: 'Мешап',
                     after: 'редактируется...'
                 }
             }}
@@ -111,7 +111,7 @@ export default function ModerateMashupPage() {
 
                         navigate('/mashup/moderation');
                     })
-                    .catch(axiosCatcher(toast, 'при редактировании мэшапа'));
+                    .catch(axiosCatcher(toast, 'при редактировании мешапа'));
             }}
         />
     );

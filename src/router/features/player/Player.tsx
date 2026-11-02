@@ -9,6 +9,11 @@ import { coverUrl, mashupAudioUrl } from '@/lib/cdn.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useMediaSession } from '@dmhd6219/react-media-session';
+import {
+    POLL_MS,
+    readPosition,
+    usePendingSeek
+} from '@/router/features/player/usePlaybackEngine.ts';
 
 export default function Player({ mashup }: { mashup: Mashup }) {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -21,8 +26,9 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const updateQueueIndex = usePlayerStore((state) => state.updateQueueIndex);
     const queueName = usePlayerStore((state) => state.queueName);
     const updateSeek = usePlayerStore((state) => state.updateSeek);
-    const changedSeek = usePlayerStore((state) => state.changedSeek);
-    const updateChangedSeek = usePlayerStore((state) => state.updateChangedSeek);
+    // Подписка, а не getState() при рендере: иначе включённый «повтор трека»
+    // доходил до Howler только при следующем случайном ре-рендере.
+    const loop = usePlayerStore((state) => state.loop);
     const bitrate = useSettingsStore((state) => state.bitrate);
 
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
@@ -38,6 +44,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     const { next, prev, play, pause, closeInfo } = usePlayer();
 
     const player = useRef<ReactHowler | null>(null);
+    const applyPendingSeek = usePendingSeek(player);
     const intervalRef = useRef<number | null>(null);
 
     const playTimeRef = useRef<number>(0);
@@ -86,21 +93,12 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     }, [next, pause, play, resetPlayTime, updateQueueIndex]);
 
     useEffect(() => {
-        if (!player.current) return;
-        if (player.current.howler.state() === 'loaded') {
-            player.current.seek(changedSeek / 1000);
-            if (changedSeek !== 0) {
-                updateChangedSeek(0);
-            }
-        }
-    }, [changedSeek, updateChangedSeek]);
-
-    useEffect(() => {
         if (isPlaying) {
             intervalRef.current = window.setInterval(() => {
-                if (player.current) {
-                    updateSeek(player.current.seek() * 1000);
-                    playTimeRef.current += 0.5;
+                const position = readPosition(player);
+                if (position !== null) {
+                    updateSeek(position);
+                    playTimeRef.current += POLL_MS / 1000;
                     if (
                         playTimeRef.current >= Math.min(30, mashup.duration / 2000) &&
                         !playTimeSent.current
@@ -113,7 +111,7 @@ export default function Player({ mashup }: { mashup: Mashup }) {
                         playTimeRef.current = 0;
                     }
                 }
-            }, 500);
+            }, POLL_MS);
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
@@ -185,17 +183,13 @@ export default function Player({ mashup }: { mashup: Mashup }) {
             src={mashupAudioUrl(queue[queueIndex], BITRATES[bitrate])}
             playing={isPlaying}
             onEnd={handleOnEnd}
-            loop={usePlayerStore.getState().loop === 'mashup'}
+            loop={loop === 'mashup'}
             volume={volume}
             ref={(ref) => (player.current = ref)}
             html5={true}
             preload={true}
-            onLoad={() => {
-                if (changedSeek > 0 && player.current) {
-                    player.current.seek(changedSeek / 1000);
-                    updateChangedSeek(0);
-                }
-            }}
+            // Перемотка, запрошенная до загрузки трека, применяется здесь.
+            onLoad={applyPendingSeek}
         />
     );
 }

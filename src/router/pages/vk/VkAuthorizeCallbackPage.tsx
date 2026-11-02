@@ -6,7 +6,7 @@ import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { AxiosSmashUpResponse } from '@/router/shared/types/smashup.ts';
-import { vkRedirectUri } from '@/lib/vk.ts';
+import { consumeVkState, vkRedirectUri } from '@/lib/vk.ts';
 
 // Элемент ответа /vk/authorize. Форма задокументирована, но живьём не проверялась
 // (нужен реальный VK-код), поэтому парсим защитно.
@@ -39,8 +39,18 @@ export default function VkAuthorizeCallbackPage() {
             return;
         }
 
+        // Код не из потока, начатого в этой вкладке (подброшенная ссылка) — на бэк не шлём,
+        // иначе жертву можно незаметно залогинить в чужой аккаунт.
+        const state = searchParams.get('state');
+        if (!consumeVkState('authorize', state)) {
+            setFailed(true);
+            return;
+        }
+
         axiosSession
-            .get('/vk/authorize', { params: { code, redirect_uri: vkRedirectUri('authorize') } })
+            .get('/vk/authorize', {
+                params: { code, state, redirect_uri: vkRedirectUri('authorize') }
+            })
             .then(async (r: AxiosSmashUpResponse<VkAuthorizeItem | VkAuthorizeItem[]>) => {
                 const data = r.data.response;
                 const items: VkAuthorizeItem[] = Array.isArray(data) ? data : [data];
@@ -80,14 +90,14 @@ export default function VkAuthorizeCallbackPage() {
 
     return (
         <section className='flex flex-col items-center justify-center gap-y-4 h-full py-20 text-center'>
-            <span className='font-bold text-xl text-onSurface'>
+            <span className='font-semibold text-xl text-onSurface'>
                 {failed ? 'Не удалось войти через VK' : 'Входим через VK…'}
             </span>
             {failed && (
                 <button
                     type='button'
                     onClick={() => navigate('/login', { replace: true })}
-                    className='font-bold text-primary hover:text-hoverPrimary'
+                    className='font-medium text-primary hover:text-hoverPrimary'
                 >
                     Вернуться ко входу
                 </button>

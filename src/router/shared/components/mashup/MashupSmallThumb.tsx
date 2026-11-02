@@ -8,7 +8,7 @@ import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitma
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
-import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
+import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import { useGlobalStore } from '@/store/global.ts';
@@ -63,7 +63,7 @@ function MashupSmallThumb({
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
     // isLiked читаем реактивно из стора: в секциях главной («Премьера»/«Рекомендации»)
-    // мэшапы приходят снимком из локального стейта RootPage, и проп `mashup` не
+    // мешапы приходят снимком из локального стейта RootPage, и проп `mashup` не
     // обновляется при лайке — оптимистичный апдейт идёт в стор (updateOneById),
     // поэтому проп даёт устаревший `liked`, а сердечко не закрашивалось.
     const likedInStore = useMashupStore((state) =>
@@ -111,7 +111,7 @@ function MashupSmallThumb({
 
     const guestLikeNotice = () =>
         toast({
-            element: <ErrorToast icon before='Войдите,' field='чтобы лайкать' after='мэшапы.' />,
+            element: <ErrorToast icon before='Войдите,' field='чтобы лайкать' after='мешапы.' />,
             duration: 2000,
             variant: 'destructive'
         });
@@ -119,8 +119,9 @@ function MashupSmallThumb({
     return (
         <div
             className={cn(
-                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary rounded-2xl transition-colors duration-300 motion-reduce:transition-none',
-                isThisMash && 'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3]'
+                'flex justify-between gap-x-1 p-1.5 w-full group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-2xl transition-colors duration-300 motion-reduce:transition-none',
+                isThisMash &&
+                    'bg-primary/[0.3] hover:bg-hoverPrimary/[0.3] has-[[aria-expanded=true]]:bg-hoverPrimary/[0.3]'
             )}
         >
             <div
@@ -141,7 +142,9 @@ function MashupSmallThumb({
                         loading='lazy'
                         className={cn(
                             'transition-opacity duration-200 motion-reduce:transition-none w-11 h-11 min-w-11 min-h-11 rounded-xl bg-surface object-cover',
-                            isThisMash ? 'opacity-30' : 'md:group-hover:opacity-30'
+                            isThisMash
+                                ? 'opacity-30'
+                                : 'md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                         )}
                     />
                     {/*
@@ -155,7 +158,7 @@ function MashupSmallThumb({
                         size='icon'
                         aria-label={isThisMash && isPlaying ? 'Пауза' : 'Воспроизвести'}
                         className={cn(
-                            // текущий мэшап держит кнопку видимой и без ховера
+                            // текущий мешап держит кнопку видимой и без ховера
                             !isThisMash && THUMB_REVEAL_DESKTOP,
                             'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                         )}
@@ -188,7 +191,7 @@ function MashupSmallThumb({
                                     openMashupInfo(mashup.id);
                                 }
                             }}
-                            className={`font-bold text-sm ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
+                            className={`font-medium text-sm ${isThisMash ? 'text-primary' : 'text-onSurface'} line-clamp-1 cursor-pointer text-ellipsis`}
                         >
                             {mashup.name}
                         </div>
@@ -296,7 +299,7 @@ function MashupSmallThumb({
                             >
                                 <p>
                                     Зарегистрируйся, чтобы иметь возможность сохранять любимые
-                                    мэшапы
+                                    мешапы
                                 </p>
                             </TooltipContent>
                         </Tooltip>
@@ -305,7 +308,7 @@ function MashupSmallThumb({
 
                 <div className='w-11 flex items-center justify-center'>
                     <MashupMoreDropdown mashup={mashup}>
-                        <Button variant='ghost' size='control' aria-label='Опции мэшапа'>
+                        <Button variant='ghost' size='control' aria-label='Опции мешапа'>
                             {/*
                              * Длительность ⇄ «ещё»: раньше свап шёл через
                              * display и происходил рывком. Теперь оба лежат
@@ -326,7 +329,7 @@ function MashupSmallThumb({
 
                                 <span
                                     className={cn(
-                                        'absolute inset-0 hidden items-center justify-center font-semibold text-[13px] text-additionalText transition-opacity duration-200 motion-reduce:transition-none md:flex md:group-hover:opacity-0 md:group-focus-within:opacity-0',
+                                        'absolute inset-0 hidden items-center justify-center font-semibold text-[13px] text-additionalText transition-opacity duration-200 motion-reduce:transition-none md:flex md:group-hover:opacity-0 md:group-has-[:focus-visible]:opacity-0 md:group-has-[[aria-expanded=true]]:opacity-0',
                                         isThisMash && 'text-primary'
                                     )}
                                 >

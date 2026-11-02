@@ -6,7 +6,7 @@ import EditIcon from '@/components/icons/edit/Edit24';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useTrackStore } from '@/store/entities/track.ts';
-import { axiosSession, cn } from '@/lib/utils.ts';
+import { axiosSession, cn, openExternal } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
@@ -98,7 +98,7 @@ export function UnpublishedMashupAccordionItem({
                     ]);
                 }
             })
-            .catch(axiosCatcher(toast, 'при отклонении мэшапа.'));
+            .catch(axiosCatcher(toast, 'при отклонении мешапа.'));
     }, [mashup.id, rejectionValue, toast, unpublishedMashups, updateUnpublishedMashups]);
 
     const [hasYouTube, setHasYoutube] = useState(false);
@@ -170,7 +170,7 @@ export function UnpublishedMashupAccordionItem({
                         className='w-12 h-12 shrink-0 rounded-[10px]'
                     />
                     <div className='flex flex-col items-start min-w-0'>
-                        <span className='font-bold text-onSurface truncate max-w-full'>
+                        <span className='font-medium text-onSurface truncate max-w-full'>
                             {mashup.name}
                         </span>
                         <span className='font-medium text-onSurfaceVariant truncate max-w-full'>
@@ -203,20 +203,24 @@ export function UnpublishedMashupAccordionItem({
                         </div>
 
                         <Button
-                            variant='ghost'
-                            size='icon'
-                            className=''
+                            variant='nothing'
+                            size='control'
+                            className='group'
                             aria-label='Воспроизвести'
                             onClick={(e) => {
                                 e.stopPropagation();
                                 playModerationMashup(mashup);
                             }}
                         >
-                            <PlayHollowIcon color='primary' size={32} />
+                            <PlayHollowIcon
+                                className='group-hover:text-primary'
+                                color='onSurface'
+                                size={32}
+                            />
                         </Button>
 
                         <Button
-                            className='flex-1 md:flex-none py-[7px] font-bold text-sm rounded-xl'
+                            className='flex-1 md:flex-none py-[7px] font-medium text-sm rounded-xl'
                             onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -235,15 +239,15 @@ export function UnpublishedMashupAccordionItem({
                                             element: (
                                                 <BaseToast
                                                     image={`${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/${uploadedMashup.imageUrl}_100x100.png`}
-                                                    before='Мэшап'
+                                                    before='Мешап'
                                                     field={`${uploadedMashup.authors.join(', ')} — ${uploadedMashup.name}`}
-                                                    after='успешно загружен!'
+                                                    after='загружен'
                                                 />
                                             ),
                                             duration: 2000
                                         });
                                     })
-                                    .catch(axiosCatcher(toast, 'при публикации мэшапа'));
+                                    .catch(axiosCatcher(toast, 'при публикации мешапа'));
                             }}
                         >
                             Принять
@@ -256,7 +260,7 @@ export function UnpublishedMashupAccordionItem({
                                     e.stopPropagation();
                                 }}
                             >
-                                <Button className='flex-1 md:flex-none py-[7px] font-bold text-sm rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
+                                <Button className='flex-1 md:flex-none py-[7px] font-medium text-sm rounded-xl bg-onPrimary text-onSurface hover:bg-onPrimary/90 hover:text-onSurface/90'>
                                     Отклонить
                                 </Button>
                             </DialogTrigger>
@@ -268,7 +272,7 @@ export function UnpublishedMashupAccordionItem({
                             >
                                 <DialogHeader>
                                     <DialogTitle className='pb-0 mb-0'>
-                                        Отклонение мэшапа
+                                        Отклонение мешапа
                                     </DialogTitle>
                                     <DialogDescription asChild className='pt-0 mt-0'>
                                         <div>
@@ -293,7 +297,7 @@ export function UnpublishedMashupAccordionItem({
                     >
                         <Link
                             to={`/mashup/moderation/${mashup.id}`}
-                            aria-label='Редактировать мэшап'
+                            aria-label='Редактировать мешап'
                         >
                             <EditIcon />
                         </Link>
@@ -320,14 +324,16 @@ export function UnpublishedMashupAccordionItem({
                     <div className='flex flex-col gap-y-7'>
                         <div className='w-full flex flex-col gap-y-2.5'>
                             <Label className='font-medium text-onSurfaceVariant'>
-                                Название мэшапа
+                                Название мешапа
                             </Label>
-                            <span className='font-bold text-xl'>{mashup.name}</span>
+                            <span className='font-semibold text-xl'>{mashup.name}</span>
                         </div>
 
                         <div className='w-full flex flex-col gap-y-2.5'>
                             <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                            <span className='font-bold text-xl'>{mashup.authors?.join(', ')}</span>
+                            <span className='font-semibold text-xl'>
+                                {mashup.authors?.join(', ')}
+                            </span>
                         </div>
                     </div>
 
@@ -384,7 +390,7 @@ export function UnpublishedMashupAccordionItem({
                                         key={genre}
                                         className={cn(
                                             'w-full py-[14.5px] bg-surfaceVariant flex justify-center items-center rounded-2xl',
-                                            'font-bold text-[15px] text-onBackground'
+                                            'font-medium text-[15px] text-onBackground'
                                         )}
                                     >
                                         {genre}
@@ -409,7 +415,7 @@ export function UnpublishedMashupAccordionItem({
                                         );
                                     }}
                                 />
-                                <Label className='font-bold text-[15px] text-onSurface'>
+                                <Label className='font-medium text-[15px] text-onSurface'>
                                     Explicit (Мат)
                                 </Label>
                             </div>
@@ -426,7 +432,7 @@ export function UnpublishedMashupAccordionItem({
                                         );
                                     }}
                                 />
-                                <Label className='font-bold text-[15px] text-onSurface'>
+                                <Label className='font-medium text-[15px] text-onSurface'>
                                     Бан-ворды Twitch
                                 </Label>
                             </div>
@@ -436,11 +442,7 @@ export function UnpublishedMashupAccordionItem({
                                 size='icon'
                                 className='cursor-pointer'
                                 aria-label='Открыть ссылку'
-                                onClick={() => {
-                                    if (statusUrl) {
-                                        window.open(statusUrl, '_blank');
-                                    }
-                                }}
+                                onClick={() => openExternal(statusUrl)}
                             >
                                 <div className='w-full min-w-0 bg-surfaceVariant text-onSurfaceVariant rounded-2xl px-5 py-[11px] flex items-center gap-x-4'>
                                     <LinkIcon />

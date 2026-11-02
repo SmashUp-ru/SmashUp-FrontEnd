@@ -58,7 +58,7 @@ function MashupThumb({
     return (
         <div
             className={cn(
-                'w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
+                'w-fit flex flex-col gap-y-4 p-2 md:p-4 group hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary rounded-t-[46px] rounded-b-[30px]',
                 THUMB_ROW_HOVER
             )}
         >
@@ -70,7 +70,7 @@ function MashupThumb({
                     <ImageWithSkeleton
                         src={coverUrl('mashup', mashup.imageUrl, 400)}
                         alt={mashup.name}
-                        className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] rounded-[30px] md:group-hover:opacity-30'
+                        className='transition-opacity duration-200 motion-reduce:transition-none w-[42vw] h-[42vw] max-w-[216px] max-h-[216px] md:w-[216px] md:h-[216px] rounded-[30px] md:group-hover:opacity-30 md:group-has-[[aria-expanded=true]]:opacity-30'
                         loading='lazy'
                     />
                 </Link>
@@ -104,7 +104,7 @@ function MashupThumb({
                     <Link
                         draggable={false}
                         to={`/mashup/${mashup.id}${searchMode ? `?searchId=${mashup.id}` : ''}`}
-                        className='font-bold text-[15px] text-onSurface truncate'
+                        className='font-medium text-[15px] text-onSurface truncate'
                     >
                         {mashup.name}
                     </Link>

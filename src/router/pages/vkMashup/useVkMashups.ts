@@ -84,7 +84,7 @@ export function useVkMashups(autoLoad: boolean = true) {
                     ) {
                         setNotConnected(true);
                     } else {
-                        axiosCatcher(toast, 'при загрузке мэшапов из VK')(e);
+                        axiosCatcher(toast, 'при загрузке мешапов из VK')(e);
                     }
                     updateVkMashups(emptyVkMashups);
                 })
