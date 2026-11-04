@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { useDebounce } from 'use-debounce';
 import {
@@ -13,13 +13,11 @@ import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import EditIcon from '@/components/icons/edit/Edit24';
 import SearchIcon from '@/components/icons/Search.tsx';
-import CancelIcon from '@/components/icons/cancel/Cancel32';
-import { axiosSession } from '@/lib/utils.ts';
+import { axiosSession, cn } from '@/lib/utils.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import PlusIcon from '@/components/icons/Plus.tsx';
 import { UsersSearchResponse } from '@/router/shared/types/search.ts';
 import { User } from '@/store/entities/user.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
@@ -32,24 +30,51 @@ import { CONFIRM_CANCEL, CONFIRM_FOOTER } from '@/router/shared/components/confi
 
 type Author = { id: number; username: string; imageUrl?: string };
 
-/** Строка автора той же формы, что строка исходника: аватар 44×44, ник, действие справа. */
-function AuthorRow({ author, trailing }: { author: Author; trailing: ReactNode }) {
+/**
+ * Строка автора — как в поиске соавторов формы загрузки: аватар (размер и
+ * скругление — как обложка исходника), ник; выбранный подсвечен, клик переключает.
+ */
+function AuthorRow({
+    author,
+    selected,
+    note,
+    onClick
+}: {
+    author: Author;
+    selected: boolean;
+    note?: string;
+    onClick?: () => void;
+}) {
     return (
-        <>
+        <button
+            type='button'
+            disabled={!onClick}
+            aria-pressed={selected}
+            onClick={onClick}
+            className={cn(
+                'flex w-full items-center gap-x-4 rounded-2xl p-1.5 text-left transition-colors motion-reduce:transition-none disabled:cursor-default',
+                selected ? 'bg-badge' : 'hover:bg-onPrimary'
+            )}
+        >
             {author.imageUrl ? (
                 <ImageWithSkeleton
                     src={coverUrl('user', author.imageUrl, 100)}
                     alt={author.username}
-                    className='h-11 w-11 shrink-0 rounded-full'
+                    className='h-11 w-11 shrink-0 rounded-xl'
                 />
             ) : (
-                <Skeleton className='h-11 w-11 shrink-0 rounded-full' />
+                <Skeleton className='h-11 w-11 shrink-0 rounded-xl' />
             )}
-            <span className='min-w-0 flex-1 truncate text-sm font-medium text-onSurface'>
+            <span
+                className={cn(
+                    'min-w-0 flex-1 truncate text-sm font-medium',
+                    selected ? 'text-primary' : 'text-onSurface'
+                )}
+            >
                 {author.username}
             </span>
-            {trailing}
-        </>
+            {note && <span className='px-3 text-[13px] text-onSurfaceVariant'>{note}</span>}
+        </button>
     );
 }
 
@@ -137,71 +162,48 @@ export default function CoauthorsDialog({ mashup }: { mashup: UnpublishedMashup 
                     <DialogTitle className='p-0 text-xl'>Авторы</DialogTitle>
                 </DialogHeader>
 
-                <div className='-mx-1.5 flex flex-col'>
-                    {authors.map((a) => (
-                        <div key={a.id} className='flex items-center gap-x-4 rounded-2xl p-1.5'>
-                            <AuthorRow
-                                author={a}
-                                trailing={
-                                    a.id === mashup.publisherId ? (
-                                        <span className='px-3 text-[13px] text-onSurfaceVariant'>
-                                            автор загрузки
-                                        </span>
-                                    ) : (
-                                        <Button
-                                            variant='ghost'
-                                            size='control'
-                                            aria-label={`Убрать ${a.username}`}
-                                            onClick={() =>
-                                                setAuthors((list) =>
-                                                    list.filter((x) => x.id !== a.id)
-                                                )
-                                            }
-                                        >
-                                            <CancelIcon size={24} color='onSurfaceVariant' />
-                                        </Button>
-                                    )
-                                }
-                            />
-                        </div>
-                    ))}
-                </div>
-
                 <Input
                     startIcon={SearchIcon}
                     placeholder='Ник мешапера'
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
-                <div className='-mx-1.5 -mt-2 flex flex-col max-h-[240px] overflow-y-auto'>
+
+                {/* Как в форме загрузки: выбранные сверху и подсвечены, ниже — найденные. */}
+                <div className='-mx-1.5 -mt-1 flex flex-col gap-y-1 max-h-[320px] overflow-y-auto'>
+                    {authors.map((a) => {
+                        const locked = a.id === mashup.publisherId;
+                        return (
+                            <AuthorRow
+                                key={a.id}
+                                author={a}
+                                selected
+                                note={locked ? 'автор загрузки' : undefined}
+                                onClick={
+                                    locked
+                                        ? undefined
+                                        : () =>
+                                              setAuthors((list) =>
+                                                  list.filter((x) => x.id !== a.id)
+                                              )
+                                }
+                            />
+                        );
+                    })}
                     {found
                         .filter((u) => !has(u.id))
                         .map((u) => (
-                            <button
+                            <AuthorRow
                                 key={u.id}
-                                type='button'
-                                aria-label={`Добавить ${u.username}`}
+                                author={{ id: u.id, username: u.username, imageUrl: u.imageUrl }}
+                                selected={false}
                                 onClick={() =>
                                     setAuthors((list) => [
                                         ...list,
                                         { id: u.id, username: u.username, imageUrl: u.imageUrl }
                                     ])
                                 }
-                                className='group flex items-center gap-x-4 rounded-2xl p-1.5 text-left hover:bg-onPrimary transition-colors motion-reduce:transition-none'
-                            >
-                                <AuthorRow
-                                    author={{
-                                        id: u.id,
-                                        username: u.username,
-                                        imageUrl: u.imageUrl
-                                    }}
-                                    trailing={
-                                        <span className='flex h-11 w-11 items-center justify-center'>
-                                            <PlusIcon className='group-hover:text-onSurface' />
-                                        </span>
-                                    }
-                                />
-                            </button>
+                            />
                         ))}
                 </div>
 
