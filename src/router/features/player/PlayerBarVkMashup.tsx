@@ -3,7 +3,7 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import ReactHowler from 'react-howler';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePlaybackEngine } from '@/router/features/player/usePlaybackEngine.ts';
 import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
@@ -16,6 +16,10 @@ import { useVkMashups } from '@/router/pages/vkMashup/useVkMashups';
 import { VkMashup } from '@/store/entities/vkMashup';
 import { coverUrl } from '@/lib/cdn.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import {
+    mashupArtwork,
+    useMediaSessionBridge
+} from '@/router/features/player/useMediaSessionBridge.ts';
 
 export default function PlayerBarVkMashup() {
     const { toast } = useToast();
@@ -83,6 +87,24 @@ export default function PlayerBarVkMashup() {
             }
         }
     }, [toast, updateVkMashup, updateVkMashupSrc, updateVkMashups, vkMashups, vkMashupSrc]);
+
+    const track = useMemo(
+        () =>
+            vkMashupSrc && {
+                title: vkMashupSrc.name,
+                artist: vkMashupSrc.artist,
+                album: 'Из VK',
+                artwork: vkMashupSrc.imageUrl
+                    ? [{ src: vkMashupSrc.imageUrl }]
+                    : mashupArtwork('default'),
+                durationMs: vkMashupSrc.duration
+            },
+        [vkMashupSrc]
+    );
+    useMediaSessionBridge(track, vkMashupIsPlaying, {
+        play: () => updateVkMashupIsPlaying(true),
+        pause: () => updateVkMashupIsPlaying(false)
+    });
 
     if (!vkMashupSrc) return null;
 

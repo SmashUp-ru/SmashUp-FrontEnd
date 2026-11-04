@@ -5,15 +5,18 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { BITRATES, useSettingsStore } from '@/store/settings.ts';
 import { axiosSession } from '@/lib/utils.ts';
-import { coverUrl, mashupAudioUrl } from '@/lib/cdn.ts';
+import { mashupAudioUrl } from '@/lib/cdn.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { useGlobalStore } from '@/store/global.ts';
-import { useMediaSession } from '@dmhd6219/react-media-session';
 import {
     POLL_MS,
     readPosition,
     usePendingSeek
 } from '@/router/features/player/usePlaybackEngine.ts';
+import {
+    mashupArtwork,
+    useMediaSessionBridge
+} from '@/router/features/player/useMediaSessionBridge.ts';
 
 export default function Player({ mashup }: { mashup: Mashup }) {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -147,74 +150,18 @@ export default function Player({ mashup }: { mashup: Mashup }) {
     useHotkeys('ctrl+left', () => prev(), { preventDefault: true });
     useHotkeys('esc', () => closeInfo(), { preventDefault: true });
 
-    // media session api
-
-    const artwork = useMemo(
-        () => [
-            {
-                src: coverUrl('mashup', mashup.imageUrl, 100),
-                sizes: '100x100',
-                type: 'image/jpeg'
-            },
-            {
-                src: coverUrl('mashup', mashup.imageUrl, 400),
-                sizes: '400x400',
-                type: 'image/jpeg'
-            }
-        ],
-        [mashup.imageUrl]
+    // Системные виджеты (Now Playing, экран блокировки…)
+    const track = useMemo(
+        () => ({
+            title: mashup.name,
+            artist: mashup.authors.join(', '),
+            album: queueName,
+            artwork: mashupArtwork(mashup.imageUrl),
+            durationMs: mashup.duration
+        }),
+        [mashup.name, mashup.authors, mashup.imageUrl, mashup.duration, queueName]
     );
-
-    // seekbackward/seekforward (±10с) НЕ подключаем: в iOS они заменяют на экране
-    // блокировки кнопки «предыдущий/следующий трек».
-    const onSeekTo = useCallback((details: MediaSessionActionDetails) => {
-        if (details.seekTime == null) return;
-        usePlayerStore.getState().updateChangedSeek(Math.round(details.seekTime * 1000));
-    }, []);
-
-    useMediaSession({
-        title: mashup.name,
-        artist: mashup.authors.join(', '),
-        album: queueName,
-        artwork: artwork,
-        onPlay: play,
-        onPause: pause,
-        onPreviousTrack: prev,
-        onNextTrack: next,
-        onSeekTo: onSeekTo
-    });
-
-    // Позиция и длительность для системного виджета (macOS Now Playing, экран
-    // блокировки): без них виджет не знает, где трек, и ползунок перемотки там
-    // не работает. Подписка на стор, а не селектор: seek меняется каждые 500мс,
-    // и ре-рендерить из-за этого Player незачем.
-    useEffect(() => {
-        const session = 'mediaSession' in navigator ? navigator.mediaSession : null;
-        if (!session?.setPositionState || !mashup.duration) return;
-        const duration = mashup.duration / 1000;
-        const push = (seekMs: number) => {
-            try {
-                session.setPositionState({
-                    duration,
-                    position: Math.min(Math.max(seekMs / 1000, 0), duration),
-                    playbackRate: 1
-                });
-            } catch {
-                // некорректные значения браузер отвергает исключением — не критично
-            }
-        };
-        push(usePlayerStore.getState().seek);
-        return usePlayerStore.subscribe((state, prevState) => {
-            if (state.seek !== prevState.seek) push(state.seek);
-        });
-    }, [mashup.duration]);
-
-    // Иначе на паузе виджет продолжает «проигрывать» ползунок дальше.
-    useEffect(() => {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-        }
-    }, [isPlaying]);
+    useMediaSessionBridge(track, isPlaying, { play, pause, prev, next });
 
     return (
         <ReactHowler

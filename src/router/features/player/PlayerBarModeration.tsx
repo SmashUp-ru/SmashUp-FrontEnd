@@ -9,6 +9,8 @@ import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { getToken } from '@/store/global';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
+import { useMemo } from 'react';
+import { useMediaSessionBridge } from '@/router/features/player/useMediaSessionBridge.ts';
 
 export default function PlayerBarModeration() {
     const volume = usePlayerStore((state) => state.volume);
@@ -18,6 +20,23 @@ export default function PlayerBarModeration() {
 
     const { playerRef: moderationPlayer, onLoad: onModerationPlayerLoad } =
         usePlaybackEngine(moderationIsPlaying);
+
+    // Обложку модерации в систему НЕ отдаём: в её адресе токен (`?token=`),
+    // а браузер передаёт artwork в системный виджет.
+    const track = useMemo(
+        () =>
+            moderationSrc && {
+                title: moderationSrc.name,
+                artist: moderationSrc.authors.join(', '),
+                album: 'Модерация',
+                durationMs: moderationSrc.duration
+            },
+        [moderationSrc]
+    );
+    useMediaSessionBridge(track, moderationIsPlaying, {
+        play: () => updateModerationIsPlaying(true),
+        pause: () => updateModerationIsPlaying(false)
+    });
 
     if (!moderationSrc) return null;
 
