@@ -42,8 +42,12 @@ export default function TrackMoreDropdown({ track, children, onRemove }: TrackMo
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-            <DropdownMenuContent side='left'>
+            {/* Клики по ⋯ и по меню (оно в портале, но React-события всплывают
+                сквозь портал) не должны доходить до onClick строки трека. */}
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                {children}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side='left' onClick={(e) => e.stopPropagation()}>
                 <DropdownMenuGroup>
                     <DropdownMenuItem disabled={!safeLink} onClick={(e) => e.stopPropagation()}>
                         <Link

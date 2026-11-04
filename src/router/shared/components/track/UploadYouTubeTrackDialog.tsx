@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ReactNode, useMemo, useState } from 'react';
 import { axiosSession, removeItem } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -21,15 +21,19 @@ import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 interface UploadYouTubeTrackDialogProps {
     mashup: UnpublishedMashup;
     track: YouTubeTrack;
-    children: ReactNode;
-    className?: string;
+    /**
+     * Строка-триггер получает `open` и вызывает его сама (обычно из onClick).
+     * Раньше строка лежала внутри DialogTrigger-кнопки: любой клик по ней,
+     * включая ⋯ «Подробнее», открывал эту модалку, а кнопка ⋯ оказывалась
+     * вложенной в другую кнопку.
+     */
+    children: (open: () => void) => ReactNode;
 }
 
 export function UploadYouTubeTrackDialog({
     mashup,
     children,
-    track,
-    className
+    track
 }: UploadYouTubeTrackDialogProps) {
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
@@ -113,7 +117,7 @@ export function UploadYouTubeTrackDialog({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger className={className}>{children}</DialogTrigger>
+            {children(() => setOpen(true))}
             <DialogContent className='w-fit'>
                 <div className='flex flex-col space-y-1.5 text-left gap-y-5'>
                     <DialogTitle>

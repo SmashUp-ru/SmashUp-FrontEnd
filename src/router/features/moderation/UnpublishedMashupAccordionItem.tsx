@@ -425,11 +425,12 @@ export function UnpublishedMashupAccordionItem({
                                 (showAllTracks ? tracks : tracks.slice(0, TRACKS_PREVIEW)).map(
                                     (selectedTrack) => {
                                         const track = selectedTrack.track;
-                                        const thumb = (
+                                        const thumb = (open?: () => void) => (
                                             <TrackSmallThumb
                                                 key={`${selectedTrack.keyType}-${String(selectedTrack.key)}`}
                                                 track={track}
                                                 icon={TRACK_ICON[selectedTrack.keyType]}
+                                                onClick={open}
                                                 onRemove={
                                                     tracks.length > 1
                                                         ? () =>
@@ -444,20 +445,21 @@ export function UnpublishedMashupAccordionItem({
                                             />
                                         );
 
+                                        // YouTube-исходник: клик по строке — привязать трек к SmashUp,
+                                        // ⋯ — своё меню (открыть оригинал / убрать).
                                         if (selectedTrack.keyType === TrackType.YouTube) {
                                             return (
                                                 <UploadYouTubeTrackDialog
                                                     key={`yt-${String(selectedTrack.key)}`}
                                                     mashup={mashup}
                                                     track={track}
-                                                    className='w-full'
                                                 >
-                                                    {thumb}
+                                                    {(open) => thumb(open)}
                                                 </UploadYouTubeTrackDialog>
                                             );
                                         }
 
-                                        return thumb;
+                                        return thumb();
                                     }
                                 )}
                         </div>
