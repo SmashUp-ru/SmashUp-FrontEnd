@@ -10,9 +10,9 @@ import { axiosSession, cn, openExternal } from '@/lib/utils.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { UnpublishedMashup, useModerationStore } from '@/store/moderation.ts';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadSelectedTracks, SelectedTrack, TrackType } from '@/router/shared/types/upload';
-import { isExplicit, isTwitchBanned, setExplicit, setTwitchBanned, switchBit } from '@/lib/bitmask';
+import { isExplicit, setExplicit, switchBit } from '@/lib/bitmask';
 import { useToast } from '@/router/shared/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
@@ -41,6 +41,9 @@ import { UploadYouTubeTrackDialog } from '@/router/shared/components/track/Uploa
 import BaseToast from '@/router/shared/toasts/Base';
 import { Mashup } from '@/store/entities/mashup';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import { editUnpublishedMashup } from '@/router/features/moderation/editUnpublishedMashup.ts';
+import ModerationGenresDialog from '@/router/features/moderation/ModerationGenresDialog.tsx';
+import { useAccordionScroll } from '@/router/features/moderation/useAccordionScroll.ts';
 
 interface UnpublishedMashupAccordionItem {
     value: string;
@@ -116,48 +119,26 @@ export function UnpublishedMashupAccordionItem({
     }, [mashup]);
 
     const [switchingExplicit, setSwitchingExplicit] = useState<boolean>(false);
-    const [switchingBanWords, setSwitchingBanWords] = useState<boolean>(false);
+    const toggleExplicit = () => {
+        if (switchingExplicit) return;
+        setSwitchingExplicit(true);
+        editUnpublishedMashup(mashup.id, {
+            statuses: switchBit(mashup.statuses, isExplicit, setExplicit)
+        })
+            .catch(axiosCatcher(toast, 'при изменении статуса'))
+            .catch(() => {})
+            .finally(() => setSwitchingExplicit(false));
+    };
 
-    const switchStatus = useCallback(
-        (
-            isSwitching: boolean,
-            setSwitching: (s: boolean) => unknown,
-            isStatus: (b: number) => boolean,
-            setStatus: (b: number, s: boolean) => number
-        ) => {
-            if (isSwitching) {
-                return;
-            }
-
-            setSwitching(true);
-
-            axiosSession
-                .post('/moderation/unpublished_mashup/edit', {
-                    id: mashup.id,
-                    statuses: switchBit(mashup.statuses, isStatus, setStatus)
-                })
-                .then((r: AxiosSmashUpResponse<UnpublishedMashup>) => {
-                    const newMashup = r.data.response;
-
-                    if (unpublishedMashups) {
-                        updateUnpublishedMashups(
-                            unpublishedMashups.map((mashup) =>
-                                mashup.id === newMashup.id ? newMashup : mashup
-                            )
-                        );
-                    }
-                })
-                .finally(() => setSwitching(false));
-        },
-        [mashup.id, mashup.statuses, unpublishedMashups, updateUnpublishedMashups]
-    );
+    const isOpen = accordionValue === value;
+    const itemRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    useAccordionScroll(itemRef, contentRef, isOpen);
 
     if (!unpublishedMashups) return null;
 
-    const isOpen = accordionValue === value;
-
     return (
-        <AccordionItem value={value}>
+        <AccordionItem value={value} ref={itemRef}>
             {/* Клик по всей строке раскрывает; шеврон — в самом право (после «Редактировать») */}
             <div
                 className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4 cursor-pointer'
@@ -312,7 +293,10 @@ export function UnpublishedMashupAccordionItem({
                     />
                 </div>
             </div>
-            <AccordionContent className='mt-4 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-x-6'>
+            <AccordionContent
+                ref={contentRef}
+                className='mt-4 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-x-6'
+            >
                 <ImageWithSkeleton
                     src={imageUrl}
                     alt={mashup.name}
@@ -397,6 +381,9 @@ export function UnpublishedMashupAccordionItem({
                                     </div>
                                 ))}
                         </div>
+                        <div className='mt-3'>
+                            <ModerationGenresDialog mashup={mashup} />
+                        </div>
                     </div>
 
                     {/*дополнительно*/}
@@ -406,34 +393,10 @@ export function UnpublishedMashupAccordionItem({
                             <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
                                 <Checkbox
                                     checked={isExplicit(mashup.statuses)}
-                                    onClick={() => {
-                                        switchStatus(
-                                            switchingExplicit,
-                                            setSwitchingExplicit,
-                                            isExplicit,
-                                            setExplicit
-                                        );
-                                    }}
+                                    onClick={toggleExplicit}
                                 />
                                 <Label className='font-medium text-[15px] text-onSurface'>
                                     Explicit (Мат)
-                                </Label>
-                            </div>
-
-                            <div className='flex items-center gap-x-4 py-[11px] px-5 bg-surfaceVariant rounded-2xl'>
-                                <Checkbox
-                                    checked={isTwitchBanned(mashup.statuses)}
-                                    onClick={() => {
-                                        switchStatus(
-                                            switchingBanWords,
-                                            setSwitchingBanWords,
-                                            isTwitchBanned,
-                                            setTwitchBanned
-                                        );
-                                    }}
-                                />
-                                <Label className='font-medium text-[15px] text-onSurface'>
-                                    Бан-ворды Twitch
                                 </Label>
                             </div>
 
