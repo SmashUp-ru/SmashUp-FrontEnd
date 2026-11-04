@@ -21,6 +21,7 @@ import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 import { editUnpublishedMashup } from '@/router/features/moderation/editUnpublishedMashup.ts';
 import { CONFIRM_CANCEL, CONFIRM_FOOTER } from '@/router/shared/components/confirmDialog.ts';
 import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
+import { ADD_CHIP } from '@/router/features/moderation/moderationStyles.ts';
 
 /** Кнопка «+» под жанрами модерации и модалка выбора жанров. */
 export default function ModerationGenresDialog({ mashup }: { mashup: UnpublishedMashup }) {
@@ -67,14 +68,15 @@ export default function ModerationGenresDialog({ mashup }: { mashup: Unpublished
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant='nothing'
+                <button
+                    type='button'
                     aria-label='Изменить жанры'
-                    className='w-full py-[14.5px] rounded-2xl bg-surfaceVariant hover:bg-onSurface/10'
+                    className={ADD_CHIP}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <PlusIcon color='onSurface' />
-                </Button>
+                    <PlusIcon size={16} className='group-hover:text-onSurface' />
+                    Жанр
+                </button>
             </DialogTrigger>
             <DialogContent
                 className='w-[calc(100vw-2rem)] max-w-[480px] rounded-[28px] p-6 gap-6'
@@ -83,7 +85,7 @@ export default function ModerationGenresDialog({ mashup }: { mashup: Unpublished
                 <DialogHeader className='space-y-2'>
                     <DialogTitle className='p-0 text-xl'>Жанры</DialogTitle>
                     <DialogDescription className='p-0 text-sm'>
-                        Выбери один или несколько.
+                        Выбери один или несколько
                     </DialogDescription>
                 </DialogHeader>
 

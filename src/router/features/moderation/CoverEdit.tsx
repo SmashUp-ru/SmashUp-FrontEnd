@@ -61,7 +61,7 @@ export default function CoverEdit({ mashupId, src, alt }: CoverEditProps) {
                 key={version}
                 src={version ? `${src}&v=${version}` : src}
                 alt={alt}
-                className='w-[216px] h-[216px] max-w-full rounded-[30px]'
+                className='w-[216px] h-[216px] md:w-40 md:h-40 xl:w-[216px] xl:h-[216px] max-w-full rounded-3xl xl:rounded-[30px]'
             />
             <Button
                 variant='nothing'

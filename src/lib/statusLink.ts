@@ -29,3 +29,13 @@ export function statusKindOf(statuses: number): StatusKind {
 export function withStatusKind(statuses: number, kind: StatusKind): number {
     return setAlt(setHashtagMashup(statuses, kind === 'base'), kind === 'alt');
 }
+
+/**
+ * Короткая подпись ссылки для узкой колонки: обычный URL обрезался на
+ * «https://vk.ru/wall-…», и как раз различающая часть пропадала.
+ */
+export function shortStatusLink(link: string): string {
+    const post = /(^|\/\/|\.)vk\.(com|ru)\/wall-\d+_(\d+)/.exec(link)?.[3];
+    if (post) return `VK · пост ${post}`;
+    return link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+}

@@ -14,6 +14,11 @@ interface SegmentedControlProps<T extends string | number> {
     className?: string;
     /** Обязателен: у группы нет видимого заголовка внутри. */
     'aria-label': string;
+    /**
+     * `accent` — выбранный вариант залит акцентом (настройки).
+     * `neutral` — светлая плашка: для экранов, где акцент уже занят главным действием.
+     */
+    tone?: 'accent' | 'neutral';
 }
 
 /**
@@ -34,8 +39,10 @@ function SegmentedControl<T extends string | number>({
     value,
     onChange,
     className,
-    'aria-label': ariaLabel
+    'aria-label': ariaLabel,
+    tone = 'accent'
 }: SegmentedControlProps<T>) {
+    const neutral = tone === 'neutral';
     const activeIndex = Math.max(
         0,
         options.findIndex((o) => o.value === value)
@@ -71,7 +78,10 @@ function SegmentedControl<T extends string | number>({
             {/* Пилюля выделения: ширина — доля контейнера за вычетом паддингов. */}
             <span
                 aria-hidden
-                className='pointer-events-none absolute inset-y-1 left-1 rounded-xl bg-primary transition-transform [transition-duration:240ms] ease-spring motion-reduce:transition-none'
+                className={cn(
+                    'pointer-events-none absolute inset-y-1 left-1 rounded-xl transition-transform [transition-duration:240ms] ease-spring motion-reduce:transition-none',
+                    neutral ? 'bg-onSurface/15' : 'bg-primary'
+                )}
                 style={{
                     width: `calc((100% - 0.5rem) / ${options.length})`,
                     transform: `translateX(${activeIndex * 100}%)`
@@ -98,7 +108,11 @@ function SegmentedControl<T extends string | number>({
                             'relative min-w-0 flex-1 rounded-xl px-1.5 py-2 text-[15px] font-medium',
                             'transition-colors [transition-duration:200ms] motion-reduce:transition-none',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                            active ? 'text-surface' : 'text-onSurfaceVariant hover:text-onSurface'
+                            active
+                                ? neutral
+                                    ? 'text-onSurface'
+                                    : 'text-surface'
+                                : 'text-onSurfaceVariant hover:text-onSurface'
                         )}
                     >
                         {option.label}

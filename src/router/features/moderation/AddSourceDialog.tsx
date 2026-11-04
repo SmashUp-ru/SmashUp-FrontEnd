@@ -8,7 +8,6 @@ import {
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog.tsx';
-import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import PlusIcon from '@/components/icons/Plus.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
@@ -27,6 +26,7 @@ import {
 } from '@/router/shared/types/upload.ts';
 import { Track } from '@/store/entities/track.ts';
 import { TRACK_ICON } from '@/router/features/moderation/trackIcons.tsx';
+import { ADD_CHIP } from '@/router/features/moderation/moderationStyles.ts';
 
 function toSelected(found: SearchTrack): SelectedTrack {
     if (found.keyType === TrackType.YandexMusic) return new YandexMusicSelectedTrack(found.track);
@@ -73,14 +73,15 @@ export default function AddSourceDialog({ current, onAdd }: AddSourceDialogProps
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant='nothing'
+                <button
+                    type='button'
                     aria-label='Добавить исходник'
-                    className='w-full py-[14.5px] rounded-2xl bg-surfaceVariant hover:bg-onSurface/10'
+                    className={ADD_CHIP}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <PlusIcon color='onSurface' />
-                </Button>
+                    <PlusIcon size={16} className='group-hover:text-onSurface' />
+                    Исходник
+                </button>
             </DialogTrigger>
             <DialogContent
                 className='w-[calc(100vw-2rem)] max-w-[520px] rounded-[28px] p-6 gap-4'
@@ -89,7 +90,7 @@ export default function AddSourceDialog({ current, onAdd }: AddSourceDialogProps
                 <DialogHeader className='space-y-2'>
                     <DialogTitle className='p-0 text-xl'>Добавить исходник</DialogTitle>
                     <DialogDescription className='p-0 text-sm'>
-                        Название трека или ссылка на YouTube.
+                        Название трека или ссылка на YouTube
                     </DialogDescription>
                 </DialogHeader>
                 <Input
@@ -114,7 +115,7 @@ export default function AddSourceDialog({ current, onAdd }: AddSourceDialogProps
                         ))}
                     {!loading && debounced.length >= 2 && candidates.length === 0 && (
                         <p className='px-1.5 py-4 text-sm text-onSurfaceVariant'>
-                            Ничего не нашлось.
+                            Ничего не нашлось
                         </p>
                     )}
                 </div>
