@@ -756,7 +756,7 @@ export default function MashupForm({
                         image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке жанров.'
-                        after='Выберите хотя бы один жанр.'
+                        after='Выбери хотя бы один жанр.'
                     />
                 ),
                 duration: 2000,
@@ -772,7 +772,7 @@ export default function MashupForm({
                         image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке авторов.'
-                        after='Выберите хотя бы одного автора.'
+                        after='Выбери хотя бы одного автора.'
                     />
                 ),
                 duration: 2000,
@@ -788,7 +788,7 @@ export default function MashupForm({
                         image={imageSrc || undefined}
                         before='Ошибка'
                         field='при загрузке сурсов.'
-                        after='Выберите хотя бы два трека.'
+                        after='Выбери хотя бы два трека.'
                     />
                 ),
                 duration: 2000,
@@ -882,7 +882,7 @@ export default function MashupForm({
                         <div className='flex flex-col gap-y-[35px]'>
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Добавьте использованные треки
+                                    Добавь использованные треки
                                 </Label>
                                 <Input
                                     placeholder='Название трека'
@@ -894,7 +894,7 @@ export default function MashupForm({
                                 <div className='flex flex-col gap-y-2.5 max-h-[470px] overflow-y-scroll'>
                                     <div className='font-medium text-onSurfaceVariant flex flex-row items-center gap-1'>
                                         <YouTubeIcon />
-                                        <Label>Для трека с YouTube вставьте ссылку в поиск</Label>
+                                        <Label>Для трека с YouTube вставь ссылку в поиск</Label>
                                     </div>
 
                                     <YouTubeTrackSmallThumb
@@ -1022,7 +1022,7 @@ export default function MashupForm({
 
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Выберите жанр
+                                    Выбери жанр
                                 </Label>
                                 <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-2.5 gap-y-3 max-h-[189px] overflow-y-scroll'>
                                     {allGenres?.map((genre) => {
@@ -1068,7 +1068,7 @@ export default function MashupForm({
 
                             <div className='flex flex-col gap-y-2.5'>
                                 <Label className='font-medium text-onSurfaceVariant'>
-                                    Добавьте соавторов мешапа
+                                    Добавь соавторов мешапа
                                 </Label>
 
                                 <Input
@@ -1167,7 +1167,7 @@ export default function MashupForm({
                                 {hasStatuses && (
                                     <div className='flex flex-col gap-y-2.5'>
                                         <Label className='font-medium text-onSurfaceVariant'>
-                                            Выберите статусы
+                                            Выбери статусы
                                         </Label>
                                         <div className='grid grid-cols-4 gap-x-2.5 gap-y-3 max-h-[252px] overflow-y-scroll'>
                                             <div
@@ -1254,7 +1254,7 @@ export default function MashupForm({
                                     element: (
                                         <BaseToast
                                             icon
-                                            before='Ваш'
+                                            before='Твой'
                                             field='мешап'
                                             after='загружается...'
                                         />

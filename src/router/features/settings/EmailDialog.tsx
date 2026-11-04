@@ -106,7 +106,7 @@ export default function EmailDialog({ email }: EmailDialogProps) {
                                     email={
                                         email
                                             ? maskEmail(email)
-                                            : 'почту, привязанную к вашему аккаунту.'
+                                            : 'почту, привязанную к твоему аккаунту.'
                                     }
                                 />
                             ) : (

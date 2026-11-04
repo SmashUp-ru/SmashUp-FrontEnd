@@ -27,7 +27,7 @@ export default function UnpublishedMashupsNotification({
                 <div className='w-fit flex flex-col'>
                     <span className='font-medium text-[12px] text-onSurface'>
                         <span>
-                            Загрузите ваши мешапы с <span className='text-primary'>VK</span>!
+                            Загрузи свои мешапы с <span className='text-primary'>VK</span>!
                         </span>
                     </span>
 

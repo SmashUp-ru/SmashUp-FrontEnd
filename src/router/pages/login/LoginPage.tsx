@@ -90,12 +90,7 @@ export default function LoginPage() {
         if (currentUser) {
             navigate('/');
             toast({
-                element: (
-                    <BaseToast
-                        before={'Вы уже'}
-                        field={`авторизованы как ${currentUser.username}`}
-                    />
-                ),
+                element: <BaseToast before='Ты уже в аккаунте' field={currentUser.username} />,
                 duration: 4000
             });
         }

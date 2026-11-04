@@ -101,7 +101,7 @@ export default function UsernameDialog({ username, email }: UsernameDialogProps)
                                     email={
                                         email
                                             ? maskEmail(email)
-                                            : 'почту, привязанную к вашему аккаунту.'
+                                            : 'почту, привязанную к твоему аккаунту.'
                                     }
                                 />
                             ) : (

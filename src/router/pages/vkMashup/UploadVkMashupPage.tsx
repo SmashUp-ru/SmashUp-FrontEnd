@@ -67,7 +67,7 @@ export default function UploadVkMashupPage() {
                 title: 'Загрузка мешапа с VK',
                 button: 'Опубликовать',
                 toast: {
-                    before: 'Ваш',
+                    before: 'Твой',
                     field: 'мешап',
                     after: 'загружается...'
                 }

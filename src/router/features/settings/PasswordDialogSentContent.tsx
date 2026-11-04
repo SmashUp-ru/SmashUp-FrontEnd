@@ -13,7 +13,7 @@ export default function PasswordDialogSentContent({ email }: PasswordDialogSentC
                 <br />
                 <span className='font-medium text-primary'>{email}</span>
                 <br />
-                Подтвердите изменение пароля, нажав на кнопку внутри письма.
+                Подтверди изменение пароля, нажав на кнопку внутри письма.
             </span>
 
             <DialogClose asChild>

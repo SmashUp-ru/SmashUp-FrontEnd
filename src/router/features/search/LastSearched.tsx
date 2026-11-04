@@ -25,7 +25,7 @@ export default function LastSearched() {
                 <p className='text-[15px] font-medium text-onSurface'>
                     Здесь появится история поиска
                 </p>
-                <p className='text-[13px]'>Найдите мешапы, плейлисты или авторов</p>
+                <p className='text-[13px]'>Ищи мешапы, плейлисты или авторов</p>
             </div>
         );
 

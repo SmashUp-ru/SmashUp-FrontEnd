@@ -144,7 +144,7 @@ export default function UploadTrackFromYandexTab() {
                             Ссылка на трек в Яндекс Музыке
                         </Label>
                         <Input
-                            placeholder='Вставьте ссылку на трек или альбом с Яндекс.Музыки'
+                            placeholder='Вставь ссылку на трек или альбом с Яндекс.Музыки'
                             startIcon={LinkIcon}
                             value={link}
                             onChange={(e) => setLink(e.target.value)}

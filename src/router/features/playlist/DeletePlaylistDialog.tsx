@@ -83,7 +83,7 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
             </DialogTrigger>
             <DialogContent className='w-[460px]'>
                 <DialogHeader>
-                    <DialogTitle className='p-0'>Вы точно хотите удалить плейлист?</DialogTitle>
+                    <DialogTitle className='p-0'>Удалить плейлист?</DialogTitle>
                     <DialogDescription className='m-0 p-0 text-[15px] text-onSurfaceVariant font-medium'>
                         Это действие нельзя отменить.
                     </DialogDescription>

@@ -45,7 +45,7 @@ export function ErrorState({ onRetry, className }: { onRetry: () => void; classN
         <StateView
             icon={<WarningIcon width={48} height={48} />}
             title='Не удалось загрузить'
-            description='Проверьте подключение к интернету и попробуйте снова.'
+            description='Проверь подключение к интернету и попробуй снова.'
             action={{ label: 'Повторить', onClick: onRetry }}
             className={className}
         />

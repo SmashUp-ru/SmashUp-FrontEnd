@@ -16,7 +16,7 @@ export function axiosCatcher(
 
         if (humanMessage === undefined) {
             if (r.status === 502) {
-                humanMessage = 'Сервис недоступен, попробуйте чуть позже';
+                humanMessage = 'Сервис недоступен, попробуй чуть позже';
             } else {
                 humanMessage = r.status?.toString();
             }

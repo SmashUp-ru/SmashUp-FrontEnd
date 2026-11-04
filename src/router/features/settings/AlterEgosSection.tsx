@@ -75,7 +75,7 @@ export default function AlterEgosSection() {
                     element: (
                         <BaseToast
                             icon
-                            before='Вы вернулись в аккаунт'
+                            before='Ты снова в аккаунте'
                             field={primaryAccount.username}
                         />
                     )
@@ -105,7 +105,7 @@ export default function AlterEgosSection() {
                 );
                 const alterEgo = await activateAccount(response.data.response.token);
                 toast({
-                    element: <BaseToast icon before='Вы вошли как' field={alterEgo.username} />
+                    element: <BaseToast icon before='Ты в аккаунте' field={alterEgo.username} />
                 });
                 navigate('/', { replace: true });
             } catch (error) {

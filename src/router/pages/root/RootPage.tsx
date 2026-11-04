@@ -140,7 +140,7 @@ export default function RootPage() {
             )}
 
             {currentUserPlaylists && currentUserPlaylists.length > 0 && (
-                <Section title='Ваши плейлисты'>
+                <Section title='Твои плейлисты'>
                     <div className='grid grid-cols-2 gap-x-[15px] gap-y-2 md:flex md:items-center md:flex-wrap md:gap-x-0 md:gap-y-0'>
                         {currentUserPlaylists.map((playlist) => (
                             <PlaylistThumb key={playlist.id} playlist={playlist} />

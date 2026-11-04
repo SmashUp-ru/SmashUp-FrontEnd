@@ -47,7 +47,7 @@ export default function ConfirmCoAuthorshipNotification({
             <div className='flex flex-col gap-y-3'>
                 <div className='w-fit'>
                     <span className='font-medium text-[12px] text-onSurface'>
-                        <span className='text-primary'>{mashup.authors[0]}</span> указал вас
+                        <span className='text-primary'>{mashup.authors[0]}</span> указал тебя
                         соавтором мешапа <span className='text-primary'>{mashup.name}</span>
                     </span>
                 </div>

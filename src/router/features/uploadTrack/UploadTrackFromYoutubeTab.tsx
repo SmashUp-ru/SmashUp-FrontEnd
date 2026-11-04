@@ -35,7 +35,7 @@ export default function UploadTrackFromYoutubeTab() {
                                     Ссылка на трек в Ютубе
                                 </Label>
                                 <Input
-                                    placeholder='Вставьте ссылку на трек в Ютубе'
+                                    placeholder='Вставь ссылку на трек в Ютубе'
                                     startIcon={LinkIcon}
                                 />
                                 <TrackSmallThumb
@@ -68,7 +68,7 @@ export default function UploadTrackFromYoutubeTab() {
 
                                 <div className='flex flex-col gap-y-2.5'>
                                     <Label className='font-medium text-onSurfaceVariant'>
-                                        Добавьте соавторов трека
+                                        Добавь соавторов трека
                                     </Label>
 
                                     <Input placeholder='Ник автора' startIcon={SearchIcon} />

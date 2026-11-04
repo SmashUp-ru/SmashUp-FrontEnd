@@ -56,7 +56,7 @@ export default function ListVkMashupPage() {
                 <VKIcon size={48} />
                 <span className='font-semibold text-xl text-onSurface'>Пока нет мешапов</span>
                 <span className='max-w-[420px] font-medium text-onSurfaceVariant'>
-                    Новые мешапы из вашего VK появятся здесь автоматически.
+                    Новые мешапы из твоего VK появятся здесь автоматически.
                 </span>
             </div>
         );

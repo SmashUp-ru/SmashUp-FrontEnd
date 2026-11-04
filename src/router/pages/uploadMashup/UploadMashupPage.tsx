@@ -105,7 +105,7 @@ export default function UploadMashupPage() {
                             title: '',
                             button: 'Опубликовать',
                             toast: {
-                                before: 'Ваш',
+                                before: 'Твой',
                                 field: 'мешап',
                                 after: 'загружается...'
                             }

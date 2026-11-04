@@ -94,7 +94,7 @@ export default function PasswordDialog({ email }: PasswordDialogProps) {
                                     email={
                                         email
                                             ? maskEmail(email)
-                                            : 'почту, привязанную к вашему аккаунту.'
+                                            : 'почту, привязанную к твоему аккаунту.'
                                     }
                                 />
                             ) : (

@@ -13,7 +13,7 @@ export default function EmailDialogSentContent({ email }: EmailDialogSentContent
                 <br />
                 <span className='font-medium text-primary'>{email}</span>
                 <br />
-                Подтвердите изменение почты, нажав на кнопку внутри письма.
+                Подтверди изменение почты, нажав на кнопку внутри письма.
             </span>
 
             <DialogClose asChild>
