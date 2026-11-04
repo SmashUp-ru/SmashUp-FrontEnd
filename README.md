@@ -41,6 +41,14 @@ VITE_FRONTEND_URL=http://localhost:5173
 
 > Медиасессия (Media Session API) требует HTTPS — локально по HTTP не покажется. Это норма.
 
+**С телефона по IP.** Положи `VITE_BACKEND_URL=/api` в `.env.development.local`: Vite проксирует `/api`
+на бэкенд и подставляет `Origin` (`server.proxy` в `vite.config.ts`), а бэкенд отвечает 403 на любой
+Origin, кроме `localhost:5173` и `smashup.ru`. В `.env.local` эту строку не клади: он читается и при
+сборке, и в бандл попадёт нерабочий адрес.
+
+**Зависимости.** `package-lock.json` в репозиторий не входит. В `.npmrc` стоит `legacy-peer-deps=true`:
+npm 10 падает на peer-зависимостях vitest 4 (`Cannot read properties of null (reading 'edgesOut')`).
+
 ## Команды
 
 | Команда | Что делает |
@@ -55,7 +63,18 @@ VITE_FRONTEND_URL=http://localhost:5173
 - **Husky + lint-staged** прогоняют `eslint --fix` на застейдженных `*.{html,js,ts,tsx}` при коммите,
   плюс отдельный шаг `tsc -b` в pre-commit.
 - Тест-файлы (`*.test.ts(x)`) исключены из `tsc -b` — ошибка типов в тесте не валит прод-сборку.
-- **CI** (`.github/workflows/ci.yml`): на push/PR — `tsc -b` + `eslint .` + `npm test`.
+- **CI** (`.github/workflows/ci.yml`): на push/PR — `tsc -b` + `npm test`; `eslint .` — отдельный `lint.yaml`.
+
+## Деплой
+
+`.github/workflows/deploy.yml`: push в `beta` выкатывает test.smashup.ru (бэк `testapi.smashup.ru`),
+push в `main` — smashup.ru. Обычный путь — сначала `beta`, проверка на тесте, потом перемотка `main`:
+
+```bash
+git push origin origin/beta:main
+```
+
+Откат — Re-run прошлого успешного запуска в Actions или `git revert`.
 
 ## Архитектура
 
