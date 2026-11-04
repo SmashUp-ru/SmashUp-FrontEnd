@@ -13,13 +13,13 @@ import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled32';
-import { axiosSession, shuffleQueue } from '@/lib/utils.ts';
+import { shuffleQueue } from '@/lib/utils.ts';
 import { usePlayerBarData } from '@/router/features/player/usePlayerBarData.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
-import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function PlayerBar() {
@@ -44,8 +44,8 @@ export default function PlayerBar() {
 
     const { play, pause, next, prev, openInfo, closeInfo } = usePlayer();
 
-    const { mashup, isLiked, setIsLiked } = usePlayerBarData();
-    const likePop = useLikePop(isLiked);
+    const { mashup } = usePlayerBarData();
+    const { isLiked, pop: likePop, toggle: toggleLike } = useLike('mashup', mashup);
 
     if (queue.length === 0 || queueIndex === null || !mashup) {
         return;
@@ -102,39 +102,23 @@ export default function PlayerBar() {
                         </div>
                     </div>
 
-                    {isLiked ? (
-                        <Button
-                            variant='ghost'
-                            size='control'
-                            className='hidden md:inline-flex'
-                            aria-label='Убрать лайк'
-                            onClick={() => {
-                                axiosSession.post(`mashup/remove_like?id=${mashup.id}`).then(() => {
-                                    setIsLiked(false);
-                                });
-                            }}
-                        >
+                    <Button
+                        variant='ghost'
+                        size='control'
+                        className='hidden md:inline-flex'
+                        aria-label={isLiked ? 'Убрать лайк' : 'Лайкнуть'}
+                        onClick={toggleLike}
+                    >
+                        {isLiked ? (
                             <span
                                 className={`inline-flex ${likePop ? 'animate-pop motion-reduce:animate-none' : ''}`}
                             >
                                 <LikeFilledIcon />
                             </span>
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='ghost'
-                            size='control'
-                            className='hidden md:inline-flex'
-                            aria-label='Лайкнуть'
-                            onClick={() => {
-                                axiosSession.post(`mashup/add_like?id=${mashup.id}`).then(() => {
-                                    setIsLiked(true);
-                                });
-                            }}
-                        >
+                        ) : (
                             <LikeOutlineIcon color='onSurface' />
-                        </Button>
-                    )}
+                        )}
+                    </Button>
                 </div>
             }
             center={

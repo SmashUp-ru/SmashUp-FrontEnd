@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Link } from 'react-router-dom';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
-import { Mashup, useMashupStore } from '@/store/entities/mashup.ts';
+import { Mashup } from '@/store/entities/mashup.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { axiosSession, cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
+import { cn, msToMinutesAndSeconds } from '@/lib/utils.ts';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
@@ -26,9 +26,7 @@ import MashupSmallThumbExplicitDisallowed from '@/router/shared/components/mashu
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
-import { useToast } from '@/router/shared/hooks/use-toast.ts';
-import ErrorToast from '@/router/shared/toasts/error.tsx';
-import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import { useLike } from '@/router/shared/hooks/useLike.ts';
 import { THUMB_REVEAL, THUMB_REVEAL_DESKTOP } from '@/router/shared/components/thumbHover.ts';
 import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
@@ -49,32 +47,20 @@ function MashupSmallThumb({
     queueId
 }: MashupThumbProps) {
     const currentUser = useGlobalStore((state) => state.currentUser);
-    const updateMashupById = useMashupStore((state) => state.updateOneById);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const currentQueueId = usePlayerStore((state) => state.queueId);
     const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
     const isMobile = useIsMobile();
-    const { toast } = useToast();
 
     const { mashups, isLoading } = usePlaylistMashups(playlist);
 
     const { play, pause, playMashup, openMashupInfo } = usePlayer();
 
-    // isLiked читаем реактивно из стора: в секциях главной («Премьера»/«Рекомендации»)
-    // мешапы приходят снимком из локального стейта RootPage, и проп `mashup` не
-    // обновляется при лайке — оптимистичный апдейт идёт в стор (updateOneById),
-    // поэтому проп даёт устаревший `liked`, а сердечко не закрашивалось.
-    const likedInStore = useMashupStore((state) =>
-        mashup ? state.cache[mashup.id]?.liked : undefined
-    );
-    const isLiked = likedInStore ?? mashup?.liked ?? false;
-    const setIsLiked = (liked: boolean) => {
-        if (!mashup) return;
-        useMashupStore.getState().updateOneById(mashup.id, { liked });
-    };
-    const likePop = useLikePop(isLiked);
+    // useLike читает isLiked из стора: в секциях главной мешапы приходят снимком
+    // из локального стейта RootPage, и проп `mashup.liked` при лайке не обновляется.
+    const { isLiked, pop: likePop, toggle: toggleLike } = useLike('mashup', mashup);
 
     if (!mashup || isLoading) {
         return <MashupSmallThumbSkeleton />;
@@ -108,13 +94,6 @@ function MashupSmallThumb({
         }
         playThisMashup();
     };
-
-    const guestLikeNotice = () =>
-        toast({
-            element: <ErrorToast icon before='Войдите,' field='чтобы лайкать' after='мешапы.' />,
-            duration: 2000,
-            variant: 'destructive'
-        });
 
     return (
         <div
@@ -245,17 +224,13 @@ function MashupSmallThumb({
 
             <div className='flex items-center gap-x-2 md:gap-x-[34px]'>
                 {currentUser ? (
-                    isLiked ? (
-                        <Button
-                            variant='ghost'
-                            size='control'
-                            aria-label='Убрать лайк'
-                            onClick={() => {
-                                axiosSession.post(`mashup/remove_like?id=${mashup.id}`).then(() => {
-                                    setIsLiked(false);
-                                });
-                            }}
-                        >
+                    <Button
+                        variant='ghost'
+                        size='control'
+                        aria-label={isLiked ? 'Убрать лайк' : 'Лайкнуть'}
+                        onClick={toggleLike}
+                    >
+                        {isLiked ? (
                             <span
                                 className={cn(
                                     'inline-flex',
@@ -267,29 +242,17 @@ function MashupSmallThumb({
                                     hoverColor={isThisMash ? 'primary' : 'onSurface'}
                                 />
                             </span>
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='ghost'
-                            size='control'
-                            aria-label='Лайкнуть'
-                            onClick={() => {
-                                axiosSession.post(`mashup/add_like?id=${mashup.id}`).then(() => {
-                                    setIsLiked(true);
-                                    updateMashupById(mashup.id, { liked: true });
-                                });
-                            }}
-                        >
+                        ) : (
                             <LikeOutlineIcon
                                 color={isThisMash ? 'hoverPrimary' : 'onSurfaceVariant'}
                                 hoverColor={isThisMash ? 'primary' : 'onSurface'}
                             />
-                        </Button>
-                    )
+                        )}
+                    </Button>
                 ) : (
                     <TooltipProvider>
                         <Tooltip>
-                            <TooltipTrigger onClick={() => isMobile && guestLikeNotice()}>
+                            <TooltipTrigger onClick={() => isMobile && toggleLike()}>
                                 <LikeOutlineIcon color={isThisMash ? 'primary' : 'onSurface'} />
                             </TooltipTrigger>
                             <TooltipContent

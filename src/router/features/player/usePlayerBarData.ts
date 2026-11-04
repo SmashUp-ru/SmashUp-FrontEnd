@@ -14,20 +14,11 @@ export function usePlayerBarData() {
         return mashupCache[queue[queueIndex]];
     }, [queue, queueIndex, mashupCache]);
 
-    const isLiked = useMemo(() => mashup?.liked ?? false, [mashup]);
-
     useEffect(() => {
         if (queueIndex !== null && queueIndex >= 0 && queueIndex < queue.length && !mashup) {
             getMashupById(queue[queueIndex]).catch(console.error);
         }
     }, [queue, queueIndex, mashup, getMashupById]);
 
-    return {
-        mashup,
-        isLiked,
-        setIsLiked: (liked: boolean) => {
-            if (!mashup) return;
-            useMashupStore.getState().updateOneById(mashup.id, { liked });
-        }
-    };
+    return { mashup };
 }

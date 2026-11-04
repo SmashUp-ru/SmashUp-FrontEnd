@@ -5,7 +5,7 @@ import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
 import { useMashupStore } from '@/store/entities/mashup.ts';
 import { coverUrl } from '@/lib/cdn.ts';
-import { axiosSession, cn, msToMinutesAndSeconds, shuffleQueue } from '@/lib/utils.ts';
+import { cn, msToMinutesAndSeconds, shuffleQueue } from '@/lib/utils.ts';
 import { Slider } from '@/components/ui/slider.tsx';
 import { SEEK_STEP_MS, useSmoothSeek } from '@/router/features/player/usePlaybackEngine.ts';
 import { Button } from '@/components/ui/button.tsx';
@@ -23,7 +23,7 @@ import ChevronDownIcon from '@/components/icons/ChevronDown.tsx';
 import QueueIcon from '@/components/icons/Queue.tsx';
 import SourcesIcon from '@/components/icons/Sources.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
-import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 /**
@@ -94,7 +94,8 @@ export default function FullPlayer() {
     const updateChangedSeek = usePlayerStore((s) => s.updateChangedSeek);
 
     const { play, pause, next, prev } = usePlayer();
-    const { mashup, tracks, isLiked, setIsLiked } = useMashupInfoData(null);
+    const { mashup, tracks } = useMashupInfoData(null);
+    const { isLiked, pop: likePop, toggle: toggleLike } = useLike('mashup', mashup);
 
     const mashupCache = useMashupStore((s) => s.cache);
     const getManyByIds = useMashupStore((s) => s.getManyByIds);
@@ -102,7 +103,6 @@ export default function FullPlayer() {
     const [panel, setPanel] = useState<'none' | 'queue' | 'sources'>('none');
     const [dragY, setDragY] = useState(0);
     const [touchStartY, setTouchStartY] = useState<number | null>(null);
-    const likePop = useLikePop(isLiked);
 
     const upcomingIds = queue.slice(queueIndex + 1);
 
@@ -190,12 +190,6 @@ export default function FullPlayer() {
 
     const cycleLoop = () => {
         updateLoop(loop === 'none' ? 'queue' : loop === 'queue' ? 'mashup' : 'none');
-    };
-
-    const toggleLike = () => {
-        axiosSession
-            .post(`mashup/${isLiked ? 'remove' : 'add'}_like?id=${mashup.id}`)
-            .then(() => setIsLiked(!isLiked));
     };
 
     const jumpTo = (absoluteIndex: number) => {

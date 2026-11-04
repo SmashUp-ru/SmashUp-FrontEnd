@@ -23,8 +23,6 @@ export function useMashupInfoData(mId?: number | null) {
         return mashup.tracks.map((id) => trackCache[id]).filter(Boolean);
     }, [mashup, trackCache]);
 
-    const isLiked = mashup?.liked ?? false;
-
     useEffect(() => {
         if (mashupId && !mashup) {
             getMashupById(mashupId).catch(console.error);
@@ -40,11 +38,6 @@ export function useMashupInfoData(mId?: number | null) {
     return {
         isLoading: !mashup || mashup.tracks.some((id) => !trackCache[id]),
         mashup,
-        tracks,
-        isLiked,
-        setIsLiked: (liked: boolean) => {
-            if (!mashup) return;
-            useMashupStore.getState().updateOneById(mashup.id, { liked });
-        }
+        tracks
     };
 }

@@ -1,10 +1,9 @@
 import { usePlayerStore } from '@/store/player.ts';
-import { axiosSession, cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
 import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
-import { useMashupStore } from '@/store/entities/mashup.ts';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -21,7 +20,7 @@ import MashupInfoSkeleton from '@/router/features/mashupInfo/MashupInfoSkeleton.
 import MashupMoreDropdown from '@/router/shared/components/mashup/MashupMoreDropdown.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
-import { useLikePop } from '@/router/shared/hooks/useLikePop.ts';
+import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 export default function MashupInfo() {
@@ -31,13 +30,13 @@ export default function MashupInfo() {
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const queueName = usePlayerStore((state) => state.queueName);
-    const updateMashupById = useMashupStore((state) => state.updateOneById);
     const info = usePlayerStore((state) => state.info);
     const mashupInfo = usePlayerStore((state) => state.mashupInfo);
     const moderationSrc = usePlayerStore((state) => state.moderationSrc);
     const vkMashupSrc = usePlayerStore((state) => state.vkMashupSrc);
 
-    const { mashup, tracks, isLiked, setIsLiked, isLoading } = useMashupInfoData(mashupInfo);
+    const { mashup, tracks, isLoading } = useMashupInfoData(mashupInfo);
+    const { isLiked, pop: likePop, toggle: toggleLike } = useLike('mashup', mashup);
 
     const isMobile = useIsMobile();
 
@@ -53,8 +52,6 @@ export default function MashupInfo() {
         const id = requestAnimationFrame(() => setEntered(true));
         return () => cancelAnimationFrame(id);
     }, [shouldShow]);
-
-    const likePop = useLikePop(isLiked);
 
     // На мобайле «использованные треки» показываются в полноэкранном плеере (FullPlayer).
     if (isMobile) return null;
@@ -172,17 +169,13 @@ export default function MashupInfo() {
                     </Button>
                 )}
 
-                {isLiked ? (
-                    <Button
-                        variant='ghost'
-                        size='control'
-                        aria-label='Убрать лайк'
-                        onClick={() => {
-                            axiosSession.post(`mashup/remove_like?id=${mashup.id}`).then(() => {
-                                setIsLiked(false);
-                            });
-                        }}
-                    >
+                <Button
+                    variant='ghost'
+                    size='control'
+                    aria-label={isLiked ? 'Убрать лайк' : 'Лайкнуть'}
+                    onClick={toggleLike}
+                >
+                    {isLiked ? (
                         <span
                             className={cn(
                                 'inline-flex',
@@ -191,22 +184,10 @@ export default function MashupInfo() {
                         >
                             <LikeFilledIcon />
                         </span>
-                    </Button>
-                ) : (
-                    <Button
-                        variant='ghost'
-                        size='control'
-                        aria-label='Лайкнуть'
-                        onClick={() => {
-                            axiosSession.post(`mashup/add_like?id=${mashup.id}`).then(() => {
-                                setIsLiked(true);
-                                updateMashupById(mashup.id, { liked: true });
-                            });
-                        }}
-                    >
+                    ) : (
                         <LikeOutlineIcon color='onSurface' />
-                    </Button>
-                )}
+                    )}
+                </Button>
 
                 {/* hideOpen — «Открыть мешап» тут лишний, мешап уже открыт */}
                 <MashupMoreDropdown mashup={mashup} hideOpen>
