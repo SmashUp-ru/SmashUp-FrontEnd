@@ -6,7 +6,6 @@ import { Mashup } from '@/store/entities/mashup.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import { zip } from '@/lib/utils.ts';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
 import MashupThumbExplicitDisallowed from '@/router/shared/components/mashup/MashupThumbExplicitDisallowed.tsx';
@@ -20,6 +19,7 @@ import {
 import { cn } from '@/lib/utils.ts';
 import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -126,21 +126,11 @@ function MashupThumb({
                         )}
                     </div>
                 </div>
-                <div className='flex items-center gap-x-2 max-w-[42vw] md:max-w-[216px]'>
-                    {zip([mashup.authorsIds, mashup.authors]).map(([authorId, author], index) => (
-                        <div key={author}>
-                            <Link
-                                key={index}
-                                to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                className='font-medium text-[13px] text-onSurfaceVariant truncate'
-                            >
-                                {author}
-                            </Link>
-                            {index !== mashup.authors.length - 1 && (
-                                <span className='text-onSurfaceVariant'>, </span>
-                            )}
-                        </div>
-                    ))}
+                <div className='truncate max-w-[42vw] md:max-w-[216px] font-medium text-[13px] text-onSurfaceVariant'>
+                    <AuthorLinks
+                        authors={mashup.authors}
+                        searchIds={searchMode ? mashup.authorsIds : undefined}
+                    />
                 </div>
             </div>
         </div>

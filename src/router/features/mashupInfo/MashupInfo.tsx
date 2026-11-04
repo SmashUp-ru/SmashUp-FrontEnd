@@ -2,7 +2,6 @@ import { usePlayerStore } from '@/store/player.ts';
 import { cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
-import { Link } from 'react-router-dom';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import MoreHorizontalIcon from '@/components/icons/MoreHorizontalIcon.tsx';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
@@ -22,6 +21,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 export default function MashupInfo() {
     const { pause, playMashup, closeInfo } = usePlayer();
@@ -63,7 +63,7 @@ export default function MashupInfo() {
         <div
             className={cn(
                 `fixed inset-x-2 top-2 bottom-2 z-40 w-auto md:sticky md:inset-x-auto md:bottom-auto md:top-0 md:z-auto md:h-[calc(100%-${queue.length > 0 || queueIndex >= 0 || moderationSrc !== null || vkMashupSrc !== null ? '148' : '32'}px)] md:my-4 md:mr-4 bg-surfaceVariant rounded-[30px] py-4 px-[10.5px] overflow-y-auto overflow-x-hidden`,
-                'flex flex-col gap-y-4 items-start md:transition-[width,min-width,opacity] md:duration-300 motion-reduce:transition-none',
+                'flex flex-col gap-y-4 items-start md:transition-[width,min-width,opacity,height] md:duration-300 motion-reduce:transition-none',
                 entered
                     ? 'opacity-100 md:w-[382px] md:min-w-[382px]'
                     : 'opacity-0 md:w-0 md:min-w-0'
@@ -114,22 +114,8 @@ export default function MashupInfo() {
                         )}
                     </div>
                 </div>
-                <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
-                    {mashup.authors.map((author, index) => (
-                        <div key={index}>
-                            <Link
-                                key={author}
-                                to={`/user/${author}`}
-                                className='font-medium text-onSurfaceVariant'
-                            >
-                                {author}
-                            </Link>
-
-                            {index !== mashup.authors.length - 1 && (
-                                <span className='text-onSurfaceVariant'>, </span>
-                            )}
-                        </div>
-                    ))}
+                <div className='w-full truncate font-medium text-onSurfaceVariant'>
+                    <AuthorLinks authors={mashup.authors} />
                 </div>
             </div>
 

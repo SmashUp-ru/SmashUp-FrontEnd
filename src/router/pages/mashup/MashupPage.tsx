@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
@@ -19,6 +19,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 export default function MashupPage() {
     const { toast } = useToast();
@@ -55,15 +56,7 @@ export default function MashupPage() {
                     <div>
                         <span className='font-medium text-[15px] text-additionalText'>
                             Мешап{' '}
-                            {mashup.authors.map((author) => (
-                                <Link
-                                    key={author}
-                                    to={`/user/${author}`}
-                                    className='text-onSurface'
-                                >
-                                    {author}
-                                </Link>
-                            ))}
+                            <AuthorLinks authors={mashup.authors} linkClassName='text-onSurface' />
                         </span>
                         <div className='flex items-center gap-x-1'>
                             <h1 className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
@@ -93,7 +86,7 @@ export default function MashupPage() {
                             <Button
                                 variant='ghost'
                                 size='icon'
-                                className=''
+                                aria-label='Пауза'
                                 onClick={() => {
                                     pause();
                                 }}
@@ -104,10 +97,12 @@ export default function MashupPage() {
                             <Button
                                 variant='ghost'
                                 size='icon'
-                                className=''
+                                aria-label='Воспроизвести'
                                 onClick={() =>
                                     playQueue(
-                                        hideExplicit ? [] : [mashup.id],
+                                        hideExplicit && isExplicit(mashup.statuses)
+                                            ? []
+                                            : [mashup.id],
                                         mashup.name,
                                         `mashup/${mashup.id}`
                                     )

@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
 import PlaylistPageSkeleton from '@/router/pages/playlist/PlaylistPageSkeleton.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -17,6 +17,7 @@ import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState, StateView } from '@/router/shared/components/StateView.tsx';
 import QueueIcon from '@/components/icons/Queue.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 export default function PlaylistPage() {
     const { toast } = useToast();
@@ -48,15 +49,10 @@ export default function PlaylistPage() {
                     <div>
                         <span className='font-medium text-[15px] text-additionalText'>
                             Плейлист{' '}
-                            {playlist.authors.map((author) => (
-                                <Link
-                                    key={author}
-                                    to={`/user/${author}`}
-                                    className='text-onSurface'
-                                >
-                                    {author}
-                                </Link>
-                            ))}
+                            <AuthorLinks
+                                authors={playlist.authors}
+                                linkClassName='text-onSurface'
+                            />
                         </span>
                         <h1 className='font-semibold text-xl sm:text-2xl md:text-[28px] break-words text-onSurface'>
                             {playlist.name}

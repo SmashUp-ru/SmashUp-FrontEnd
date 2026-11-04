@@ -2,30 +2,22 @@ import { Link, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { User, useUserStore } from '@/store/entities/user.ts';
 import { Button } from '@/components/ui/button.tsx';
-import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import ShareIcon from '@/components/icons/Share.tsx';
 import MashupSmallThumb from '@/router/shared/components/mashup/MashupSmallThumb.tsx';
-import { usePlayerStore } from '@/store/player.ts';
-import { usePlayer } from '@/router/features/player/usePlayer.ts';
-import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
-import { explicitAllowed, isExplicit } from '@/lib/bitmask.ts';
 import { usePlaylistMashups } from '@/router/shared/components/playlist/usePlaylistMashups.ts';
-import { useSettingsStore } from '@/store/settings.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { ErrorState } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import QueuePlayButton from '@/router/shared/components/QueuePlayButton.tsx';
 
 export default function UserTracksPage() {
     const { toast } = useToast();
     const params = useParams();
-    const { playQueue, pause } = usePlayer();
 
     const getUserByUsername = useUserStore((state) => state.getOneByStringKey);
-    const isPlaying = usePlayerStore((state) => state.isPlaying);
-    const queueId = usePlayerStore((state) => state.queueId);
 
     const [user, setUser] = useState<User | null>(null);
     const [isUserError, setIsUserError] = useState(false);
@@ -43,11 +35,7 @@ export default function UserTracksPage() {
         loadUser();
     }, [loadUser]);
 
-    const settingsBitmask = useSettingsStore((state) => state.settingsBitmask);
-
     const { mashups, isLoading } = usePlaylistMashups(user ? user.mashups : [], [user]);
-
-    const hideExplicit = settingsBitmask !== null && !explicitAllowed(settingsBitmask);
 
     useDocumentTitle(user ? `Мешапы ${user.username}` : (params.profileUsername ?? null));
 
@@ -79,35 +67,11 @@ export default function UserTracksPage() {
                         </h1>
                     </div>
                     <div className='flex items-center gap-x-4'>
-                        {isPlaying && queueId === `user/${user.username}/tracks` ? (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    pause();
-                                }}
-                            >
-                                <PauseHollowIcon size={32} />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() => {
-                                    playQueue(
-                                        hideExplicit
-                                            ? mashups
-                                                  .filter((mashup) => !isExplicit(mashup.statuses))
-                                                  .map((mashup) => mashup.id)
-                                            : user.mashups,
-                                        `Мешапы ${user.username}`,
-                                        `user/${user.username}/tracks`
-                                    );
-                                }}
-                            >
-                                <PlayHollowIcon size={32} />
-                            </Button>
-                        )}
+                        <QueuePlayButton
+                            mashupIds={user.mashups}
+                            queueName={`Мешапы ${user.username}`}
+                            queueId={`user/${user.username}/tracks`}
+                        />
                         <Button
                             variant='ghost'
                             size='icon'

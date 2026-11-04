@@ -10,6 +10,7 @@ import PlaylistSmallThumbSkeleton from '@/router/shared/components/playlist/Play
 import { THUMB_REVEAL_DESKTOP, THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
 import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface ProfileThumbProps {
     playlist: Playlist;
@@ -72,15 +73,9 @@ function PlaylistSmallThumb({ playlist }: ProfileThumbProps) {
                             {playlist.name}
                         </Link>
                     </div>
-                    {playlist.authors.map((author) => (
-                        <Link
-                            key={author}
-                            to={`/user/${author}`}
-                            className='font-medium text-[13px] text-onSurfaceVariant'
-                        >
-                            {author}
-                        </Link>
-                    ))}
+                    <div className='truncate font-medium text-[13px] text-onSurfaceVariant'>
+                        <AuthorLinks authors={playlist.authors} />
+                    </div>
                 </div>
             </div>
 

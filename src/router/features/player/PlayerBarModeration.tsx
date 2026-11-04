@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button.tsx';
-import { Link } from 'react-router-dom';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon.tsx';
 import { usePlayerStore } from '@/store/player.ts';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon.tsx';
@@ -9,6 +8,7 @@ import PlaybackBar from '@/router/features/player/PlaybackBar.tsx';
 import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { getToken } from '@/store/global';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 export default function PlayerBarModeration() {
     const volume = usePlayerStore((state) => state.volume);
@@ -36,22 +36,8 @@ export default function PlayerBarModeration() {
                         <span className='font-medium text-[15px] text-onSurface truncate'>
                             {moderationSrc.name}
                         </span>
-                        <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
-                            {moderationSrc.authors.map((author, index) => (
-                                <div key={index}>
-                                    <Link
-                                        key={author}
-                                        to={`/user/${author}`}
-                                        className='font-medium text-onSurfaceVariant'
-                                    >
-                                        {author}
-                                    </Link>
-
-                                    {index !== moderationSrc.authors.length - 1 && (
-                                        <span className='text-onSurfaceVariant'>, </span>
-                                    )}
-                                </div>
-                            ))}
+                        <div className='w-full truncate font-medium text-onSurfaceVariant'>
+                            <AuthorLinks authors={moderationSrc.authors} />
                         </div>
                     </div>
                 </>

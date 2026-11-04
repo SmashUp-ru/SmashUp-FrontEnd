@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 import { Playlist } from '@/store/entities/playlist.ts';
-import { cn, zip } from '@/lib/utils.ts';
+import { cn } from '@/lib/utils.ts';
 import PlaylistThumbSkeleton from '@/router/shared/components/playlist/PlaylistThumbSkeleton.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useEntityThumb } from '@/router/shared/components/useEntityThumb.ts';
@@ -13,6 +13,7 @@ import {
 } from '@/router/shared/components/thumbHover.ts';
 import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface PlaylistThumbProps {
     playlist: Playlist;
@@ -86,18 +87,11 @@ function PlaylistThumb({ playlist, searchMode, image, link }: PlaylistThumbProps
                 >
                     {playlist.name}
                 </Link>
-                <div className='flex items-center gap-x-2 max-w-full md:max-w-[216px]'>
-                    {zip([playlist.authorsIds, playlist.authors]).map(
-                        ([authorId, author], index) => (
-                            <Link
-                                key={index}
-                                to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                className='font-medium text-[13px] text-onSurfaceVariant truncate'
-                            >
-                                {author}
-                            </Link>
-                        )
-                    )}
+                <div className='truncate max-w-full md:max-w-[216px] font-medium text-[13px] text-onSurfaceVariant'>
+                    <AuthorLinks
+                        authors={playlist.authors}
+                        searchIds={searchMode ? playlist.authorsIds : undefined}
+                    />
                 </div>
             </div>
         </div>

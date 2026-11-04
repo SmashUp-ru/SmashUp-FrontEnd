@@ -1,5 +1,4 @@
 import { useEffect, useState, type TouchEvent as ReactTouchEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { usePlayerStore } from '@/store/player.ts';
 import { usePlayer } from '@/router/features/player/usePlayer.ts';
 import { useMashupInfoData } from '@/router/features/mashupInfo/useMashupInfoData.ts';
@@ -25,6 +24,7 @@ import SourcesIcon from '@/components/icons/Sources.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 /**
  * Края плеера уходят в ТОЧНО тот же чёрный, что стоит в `theme-color` (index.html)
@@ -279,19 +279,8 @@ export default function FullPlayer() {
                                     </div>
                                 )}
                             </div>
-                            <div className='flex items-center gap-x-1 line-clamp-1 text-onSurfaceVariant'>
-                                {mashup.authors.map((author, i) => (
-                                    <span key={author}>
-                                        <Link
-                                            to={`/user/${author}`}
-                                            onClick={close}
-                                            className='font-medium'
-                                        >
-                                            {author}
-                                        </Link>
-                                        {i !== mashup.authors.length - 1 && <span>, </span>}
-                                    </span>
-                                ))}
+                            <div className='truncate font-medium text-onSurfaceVariant'>
+                                <AuthorLinks authors={mashup.authors} onLinkClick={close} />
                             </div>
                         </div>
                     </div>

@@ -3,13 +3,13 @@ import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
-import { zip } from '@/lib/utils.ts';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { coverUrl } from '@/lib/cdn.ts';
 import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
 import { cn } from '@/lib/utils.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface MashupThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -65,23 +65,11 @@ export default function MashupThumbExplicitDisallowed({
                                     )}
                                 </div>
                             </div>
-                            <div className='flex items-center gap-x-2 max-w-[216px]'>
-                                {zip([mashup.authorsIds, mashup.authors]).map(
-                                    ([authorId, author], index) => (
-                                        <div key={author}>
-                                            <Link
-                                                key={index}
-                                                to={`/user/${author}${searchMode ? `?searchId=${authorId}` : ''}`}
-                                                className='font-medium text-[15px] text-onSurfaceVariant truncate'
-                                            >
-                                                {author}
-                                            </Link>
-                                            {index !== mashup.authors.length - 1 && (
-                                                <span className='text-onSurfaceVariant'>, </span>
-                                            )}
-                                        </div>
-                                    )
-                                )}
+                            <div className='truncate text-left max-w-[216px] font-medium text-[15px] text-onSurfaceVariant'>
+                                <AuthorLinks
+                                    authors={mashup.authors}
+                                    searchIds={searchMode ? mashup.authorsIds : undefined}
+                                />
                             </div>
                         </div>
                     </div>

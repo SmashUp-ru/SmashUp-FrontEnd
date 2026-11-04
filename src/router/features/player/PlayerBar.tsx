@@ -1,7 +1,6 @@
 import Player from '@/router/features/player/Player.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
-import { Link } from 'react-router-dom';
 import ShuffleIcon from '@/components/icons/Shuffle.tsx';
 import SkipButton from '@/router/features/player/SkipButton.tsx';
 import RepeatIcon from '@/components/icons/Repeat.tsx';
@@ -21,6 +20,7 @@ import VolumeControl from '@/router/features/player/VolumeControl.tsx';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import { useLike } from '@/router/shared/hooks/useLike.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 export default function PlayerBar() {
     const queue = usePlayerStore((state) => state.queue);
@@ -82,23 +82,12 @@ export default function PlayerBar() {
                         >
                             {mashup.name}
                         </Button>
-                        <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
-                            {mashup.authors.map((author, index) => (
-                                <div key={index}>
-                                    <Link
-                                        key={author}
-                                        to={`/user/${author}`}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className='font-medium text-onSurfaceVariant transition-colors hover:text-onSurface'
-                                    >
-                                        {author}
-                                    </Link>
-
-                                    {index !== mashup.authors.length - 1 && (
-                                        <span className='text-onSurfaceVariant'>, </span>
-                                    )}
-                                </div>
-                            ))}
+                        <div className='w-full truncate font-medium text-onSurfaceVariant'>
+                            <AuthorLinks
+                                authors={mashup.authors}
+                                onLinkClick={(e) => e.stopPropagation()}
+                                linkClassName='transition-colors hover:text-onSurface'
+                            />
                         </div>
                     </div>
 

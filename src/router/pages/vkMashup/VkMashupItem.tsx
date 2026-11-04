@@ -1,12 +1,7 @@
 import LinkIcon from '@/components/icons/Link';
 import PauseHollowIcon from '@/components/icons/PauseHollowIcon';
 import PlayHollowIcon from '@/components/icons/PlayHollowIcon';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from '@/components/ui/accordion';
+import { Accordion, AccordionContent, AccordionItem } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { usePlayer } from '@/router/features/player/usePlayer';
@@ -17,7 +12,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { coverUrl } from '@/lib/cdn.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
-import { openExternal } from '@/lib/utils.ts';
+import { cn, openExternal } from '@/lib/utils.ts';
+import { ChevronDown } from 'lucide-react';
 
 interface VkMashupItemProps {
     mashup: VkMashup;
@@ -42,33 +38,39 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
 
     const postUrl = `https://vk.com/wall-${mashup.groupId}_${mashup.postId}`;
 
+    const itemValue = `${mashup.ownerId}_${mashup.audioId}`;
+    const isOpen = value === itemValue;
+    const toggle = () => setValue(isOpen ? undefined : itemValue);
+
     return (
         <Accordion type='single' collapsible value={value} onValueChange={(v) => setValue(v)}>
-            <AccordionItem value={mashup.ownerId + '_' + mashup.audioId} className='relative'>
-                <AccordionTrigger>
-                    <div className='w-full flex items-center gap-x-2 py-[6px] pl-[6px]'>
-                        <div className='flex min-w-0 items-center gap-x-3 md:gap-x-4'>
-                            <ImageWithSkeleton
-                                src={imageUrl}
-                                alt={mashup.name}
-                                className='w-12 h-12 shrink-0 rounded-[10px]'
-                            />
-                            <div className='flex min-w-0 flex-col items-start'>
-                                <span className='truncate font-medium text-onSurface'>
-                                    {mashup.name}
-                                </span>
-                                <span className='truncate font-medium text-onSurfaceVariant'>
-                                    {mashup.artist}
-                                </span>
-                            </div>
+            <AccordionItem value={itemValue}>
+                {/*
+                 * Вся строка — переключатель раскрытия, кнопки внутри — соседи текста
+                 * в общем flex-ряду (как в модерации). Раньше кнопки лежали абсолютом
+                 * поверх AccordionTrigger и на узком экране закрывали название.
+                 */}
+                <div
+                    className='min-h-[60px] rounded-2xl p-[6px] bg-surfaceVariant flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-x-4 cursor-pointer'
+                    onClick={toggle}
+                >
+                    <div className='flex flex-1 min-w-0 items-center gap-x-3 md:gap-x-4'>
+                        <ImageWithSkeleton
+                            src={imageUrl}
+                            alt={mashup.name}
+                            className='w-12 h-12 shrink-0 rounded-[10px]'
+                        />
+                        <div className='flex min-w-0 flex-col items-start'>
+                            <span className='truncate max-w-full font-medium text-onSurface'>
+                                {mashup.name}
+                            </span>
+                            <span className='truncate max-w-full font-medium text-onSurfaceVariant'>
+                                {mashup.artist}
+                            </span>
                         </div>
                     </div>
-                </AccordionTrigger>
 
-                {/* Интерактивные кнопки вынесены из AccordionTrigger (он сам <button>),
-                    чтобы избежать вложенности <button> в <button> */}
-                <div className='absolute right-12 top-0 h-[60px] flex items-center gap-x-2 md:gap-x-7 pr-[6px]'>
-                    <div className='flex items-center gap-x-1 md:gap-x-3'>
+                    <div className='flex items-center gap-2 md:gap-x-3'>
                         <div className='hidden md:flex items-center justify-center text-onSurfaceVariant min-w-[150px]'>
                             <span>
                                 Дата релиза:{' '}
@@ -79,15 +81,14 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                         <Button
                             variant='ghost'
                             size='icon'
-                            className=''
                             aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
                             onClick={(e) => {
+                                e.stopPropagation();
                                 if (isCurrent) {
                                     updateVkMashupIsPlaying(!vkMashupIsPlaying);
                                 } else {
                                     playVkMashup(mashup);
                                 }
-                                e.preventDefault();
                             }}
                         >
                             {isPlaying ? (
@@ -97,13 +98,38 @@ export default function VkMashupItem({ mashup }: VkMashupItemProps) {
                             )}
                         </Button>
 
-                        <Button className='md:mr-7 py-[7px] font-medium text-sm rounded-xl' asChild>
-                            <Link to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}>
+                        <Button
+                            className='flex-1 md:flex-none py-[7px] font-medium text-sm rounded-xl'
+                            asChild
+                        >
+                            <Link
+                                to={`/mashup/upload/vk/${mashup.ownerId}/${mashup.audioId}`}
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 Редактировать
                             </Link>
                         </Button>
+
+                        <Button
+                            variant='ghost'
+                            size='control'
+                            aria-label={isOpen ? 'Свернуть' : 'Подробнее'}
+                            aria-expanded={isOpen}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggle();
+                            }}
+                        >
+                            <ChevronDown
+                                className={cn(
+                                    'h-7 w-7 text-onSurfaceVariant transition-transform duration-200 motion-reduce:transition-none',
+                                    isOpen && 'rotate-180'
+                                )}
+                            />
+                        </Button>
                     </div>
                 </div>
+
                 <AccordionContent className='mt-4 flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-x-6'>
                     <ImageWithSkeleton
                         src={imageUrl}

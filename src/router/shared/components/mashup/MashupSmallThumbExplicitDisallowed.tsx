@@ -9,13 +9,13 @@ import { isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24';
 import AltIcon from '@/components/icons/alt/Alt24';
-import { Link } from 'react-router-dom';
 import LikeFilledIcon from '@/components/icons/likeFilled/LikeFilled24';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { coverUrl } from '@/lib/cdn.ts';
 import { THUMB_ROW_HOVER } from '@/router/shared/components/thumbHover.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface MashupSmallThumbExplicitDisallowedProps {
     mashup: Mashup;
@@ -68,22 +68,8 @@ export default function MashupSmallThumbExplicitDisallowed({
                                         )}
                                     </div>
                                 </div>
-                                <div className='w-full flex flex-row items-center gap-x-1 line-clamp-1'>
-                                    {mashup.authors.map((author, index) => (
-                                        <div key={index}>
-                                            <Link
-                                                key={author}
-                                                to={`/user/${author}`}
-                                                className='font-medium text-[13px] text-onSurfaceVariant'
-                                            >
-                                                {author}
-                                            </Link>
-
-                                            {index !== mashup.authors.length - 1 && (
-                                                <span className='text-onSurfaceVariant'>, </span>
-                                            )}
-                                        </div>
-                                    ))}
+                                <div className='w-full truncate text-left font-medium text-[13px] text-onSurfaceVariant'>
+                                    <AuthorLinks authors={mashup.authors} />
                                 </div>
                             </div>
                         </div>

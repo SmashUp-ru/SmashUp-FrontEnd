@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline24';
-import { Link } from 'react-router-dom';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24';
 import { Mashup } from '@/store/entities/mashup.ts';
 import { explicitAllowed, isAlt, isExplicit, isHashtagMashup } from '@/lib/bitmask.ts';
@@ -30,6 +29,7 @@ import { useLike } from '@/router/shared/hooks/useLike.ts';
 import { THUMB_REVEAL, THUMB_REVEAL_DESKTOP } from '@/router/shared/components/thumbHover.ts';
 import PlayPauseMorphIcon from '@/components/icons/PlayPauseMorphIcon.tsx';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import AuthorLinks from '@/router/shared/components/user/AuthorLinks.tsx';
 
 interface MashupThumbProps {
     mashup: Mashup;
@@ -201,23 +201,16 @@ function MashupSmallThumb({
                             )}
                         </div>
                     </div>
-                    <div className='w-full gap-x-1 line-clamp-1 text-ellipsis'>
-                        {mashup.authors.map((author, index) => (
-                            <div key={index}>
-                                <Link
-                                    key={author}
-                                    to={`/user/${author}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className={`font-medium text-[13px] ${isThisMash ? 'text-primary' : 'text-onSurfaceVariant'}`}
-                                >
-                                    {author}
-                                </Link>
-
-                                {index !== mashup.authors.length - 1 && (
-                                    <span className='text-onSurfaceVariant'>, </span>
-                                )}
-                            </div>
-                        ))}
+                    <div
+                        className={cn(
+                            'w-full truncate font-medium text-[13px]',
+                            isThisMash ? 'text-primary' : 'text-onSurfaceVariant'
+                        )}
+                    >
+                        <AuthorLinks
+                            authors={mashup.authors}
+                            onLinkClick={(e) => e.stopPropagation()}
+                        />
                     </div>
                 </div>
             </div>
