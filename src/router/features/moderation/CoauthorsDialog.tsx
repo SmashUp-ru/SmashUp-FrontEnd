@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import { useDebounce } from 'use-debounce';
 import {
@@ -14,7 +14,12 @@ import { Input } from '@/components/ui/input.tsx';
 import EditIcon from '@/components/icons/edit/Edit24';
 import SearchIcon from '@/components/icons/Search.tsx';
 import CancelIcon from '@/components/icons/cancel/Cancel32';
-import { axiosSession, cn } from '@/lib/utils.ts';
+import { axiosSession } from '@/lib/utils.ts';
+import { coverUrl } from '@/lib/cdn.ts';
+import { useUserStore } from '@/store/entities/user.ts';
+import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import PlusIcon from '@/components/icons/Plus.tsx';
 import { UsersSearchResponse } from '@/router/shared/types/search.ts';
 import { User } from '@/store/entities/user.ts';
 import { UnpublishedMashup } from '@/store/moderation.ts';
@@ -25,7 +30,28 @@ import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 import { editUnpublishedMashup } from '@/router/features/moderation/editUnpublishedMashup.ts';
 import { CONFIRM_CANCEL, CONFIRM_FOOTER } from '@/router/shared/components/confirmDialog.ts';
 
-type Author = { id: number; username: string };
+type Author = { id: number; username: string; imageUrl?: string };
+
+/** Строка автора той же формы, что строка исходника: аватар 44×44, ник, действие справа. */
+function AuthorRow({ author, trailing }: { author: Author; trailing: ReactNode }) {
+    return (
+        <>
+            {author.imageUrl ? (
+                <ImageWithSkeleton
+                    src={coverUrl('user', author.imageUrl, 100)}
+                    alt={author.username}
+                    className='h-11 w-11 shrink-0 rounded-full'
+                />
+            ) : (
+                <Skeleton className='h-11 w-11 shrink-0 rounded-full' />
+            )}
+            <span className='min-w-0 flex-1 truncate text-sm font-medium text-onSurface'>
+                {author.username}
+            </span>
+            {trailing}
+        </>
+    );
+}
 
 /** Карандаш у «Авторов»: убрать соавтора или найти и добавить по нику. Публикатора убрать нельзя. */
 export default function CoauthorsDialog({ mashup }: { mashup: UnpublishedMashup }) {
@@ -41,6 +67,22 @@ export default function CoauthorsDialog({ mashup }: { mashup: UnpublishedMashup 
         if (!open) return;
         setAuthors(mashup.authorsIds.map((id, i) => ({ id, username: mashup.authors[i] })));
         setQuery('');
+        // В мешапе только id и ники — аватарки берём из стора пользователей.
+        let cancelled = false;
+        useUserStore
+            .getState()
+            .getManyByIds(mashup.authorsIds, true)
+            .then((users) => {
+                if (cancelled) return;
+                const avatar = new Map(users.map((u) => [u.id, u.imageUrl]));
+                setAuthors((list) =>
+                    list.map((a) => ({ ...a, imageUrl: a.imageUrl ?? avatar.get(a.id) }))
+                );
+            })
+            .catch(() => {});
+        return () => {
+            cancelled = true;
+        };
     }, [open, mashup.authors, mashup.authorsIds]);
 
     useEffect(() => {
@@ -95,35 +137,34 @@ export default function CoauthorsDialog({ mashup }: { mashup: UnpublishedMashup 
                     <DialogTitle className='p-0 text-xl'>Авторы</DialogTitle>
                 </DialogHeader>
 
-                <div className='flex flex-wrap gap-2'>
-                    {authors.map((a) => {
-                        const locked = a.id === mashup.publisherId;
-                        return (
-                            <span
-                                key={a.id}
-                                className='inline-flex items-center gap-1 rounded-full bg-surface pl-3 pr-1 py-1 text-sm font-medium text-onSurface'
-                            >
-                                {a.username}
-                                {locked ? (
-                                    <span className='px-2 text-xs text-onSurfaceVariant'>
-                                        автор загрузки
-                                    </span>
-                                ) : (
-                                    <Button
-                                        variant='ghost'
-                                        size='icon'
-                                        aria-label={`Убрать ${a.username}`}
-                                        className='h-7 w-7'
-                                        onClick={() =>
-                                            setAuthors((list) => list.filter((x) => x.id !== a.id))
-                                        }
-                                    >
-                                        <CancelIcon size={18} color='onSurfaceVariant' />
-                                    </Button>
-                                )}
-                            </span>
-                        );
-                    })}
+                <div className='-mx-1.5 flex flex-col'>
+                    {authors.map((a) => (
+                        <div key={a.id} className='flex items-center gap-x-4 rounded-2xl p-1.5'>
+                            <AuthorRow
+                                author={a}
+                                trailing={
+                                    a.id === mashup.publisherId ? (
+                                        <span className='px-3 text-[13px] text-onSurfaceVariant'>
+                                            автор загрузки
+                                        </span>
+                                    ) : (
+                                        <Button
+                                            variant='ghost'
+                                            size='control'
+                                            aria-label={`Убрать ${a.username}`}
+                                            onClick={() =>
+                                                setAuthors((list) =>
+                                                    list.filter((x) => x.id !== a.id)
+                                                )
+                                            }
+                                        >
+                                            <CancelIcon size={24} color='onSurfaceVariant' />
+                                        </Button>
+                                    )
+                                }
+                            />
+                        </div>
+                    ))}
                 </div>
 
                 <Input
@@ -132,25 +173,34 @@ export default function CoauthorsDialog({ mashup }: { mashup: UnpublishedMashup 
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
-                <div className='flex flex-col max-h-[240px] overflow-y-auto'>
+                <div className='-mx-1.5 -mt-2 flex flex-col max-h-[240px] overflow-y-auto'>
                     {found
                         .filter((u) => !has(u.id))
                         .map((u) => (
                             <button
                                 key={u.id}
                                 type='button'
+                                aria-label={`Добавить ${u.username}`}
                                 onClick={() =>
                                     setAuthors((list) => [
                                         ...list,
-                                        { id: u.id, username: u.username }
+                                        { id: u.id, username: u.username, imageUrl: u.imageUrl }
                                     ])
                                 }
-                                className={cn(
-                                    'text-left px-3 py-2.5 rounded-xl text-sm font-medium text-onSurface',
-                                    'hover:bg-onSurface/10 transition-colors motion-reduce:transition-none'
-                                )}
+                                className='group flex items-center gap-x-4 rounded-2xl p-1.5 text-left hover:bg-onPrimary transition-colors motion-reduce:transition-none'
                             >
-                                {u.username}
+                                <AuthorRow
+                                    author={{
+                                        id: u.id,
+                                        username: u.username,
+                                        imageUrl: u.imageUrl
+                                    }}
+                                    trailing={
+                                        <span className='flex h-11 w-11 items-center justify-center'>
+                                            <PlusIcon className='group-hover:text-onSurface' />
+                                        </span>
+                                    }
+                                />
                             </button>
                         ))}
                 </div>
