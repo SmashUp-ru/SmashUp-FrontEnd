@@ -336,7 +336,38 @@ export function usePlayer() {
         updateMashupInfo(null);
     }, [updateInfo, updateMashupInfo]);
 
+    /**
+     * Добавить мешап в конец очереди (пункт «Добавить в очередь» в меню ⋯).
+     *
+     * Очередь есть — дописываем в конец и `queue`, и `originalQueue` (иначе при
+     * выключении перемешивания добавленный мешап пропал бы). Текущий трек и
+     * `queueId` не трогаем. Очереди нет — мешап становится очередью из одного
+     * трека, но не запускается сам: бар появляется на паузе. Превью модерации/VK
+     * при этом гасим, как при любом запуске основной очереди, — иначе бары наложатся.
+     */
+    const addToQueue = useCallback((mashupId: number) => {
+        const s = usePlayerStore.getState();
+        if (s.queue.length > 0 && s.queueIndex >= 0) {
+            s.updateQueue([...s.queue, mashupId]);
+            s.updateOriginalQueue([...s.originalQueue, mashupId]);
+            return;
+        }
+        s.updateModerationSrc(null);
+        s.updateModerationIsPlaying(false);
+        s.updateVkMashupSrc(null);
+        s.updateVkMashupIsPlaying(false);
+        s.updateSeek(0);
+        s.updateChangedSeek(0);
+        s.updateOriginalQueue([mashupId]);
+        s.updateQueue([mashupId]);
+        s.updateQueueIndex(0);
+        s.updateQueueName('Очередь');
+        s.updateQueueId('queue');
+        s.updatePlaying(false);
+    }, []);
+
     return {
+        addToQueue,
         play,
         pause,
         next,

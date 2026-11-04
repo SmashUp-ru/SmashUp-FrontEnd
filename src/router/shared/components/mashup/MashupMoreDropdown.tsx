@@ -28,6 +28,7 @@ import { useCurrentUserPlaylists } from '@/router/shared/hooks/useCurrentUserPla
 import { coverUrl } from '@/lib/cdn.ts';
 import { useNavigate } from 'react-router-dom';
 import InfoIcon from '@/components/icons/Info.tsx';
+import { usePlayer } from '@/router/features/player/usePlayer.ts';
 
 interface MashupMoreDropdownProps {
     mashup: Mashup;
@@ -43,6 +44,7 @@ export default function MashupMoreDropdown({
 }: MashupMoreDropdownProps) {
     const { toast } = useToast();
     const navigate = useNavigate();
+    const { addToQueue } = usePlayer();
     const currentUser = useGlobalStore((state) => state.currentUser);
     const updateMashupById = useMashupStore((state) => state.updateOneById);
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
@@ -207,7 +209,23 @@ export default function MashupMoreDropdown({
                         </DropdownMenuSub>
                     )}
 
-                    <DropdownMenuItem className='flex items-center gap-x-2.5' onClick={() => {}}>
+                    <DropdownMenuItem
+                        className='flex items-center gap-x-2.5'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            addToQueue(mashup.id);
+                            toast({
+                                element: (
+                                    <BaseToast
+                                        image={coverUrl('mashup', mashup.imageUrl, 100)}
+                                        field={mashup.name}
+                                        after='— в очереди'
+                                    />
+                                ),
+                                duration: 2000
+                            });
+                        }}
+                    >
                         <BackIcon
                             className='group-data-[highlighted]:text-primary'
                             color='onSurface'

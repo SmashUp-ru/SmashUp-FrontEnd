@@ -202,3 +202,39 @@ describe('usePlayer — moderation / vk источники взаимоискл�
         expect(s.moderationIsPlaying).toBe(false);
     });
 });
+
+describe('usePlayer — addToQueue', () => {
+    it('очередь есть — в конец queue и originalQueue, текущий трек не меняется', () => {
+        usePlayerStore.setState({
+            queue: [3, 1, 2],
+            originalQueue: [1, 2, 3],
+            queueIndex: 1,
+            queueId: 'playlist/7',
+            shuffle: true,
+            isPlaying: true
+        });
+        const { result } = renderHook(() => usePlayer());
+        act(() => result.current.addToQueue(9));
+        const s = usePlayerStore.getState();
+        expect(s.queue).toEqual([3, 1, 2, 9]);
+        expect(s.originalQueue).toEqual([1, 2, 3, 9]);
+        expect(s.queueIndex).toBe(1);
+        expect(s.queueId).toBe('playlist/7');
+        expect(s.isPlaying).toBe(true);
+    });
+
+    it('очереди нет — мешап становится очередью, но не запускается; превью гасится', () => {
+        usePlayerStore.setState({
+            moderationSrc: { id: 5 } as never,
+            moderationIsPlaying: true
+        });
+        const { result } = renderHook(() => usePlayer());
+        act(() => result.current.addToQueue(9));
+        const s = usePlayerStore.getState();
+        expect(s.queue).toEqual([9]);
+        expect(s.queueIndex).toBe(0);
+        expect(s.isPlaying).toBe(false);
+        expect(s.moderationSrc).toBeNull();
+        expect(s.moderationIsPlaying).toBe(false);
+    });
+});

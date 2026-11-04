@@ -41,7 +41,7 @@ import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleto
 import { editUnpublishedMashup } from '@/router/features/moderation/editUnpublishedMashup.ts';
 import ModerationGenresDialog from '@/router/features/moderation/ModerationGenresDialog.tsx';
 import { useAccordionScroll } from '@/router/features/moderation/useAccordionScroll.ts';
-import { FIELD_LABEL } from '@/router/features/moderation/moderationStyles.ts';
+import { FIELD_LABEL, GENRE_CHIP } from '@/router/features/moderation/moderationStyles.ts';
 import {
     CONFIRM_CANCEL,
     CONFIRM_DIALOG,
@@ -55,6 +55,7 @@ import EditTextDialog from '@/router/features/moderation/EditTextDialog.tsx';
 import CoauthorsDialog from '@/router/features/moderation/CoauthorsDialog.tsx';
 import AddSourceDialog from '@/router/features/moderation/AddSourceDialog.tsx';
 import { TRACK_ICON } from '@/router/features/moderation/trackIcons.tsx';
+import TrackSmallThumbSkeleton from '@/router/shared/components/track/TrackSmallThumbSkeleton.tsx';
 import { SegmentedControl } from '@/components/ui/segmented-control.tsx';
 import {
     shortStatusLink,
@@ -421,6 +422,17 @@ export function UnpublishedMashupAccordionItem({
                             )}
                         </span>
                         <div className='-mx-1.5 flex flex-col'>
+                            {!tracks &&
+                                Array.from(
+                                    {
+                                        length:
+                                            Math.min(
+                                                mashup.tracks.length + mashup.tracksUrls.length,
+                                                TRACKS_PREVIEW
+                                            ) || 1
+                                    },
+                                    (_, i) => <TrackSmallThumbSkeleton key={i} />
+                                )}
                             {tracks &&
                                 (showAllTracks ? tracks : tracks.slice(0, TRACKS_PREVIEW)).map(
                                     (selectedTrack) => {
@@ -462,31 +474,29 @@ export function UnpublishedMashupAccordionItem({
                                         return thumb();
                                     }
                                 )}
-                        </div>
-                        {tracks && (
-                            <div className='flex flex-wrap items-center gap-2'>
+                            {tracks && tracks.length > TRACKS_PREVIEW && (
+                                <button
+                                    type='button'
+                                    className='self-start h-8 px-3 text-[13px] font-medium text-onSurfaceVariant hover:text-onSurface transition-colors motion-reduce:transition-none'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowAllTracks((v) => !v);
+                                    }}
+                                >
+                                    {showAllTracks
+                                        ? 'Свернуть'
+                                        : `Ещё ${tracks.length - TRACKS_PREVIEW}`}
+                                </button>
+                            )}
+                            {tracks && (
                                 <AddSourceDialog
                                     current={tracks}
                                     onAdd={(t) =>
                                         saveTracks([...tracks, t], 'при добавлении исходника')
                                     }
                                 />
-                                {tracks.length > TRACKS_PREVIEW && (
-                                    <button
-                                        type='button'
-                                        className='h-8 px-2 rounded-xl text-[13px] font-medium text-onSurfaceVariant hover:text-onSurface transition-colors motion-reduce:transition-none'
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowAllTracks((v) => !v);
-                                        }}
-                                    >
-                                        {showAllTracks
-                                            ? 'Свернуть'
-                                            : `Ещё ${tracks.length - TRACKS_PREVIEW}`}
-                                    </button>
-                                )}
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
 
                     {/*Жанры*/}
@@ -494,10 +504,7 @@ export function UnpublishedMashupAccordionItem({
                         <span className={FIELD_LABEL}>Жанры</span>
                         <div className='flex flex-wrap gap-2'>
                             {mashup.genres?.map((genre) => (
-                                <span
-                                    key={genre}
-                                    className='inline-flex h-8 items-center rounded-xl bg-surface px-3 text-[13px] font-medium text-onSurface first-letter:uppercase'
-                                >
+                                <span key={genre} className={GENRE_CHIP}>
                                     {genre}
                                 </span>
                             ))}
@@ -510,7 +517,9 @@ export function UnpublishedMashupAccordionItem({
                         <span className={FIELD_LABEL}>Статус</span>
                         <div className='flex flex-col gap-y-2'>
                             <label className='flex items-center gap-x-3 h-11 px-4 rounded-2xl bg-surface cursor-pointer'>
+                                {/* Базовый чекбокс залит bg-surface и на плашке того же цвета не виден. */}
                                 <Checkbox
+                                    className='bg-onSurface/10'
                                     checked={isExplicit(mashup.statuses)}
                                     onClick={toggleExplicit}
                                 />

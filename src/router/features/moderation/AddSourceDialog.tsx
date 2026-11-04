@@ -26,7 +26,6 @@ import {
 } from '@/router/shared/types/upload.ts';
 import { Track } from '@/store/entities/track.ts';
 import { TRACK_ICON } from '@/router/features/moderation/trackIcons.tsx';
-import { ADD_CHIP } from '@/router/features/moderation/moderationStyles.ts';
 
 function toSelected(found: SearchTrack): SelectedTrack {
     if (found.keyType === TrackType.YandexMusic) return new YandexMusicSelectedTrack(found.track);
@@ -73,14 +72,18 @@ export default function AddSourceDialog({ current, onAdd }: AddSourceDialogProps
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
+                {/* Той же формы, что строка исходника: квадрат 44×44 на месте обложки. */}
                 <button
                     type='button'
-                    aria-label='Добавить исходник'
-                    className={ADD_CHIP}
+                    className='group flex w-full items-center gap-x-4 rounded-2xl p-1.5 text-left hover:bg-onPrimary transition-colors motion-reduce:transition-none'
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <PlusIcon size={16} className='group-hover:text-onSurface' />
-                    Исходник
+                    <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface group-hover:bg-onSurface/10 transition-colors motion-reduce:transition-none'>
+                        <PlusIcon className='group-hover:text-onSurface' />
+                    </span>
+                    <span className='text-sm font-medium text-onSurfaceVariant group-hover:text-onSurface transition-colors motion-reduce:transition-none'>
+                        Добавить исходник
+                    </span>
                 </button>
             </DialogTrigger>
             <DialogContent

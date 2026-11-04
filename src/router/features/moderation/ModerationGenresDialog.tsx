@@ -21,7 +21,7 @@ import { useSubmitGuard } from '@/router/shared/hooks/useSubmitGuard.ts';
 import { editUnpublishedMashup } from '@/router/features/moderation/editUnpublishedMashup.ts';
 import { CONFIRM_CANCEL, CONFIRM_FOOTER } from '@/router/shared/components/confirmDialog.ts';
 import { AxiosSmashUpError } from '@/router/shared/types/smashup.ts';
-import { ADD_CHIP } from '@/router/features/moderation/moderationStyles.ts';
+import { ADD_GENRE_CHIP } from '@/router/features/moderation/moderationStyles.ts';
 
 /** Кнопка «+» под жанрами модерации и модалка выбора жанров. */
 export default function ModerationGenresDialog({ mashup }: { mashup: UnpublishedMashup }) {
@@ -71,7 +71,7 @@ export default function ModerationGenresDialog({ mashup }: { mashup: Unpublished
                 <button
                     type='button'
                     aria-label='Изменить жанры'
-                    className={ADD_CHIP}
+                    className={ADD_GENRE_CHIP}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <PlusIcon size={16} className='group-hover:text-onSurface' />
