@@ -59,12 +59,34 @@ describe('useLike', () => {
         expect(post).toHaveBeenCalledOnce();
     });
 
-    it('ошибка сервера: тост, состояние не меняется, без необработанного reject', async () => {
+    it('сердце меняется сразу, до ответа сервера', () => {
+        post.mockReturnValue(new Promise(() => {})); // ответ так и не пришёл
+        const { result } = renderHook(() => useLike('mashup', mashup));
+        act(() => result.current.toggle());
+        expect(result.current.isLiked).toBe(true);
+    });
+
+    it('ошибка сервера: лайк откатывается, тост, без необработанного reject', async () => {
         post.mockRejectedValue({ status: 500, response: { data: {} } });
         const { result } = renderHook(() => useLike('mashup', mashup));
         act(() => result.current.toggle());
+        expect(result.current.isLiked).toBe(true);
         await flush();
         expect(toast).toHaveBeenCalledOnce();
         expect(result.current.isLiked).toBe(false);
+    });
+
+    it('сущности нет в кэше — кладётся целиком, а не огрызком { liked }', async () => {
+        useMashupStore.setState({ cache: {} });
+        post.mockResolvedValue({});
+        const full = { id: 7, liked: false, name: 'x', tracks: [1] } as unknown as Mashup;
+        const { result } = renderHook(() => useLike('mashup', full));
+        act(() => result.current.toggle());
+        await flush();
+        expect(useMashupStore.getState().cache[7]).toMatchObject({
+            name: 'x',
+            tracks: [1],
+            liked: true
+        });
     });
 });

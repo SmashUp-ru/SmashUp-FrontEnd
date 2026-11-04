@@ -17,7 +17,7 @@ const NOUN: Record<LikeKind, string> = { mashup: 'мешапы', playlist: 'пл
  * - `isLiked` читается из стора сущностей (проп может быть устаревшим снимком);
  * - гость получает тост «Войди…» вместо запроса, который сервер отклонит с 401;
  * - повторный клик, пока запрос в пути, игнорируется;
- * - ошибка сервера показывается тостом, состояние не меняется.
+ * - лайк применяется сразу (оптимистично), при ошибке сервера откатывается + тост.
  */
 export function useLike(kind: LikeKind, entity: { id: number; liked: boolean } | null | undefined) {
     const currentUser = useGlobalStore((state) => state.currentUser);
@@ -50,14 +50,28 @@ export function useLike(kind: LikeKind, entity: { id: number; liked: boolean } |
         }
 
         const liked = !isLiked;
+        const store = kind === 'mashup' ? useMashupStore : usePlaylistStore;
+        // Сущности может не быть в кэше (проп-снимок) — тогда кладём её целиком,
+        // иначе в кэше окажется огрызок `{ liked }` без остальных полей.
+        const setLiked = (value: boolean) =>
+            store
+                .getState()
+                .updateOneById(
+                    entity.id,
+                    store.getState().cache[entity.id]
+                        ? { liked: value }
+                        : { ...entity, liked: value }
+                );
+
+        // Оптимистично: сердце и анимация — сразу, при ошибке сервера откатываем.
+        setLiked(liked);
         inFlight.current = true;
         axiosSession
             .post(`${kind}/${liked ? 'add_like' : 'remove_like'}?id=${entity.id}`)
-            .then(() => {
-                const store = kind === 'mashup' ? useMashupStore : usePlaylistStore;
-                store.getState().updateOneById(entity.id, { liked });
+            .catch((e) => {
+                setLiked(!liked);
+                return axiosCatcher(toast, liked ? 'при лайке' : 'при снятии лайка')(e);
             })
-            .catch(axiosCatcher(toast, liked ? 'при лайке' : 'при снятии лайка'))
             .catch(() => {}) // axiosCatcher пробрасывает ошибку дальше — тост уже показан
             .finally(() => {
                 inFlight.current = false;

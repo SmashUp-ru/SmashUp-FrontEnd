@@ -165,6 +165,13 @@ export default function Player({ mashup }: { mashup: Mashup }) {
         [mashup.imageUrl]
     );
 
+    // seekbackward/seekforward (±10с) НЕ подключаем: в iOS они заменяют на экране
+    // блокировки кнопки «предыдущий/следующий трек».
+    const onSeekTo = useCallback((details: MediaSessionActionDetails) => {
+        if (details.seekTime == null) return;
+        usePlayerStore.getState().updateChangedSeek(Math.round(details.seekTime * 1000));
+    }, []);
+
     useMediaSession({
         title: mashup.name,
         artist: mashup.authors.join(', '),
@@ -172,11 +179,42 @@ export default function Player({ mashup }: { mashup: Mashup }) {
         artwork: artwork,
         onPlay: play,
         onPause: pause,
-        // onSeekBackward,
-        // onSeekForward,
         onPreviousTrack: prev,
-        onNextTrack: next
+        onNextTrack: next,
+        onSeekTo: onSeekTo
     });
+
+    // Позиция и длительность для системного виджета (macOS Now Playing, экран
+    // блокировки): без них виджет не знает, где трек, и ползунок перемотки там
+    // не работает. Подписка на стор, а не селектор: seek меняется каждые 500мс,
+    // и ре-рендерить из-за этого Player незачем.
+    useEffect(() => {
+        const session = 'mediaSession' in navigator ? navigator.mediaSession : null;
+        if (!session?.setPositionState || !mashup.duration) return;
+        const duration = mashup.duration / 1000;
+        const push = (seekMs: number) => {
+            try {
+                session.setPositionState({
+                    duration,
+                    position: Math.min(Math.max(seekMs / 1000, 0), duration),
+                    playbackRate: 1
+                });
+            } catch {
+                // некорректные значения браузер отвергает исключением — не критично
+            }
+        };
+        push(usePlayerStore.getState().seek);
+        return usePlayerStore.subscribe((state, prevState) => {
+            if (state.seek !== prevState.seek) push(state.seek);
+        });
+    }, [mashup.duration]);
+
+    // Иначе на паузе виджет продолжает «проигрывать» ползунок дальше.
+    useEffect(() => {
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        }
+    }, [isPlaying]);
 
     return (
         <ReactHowler

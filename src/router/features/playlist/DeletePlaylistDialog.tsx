@@ -19,6 +19,12 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { useCallback } from 'react';
 import { coverUrl } from '@/lib/cdn.ts';
+import {
+    CONFIRM_CANCEL,
+    CONFIRM_DIALOG,
+    CONFIRM_FOOTER,
+    focusDialogItself
+} from '@/router/shared/components/confirmDialog.ts';
 
 interface DeletePlaylistDialogProps {
     playlist: Playlist;
@@ -81,20 +87,22 @@ export default function DeletePlaylistDialog({ playlist }: DeletePlaylistDialogP
             <DialogTrigger>
                 <CancelIcon />
             </DialogTrigger>
-            <DialogContent className='w-[460px]'>
-                <DialogHeader>
-                    <DialogTitle className='p-0'>Удалить плейлист?</DialogTitle>
-                    <DialogDescription className='m-0 p-0 text-[15px] text-onSurfaceVariant font-medium'>
+            <DialogContent className={CONFIRM_DIALOG} onOpenAutoFocus={focusDialogItself}>
+                <DialogHeader className='space-y-2'>
+                    <DialogTitle className='p-0 text-xl'>Удалить плейлист?</DialogTitle>
+                    <DialogDescription className='p-0 text-sm'>
                         Это действие нельзя отменить.
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
-                    <Button variant='error' onClick={handleDelete}>
+                <DialogFooter className={CONFIRM_FOOTER}>
+                    <DialogClose asChild>
+                        <Button variant='nothing' className={CONFIRM_CANCEL}>
+                            Отмена
+                        </Button>
+                    </DialogClose>
+                    <Button variant='error' className='flex-1' onClick={handleDelete}>
                         Удалить
                     </Button>
-                    <DialogClose asChild>
-                        <Button variant='outline'>Отменить</Button>
-                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
