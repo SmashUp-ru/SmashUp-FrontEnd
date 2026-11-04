@@ -7,7 +7,12 @@ export type UnpublishedMashupPatch = Partial<
         UnpublishedMashup,
         'name' | 'statuses' | 'statusesUrls' | 'genres' | 'tracks' | 'tracksUrls'
     >
->;
+> & {
+    /** id авторов (в ответе — `authors` именами + `authorsIds`). */
+    authors?: number[];
+    /** Новая обложка: base64 без префикса `data:…;base64,`. */
+    basedImageFile?: string;
+};
 
 /**
  * Правка неопубликованного мешапа прямо из списка модерации: шлёт только

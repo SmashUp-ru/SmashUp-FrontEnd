@@ -89,15 +89,17 @@ export default function ModerationGenresDialog({ mashup }: { mashup: Unpublished
 
                 <div className='grid grid-cols-2 sm:grid-cols-3 gap-2'>
                     {(allGenres ?? []).map((genre) => {
-                        const on = selected.has(genre);
+                        // Как в форме загрузки: у мешапа жанры хранятся строчными, справочник — с заглавной.
+                        const key = genre.toLowerCase();
+                        const on = selected.has(key);
                         return (
                             <button
                                 key={genre}
                                 type='button'
                                 aria-pressed={on}
-                                onClick={() => toggle(genre)}
+                                onClick={() => toggle(key)}
                                 className={cn(
-                                    'py-3 rounded-2xl font-medium text-[15px] capitalize transition-colors motion-reduce:transition-none',
+                                    'py-3 rounded-2xl font-medium text-[15px] transition-colors motion-reduce:transition-none',
                                     on
                                         ? 'bg-badge text-primary'
                                         : 'bg-surface text-onSurface hover:bg-onSurface/10'

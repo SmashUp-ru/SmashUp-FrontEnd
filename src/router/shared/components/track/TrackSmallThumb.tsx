@@ -14,9 +14,11 @@ export interface TrackThumbProps {
     icon?: ReactNode;
     onClick?: () => unknown;
     className?: string;
+    /** Пункт «Убрать из мешапа» в меню ⋯ (модерация). */
+    onRemove?: () => void;
 }
 
-function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThumbProps) {
+function TrackSmallThumb({ track, selected, icon, onClick, className, onRemove }: TrackThumbProps) {
     return (
         <div
             key={track.id}
@@ -62,7 +64,7 @@ function TrackSmallThumb({ track, selected, icon, onClick, className }: TrackThu
             {icon}
 
             {/* ⋯ как в строке мешапа: круглая обводка size='control' */}
-            <TrackMoreDropdown track={track}>
+            <TrackMoreDropdown track={track} onRemove={onRemove}>
                 <Button variant='ghost' size='control' aria-label='Опции трека'>
                     <div className={cn('w-6 h-6 min-w-6 min-h-6', THUMB_REVEAL)}>
                         <MoreHorizontalIcon />

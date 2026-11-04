@@ -43,9 +43,6 @@ const ChangePasswordConfirmPage = lazy(
 );
 import LogoutPage from '@/router/pages/logout/LogoutPage.tsx';
 const UploadTrackPage = lazy(() => import('@/router/pages/uploadTrack/UploadTrackPage.tsx'));
-const ModerateMashupPage = lazy(
-    () => import('./router/pages/moderation/moderateMashup/ModerateMashupPage')
-);
 import RecommendationsPage from '@/router/pages/recommendations/RecommendationsPage.tsx';
 const UploadVkMashupPage = lazy(() => import('./router/pages/vkMashup/UploadVkMashupPage'));
 const VkLinkCallbackPage = lazy(() => import('./router/pages/vk/VkLinkCallbackPage'));
@@ -124,10 +121,6 @@ const router = createBrowserRouter(
                         {
                             element: <ModerationPage />,
                             path: '/mashup/moderation'
-                        },
-                        {
-                            element: <ModerateMashupPage />,
-                            path: '/mashup/moderation/:mashupId'
                         },
                         {
                             element: <MashupPage />,

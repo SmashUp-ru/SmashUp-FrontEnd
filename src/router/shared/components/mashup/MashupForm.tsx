@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input.tsx';
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
 import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
-import { Track } from '@/store/entities/track.ts';
 import LinkIcon from '@/components/icons/Link.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
@@ -12,9 +11,8 @@ import { Button } from '@/components/ui/button.tsx';
 import { Link } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { AxiosResponse } from 'axios';
-import { TrackSearchResponse, UsersSearchResponse } from '@/router/shared/types/search.ts';
+import { UsersSearchResponse } from '@/router/shared/types/search.ts';
 import { RegEx } from '@/lib/regex.ts';
-import { YouTubeTrack } from '@/router/shared/types/youtube.ts';
 import {
     areTracksEqual,
     areUsersEqual,
@@ -49,20 +47,18 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import MashupFormSkeleton from './MashupFormSkeleton.tsx';
-import { loadOEmbed } from '@/lib/youtube.ts';
 import YouTubeIcon from '@/components/icons/YouTube.tsx';
 import YandexMusicIcon from '@/components/icons/YandexMusic.tsx';
-import { YandexTracksResponse } from '@/router/shared/types/yandex.ts';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24.tsx';
 import AltIcon from '@/components/icons/alt/Alt24.tsx';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24.tsx';
-import { SpotifyTracksResponse } from '@/types/api/spotify.ts';
 import SpotifyIcon from '@/components/icons/Spotify.tsx';
 import TrackSmallThumbSkeleton from '../track/TrackSmallThumbSkeleton.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { SmashUpIcon } from '@/components/icons/SmashUp.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
+import { useTrackSearch } from '@/router/shared/hooks/useTrackSearch.ts';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -199,11 +195,10 @@ export default function MashupForm({
     const [tracksQuery, setTracksQuery] = useState<string>('');
     const [debouncedTracksQuery] = useDebounce(tracksQuery, 500);
 
-    const [tracks, setTracks] = useState<SearchTrack[]>([]);
-    const [tracksLoading, setTracksLoading] = useState<boolean>(false);
-
-    const [youTubeTrackLoading, setYouTubeTrackLoading] = useState<boolean>(false);
-    const [youTubeTrack, setYouTubeTrack] = useState<YouTubeTrack | null>(null);
+    const { tracks, tracksLoading, youTubeTrack, youTubeTrackLoading } = useTrackSearch(
+        debouncedTracksQuery,
+        handleTracksUrls
+    );
 
     const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>(initial.selectedTracks);
     const [users, setUsers] = useState<User[]>([]);
@@ -236,14 +231,6 @@ export default function MashupForm({
             setSelectedUsers(currentSelectedUsers.concat([user]));
         }
     }, []);
-
-    const searchYouTube = (link: string) => {
-        setYouTubeTrackLoading(true);
-
-        loadOEmbed(link)
-            .then(setYouTubeTrack)
-            .then(() => setYouTubeTrackLoading(false));
-    };
 
     const renderSelectedTracks = useCallback(
         (selectedTracks: SelectedTrack[]): RenderTrack[] => {
@@ -292,117 +279,6 @@ export default function MashupForm({
             })
         );
     }, [renderSelectedTracks, userStatefulOnClick]);
-
-    useEffect(() => {
-        if (handleTracksUrls && RegEx.YOUTUBE.test(debouncedTracksQuery)) {
-            const link = RegEx.NORMALIZE_YOUTUBE_LINK(debouncedTracksQuery);
-            searchYouTube(link);
-            return;
-        }
-
-        if (debouncedTracksQuery.length >= 2 && debouncedTracksQuery.length <= 32) {
-            const encodedQuery = encodeURI(debouncedTracksQuery);
-            const promises = [
-                axiosSession
-                    .get(`/track/search?query=${encodedQuery}`)
-                    .then((r: AxiosResponse<TrackSearchResponse>) =>
-                        r.data.response.map((track) => {
-                            return {
-                                key: track.id,
-                                keyType: TrackType.SmashUp,
-                                track: track,
-                                albums: []
-                            };
-                        })
-                    ),
-                handleTracksUrls
-                    ? axiosSession
-                          .get(`/track/search/yandex_music?query=${encodedQuery}`)
-                          .then((r: AxiosResponse<YandexTracksResponse>) =>
-                              r.data.response.map((track) => {
-                                  return {
-                                      key: track.id,
-                                      keyType: TrackType.YandexMusic,
-                                      track: {
-                                          id: track.id,
-                                          name: track.name,
-                                          authors: track.authors.map((author) => author.name),
-                                          imageUrl: `https://${track.albums[0].coverUri.replace('%%', '100x100')}`,
-                                          link: `https://music.yandex.ru/album/${track.albums[0].id}/track/${track.id}`
-                                      } as Track,
-                                      albums: track.albums.map((album) => album.title)
-                                  };
-                              })
-                          )
-                    : Promise.resolve([]),
-                handleTracksUrls
-                    ? axiosSession
-                          .get(`/track/search/spotify?query=${encodedQuery}`)
-                          .then((r: AxiosResponse<SpotifyTracksResponse>) =>
-                              r.data.response.map((track) => {
-                                  return {
-                                      key: track.id,
-                                      keyType: TrackType.Spotify,
-                                      track: {
-                                          id: track.id as unknown as number,
-                                          name: track.name,
-                                          authors: track.authors.map((author) => author.name),
-                                          imageUrl: track.album.imageUrl,
-                                          link: track.link
-                                      } as Track,
-                                      albums: [track.album.name]
-                                  };
-                              })
-                          )
-                    : Promise.resolve([])
-            ];
-
-            setTracksLoading(true);
-
-            Promise.all(promises).then((result) => {
-                // TODO: more complex analyzation for identical tracks
-                const keys = new Set();
-                const albumKeys = new Set();
-
-                const trackToKey = (track: SearchTrack) => {
-                    return (
-                        track.track.authors.map((author) => author.trim()).join(', ') +
-                        ' — ' +
-                        track.track.name.trim()
-                    ).toLowerCase();
-                };
-
-                for (const track of result[0]) {
-                    keys.add(trackToKey(track));
-                }
-
-                const filteredYandex: SearchTrack[] = [];
-                for (const track of result[1]) {
-                    const key = trackToKey(track);
-                    if (!keys.has(key)) {
-                        filteredYandex.push(track);
-                    }
-
-                    keys.add(key);
-                    track.albums.forEach((album) => albumKeys.add(album));
-                }
-
-                const filteredSpotify: SearchTrack[] = [];
-                for (const track of result[2]) {
-                    if (!keys.has(trackToKey(track)) && !albumKeys.has(track.albums[0])) {
-                        filteredSpotify.push(track);
-                    }
-                }
-
-                setTracks((result[0].concat(result[1]) as SearchTrack[]).concat(filteredSpotify));
-                setTracksLoading(false);
-            });
-        } else {
-            setTracks([]);
-            setTracksLoading(false);
-            setYouTubeTrack(null);
-        }
-    }, [debouncedTracksQuery, handleTracksUrls]);
 
     useEffect(() => {
         const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
