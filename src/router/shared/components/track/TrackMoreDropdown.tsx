@@ -49,12 +49,16 @@ export default function TrackMoreDropdown({ track, children, onRemove }: TrackMo
             </DropdownMenuTrigger>
             <DropdownMenuContent side='left' onClick={(e) => e.stopPropagation()}>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem disabled={!safeLink} onClick={(e) => e.stopPropagation()}>
+                    {/* asChild: ссылкой становится весь пункт, а не только текст внутри. */}
+                    <DropdownMenuItem disabled={!safeLink} asChild className='gap-x-2.5'>
                         <Link
-                            className='flex items-center gap-x-2.5'
                             to={safeLink ?? '#'}
                             target='_blank'
                             rel='noopener noreferrer'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (!safeLink) e.preventDefault();
+                            }}
                         >
                             <LinkExternalIcon
                                 className='group-data-[highlighted]:text-primary'
