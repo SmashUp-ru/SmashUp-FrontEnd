@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 /**
  * Анти-дабл-сабмит для форм-диалогов.
@@ -13,19 +13,21 @@ import { useCallback, useState } from 'react';
  */
 export function useSubmitGuard() {
     const [sent, setSent] = useState(false);
+    // Проверка по ref, а не по `sent`: стейт обновится только после ре-рендера,
+    // и два клика в одном тике оба видели `sent === false` (двойная отправка).
+    const inFlight = useRef(false);
 
-    const guard = useCallback(
-        async (submit: () => Promise<void> | void) => {
-            if (sent) return;
-            setSent(true);
-            try {
-                await submit();
-            } finally {
-                setSent(false);
-            }
-        },
-        [sent]
-    );
+    const guard = useCallback(async (submit: () => Promise<void> | void) => {
+        if (inFlight.current) return;
+        inFlight.current = true;
+        setSent(true);
+        try {
+            await submit();
+        } finally {
+            inFlight.current = false;
+            setSent(false);
+        }
+    }, []);
 
     return { sent, guard };
 }
