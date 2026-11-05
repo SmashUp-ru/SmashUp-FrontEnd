@@ -15,7 +15,8 @@ import ProfileIcon from '@/components/icons/Profile.tsx';
 import AddMashupIcon from '@/components/icons/addMashup/AddMashup32';
 import SettingsIcon from '@/components/icons/Settings';
 import { useGlobalStore } from '@/store/global.ts';
-import { isModerator } from '@/lib/bitmask';
+import { isAdmin, isModerator } from '@/lib/bitmask';
+import { Ticket } from 'lucide-react';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import LogoutDialog from '@/router/features/auth/LogoutDialog.tsx';
@@ -91,6 +92,17 @@ export default function ProfileMenu() {
                             <Link to='/mashup/moderation'>
                                 <GavelIcon size={24} color='onSurface' className={ITEM_ICON} />
                                 Модерация
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
+                    {(isModerator(currentUser.permissions) || isAdmin(currentUser.permissions)) && (
+                        <DropdownMenuItem asChild>
+                            <Link to='/tickets/editor'>
+                                <Ticket
+                                    className={`size-6 text-onSurface ${ITEM_ICON}`}
+                                    strokeWidth={1.75}
+                                />
+                                Билеты
                             </Link>
                         </DropdownMenuItem>
                     )}

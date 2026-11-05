@@ -29,6 +29,7 @@ const UserAgreementPage = lazy(() => import('@/router/pages/userAgreement/UserAg
 import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 const UploadMashupPage = lazy(() => import('@/router/pages/uploadMashup/UploadMashupPage.tsx'));
 const ModerationPage = lazy(() => import('@/router/pages/moderation/ModerationPage.tsx'));
+const TicketEditorPage = lazy(() => import('@/router/pages/tickets/TicketEditorPage.tsx'));
 const UploadMashupSuccessPage = lazy(
     () => import('@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx')
 );
@@ -121,6 +122,10 @@ const router = createBrowserRouter(
                         {
                             element: <ModerationPage />,
                             path: '/mashup/moderation'
+                        },
+                        {
+                            element: <TicketEditorPage />,
+                            path: '/tickets/editor'
                         },
                         {
                             element: <MashupPage />,

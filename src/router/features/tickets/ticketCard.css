@@ -1,0 +1,179 @@
+/*
+ * Билет-карта. Переменные пишет useTilt каждый кадр (без ре-рендера React):
+ *   --mx, --my  — позиция курсора −1…1 (после пружины)
+ *   --px, --py  — то же в процентах, для градиентов
+ *   --o         — «активность» 0…1 (курсор над картой)
+ *   --rx, --ry  — поворот
+ * Оформление (из скина): --bg, --text, --foil (сила 0…1), --glare (0…1), --radius (% ширины), --mask.
+ */
+
+.ticket-scene {
+    perspective: 1200px;
+    container-type: inline-size;
+    cursor: pointer;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ticket {
+    --mx: 0;
+    --my: 0;
+    --o: 0;
+    --px: 50%;
+    --py: 50%;
+    --rx: 0deg;
+    --ry: 0deg;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 7;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(1 + var(--o) * 0.03));
+}
+
+.ticket-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate; /* блендинг фольги — только с картой, не со страницей */
+    border-radius: calc(var(--radius, 7) * 1cqw);
+    background: var(--bg);
+    color: var(--text);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* тень уходит против наклона — карта «приподнимается» над страницей */
+    box-shadow:
+        0 0 0 1px rgb(255 255 255 / 0.06) inset,
+        calc(var(--mx) * -14px) calc(18px + var(--my) * -14px) 48px rgb(0 0 0 / calc(0.45 + var(--o) * 0.2));
+}
+
+.ticket-back {
+    transform: rotateY(180deg);
+}
+
+.ticket-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/*
+ * Параллакс: арт уходит назад, передний план — вперёд, каждый на --depth (% ширины карты).
+ * Арт растягивается с запасом под сдвиг, иначе при большой глубине на наклоне видно его край.
+ */
+.ticket-art {
+    background: center / cover no-repeat;
+    transform: translate(calc(var(--mx) * var(--depth, 2.5) * -1cqw), calc(var(--my) * var(--depth, 2.5) * -1cqw))
+        scale(calc(1.03 + var(--depth, 2.5) * 0.02));
+}
+
+.ticket-fg {
+    background: center / cover no-repeat;
+    transform: translate(calc(var(--mx) * var(--depth, 2.5) * 1cqw), calc(var(--my) * var(--depth, 2.5) * 1cqw))
+        scale(1.08);
+}
+
+.ticket-masked {
+    -webkit-mask: var(--mask, none) center / cover no-repeat;
+    mask: var(--mask, none) center / cover no-repeat;
+}
+
+/* Голография: радуга шире карты, едет вслед за курсором — цвета «переливаются». */
+.ticket-holo {
+    background: repeating-linear-gradient(
+        var(--holo-angle, 115deg),
+        hsl(0 100% 72%) 0%,
+        hsl(50 100% 70%) 4%,
+        hsl(120 90% 70%) 8%,
+        hsl(190 100% 70%) 12%,
+        hsl(250 100% 75%) 16%,
+        hsl(310 100% 72%) 20%,
+        hsl(360 100% 72%) 24%
+    );
+    background-size: 400% 400%;
+    background-position: calc(50% + var(--mx) * 40%) calc(50% + var(--my) * 40%);
+    mix-blend-mode: color-dodge;
+    filter: hue-rotate(calc(var(--holo-hue, 0) * 1deg)) brightness(0.65) contrast(1.4) saturate(1.3);
+    opacity: calc(var(--foil) * (0.35 + var(--o) * 0.65));
+}
+
+/* Блёстки: точки видны только рядом с «источником света» (умножение на пятно). */
+.ticket-sparkle {
+    background-image:
+        radial-gradient(circle at var(--px) var(--py), #fff 0%, #666 25%, #000 60%),
+        linear-gradient(125deg, #ff9ad5, #b4a0ff, #8fd3ff, #a6ffcb, #ffe08a),
+        var(--sparkle-tex);
+    background-size:
+        100% 100%,
+        100% 100%,
+        45cqw 45cqw;
+    background-position:
+        0 0,
+        0 0,
+        calc(var(--mx) * 3cqw) calc(var(--my) * 3cqw);
+    background-blend-mode: multiply, multiply;
+    /* screen, а не color-dodge: на тёмном арте dodge по чёрному не даёт ничего */
+    mix-blend-mode: screen;
+    filter: hue-rotate(calc(var(--holo-hue, 0) * 1deg)) brightness(1.6);
+    opacity: calc(var(--foil) * (0.3 + var(--o) * 0.7));
+}
+
+/* Блик — по всей карте, поверх фольги. */
+.ticket-glare {
+    background: radial-gradient(
+        farthest-corner circle at var(--px) var(--py),
+        rgb(255 255 255 / 0.5) 0%,
+        rgb(255 255 255 / 0.12) 30%,
+        rgb(0 0 0 / 0.3) 90%
+    );
+    mix-blend-mode: overlay;
+    opacity: calc(var(--o) * var(--glare, 1));
+}
+
+.ticket-back .ticket-glare {
+    background: radial-gradient(
+        farthest-corner circle at calc(100% - var(--px)) var(--py),
+        rgb(255 255 255 / 0.35) 0%,
+        rgb(0 0 0 / 0.25) 90%
+    );
+}
+
+/* Рамка рисуется по скруглению карты (inset-тень наследует радиус). */
+.ticket-frame {
+    border-radius: inherit;
+}
+
+/*
+ * Тиснение: форма из маски чуть светлее фона, а края — две тени-копии.
+ * Блик сдвигается К курсору, тень — от него: свет «ходит» по рельефу при наклоне.
+ */
+.ticket-emboss {
+    filter: drop-shadow(
+            calc(var(--mx) * 0.4cqw - 0.15cqw) calc(var(--my) * 0.4cqw - 0.15cqw) 0
+                rgb(255 255 255 / calc(0.25 + var(--o) * 0.2))
+        )
+        drop-shadow(
+            calc(var(--mx) * -0.4cqw + 0.2cqw) calc(var(--my) * -0.4cqw + 0.2cqw) 0.1cqw
+                rgb(0 0 0 / 0.5)
+        );
+}
+.ticket-emboss > div {
+    background: rgb(255 255 255 / 0.05);
+    -webkit-mask: var(--emboss) center / cover no-repeat;
+    mask: var(--emboss) center / cover no-repeat;
+}
+
+/* Штамп прошедшего мероприятия — как резиновая печать: рамка, наклон, неровная прозрачность. */
+.ticket-stamp {
+    transform: rotate(-14deg);
+    padding: 1.5cqw 4cqw;
+    border: 0.8cqw solid currentColor;
+    border-radius: 3cqw;
+    font-size: 7cqw;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    /* Без mix-blend-mode: screen делал тёмные чернила (чёрный текст карты) невидимыми */
+    opacity: 0.85;
+    -webkit-mask: radial-gradient(circle at 30% 40%, #000 55%, rgb(0 0 0 / 0.55) 100%);
+    mask: radial-gradient(circle at 30% 40%, #000 55%, rgb(0 0 0 / 0.55) 100%);
+}
