@@ -49,7 +49,8 @@ export default function VkAuthorizeCallbackPage() {
 
         axiosSession
             .get('/vk/authorize', {
-                params: { code, state, redirect_uri: vkRedirectUri('authorize') }
+                // тот же redirect_uri, что ушёл в /vk/authorize/url, иначе VK не обменяет код
+                params: { code, redirect_uri: vkRedirectUri('authorize') }
             })
             .then(async (r: AxiosSmashUpResponse<VkAuthorizeItem | VkAuthorizeItem[]>) => {
                 const data = r.data.response;

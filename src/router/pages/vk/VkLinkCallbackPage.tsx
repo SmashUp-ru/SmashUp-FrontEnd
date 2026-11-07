@@ -4,7 +4,7 @@ import { axiosSession } from '@/lib/utils.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
-import { consumeVkState, vkRedirectUri } from '@/lib/vk.ts';
+import { consumeVkState, startVkFlow } from '@/lib/vk.ts';
 
 // Callback, на который VK возвращает пользователя после привязки: /vk/link?code=...
 // Меняем code на привязку у бэка и уводим обратно в настройки.
@@ -14,6 +14,8 @@ export default function VkLinkCallbackPage() {
     const { toast } = useToast();
     const ran = useRef(false);
     const [failed, setFailed] = useState(false);
+    // state протух (10 минут), уже использован или токен сменился — привязку можно начать заново
+    const [stale, setStale] = useState(false);
 
     useEffect(() => {
         if (ran.current) return;
@@ -33,13 +35,14 @@ export default function VkLinkCallbackPage() {
         }
 
         axiosSession
-            .get('/vk/link', { params: { code, state, redirect_uri: vkRedirectUri('link') } })
+            .get('/vk/link', { params: { code, state } })
             .then(() => {
                 toast({ element: <BaseToast icon field='VK ID' after='привязан' /> });
                 navigate('/settings', { replace: true });
             })
             .catch((e) => {
                 setFailed(true);
+                if (e?.response?.data?.message === 'vk.bad_state') setStale(true);
                 try {
                     axiosCatcher(toast, 'при привязке VK')(e);
                 } catch {
@@ -53,6 +56,17 @@ export default function VkLinkCallbackPage() {
             <span className='font-semibold text-xl text-onSurface'>
                 {failed ? 'Не удалось привязать VK' : 'Привязываем VK…'}
             </span>
+            {stale && (
+                <button
+                    type='button'
+                    onClick={() =>
+                        startVkFlow('link').catch(axiosCatcher(toast, 'при привязке VK'))
+                    }
+                    className='font-medium text-primary hover:text-hoverPrimary'
+                >
+                    Попробовать ещё раз
+                </button>
+            )}
             {failed && (
                 <button
                     type='button'

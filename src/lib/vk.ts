@@ -3,13 +3,8 @@ import { AxiosSmashUpResponse } from '@/router/shared/types/smashup.ts';
 
 export type VkFlowKind = 'link' | 'authorize';
 
-// Куда VK вернёт пользователя после авторизации. Всегда текущий домен —
-// а не зашитый на бэке https://smashup.ru — чтобы связка работала и на бете, и локально.
-//
-// ВАЖНО: бэк ДОЛЖЕН использовать этот же redirect_uri при обмене code у VK
-// (в /vk/link и /vk/authorize). Сейчас он его хардкодит на smashup.ru → на других
-// доменах VK ответит "redirect_uri mismatch". Мы передаём redirect_uri параметром
-// в callback, чтобы бэк мог его подхватить, как только это поддержит.
+// Куда VK вернёт пользователя: текущий домен (прод, бета, localhost).
+// Бэк пускает только белый список origin'ов и хранит этот же адрес для обмена кода.
 export function vkRedirectUri(kind: VkFlowKind): string {
     return `${window.location.origin}/vk/${kind}`;
 }
@@ -22,16 +17,17 @@ export function vkRedirectUri(kind: VkFlowKind): string {
 // только при совпадении: подложить значение в чужой sessionStorage нельзя.
 const STATE_KEY = 'smashup_vk_oauth_state';
 
-// Получаем OAuth-URL у бэка, подменяем в нём redirect_uri на текущий домен и уводим туда.
+// Берём OAuth-URL у бэка и уводим туда как есть. state генерирует бэк: для привязки он
+// его проверяет сам (одноразовый, 10 минут, привязан к пользователю), для входа — нет,
+// там единственная защита от login CSRF — наша проверка в колбэке.
 export async function startVkFlow(kind: VkFlowKind): Promise<void> {
-    const res: AxiosSmashUpResponse<string> = await axiosSession.get(`/vk/${kind}/url`);
-    const url = new URL(res.data.response);
-    url.searchParams.set('redirect_uri', vkRedirectUri(kind));
-    // Если бэк уже кладёт свой state — сохраняем его, чтобы не сломать его проверку.
-    const state = url.searchParams.get('state') || crypto.randomUUID();
-    url.searchParams.set('state', state);
+    const res: AxiosSmashUpResponse<string> = await axiosSession.get(`/vk/${kind}/url`, {
+        params: { redirect_uri: vkRedirectUri(kind) }
+    });
+    const state = new URL(res.data.response).searchParams.get('state');
+    if (!state) throw new Error('VK OAuth URL без state');
     sessionStorage.setItem(STATE_KEY, JSON.stringify({ kind, state }));
-    window.location.href = url.toString();
+    window.location.href = res.data.response;
 }
 
 /**
