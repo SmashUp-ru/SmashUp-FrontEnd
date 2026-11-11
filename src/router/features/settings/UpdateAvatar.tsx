@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { axiosSession, convertToBase64, validateImageDimensions } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32';
@@ -11,6 +12,7 @@ import BaseToast from '@/router/shared/toasts/Base.tsx';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
+import CoverCropDialog from '@/router/shared/components/image/CoverCropDialog.tsx';
 
 const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 const MIN_AVATAR_PX = 800;
@@ -33,6 +35,8 @@ export default function UpdateAvatar() {
     // Проверки по порядку, и запрос уходит ТОЛЬКО после всех. Раньше проверка размеров
     // жила в image.onload и срабатывала уже после отправки: её return ничего не
     // останавливал — маленький аватар загружался, а ошибка всплывала следом.
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
+
     const uploadPhoto = async (file: File) => {
         if (!['image/png', 'image/jpeg'].includes(file.type)) {
             fail('Подойдёт только .png или .jpg.');
@@ -44,9 +48,12 @@ export default function UpdateAvatar() {
             return;
         }
 
-        const basedImageFile = await convertToBase64(file);
-        if (typeof basedImageFile !== 'string') return;
+        const picked = await convertToBase64(file);
+        if (typeof picked === 'string') setCropSrc(picked);
+    };
 
+    // после кадра: размер (картинку меньше 800 диалог отдаёт без кадра) и отправка
+    const send = async (basedImageFile: string) => {
         if (!(await validateImageDimensions(basedImageFile, MIN_AVATAR_PX))) {
             fail(`Аватар должен быть не меньше ${MIN_AVATAR_PX}×${MIN_AVATAR_PX} px.`);
             return;
@@ -73,29 +80,41 @@ export default function UpdateAvatar() {
     }
 
     return (
-        <label className='relative cursor-pointer h-fit'>
-            <ImageWithSkeleton
-                src={coverUrl('user', currentUser.imageUrl, 800)}
-                alt={currentUser.username}
-                className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full brightness-75'
-            />
-            <EditIcon
-                size={89}
-                className='absolute top-0 right-0 left-0 bottom-0 m-auto'
-                color='onSurface'
-            />
-            <Input
-                accept='.png,.jpg,.jpeg'
-                type='file'
-                className='hidden'
-                aria-label='Сменить аватар'
-                onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    // Сброс — иначе повторный выбор того же файла не вызывает onChange.
-                    e.target.value = '';
-                    if (file) void uploadPhoto(file);
+        <>
+            <label className='relative cursor-pointer h-fit'>
+                <ImageWithSkeleton
+                    src={coverUrl('user', currentUser.imageUrl, 800)}
+                    alt={currentUser.username}
+                    className='w-[120px] h-[120px] min-w-[120px] min-h-[120px] md:w-[200px] md:h-[200px] md:min-w-[200px] md:min-h-[200px] rounded-full brightness-75'
+                />
+                <EditIcon
+                    size={89}
+                    className='absolute top-0 right-0 left-0 bottom-0 m-auto'
+                    color='onSurface'
+                />
+                <Input
+                    accept='.png,.jpg,.jpeg'
+                    type='file'
+                    className='hidden'
+                    aria-label='Сменить аватар'
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        // Сброс — иначе повторный выбор того же файла не вызывает onChange.
+                        e.target.value = '';
+                        if (file) void uploadPhoto(file);
+                    }}
+                />
+            </label>
+            {/* вне label: клики из портала всплывают по React-дереву и открыли бы выбор файла */}
+            <CoverCropDialog
+                round
+                src={cropSrc}
+                onCancel={() => setCropSrc(null)}
+                onDone={(url) => {
+                    setCropSrc(null);
+                    void send(url);
                 }}
             />
-        </label>
+        </>
     );
 }

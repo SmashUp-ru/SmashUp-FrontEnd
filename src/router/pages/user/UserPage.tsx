@@ -1,3 +1,4 @@
+import { isUnreleasedAlbum } from '@/store/entities/playlist.ts';
 import { Link, useParams } from 'react-router-dom';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useUserPageData } from '@/router/features/user/useUserPageData.ts';
@@ -171,16 +172,30 @@ export default function UserPage() {
                     </Section>
                 )}
 
-                {playlists.length > 0 && (
-                    <div className='col-span-full'>
-                        <Section title='Плейлисты'>
-                            <div className='flex items-center flex-wrap'>
-                                {playlists.map((playlist) => (
-                                    <PlaylistThumb playlist={playlist} key={playlist.id} />
-                                ))}
+                {[
+                    {
+                        title: 'Альбомы',
+                        // чужим — только вышедшие альбомы (все треки прошли модерацию)
+                        items: playlists.filter(
+                            (p) =>
+                                p.type === 'ALBUM' &&
+                                (currentUser?.id === user.id || !isUnreleasedAlbum(p))
+                        )
+                    },
+                    { title: 'Плейлисты', items: playlists.filter((p) => p.type !== 'ALBUM') }
+                ].map(
+                    ({ title, items }) =>
+                        items.length > 0 && (
+                            <div className='col-span-full' key={title}>
+                                <Section title={title}>
+                                    <div className='flex items-center flex-wrap'>
+                                        {items.map((playlist) => (
+                                            <PlaylistThumb playlist={playlist} key={playlist.id} />
+                                        ))}
+                                    </div>
+                                </Section>
                             </div>
-                        </Section>
-                    </div>
+                        )
                 )}
             </div>
         </div>

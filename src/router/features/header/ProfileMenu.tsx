@@ -15,7 +15,8 @@ import ProfileIcon from '@/components/icons/Profile.tsx';
 import AddMashupIcon from '@/components/icons/addMashup/AddMashup32';
 import SettingsIcon from '@/components/icons/Settings';
 import { useGlobalStore } from '@/store/global.ts';
-import { isAdmin, isModerator } from '@/lib/bitmask';
+import { isAdmin, isMashuper, isModerator, isVerified } from '@/lib/bitmask';
+import { Disc3 as AlbumIcon } from 'lucide-react';
 import { Ticket } from 'lucide-react';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
@@ -87,6 +88,16 @@ export default function ProfileMenu() {
                             Загрузить мешап
                         </Link>
                     </DropdownMenuItem>
+                    {(isVerified(currentUser.permissions) ||
+                        isMashuper(currentUser.permissions) ||
+                        isAdmin(currentUser.permissions)) && (
+                        <DropdownMenuItem asChild>
+                            <Link to='/album/upload'>
+                                <AlbumIcon size={24} strokeWidth={1.5} className={ITEM_ICON} />
+                                Загрузить альбом
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
                     {isModerator(currentUser.permissions) && (
                         <DropdownMenuItem asChild>
                             <Link to='/mashup/moderation'>

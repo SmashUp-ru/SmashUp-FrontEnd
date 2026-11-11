@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ReactNode, useState } from 'react';
+import CoverCropDialog, { CropFrame } from '@/router/shared/components/image/CoverCropDialog.tsx';
 import { axiosSession, cn, convertToBase64, validateImageDimensions } from '@/lib/utils.ts';
 import EditIcon from '@/components/icons/edit/Edit32';
 import { Input } from '@/components/ui/input.tsx';
@@ -51,6 +52,8 @@ export default function AddPlaylistDialog({
     const { toast } = useToast();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
+    const [last, setLast] = useState<{ src: string; frame: CropFrame } | null>(null);
     const { sent, guard } = useSubmitGuard();
 
     const updatePlaylistById = usePlaylistStore((state) => state.updateOneById);
@@ -173,7 +176,7 @@ export default function AddPlaylistDialog({
                                         render={() => (
                                             <FormItem>
                                                 <FormControl>
-                                                    <label className='relative cursor-pointer w-[216px] h-[216px] min-w-[216px] min-h-[216px]'>
+                                                    <label className='relative block cursor-pointer w-[216px] h-[216px] min-w-[216px] min-h-[216px]'>
                                                         <img
                                                             src={
                                                                 imageLink
@@ -196,28 +199,31 @@ export default function AddPlaylistDialog({
                                                             type='file'
                                                             className='hidden'
                                                             onChange={async (e) => {
-                                                                if (
-                                                                    e.target.files &&
-                                                                    e.target.files.length > 0
-                                                                ) {
-                                                                    const basedImageFile =
-                                                                        await convertToBase64(
-                                                                            e.target.files[0]
-                                                                        );
-                                                                    if (
-                                                                        typeof basedImageFile ===
-                                                                        'string'
-                                                                    ) {
-                                                                        form.setValue(
-                                                                            'basedImageFile',
-                                                                            basedImageFile
-                                                                        );
-                                                                    }
-                                                                }
+                                                                const file = e.target.files?.[0];
+                                                                e.target.value = '';
+                                                                if (file)
+                                                                    setCropSrc(
+                                                                        String(
+                                                                            await convertToBase64(
+                                                                                file
+                                                                            )
+                                                                        )
+                                                                    );
                                                             }}
                                                         />
                                                     </label>
                                                 </FormControl>
+                                                {last && (
+                                                    <Button
+                                                        type='button'
+                                                        variant='nothing'
+                                                        size='sm'
+                                                        className='px-0 text-primary hover:text-onSurface'
+                                                        onClick={() => setCropSrc(last.src)}
+                                                    >
+                                                        Изменить кадр
+                                                    </Button>
+                                                )}
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -270,6 +276,16 @@ export default function AddPlaylistDialog({
                         </DialogHeader>
                     </form>
                 </Form>
+                <CoverCropDialog
+                    src={cropSrc}
+                    initialFrame={cropSrc === last?.src ? last.frame : undefined}
+                    onCancel={() => setCropSrc(null)}
+                    onDone={(url, frame) => {
+                        if (cropSrc && frame) setLast({ src: cropSrc, frame });
+                        setCropSrc(null);
+                        form.setValue('basedImageFile', url);
+                    }}
+                />
             </DialogContent>
         </Dialog>
     );

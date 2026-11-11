@@ -28,6 +28,7 @@ const DMCAPage = lazy(() => import('@/router/pages/dmca/DMCAPage.tsx'));
 const UserAgreementPage = lazy(() => import('@/router/pages/userAgreement/UserAgreement.tsx'));
 import SettingsPage from '@/router/pages/settings/SettingsPage.tsx';
 const UploadMashupPage = lazy(() => import('@/router/pages/uploadMashup/UploadMashupPage.tsx'));
+const UploadAlbumPage = lazy(() => import('@/router/pages/uploadAlbum/UploadAlbumPage.tsx'));
 const ModerationPage = lazy(() => import('@/router/pages/moderation/ModerationPage.tsx'));
 const TicketEditorPage = lazy(() => import('@/router/pages/tickets/TicketEditorPage.tsx'));
 const UploadMashupSuccessPage = lazy(
@@ -106,6 +107,10 @@ const router = createBrowserRouter(
                         {
                             element: <UploadMashupPage />,
                             path: '/mashup/upload'
+                        },
+                        {
+                            element: <UploadAlbumPage />,
+                            path: '/album/upload'
                         },
                         {
                             element: <Navigate to='/mashup/upload?source=vk' replace />,

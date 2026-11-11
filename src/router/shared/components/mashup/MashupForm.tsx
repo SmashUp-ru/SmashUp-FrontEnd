@@ -1,42 +1,22 @@
-import { axiosSession, cn, removeItem, validateImageDimensions } from '@/lib/utils.ts';
-import EditIcon from '@/components/icons/edit/Edit32.tsx';
+import { axiosSession, cn, validateImageDimensions } from '@/lib/utils.ts';
 import { Input } from '@/components/ui/input.tsx';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Label } from '@/components/ui/label.tsx';
-import TrackSmallThumb from '@/router/shared/components/track/TrackSmallThumb.tsx';
 import LinkIcon from '@/components/icons/Link.tsx';
-import { Checkbox } from '@/components/ui/checkbox.tsx';
-import SearchIcon from '@/components/icons/Search.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { Link } from 'react-router-dom';
-import { useDebounce } from 'use-debounce';
 import { AxiosResponse } from 'axios';
-import { UsersSearchResponse } from '@/router/shared/types/search.ts';
 import { RegEx } from '@/lib/regex.ts';
 import {
-    areTracksEqual,
-    areUsersEqual,
     GenresResponse,
-    isTrackSelected,
-    isUserSelected,
-    RenderTrack,
-    RenderUser,
-    SearchTrack,
     SelectedTrack,
-    SmashUpSelectedTrack,
-    SpotifySelectedTrack,
-    TrackType,
-    UploadMashupRequestBody,
-    YandexMusicSelectedTrack
+    UploadMashupRequestBody
 } from '@/router/shared/types/upload.ts';
-import YouTubeTrackSmallThumb from '@/router/shared/components/track/YouTubeTrackSmallThumb.tsx';
 import { User } from '@/store/entities/user.ts';
 import {
     isAlt,
     isExplicit,
     setExplicit as setIsExplicit,
     isHashtagMashup,
-    isModerator,
     isTwitchBanned,
     setTwitchBanned,
     setHashtagMashup,
@@ -47,18 +27,21 @@ import { useGlobalStore } from '@/store/global.ts';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
 import MashupFormSkeleton from './MashupFormSkeleton.tsx';
-import YouTubeIcon from '@/components/icons/YouTube.tsx';
-import YandexMusicIcon from '@/components/icons/YandexMusic.tsx';
+import {
+    CoauthorsPicker,
+    CoverPicker,
+    GenrePicker,
+    PublishBar,
+    StatusCheckbox,
+    StatusLinkInput,
+    TrackSourcesPicker
+} from './MashupFormParts.tsx';
 import CopiedToast from '@/router/shared/toasts/copied.tsx';
 import ExplicitIcon from '@/components/icons/explicit/Explicit24.tsx';
 import AltIcon from '@/components/icons/alt/Alt24.tsx';
 import HashtagMashupIcon from '@/components/icons/hashtag/Hashtag24.tsx';
-import SpotifyIcon from '@/components/icons/Spotify.tsx';
-import TrackSmallThumbSkeleton from '../track/TrackSmallThumbSkeleton.tsx';
 import BaseToast from '@/router/shared/toasts/Base.tsx';
-import { SmashUpIcon } from '@/components/icons/SmashUp.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
-import { useTrackSearch } from '@/router/shared/hooks/useTrackSearch.ts';
 
 interface MashupFormProps {
     initial: MashupFormInitialProps;
@@ -113,36 +96,6 @@ interface MashupFormTextProps {
     };
 }
 
-function calculateSelectedTracksKeys(selectedTracks: SelectedTrack[]) {
-    const selectedTracksKeys = new Map<TrackType, Set<unknown>>();
-    for (const selectedTrack of selectedTracks) {
-        let keys = selectedTracksKeys.get(selectedTrack.keyType);
-        if (keys === undefined) {
-            keys = new Set();
-            selectedTracksKeys.set(selectedTrack.keyType, keys);
-        }
-
-        keys.add(selectedTrack.key);
-    }
-    return selectedTracksKeys;
-}
-
-function calculateNonSelectedTracks(
-    tracks: SearchTrack[],
-    selectedTracks: SelectedTrack[]
-): SearchTrack[] {
-    const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
-    return tracks.filter((track) => {
-        const keys = selectedTracksKeys.get(track.keyType);
-        return keys === undefined || keys === null || !keys.has(track.key);
-    });
-}
-
-function calculateNonSelectedUsers(users: User[], selectedUsers: User[]): User[] {
-    const selectedUsersSet = new Set<number>(selectedUsers.map((user) => user.id));
-    return users.filter((user) => !selectedUsersSet.has(user.id));
-}
-
 export default function MashupForm({
     initial,
     text,
@@ -190,292 +143,10 @@ export default function MashupForm({
         }
     }, [allGenres.length, globalUpdateAllGenres]);
 
-    // Track search
-
-    const [tracksQuery, setTracksQuery] = useState<string>('');
-    const [debouncedTracksQuery] = useDebounce(tracksQuery, 500);
-
-    const { tracks, tracksLoading, youTubeTrack, youTubeTrackLoading } = useTrackSearch(
-        debouncedTracksQuery,
-        handleTracksUrls
-    );
+    // Исходники и авторы — состояние формы; поиск и отрисовка в MashupFormParts
 
     const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>(initial.selectedTracks);
-    const [users, setUsers] = useState<User[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<User[]>(initial.selectedUsers);
-
-    const initialSelectedTracksRef = useRef(initial.selectedTracks);
-    const initialSelectedUsersRef = useRef(initial.selectedUsers);
-
-    const [renderTracks, setRenderTracks] = useState<RenderTrack[]>([]);
-    const [startSelectedTracksLength, setStartSelectedTracksLength] = useState<number>(0);
-    const [renderTracksNodes, setRenderTracksNodes] = useState<ReactNode[]>([]);
-    const [showMoreCategories, setShowMoreCategories] = useState<TrackType[]>([]);
-    const [renderUsers, setRenderUsers] = useState<RenderUser[]>([]);
-
-    const trackStatefulOnClick = useCallback(
-        (track: SelectedTrack, currentSelectedTracks: SelectedTrack[]) => {
-            if (isTrackSelected(track, currentSelectedTracks)) {
-                setSelectedTracks(removeItem(currentSelectedTracks, track, areTracksEqual));
-            } else {
-                setSelectedTracks(currentSelectedTracks.concat([track]));
-            }
-        },
-        []
-    );
-
-    const userStatefulOnClick = useCallback((user: User, currentSelectedUsers: User[]) => {
-        if (isUserSelected(user, currentSelectedUsers)) {
-            setSelectedUsers(removeItem(currentSelectedUsers, user, areUsersEqual));
-        } else {
-            setSelectedUsers(currentSelectedUsers.concat([user]));
-        }
-    }, []);
-
-    const renderSelectedTracks = useCallback(
-        (selectedTracks: SelectedTrack[]): RenderTrack[] => {
-            return selectedTracks.map((track) => {
-                let icon;
-                const type = track.keyType;
-                if (type === TrackType.SmashUp) {
-                    icon = <SmashUpIcon />;
-                } else if (type === TrackType.YouTube) {
-                    icon = <YouTubeIcon />;
-                } else if (type === TrackType.YandexMusic) {
-                    icon = <YandexMusicIcon />;
-                } else if (type === TrackType.Spotify) {
-                    icon = <SpotifyIcon />;
-                } else {
-                    throw new Error(`${track.constructor.name} not supported`);
-                }
-
-                return {
-                    keyType: type,
-                    key: track.key,
-                    icon: icon,
-                    track: track.track,
-                    selected: true,
-                    statefulOnClick: (selectedTracks: SelectedTrack[]) =>
-                        trackStatefulOnClick(track, selectedTracks)
-                };
-            });
-        },
-        [trackStatefulOnClick]
-    );
-
-    useEffect(() => {
-        const initialSelectedTracks = initialSelectedTracksRef.current;
-        const initialSelectedUsers = initialSelectedUsersRef.current;
-
-        setRenderTracks(renderSelectedTracks(initialSelectedTracks));
-        setRenderUsers(
-            initialSelectedUsers.map((user) => {
-                return {
-                    user: user,
-                    selected: true,
-                    statefulOnClick: (selectedUsers: User[]) =>
-                        userStatefulOnClick(user, selectedUsers)
-                };
-            })
-        );
-    }, [renderSelectedTracks, userStatefulOnClick]);
-
-    useEffect(() => {
-        const nonSelectedTracks = calculateNonSelectedTracks(tracks, selectedTracks);
-
-        const renderTracks = nonSelectedTracks.map((track) => {
-            let icon;
-            const type = track.keyType;
-            if (type === TrackType.SmashUp) {
-                icon = <SmashUpIcon />;
-            } else if (type === TrackType.YouTube) {
-                icon = <YouTubeIcon />;
-            } else if (type === TrackType.YandexMusic) {
-                icon = <YandexMusicIcon />;
-            } else if (type === TrackType.Spotify) {
-                icon = <SpotifyIcon />;
-            }
-
-            return {
-                key: track.key,
-                keyType: track.keyType,
-                icon: icon,
-                track: track.track,
-                selected: false,
-                statefulOnClick: (selectedTracks: SelectedTrack[]) => {
-                    if (track.keyType === TrackType.SmashUp) {
-                        trackStatefulOnClick(new SmashUpSelectedTrack(track.track), selectedTracks);
-                    } else if (track.keyType === TrackType.YandexMusic) {
-                        trackStatefulOnClick(
-                            new YandexMusicSelectedTrack(track.track),
-                            selectedTracks
-                        );
-                    } else if (track.keyType === TrackType.Spotify) {
-                        trackStatefulOnClick(new SpotifySelectedTrack(track.track), selectedTracks);
-                    } else {
-                        throw new Error(`${track.constructor.name} not supported`);
-                    }
-                }
-            };
-        });
-
-        setRenderTracks(renderSelectedTracks(selectedTracks).concat(renderTracks));
-        setShowMoreCategories([]);
-        setStartSelectedTracksLength(selectedTracks.length);
-    }, [renderSelectedTracks, selectedTracks, trackStatefulOnClick, tracks]);
-
-    useEffect(() => {
-        const selectedTracksKeys = calculateSelectedTracksKeys(selectedTracks);
-        setRenderTracks((currentRenderTracks) =>
-            currentRenderTracks.map((renderTrack) => {
-                const keys = selectedTracksKeys.get(renderTrack.keyType);
-                const selected = keys !== undefined && keys !== null && keys.has(renderTrack.key);
-
-                return {
-                    ...renderTrack,
-                    selected: selected
-                };
-            })
-        );
-    }, [selectedTracks]);
-
-    useEffect(() => {
-        const renderTracksNodes: ReactNode[] = [];
-
-        const renderedAmount: Map<TrackType, number> = new Map();
-
-        let index = -1;
-        for (const renderTrack of renderTracks) {
-            index++;
-
-            const keyType = renderTracks[index].keyType;
-            const showLess = showMoreCategories.indexOf(keyType) < 0;
-            if (
-                index === startSelectedTracksLength ||
-                (index > startSelectedTracksLength && renderTracks[index - 1].keyType !== keyType)
-            ) {
-                let name;
-                if (keyType === TrackType.SmashUp) {
-                    name = 'SmashUp';
-                } else if (keyType === TrackType.YandexMusic) {
-                    name = 'Яндекс.Музыке';
-                } else if (keyType === TrackType.Spotify) {
-                    name = 'Spotify';
-                } else {
-                    name = keyType.toString();
-                }
-
-                renderTracksNodes.push(
-                    <div className='flex flex-row items-center justify-between text-onSurfaceVariant mt-1'>
-                        <div className='flex flex-row items-center gap-1'>
-                            {renderTrack.icon}
-                            <Label>
-                                Лучшие результаты в <span className='font-medium'>{name}</span>
-                            </Label>
-                        </div>
-
-                        <Label
-                            className='font-medium mr-1 cursor-pointer'
-                            onClick={() => {
-                                if (showLess) {
-                                    setShowMoreCategories(showMoreCategories.concat([keyType]));
-                                } else {
-                                    setShowMoreCategories(removeItem(showMoreCategories, keyType));
-                                }
-                            }}
-                        >
-                            {showLess ? 'Показать ещё' : 'Свернуть'}
-                        </Label>
-                    </div>
-                );
-            }
-
-            if (index >= startSelectedTracksLength && showLess) {
-                let rendered = renderedAmount.get(keyType);
-                if (rendered === undefined) {
-                    rendered = 0;
-                }
-                if (rendered < 2) {
-                    renderedAmount.set(keyType, rendered + 1);
-                } else {
-                    continue;
-                }
-            }
-
-            const thumb = (
-                <TrackSmallThumb
-                    key={renderTrack.track.id}
-                    track={renderTrack.track}
-                    selected={renderTrack.selected}
-                    icon={
-                        showTracksIcons && keyType !== TrackType.SmashUp
-                            ? renderTrack.icon
-                            : undefined
-                    }
-                    onClick={() => renderTrack.statefulOnClick(selectedTracks)}
-                />
-            );
-
-            renderTracksNodes.push(thumb);
-        }
-
-        setRenderTracksNodes(renderTracksNodes);
-    }, [
-        renderTracks,
-        selectedTracks,
-        showMoreCategories,
-        showTracksIcons,
-        startSelectedTracksLength
-    ]);
-
-    // User search
-
-    const [usersQuery, setUsersQuery] = useState<string>('');
-    const [debouncedUserQuery] = useDebounce(usersQuery, 500);
-
-    const loggedUser = useGlobalStore((state) => state.currentUser);
-
-    useEffect(() => {
-        if (debouncedUserQuery.length >= 2 && debouncedUserQuery.length <= 32) {
-            axiosSession
-                .get(`/user/search?query=${debouncedUserQuery}`)
-                .then((r: AxiosResponse<UsersSearchResponse>) => setUsers(r.data.response));
-        } else {
-            setUsers([]);
-        }
-    }, [debouncedUserQuery]);
-
-    useEffect(() => {
-        const nonSelectedUsers = calculateNonSelectedUsers(users, selectedUsers);
-
-        const renderSelectedUsers = selectedUsers.map((user) => {
-            return {
-                user: user,
-                selected: true,
-                statefulOnClick: (selectedUsers: User[]) => userStatefulOnClick(user, selectedUsers)
-            };
-        });
-
-        const renderUsers = nonSelectedUsers.map((user) => {
-            return {
-                user: user,
-                selected: false,
-                statefulOnClick: (selectedUsers: User[]) => userStatefulOnClick(user, selectedUsers)
-            };
-        });
-
-        setRenderUsers(renderSelectedUsers.concat(renderUsers));
-    }, [selectedUsers, userStatefulOnClick, users]);
-
-    useEffect(() => {
-        if (handleLoggedUser && loggedUser) {
-            setSelectedUsers((currentSelectedUsers) =>
-                isUserSelected(loggedUser, currentSelectedUsers)
-                    ? currentSelectedUsers
-                    : currentSelectedUsers.concat([loggedUser])
-            );
-        }
-    }, [handleLoggedUser, loggedUser]);
 
     // Mashup file handle
 
@@ -688,7 +359,8 @@ export default function MashupForm({
             statuses,
             tracks: bodyPart.tracks,
             tracksUrls: bodyPart.tracksUrls,
-            statusesUrls: hasStatusLink ? [statusLink] : null,
+            // пустую ссылку не шлём: бэк отвечает 400 bad_statuses_urls и на "", и на null
+            statusesUrls: hasStatusLink && statusLink.trim() ? [statusLink.trim()] : [],
             genres: [...selectedGenres],
             basedMashupFile: basedMashupFile,
             basedImageFile: finalBasedImageFile
@@ -713,87 +385,25 @@ export default function MashupForm({
             )}
             <div className='w-full flex flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-12 flex-1'>
                 {/*картинка*/}
-                <div className='flex flex-col gap-y-2.5 items-center md:items-start'>
-                    <label className='relative cursor-pointer h-fit'>
-                        {imageSrc ? (
-                            <img
-                                src={imageSrc}
-                                className={cn(
-                                    'w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-[30px] brightness-50'
-                                )}
-                                draggable={false}
-                                alt='Обложка загружаемого мешапа'
-                            />
-                        ) : (
-                            <div className='w-[200px] h-[200px] rounded-[30px] bg-surfaceVariant' />
-                        )}
-                        <EditIcon
-                            size={70}
-                            className='absolute top-0 right-0 left-0 bottom-0 m-auto'
-                            color='onSurface'
-                        />
-                        <Input
-                            type='file'
-                            className='hidden'
-                            accept='.png,.jpg,.jpeg'
-                            onChange={async (e) => {
-                                if (e.target.files) {
-                                    setImageFile(e.target.files[0]);
-                                } else if (initial.basedImage !== undefined) {
-                                    setImageFile(null);
-                                }
-                            }}
-                        />
-                    </label>
-
-                    <div className='max-w-[200px] text-onSurfaceVariant'>
-                        Обложка должна быть в формате <b>.png</b> или <b>.jpg</b> и быть равной или
-                        больше <b>800x800px</b>
-                    </div>
-                </div>
+                <CoverPicker
+                    src={imageSrc}
+                    alt='Обложка загружаемого мешапа'
+                    onFile={(file) => {
+                        if (file) setImageFile(file);
+                        else if (initial.basedImage !== undefined) setImageFile(null);
+                    }}
+                />
 
                 <div className='w-full flex flex-col flex-1'>
                     <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-y-[35px] md:gap-y-0 gap-x-10 flex-grow'>
                         {/*использованные треки*/}
                         <div className='flex flex-col gap-y-[35px]'>
-                            <div className='flex flex-col gap-y-2.5'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Добавь использованные треки
-                                </Label>
-                                <Input
-                                    placeholder='Название трека'
-                                    startIcon={SearchIcon}
-                                    value={tracksQuery}
-                                    onChange={(e) => setTracksQuery(e.target.value)}
-                                />
-
-                                <div className='flex flex-col gap-y-2.5 max-h-[470px] overflow-y-scroll'>
-                                    <div className='font-medium text-onSurfaceVariant flex flex-row items-center gap-1'>
-                                        <YouTubeIcon />
-                                        <Label>Для трека с YouTube вставь ссылку в поиск</Label>
-                                    </div>
-
-                                    <YouTubeTrackSmallThumb
-                                        track={youTubeTrack}
-                                        loading={youTubeTrackLoading}
-                                        selectedTracks={selectedTracks}
-                                        setSelectedTracks={setSelectedTracks}
-                                        renderTracks={renderTracks}
-                                    />
-
-                                    {renderTracksNodes}
-
-                                    {tracksLoading && (
-                                        <>
-                                            <TrackSmallThumbSkeleton />
-                                            <TrackSmallThumbSkeleton />
-                                            <TrackSmallThumbSkeleton />
-                                            <TrackSmallThumbSkeleton />
-                                            <TrackSmallThumbSkeleton />
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                            <TrackSourcesPicker
+                                selectedTracks={selectedTracks}
+                                setSelectedTracks={setSelectedTracks}
+                                handleTracksUrls={handleTracksUrls}
+                                showTracksIcons={showTracksIcons}
+                            />
                         </div>
 
                         {/*название, mp3, ссылка, жанр*/}
@@ -853,13 +463,7 @@ export default function MashupForm({
 
                             {hasStatusLink &&
                                 (!lockStatusLink ? (
-                                    <Input
-                                        startIcon={LinkIcon}
-                                        startIconClassName='text-onSurfaceVariant'
-                                        placeholder='Ссылка на основу / альт (Если есть)'
-                                        value={statusLink}
-                                        onChange={(e) => setStatusLink(e.target.value)}
-                                    />
+                                    <StatusLinkInput value={statusLink} onChange={setStatusLink} />
                                 ) : (
                                     <Button
                                         variant='ghost'
@@ -896,148 +500,36 @@ export default function MashupForm({
                                     </Button>
                                 ))}
 
-                            <div className='flex flex-col gap-y-2.5'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Выбери жанр
-                                </Label>
-                                <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-2.5 gap-y-3 max-h-[189px] overflow-y-scroll'>
-                                    {allGenres?.map((genre) => {
-                                        const selected = selectedGenres.has(genre.toLowerCase());
-
-                                        return (
-                                            <div
-                                                key={genre}
-                                                className={cn(
-                                                    'h-[54px] bg-surfaceVariant rounded-2xl flex items-center justify-center cursor-pointer',
-                                                    selected ? 'bg-badge text-primary' : ''
-                                                )}
-                                                onClick={() => {
-                                                    const newSelectedGenres = new Set(
-                                                        selectedGenres
-                                                    );
-                                                    if (selected) {
-                                                        newSelectedGenres.delete(
-                                                            genre.toLowerCase()
-                                                        );
-                                                    } else {
-                                                        newSelectedGenres.add(genre.toLowerCase());
-                                                    }
-                                                    setSelectedGenres(newSelectedGenres);
-                                                }}
-                                            >
-                                                {genre}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                            <GenrePicker
+                                allGenres={allGenres}
+                                selected={selectedGenres}
+                                onChange={setSelectedGenres}
+                            />
                         </div>
 
                         {/*авторы, статусы*/}
                         <div className='flex flex-col gap-y-[35px]'>
-                            <div className='w-full flex flex-col gap-y-2.5'>
-                                <Label className='font-medium text-onSurfaceVariant'>Авторы</Label>
-                                <span className='font-semibold text-xl text-onSurfaceVariant'>
-                                    {selectedUsers.map((user) => user.username).join(', ')}
-                                </span>
-                            </div>
-
-                            <div className='flex flex-col gap-y-2.5'>
-                                <Label className='font-medium text-onSurfaceVariant'>
-                                    Добавь соавторов мешапа
-                                </Label>
-
-                                <Input
-                                    placeholder='Ник мешапера'
-                                    startIcon={SearchIcon}
-                                    value={usersQuery}
-                                    onChange={(e) => setUsersQuery(e.target.value)}
-                                />
-
-                                <div className='flex flex-col gap-y-2.5 max-h-[200px] overflow-y-scroll'>
-                                    {renderUsers.map((renderUser) => {
-                                        const user = renderUser.user;
-                                        const selected = isUserSelected(user, selectedUsers);
-
-                                        return (
-                                            <div
-                                                key={user.id}
-                                                className={cn(
-                                                    'flex items-center gap-x-4 rounded-2xl p-[6px] mr-[7px] cursor-pointer',
-                                                    selected
-                                                        ? 'bg-badge'
-                                                        : 'hover:bg-onPrimary has-[[aria-expanded=true]]:bg-onPrimary'
-                                                )}
-                                                onClick={() => {
-                                                    if (
-                                                        loggedUser &&
-                                                        loggedUser.id === user.id &&
-                                                        !isModerator(loggedUser.permissions)
-                                                    ) {
-                                                        toast({
-                                                            element: (
-                                                                <ErrorToast
-                                                                    icon
-                                                                    before='Ошибка в поле'
-                                                                    field='авторов.'
-                                                                    after='Себя из авторов убрать нельзя'
-                                                                />
-                                                            ),
-                                                            duration: 2000,
-                                                            variant: 'destructive'
-                                                        });
-                                                    } else {
-                                                        userStatefulOnClick(user, selectedUsers);
-                                                    }
-                                                }}
-                                            >
-                                                <img
-                                                    src={coverUrl('user', user.imageUrl, 100)}
-                                                    alt={user.username}
-                                                    className='w-12 h-12 rounded-xl object-cover'
-                                                    draggable={false}
-                                                />
-                                                <span
-                                                    className={cn(
-                                                        'font-medium',
-                                                        selected ? 'text-primary' : 'text-onSurface'
-                                                    )}
-                                                >
-                                                    {user.username}
-                                                </span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                            <CoauthorsPicker
+                                selectedUsers={selectedUsers}
+                                setSelectedUsers={setSelectedUsers}
+                                handleLoggedUser={handleLoggedUser}
+                            />
 
                             <div className='flex flex-col gap-y-2.5'>
                                 {hasExplicit && (
-                                    <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                        <Checkbox
-                                            checked={explicit}
-                                            onCheckedChange={(v) => {
-                                                if (typeof v === 'boolean') setExplicit(v);
-                                            }}
-                                        />
-                                        <Label className='font-medium text-[15px] text-onSurface'>
-                                            Explicit (Мат)
-                                        </Label>
-                                    </div>
+                                    <StatusCheckbox
+                                        label='Explicit (Мат)'
+                                        checked={explicit}
+                                        onChange={setExplicit}
+                                    />
                                 )}
 
                                 {hasBanWords && (
-                                    <div className='flex items-center gap-x-4 px-5 py-4 bg-surfaceVariant rounded-2xl'>
-                                        <Checkbox
-                                            checked={banWords}
-                                            onCheckedChange={(v) => {
-                                                if (typeof v === 'boolean') setBanWords(v);
-                                            }}
-                                        />
-                                        <Label className='font-medium text-[15px] text-onSurface'>
-                                            Бан-ворды Twitch
-                                        </Label>
-                                    </div>
+                                    <StatusCheckbox
+                                        label='Бан-ворды Twitch'
+                                        checked={banWords}
+                                        onChange={setBanWords}
+                                    />
                                 )}
 
                                 {hasStatuses && (
@@ -1122,59 +614,42 @@ export default function MashupForm({
                     </div>
 
                     {/*сохранить*/}
-                    <div className='bg-surfaceVariant p-5 w-full md:w-fit rounded-[30px] flex flex-col md:flex-row items-stretch md:items-center gap-y-4 md:gap-y-0 md:gap-x-6'>
-                        <Button
-                            className='w-full md:w-[460px]'
-                            onClick={() => {
-                                toast({
-                                    element: (
-                                        <BaseToast
-                                            icon
-                                            before='Твой'
-                                            field='мешап'
-                                            after='загружается...'
-                                        />
-                                    ),
-                                    duration: 60000
-                                });
+                    <PublishBar
+                        button={text.button}
+                        disabled={sending}
+                        agree={agree}
+                        setAgree={setAgree}
+                        showAgree={!initial.agree}
+                        onClick={() => {
+                            toast({
+                                element: (
+                                    <BaseToast
+                                        icon
+                                        before='Твой'
+                                        field='мешап'
+                                        after='загружается...'
+                                    />
+                                ),
+                                duration: 60000
+                            });
 
-                                setSending(true);
+                            setSending(true);
 
-                                const promise = send();
-                                if (promise) {
-                                    promise.finally(() => {
+                            const promise = send();
+                            if (promise) {
+                                // ошибку уже показал axiosCatcher тостом; без catch она
+                                // всплывала бы в консоль как необработанная
+                                promise
+                                    .catch(() => undefined)
+                                    .finally(() => {
                                         dismiss();
                                         setSending(false);
                                     });
-                                } else {
-                                    setSending(false);
-                                }
-                            }}
-                            disabled={!agree || sending}
-                        >
-                            {text.button}
-                        </Button>
-                        {!initial.agree && (
-                            <div className='flex items-center gap-x-4'>
-                                <Checkbox
-                                    checked={agree}
-                                    onCheckedChange={(v) => {
-                                        if (typeof v === 'boolean') setAgree(v);
-                                    }}
-                                />
-                                <span>
-                                    Я прочитал(-а) и согласен(-на) с условиями{' '}
-                                    <Link
-                                        className='text-primary'
-                                        to='/user_agreement'
-                                        draggable={false}
-                                    >
-                                        пользовательского соглашения
-                                    </Link>
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                            } else {
+                                setSending(false);
+                            }
+                        }}
+                    />
                 </div>
             </div>
         </section>

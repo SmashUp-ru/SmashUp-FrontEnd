@@ -8,6 +8,7 @@ export interface UnpublishedMashup {
     authorsIds: number[];
     statuses: number;
     albumId: number;
+    albumPosition?: number;
     tracks: number[];
     tracksUrls: string[];
     statusesUrls: string[];

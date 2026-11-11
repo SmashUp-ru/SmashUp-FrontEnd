@@ -1,12 +1,7 @@
 import { ReactNode, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Info } from 'lucide-react';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
-} from '@/components/ui/tooltip.tsx';
+import Hint from '@/router/shared/components/Hint.tsx';
+import { TooltipProvider } from '@/components/ui/tooltip.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -54,25 +49,6 @@ async function fitImage(file: File, max = 1200): Promise<string> {
 }
 
 /** Подсказка — за «i» в тултипе, а не строкой под полем: шаг остаётся коротким. */
-function Hint({ text }: { text: string }) {
-    return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <button
-                    type='button'
-                    aria-label={text}
-                    // внутри <label>: без preventDefault клик по «i» фокусировал бы поле
-                    onClick={(e) => e.preventDefault()}
-                    className='inline-flex size-5 shrink-0 items-center justify-center rounded-full text-additionalText hover:text-onSurface transition-colors motion-reduce:transition-none'
-                >
-                    <Info className='size-4' strokeWidth={1.75} />
-                </button>
-            </TooltipTrigger>
-            <TooltipContent>{text}</TooltipContent>
-        </Tooltip>
-    );
-}
-
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
     return (
         <label className='flex flex-col gap-y-2 min-w-0'>
