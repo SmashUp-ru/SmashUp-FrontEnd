@@ -4,6 +4,7 @@ import { useMashupStore } from '@/store/entities/mashup.ts';
 import { usePlaylistStore } from '@/store/entities/playlist.ts';
 import { useTrackStore } from '@/store/entities/track.ts';
 import { useUserStore } from '@/store/entities/user.ts';
+import { useEventStore } from '@/store/entities/event.ts';
 import { useCurrentUserStore } from '@/store/currentUser.ts';
 
 /**
@@ -42,4 +43,6 @@ export function resetAppState(): void {
     usePlaylistStore.getState().reset();
     useTrackStore.getState().reset();
     useUserStore.getState().reset();
+    // в мероприятиях лежит `going` текущего пользователя
+    useEventStore.getState().reset();
 }

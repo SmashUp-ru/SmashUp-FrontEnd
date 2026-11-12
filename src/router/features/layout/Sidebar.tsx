@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import CalendarOutlineIcon from '@/components/icons/calendar/CalendarOutline28.tsx';
 import LogoIcon from '@/components/icons/Logo.tsx';
 import { useGlobalStore } from '@/store/global.ts';
 import LikeOutlineIcon from '@/components/icons/likeOutline/LikeOutline32';
@@ -95,6 +96,28 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
                             hoverColor={location.pathname === '/' ? 'hoverPrimary' : 'onSurface'}
                         />
                         <RowLabel>Главная</RowLabel>
+                    </Link>
+
+                    <Link
+                        draggable={false}
+                        to='/events'
+                        aria-label='Мероприятия'
+                        className={rowClass}
+                    >
+                        <CalendarOutlineIcon
+                            size={32}
+                            color={
+                                location.pathname.startsWith('/event')
+                                    ? 'primary'
+                                    : 'onSurfaceVariant'
+                            }
+                            hoverColor={
+                                location.pathname.startsWith('/event')
+                                    ? 'hoverPrimary'
+                                    : 'onSurface'
+                            }
+                        />
+                        <RowLabel>Мероприятия</RowLabel>
                     </Link>
 
                     {currentUser ? (

@@ -17,11 +17,11 @@ import {
     focusDialogItself
 } from '@/router/shared/components/confirmDialog.ts';
 
-/** Сторона рамки на экране. */
+/** Длинная сторона рамки на экране. */
 const VIEW = 320;
-/** Меньше бэк не примет: из него режутся 100/400/800. */
+/** Короткая сторона кадра меньше не бывает: бэк не примет (режет 100/400/800, афишу 4:5 — от 800×1000). */
 const MIN_SIDE = 800;
-/** Больше не нужно: крупнее 800 обложку никто не показывает. */
+/** Длинная сторона результата больше не нужна: крупнее никто не показывает. */
 const MAX_OUT = 1200;
 
 /** Положение картинки относительно рамки: масштаб и левый верхний угол. */
@@ -38,7 +38,8 @@ type Point = { x: number; y: number };
  * под ней двигаешь и масштабируешь картинку, всё за рамкой видно, но затемнено.
  * Мышь: тащить, колесо (и щипок на тачпаде) — масштаб к курсору. Тач: один палец
  * тащит, два — щипок. Клавиатура: стрелки и +/−.
- * На выходе квадрат не меньше 800×800: jpeg, а у png — png (прозрачность в jpeg
+ * `aspect` — ширина к высоте рамки (по умолчанию квадрат; 0.8 — вертикальная афиша 4:5).
+ * На выходе кадр с короткой стороной не меньше 800: jpeg, а у png — png (прозрачность в jpeg
  * стала бы чёрной). Картинку меньше 800 по короткой стороне не кадрируем: отдаём
  * как есть, её отбракует проверка размеров у вызывающего.
  */
@@ -46,9 +47,21 @@ export default function CoverCropDialog({
     src,
     initialFrame,
     round,
+    aspect = 1,
+    minSide = MIN_SIDE,
+    maxOut = MAX_OUT,
+    title,
     onCancel,
     onDone
 }: {
+    /** Ширина к высоте рамки. */
+    aspect?: number;
+    /** Минимум короткой стороны кадра в пикселях картинки (по умолчанию 800). */
+    minSide?: number;
+    /** Максимум длинной стороны результата (по умолчанию 1200). */
+    maxOut?: number;
+    /** Заголовок окна; по умолчанию «Аватар» / «Обложка». */
+    title?: string;
     /** Круглая рамка — для аватаров. Сохраняется всё равно квадрат: круг лишь маска. */
     round?: boolean;
     /** data-URL выбранной картинки; null — диалог закрыт. */
@@ -62,23 +75,26 @@ export default function CoverCropDialog({
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [frame, setFrame] = useState<CropFrame>({ s: 1, x: 0, y: 0 });
     const boxRef = useRef<HTMLDivElement>(null);
+    const boxW = aspect >= 1 ? VIEW : VIEW * aspect;
+    const boxH = aspect >= 1 ? VIEW / aspect : VIEW;
+    const fitS = (w: number, h: number) => Math.max(boxW / w, boxH / h);
 
     useEffect(() => {
         setImg(null);
         if (!src) return;
         const el = new Image();
         el.onload = () => {
-            const short = Math.min(el.naturalWidth, el.naturalHeight);
-            if (short < MIN_SIDE) {
+            const s = fitS(el.naturalWidth, el.naturalHeight);
+            // даже вписанный целиком кадр меньше минимума — отдаём как есть, отбракует вызывающий
+            if (s > Math.min(boxW, boxH) / minSide) {
                 onDone(src);
                 return;
             }
-            const s = VIEW / short;
             setFrame(
                 initialFrame ?? {
                     s,
-                    x: (VIEW - el.naturalWidth * s) / 2,
-                    y: (VIEW - el.naturalHeight * s) / 2
+                    x: (boxW - el.naturalWidth * s) / 2,
+                    y: (boxH - el.naturalHeight * s) / 2
                 }
             );
             setImg(el);
@@ -88,16 +104,16 @@ export default function CoverCropDialog({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [src]);
 
-    const minS = img ? VIEW / Math.min(img.naturalWidth, img.naturalHeight) : 1;
-    const maxS = Math.max(VIEW / MIN_SIDE, minS);
+    const minS = img ? fitS(img.naturalWidth, img.naturalHeight) : 1;
+    const maxS = Math.max(Math.min(boxW, boxH) / minSide, minS);
 
     const clampS = (s: number) => Math.min(Math.max(s, minS), maxS);
     const clamp = (f: CropFrame): CropFrame =>
         img
             ? {
                   s: f.s,
-                  x: Math.min(0, Math.max(VIEW - img.naturalWidth * f.s, f.x)),
-                  y: Math.min(0, Math.max(VIEW - img.naturalHeight * f.s, f.y))
+                  x: Math.min(0, Math.max(boxW - img.naturalWidth * f.s, f.x)),
+                  y: Math.min(0, Math.max(boxH - img.naturalHeight * f.s, f.y))
               }
             : f;
 
@@ -110,7 +126,7 @@ export default function CoverCropDialog({
             y: to.y - ((from.y - f.y) / f.s) * ns
         });
     };
-    const center = { x: VIEW / 2, y: VIEW / 2 };
+    const center = { x: boxW / 2, y: boxH / 2 };
     const zoomCenter = (s: number) => setFrame((f) => zoom(f, s, center));
 
     /** Экранная точка → координаты рамки. */
@@ -169,15 +185,27 @@ export default function CoverCropDialog({
 
     const done = () => {
         if (!img || !src) return;
-        const side = VIEW / frame.s; // сторона рамки в пикселях картинки, ≥ 800
-        const out = Math.round(Math.min(side, MAX_OUT));
+        // рамка в пикселях картинки, короткая сторона ≥ 800
+        const cw = boxW / frame.s;
+        const ch = boxH / frame.s;
+        const k = Math.min(1, maxOut / Math.max(cw, ch));
         const canvas = document.createElement('canvas');
-        canvas.width = out;
-        canvas.height = out;
+        canvas.width = Math.round(cw * k);
+        canvas.height = Math.round(ch * k);
         const ctx = canvas.getContext('2d')!;
         // без этого при сжатии крупного фото лесенки и муар
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, -frame.x / frame.s, -frame.y / frame.s, side, side, 0, 0, out, out);
+        ctx.drawImage(
+            img,
+            -frame.x / frame.s,
+            -frame.y / frame.s,
+            cw,
+            ch,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
         const png = src.startsWith('data:image/png');
         onDone(png ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.92), frame);
     };
@@ -194,7 +222,7 @@ export default function CoverCropDialog({
             >
                 <DialogHeader className='space-y-2'>
                     <DialogTitle className='p-0 text-xl'>
-                        {round ? 'Аватар' : 'Обложка'}
+                        {title ?? (round ? 'Аватар' : 'Обложка')}
                     </DialogTitle>
                     <DialogDescription className='p-0 text-sm'>
                         Перетащи и приблизь, чтобы выбрать кадр
@@ -236,7 +264,7 @@ export default function CoverCropDialog({
                         <div
                             ref={boxRef}
                             className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-                            style={{ width: VIEW, height: VIEW }}
+                            style={{ width: boxW, height: boxH }}
                         >
                             <img
                                 src={img.src}

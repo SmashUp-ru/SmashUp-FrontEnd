@@ -17,7 +17,7 @@ import SettingsIcon from '@/components/icons/Settings';
 import { useGlobalStore } from '@/store/global.ts';
 import { isAdmin, isMashuper, isModerator, isVerified } from '@/lib/bitmask';
 import { Disc3 as AlbumIcon } from 'lucide-react';
-import { Ticket } from 'lucide-react';
+import CalendarOutlineIcon from '@/components/icons/calendar/CalendarOutline28.tsx';
 import { coverUrl } from '@/lib/cdn.ts';
 import { useIsMobile } from '@/router/shared/hooks/use-mobile.tsx';
 import LogoutDialog from '@/router/features/auth/LogoutDialog.tsx';
@@ -108,12 +108,14 @@ export default function ProfileMenu() {
                     )}
                     {(isModerator(currentUser.permissions) || isAdmin(currentUser.permissions)) && (
                         <DropdownMenuItem asChild>
-                            <Link to='/tickets/editor'>
-                                <Ticket
-                                    className={`size-6 text-onSurface ${ITEM_ICON}`}
-                                    strokeWidth={1.75}
+                            {/* билеты живут внутри мероприятия: «Билет» на его странице */}
+                            <Link to='/events'>
+                                <CalendarOutlineIcon
+                                    size={24}
+                                    color='onSurface'
+                                    className={ITEM_ICON}
                                 />
-                                Билеты
+                                Мероприятия
                             </Link>
                         </DropdownMenuItem>
                     )}

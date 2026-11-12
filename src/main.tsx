@@ -31,6 +31,9 @@ const UploadMashupPage = lazy(() => import('@/router/pages/uploadMashup/UploadMa
 const UploadAlbumPage = lazy(() => import('@/router/pages/uploadAlbum/UploadAlbumPage.tsx'));
 const ModerationPage = lazy(() => import('@/router/pages/moderation/ModerationPage.tsx'));
 const TicketEditorPage = lazy(() => import('@/router/pages/tickets/TicketEditorPage.tsx'));
+const EventsPage = lazy(() => import('@/router/pages/events/EventsPage.tsx'));
+const EventPage = lazy(() => import('@/router/pages/events/EventPage.tsx'));
+const EventEditorPage = lazy(() => import('@/router/pages/events/EventEditorPage.tsx'));
 const UploadMashupSuccessPage = lazy(
     () => import('@/router/pages/uploadMashup/UploadMashupSuccessPage.tsx')
 );
@@ -130,7 +133,23 @@ const router = createBrowserRouter(
                         },
                         {
                             element: <TicketEditorPage />,
-                            path: '/tickets/editor'
+                            path: '/event/:eventId/ticket'
+                        },
+                        {
+                            element: <EventsPage />,
+                            path: '/events'
+                        },
+                        {
+                            element: <EventEditorPage />,
+                            path: '/event/new'
+                        },
+                        {
+                            element: <EventEditorPage />,
+                            path: '/event/:eventId/edit'
+                        },
+                        {
+                            element: <EventPage />,
+                            path: '/event/:eventId'
                         },
                         {
                             element: <MashupPage />,

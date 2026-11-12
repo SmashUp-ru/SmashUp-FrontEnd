@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
-import { AxiosResponse } from 'axios';
-import { useDebounce } from 'use-debounce';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import SearchIcon from '@/components/icons/Search.tsx';
-import { axiosSession } from '@/lib/utils.ts';
 import { coverUrl } from '@/lib/cdn.ts';
-import { User } from '@/store/entities/user.ts';
 import { LineupArtist } from '@/store/ticketDrafts.ts';
-import { UsersSearchResponse } from '@/router/shared/types/search.ts';
+import { useUserSearch } from '@/router/shared/hooks/useUserSearch.ts';
 import ImageWithSkeleton from '@/router/shared/components/image/ImageWithSkeleton.tsx';
 
 /** Лайнап: поиск мешаперов SmashUp по нику (как соавторы в модерации), клик — добавить/убрать. */
@@ -19,22 +15,7 @@ export default function LineupField({
     onChange: (v: LineupArtist[]) => void;
 }) {
     const [query, setQuery] = useState('');
-    const [debounced] = useDebounce(query.trim(), 400);
-    const [found, setFound] = useState<User[]>([]);
-
-    useEffect(() => {
-        if (debounced.length < 2 || debounced.length > 32) return setFound([]);
-        let cancelled = false;
-        axiosSession
-            .get(`/user/search?query=${encodeURIComponent(debounced)}`)
-            .then(
-                (r: AxiosResponse<UsersSearchResponse>) => !cancelled && setFound(r.data.response)
-            )
-            .catch(() => !cancelled && setFound([]));
-        return () => {
-            cancelled = true;
-        };
-    }, [debounced]);
+    const found = useUserSearch(query);
 
     const row = (a: LineupArtist, selected: boolean, onClick: () => void) => (
         <button

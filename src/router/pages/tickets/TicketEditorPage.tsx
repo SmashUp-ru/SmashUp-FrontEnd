@@ -1,5 +1,6 @@
 import { ReactNode, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { isAxiosError } from 'axios';
 import Hint from '@/router/shared/components/Hint.tsx';
 import { TooltipProvider } from '@/components/ui/tooltip.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
@@ -11,33 +12,36 @@ import { SegmentedControl } from '@/components/ui/segmented-control.tsx';
 import { cn, convertToBase64 } from '@/lib/utils.ts';
 import { toast, useToast } from '@/router/shared/hooks/use-toast.ts';
 import ErrorToast from '@/router/shared/toasts/error.tsx';
-import { coverUrl } from '@/lib/cdn.ts';
+import { coverUrl, ticketAssetUrl } from '@/lib/cdn.ts';
 import { isAdmin, isModerator } from '@/lib/bitmask.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import {
     CodePosition,
     CodeType,
     FoilType,
-    formatTicketDate,
     InfoLayout,
-    newTicketDraft,
     TextAlign,
-    TicketEvent,
     CustomFontSlot,
     TicketFont,
     TicketSkin,
     TicketTier,
-    useTicketDrafts
+    TicketDesign
 } from '@/store/ticketDrafts.ts';
 import TicketCard from '@/router/features/tickets/TicketCard.tsx';
-import LineupField from '@/router/features/tickets/LineupField.tsx';
+import { useTicketDesign } from '@/router/features/tickets/useTicketDesign.ts';
+import {
+    TICKET_ASSET_MAX_BYTES,
+    uploadTicketAsset
+} from '@/router/features/tickets/ticketAssets.ts';
+import { formatEventDate } from '@/lib/events.ts';
+import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { StateView } from '@/router/shared/components/StateView.tsx';
 import { useDocumentTitle } from '@/router/shared/hooks/useDocumentTitle.ts';
 
 const LABEL = 'text-[13px] font-medium text-onSurfaceVariant';
 const QUIET_BTN = 'hover:bg-onSurface/10';
 
-/** Ужимаем картинку до 1200px по длинной стороне в webp — иначе localStorage кончится на втором билете. */
+/** Ужимаем картинку до 1200px по длинной стороне в webp. */
 async function fitImage(file: File, max = 1200): Promise<string> {
     const bmp = await createImageBitmap(file);
     const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
@@ -45,6 +49,7 @@ async function fitImage(file: File, max = 1200): Promise<string> {
     c.width = Math.round(bmp.width * k);
     c.height = Math.round(bmp.height * k);
     c.getContext('2d')?.drawImage(bmp, 0, 0, c.width, c.height);
+    bmp.close();
     return c.toDataURL('image/webp', 0.85);
 }
 
@@ -78,14 +83,16 @@ function ImageField({
     onChange: (v?: string) => void;
 }) {
     const input = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
     return (
         <div className='flex items-center gap-x-3 min-w-0'>
             <button
                 type='button'
                 onClick={() => input.current?.click()}
                 aria-label={`${label}: выбрать файл`}
+                disabled={uploading}
                 className='h-14 w-10 shrink-0 rounded-lg bg-white/[0.07] bg-cover bg-center hover:brightness-125 transition-[filter]'
-                style={value ? { backgroundImage: `url(${value})` } : undefined}
+                style={value ? { backgroundImage: `url(${ticketAssetUrl(value)})` } : undefined}
             />
             <span className='flex min-w-0 flex-1 items-center gap-x-1 text-sm font-medium text-onSurface'>
                 {label}
@@ -96,6 +103,7 @@ function ImageField({
                     variant='nothing'
                     size='sm'
                     className={QUIET_BTN}
+                    disabled={uploading}
                     onClick={() => onChange(undefined)}
                 >
                     Убрать
@@ -105,42 +113,61 @@ function ImageField({
                     variant='nothing'
                     size='sm'
                     className={QUIET_BTN}
+                    disabled={uploading}
                     onClick={() => input.current?.click()}
                 >
-                    Выбрать
+                    {uploading ? 'Загружаю…' : 'Выбрать'}
                 </Button>
             )}
             <input
                 ref={input}
                 type='file'
-                accept={`image/png,image/jpeg,image/webp${svg ? ',image/svg+xml' : ''}`}
+                accept={`image/png,image/jpeg,image/gif,image/webp${svg ? ',image/svg+xml' : ''}`}
+                disabled={uploading}
                 hidden
                 onChange={(e) => {
                     const file = e.target.files?.[0];
                     e.target.value = '';
                     if (!file) return;
-                    if (file.type === 'image/svg+xml') {
-                        // SVG идёт только в CSS background-image — скрипты внутри там не исполняются
-                        if (file.size > SVG_MAX_BYTES)
-                            return toast({
-                                element: (
-                                    <ErrorToast
-                                        icon
-                                        before={`${label}:`}
-                                        after='SVG не больше 512 КБ.'
-                                    />
-                                ),
-                                duration: 3000,
-                                variant: 'destructive'
-                            });
-                        convertToBase64(file)
-                            .then((d) => typeof d === 'string' && onChange(d))
-                            .catch(() => {});
-                        return;
-                    }
-                    fitImage(file)
-                        .then(onChange)
-                        .catch(() => {});
+                    const isSvg = file.type === 'image/svg+xml';
+                    if (isSvg && file.size > SVG_MAX_BYTES)
+                        return toast({
+                            element: (
+                                <ErrorToast
+                                    icon
+                                    before={`${label}:`}
+                                    after='SVG не больше 512 КБ'
+                                />
+                            ),
+                            duration: 3000,
+                            variant: 'destructive'
+                        });
+                    setUploading(true);
+                    (isSvg ? convertToBase64(file) : fitImage(file))
+                        .then(async (data) => {
+                            if (typeof data === 'string') onChange(await uploadTicketAsset(data));
+                        })
+                        .catch((error) => {
+                            if (isAxiosError(error))
+                                axiosCatcher(toast, 'при загрузке картинки')(error);
+                            else
+                                toast({
+                                    element: (
+                                        <ErrorToast
+                                            icon
+                                            before={`${label}:`}
+                                            after={
+                                                error instanceof Error
+                                                    ? error.message
+                                                    : 'Не удалось прочитать файл'
+                                            }
+                                        />
+                                    ),
+                                    variant: 'destructive'
+                                });
+                        })
+                        .catch(() => {})
+                        .finally(() => setUploading(false));
                 }}
             />
         </div>
@@ -286,7 +313,7 @@ const maxThreeLines = (v: string) => {
     const lines = v.split('\n');
     return lines.length <= 3 ? v : [...lines.slice(0, 2), lines.slice(2).join(' ')].join('\n');
 };
-const FONT_MAX_BYTES = 2 * 1024 * 1024;
+const FONT_MAX_BYTES = TICKET_ASSET_MAX_BYTES;
 
 type StepId =
     'event' | 'lineup' | 'images' | 'text' | 'color' | 'foil' | 'back' | 'tiers' | 'after';
@@ -298,7 +325,7 @@ type StepId =
  */
 const STEPS: { id: StepId; title: string; hint: string; side?: 'back'; past?: boolean }[] = [
     { id: 'event', title: 'Мероприятие', hint: 'Что, где и когда. Попадёт на каждый билет' },
-    { id: 'lineup', title: 'Лайнап', hint: 'Мешаперы SmashUp. Под билетом ведут в их профили' },
+    { id: 'lineup', title: 'Лайнап', hint: 'Участники из мероприятия' },
     { id: 'images', title: 'Картинка', hint: 'Арт в формате 5:7 и, если есть, передний план' },
     { id: 'text', title: 'Текст', hint: 'Раскладка, выравнивание и шрифты' },
     { id: 'color', title: 'Цвет и форма', hint: 'Фон, цвет текста, углы и рамка' },
@@ -318,59 +345,65 @@ const STEPS: { id: StepId; title: string; hint: string; side?: 'back'; past?: bo
     }
 ];
 
-/**
- * Редактор билетов на оффлайн-мероприятия. Только для модераторов и админов
- * (проверка на клиенте — косметика; данных тут нет, пока это мок в localStorage).
- * Пошагово, как онбординг: слева список шагов и один шаг, справа — карта.
- * Выбран уровень (VIP…) — правки оформления пишутся в его переопределения, а не в базу.
- */
 export default function TicketEditorPage() {
     useDocumentTitle('Билеты');
-    const { toast } = useToast();
+    const { eventId } = useParams();
     const currentUser = useGlobalStore((s) => s.currentUser);
-    const { drafts, save, remove } = useTicketDrafts();
-    const [selectedId, setSelectedId] = useState<string | null>(null);
-    const [tierId, setTierId] = useState<string | null>(null);
-    const [stepIndex, setStepIndex] = useState(0);
-    const [confirmDelete, setConfirmDelete] = useState(false);
-    const fontInput = useRef<HTMLInputElement>(null);
-    const fontSlot = useRef<CustomFontSlot>('custom');
-
-    const draft = drafts.find((d) => d.id === selectedId) ?? drafts[0];
-
-    if (currentUser === null) return null;
+    if (!currentUser) return null;
     if (!isModerator(currentUser.permissions) && !isAdmin(currentUser.permissions))
         return (
             <StateView title='Нет доступа' description='Редактор билетов доступен только команде' />
         );
-    if (!draft) return null;
+    const id = Number(eventId);
+    if (!Number.isSafeInteger(id) || id <= 0) return <StateView title='Мероприятие не найдено' />;
+    return <TicketEditor key={id} eventId={id} />;
+}
 
+function TicketEditor({ eventId }: { eventId: number }) {
+    const { toast } = useToast();
+    const currentUser = useGlobalStore((s) => s.currentUser);
+    const { event, design, loadError, status, saveError, reload, update, retry } =
+        useTicketDesign(eventId);
+    const [tierId, setTierId] = useState<string | null>(null);
+    const [stepIndex, setStepIndex] = useState(0);
+    const [fontUploading, setFontUploading] = useState(false);
+    const fontInput = useRef<HTMLInputElement>(null);
+    const fontSlot = useRef<CustomFontSlot>('custom');
+
+    if (loadError)
+        return (
+            <StateView
+                title='Не удалось загрузить билет'
+                action={{ label: 'Повторить', onClick: reload }}
+            />
+        );
+    if (!event || !design) return <StateView title='Загружаю билет…' />;
+    if (!currentUser) return null;
+
+    const ticketEvent = {
+        ...event,
+        capacity: design.capacity,
+        backText: design.backText,
+        stampText: design.stampText
+    };
     const step = STEPS[stepIndex];
-    const tier = draft.tiers.find((t) => t.id === tierId);
-    const skin: TicketSkin = tier ? { ...draft.skin, ...tier.skin } : draft.skin;
-
-    // Свежий черновик из стора, а не из замыкания рендера: картинки ужимаются асинхронно, и две
-    // загрузки подряд (арт + передний план) иначе затирали друг друга — вторая писала поверх
-    // устаревшей копии, где первой ещё нет.
-    const fresh = () => useTicketDrafts.getState().drafts.find((d) => d.id === draft.id) ?? draft;
-    const setTiers = (tiers: TicketTier[]) => save({ ...fresh(), tiers });
-    const updateEvent = (event: Partial<TicketEvent>) => {
-        const d = fresh();
-        save({ ...d, event: { ...d.event, ...event } });
-    };
-    const updateSkin = (patch: Partial<TicketSkin>) => {
-        const d = fresh();
-        if (tier)
-            setTiers(
-                d.tiers.map((t) => (t.id === tier.id ? { ...t, skin: { ...t.skin, ...patch } } : t))
-            );
-        else save({ ...d, skin: { ...d.skin, ...patch } });
-    };
-
-    const ev = (key: 'name' | 'date' | 'time' | 'city' | 'venue' | 'stampText') => ({
-        value: draft.event[key] ?? '',
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => updateEvent({ [key]: e.target.value })
-    });
+    const tier = design.tiers.find((t) => t.id === tierId);
+    const skin: TicketSkin = tier ? { ...design.skin, ...tier.skin } : design.skin;
+    const setTiers = (tiers: TicketTier[]) => update((d) => ({ ...d, tiers }));
+    const updateEvent = (
+        patch: Pick<Partial<TicketDesign>, 'capacity' | 'backText' | 'stampText'>
+    ) => update((d) => ({ ...d, ...patch }));
+    const updateSkin = (patch: Partial<TicketSkin>) =>
+        update((d) =>
+            tier
+                ? {
+                      ...d,
+                      tiers: d.tiers.map((t) =>
+                          t.id === tier.id ? { ...t, skin: { ...t.skin, ...patch } } : t
+                      )
+                  }
+                : { ...d, skin: { ...d.skin, ...patch } }
+        );
 
     const SLOT_KEY = { custom: 'customFont', custom2: 'customFont2' } as const;
     const shortName = (n: string) => (n.length > 16 ? `${n.slice(0, 15)}…` : n);
@@ -391,7 +424,7 @@ export default function TicketEditorPage() {
     const uploadFont = async (file: File, slot: CustomFontSlot) => {
         if (!/\.(woff2?|ttf|otf)$/i.test(file.name))
             return fail('подойдёт woff2, woff, ttf или otf.');
-        if (file.size > FONT_MAX_BYTES) return fail('не больше 2 МБ.');
+        if (file.size > FONT_MAX_BYTES) return fail('не больше 5 МБ.');
         const data = await convertToBase64(file);
         if (typeof data !== 'string') return;
         try {
@@ -399,9 +432,9 @@ export default function TicketEditorPage() {
         } catch {
             return fail('файл не читается как шрифт.');
         }
-        // Сразу применяем: первый шрифт — к заголовку, второй — к тексту.
+        const name = await uploadTicketAsset(data);
         updateSkin({
-            [SLOT_KEY[slot]]: { name: file.name.replace(/\.[^.]+$/, ''), data },
+            [SLOT_KEY[slot]]: { name: file.name.replace(/\.[^.]+$/, ''), data: name },
             ...(slot === 'custom' ? { titleFont: slot } : { bodyFont: slot })
         });
     };
@@ -413,26 +446,13 @@ export default function TicketEditorPage() {
             bodyFont: skin.bodyFont === slot ? 'sans' : skin.bodyFont
         });
 
-    const selectDraft = (id: string | null) => {
-        setSelectedId(id);
-        setTierId(null);
-        setConfirmDelete(false);
-    };
-
-    const createDraft = () => {
-        const d = newTicketDraft();
-        save(d);
-        selectDraft(d.id);
-        setStepIndex(0);
-    };
-
     const addTier = () => {
         const t: TicketTier = {
             id: crypto.randomUUID(),
-            name: draft.tiers.length ? `Уровень ${draft.tiers.length + 1}` : 'VIP',
+            name: design.tiers.length ? `Уровень ${design.tiers.length + 1}` : 'VIP',
             skin: {}
         };
-        setTiers([...draft.tiers, t]);
+        setTiers([...design.tiers, t]);
         setTierId(t.id);
     };
 
@@ -448,28 +468,31 @@ export default function TicketEditorPage() {
         event: (
             <>
                 <Field label='Название'>
-                    <Input maxLength={48} {...ev('name')} />
+                    <span className='text-onSurface'>{event.name}</span>
                 </Field>
-                <div className='grid grid-cols-2 gap-4'>
-                    <Field label='Дата'>
-                        <Input type='date' {...ev('date')} />
-                    </Field>
-                    <Field label='Время'>
-                        <Input type='time' {...ev('time')} />
-                    </Field>
-                </div>
+                <Field label='Дата и время'>
+                    <span className='text-onSurface'>
+                        {formatEventDate(event.startsAt, event.timezone)}
+                    </span>
+                </Field>
                 <Field label='Город'>
-                    <Input maxLength={32} {...ev('city')} />
+                    <span className='text-onSurface'>{event.city || 'Не указан'}</span>
                 </Field>
                 <Field label='Площадка'>
-                    <Input maxLength={48} {...ev('venue')} />
+                    <span className='text-onSurface'>{event.venue || 'Не указана'}</span>
+                </Field>
+                <Field label='Лайнап'>
+                    <span className='text-onSurface'>
+                        {event.lineup.map((slot) => slot.name).join(', ') || 'Не указан'}
+                    </span>
                 </Field>
                 <Field label='Тираж' hint='Пусто, если без лимита. На билете: № 0137 / тираж'>
                     <Input
                         type='number'
+                        aria-label='Тираж'
                         min={1}
                         max={99999}
-                        value={draft.event.capacity ?? ''}
+                        value={ticketEvent.capacity ?? ''}
                         onChange={(e) =>
                             updateEvent({
                                 capacity: e.target.value
@@ -479,19 +502,13 @@ export default function TicketEditorPage() {
                         }
                     />
                 </Field>
-                {draft.event.date && (
-                    <span className='text-[13px] text-onSurfaceVariant'>
-                        На билете: {formatTicketDate(draft.event)}
-                    </span>
-                )}
             </>
         ),
         lineup: (
             <>
-                <LineupField
-                    value={draft.event.lineup ?? []}
-                    onChange={(lineup) => updateEvent({ lineup })}
-                />
+                <p className='text-sm text-onSurface'>
+                    {event.lineup.map((slot) => slot.name).join(', ') || 'Лайнап пока пуст'}
+                </p>
                 <Toggle
                     label='Лайнап на лицевой стороне'
                     checked={skin.lineupOnFront}
@@ -577,13 +594,14 @@ export default function TicketEditorPage() {
                                 <span className='truncate'>
                                     {font ? font.name : `Свой шрифт ${n + 1}`}
                                 </span>
-                                {n === 0 && <Hint text='woff2, woff, ttf или otf до 2 МБ' />}
+                                {n === 0 && <Hint text='woff2, woff, ttf или otf до 5 МБ' />}
                             </span>
                             {font ? (
                                 <Button
                                     variant='nothing'
                                     size='sm'
                                     className={QUIET_BTN}
+                                    disabled={fontUploading}
                                     onClick={() => removeFont(slot)}
                                 >
                                     Убрать
@@ -593,12 +611,13 @@ export default function TicketEditorPage() {
                                     variant='nothing'
                                     size='sm'
                                     className={QUIET_BTN}
+                                    disabled={fontUploading}
                                     onClick={() => {
                                         fontSlot.current = slot;
                                         fontInput.current?.click();
                                     }}
                                 >
-                                    Загрузить
+                                    {fontUploading ? 'Загружаю…' : 'Загрузить'}
                                 </Button>
                             )}
                         </div>
@@ -608,11 +627,26 @@ export default function TicketEditorPage() {
                     ref={fontInput}
                     type='file'
                     accept='.woff2,.woff,.ttf,.otf'
+                    disabled={fontUploading}
                     hidden
                     onChange={(e) => {
                         const file = e.target.files?.[0];
                         e.target.value = '';
-                        if (file) uploadFont(file, fontSlot.current).catch(() => {});
+                        if (!file) return;
+                        setFontUploading(true);
+                        uploadFont(file, fontSlot.current)
+                            .catch((error) => {
+                                if (isAxiosError(error))
+                                    axiosCatcher(toast, 'при загрузке шрифта')(error);
+                                else
+                                    fail(
+                                        error instanceof Error
+                                            ? error.message
+                                            : 'Не удалось прочитать файл'
+                                    );
+                            })
+                            .catch(() => {})
+                            .finally(() => setFontUploading(false));
                     }}
                 />
                 <SliderField
@@ -754,9 +788,10 @@ export default function TicketEditorPage() {
             <>
                 <Field label='Текст' hint='Тайминг, правила входа. До 3 строк'>
                     <Textarea
+                        aria-label='Текст оборота'
                         rows={3}
                         maxLength={BACK_TEXT_MAX}
-                        value={draft.event.backText ?? ''}
+                        value={ticketEvent.backText ?? ''}
                         onChange={(e) => updateEvent({ backText: maxThreeLines(e.target.value) })}
                     />
                 </Field>
@@ -807,7 +842,7 @@ export default function TicketEditorPage() {
                     <button type='button' className={chip(!tier)} onClick={() => setTierId(null)}>
                         Базовый
                     </button>
-                    {draft.tiers.map((t) => (
+                    {design.tiers.map((t) => (
                         <button
                             key={t.id}
                             type='button'
@@ -833,7 +868,7 @@ export default function TicketEditorPage() {
                                 value={tier.name}
                                 onChange={(e) =>
                                     setTiers(
-                                        draft.tiers.map((t) =>
+                                        design.tiers.map((t) =>
                                             t.id === tier.id ? { ...t, name: e.target.value } : t
                                         )
                                     )
@@ -848,7 +883,7 @@ export default function TicketEditorPage() {
                                 disabled={Object.keys(tier.skin).length === 0}
                                 onClick={() =>
                                     setTiers(
-                                        draft.tiers.map((t) =>
+                                        design.tiers.map((t) =>
                                             t.id === tier.id ? { ...t, skin: {} } : t
                                         )
                                     )
@@ -861,7 +896,7 @@ export default function TicketEditorPage() {
                                 size='sm'
                                 className='text-error hover:bg-error/10'
                                 onClick={() => {
-                                    setTiers(draft.tiers.filter((t) => t.id !== tier.id));
+                                    setTiers(design.tiers.filter((t) => t.id !== tier.id));
                                     setTierId(null);
                                 }}
                             >
@@ -874,7 +909,12 @@ export default function TicketEditorPage() {
         ),
         after: (
             <Field label='Надпись штампа'>
-                <Input maxLength={20} placeholder='Посещено' {...ev('stampText')} />
+                <Input
+                    maxLength={20}
+                    placeholder='Посещено'
+                    value={design.stampText ?? ''}
+                    onChange={(e) => updateEvent({ stampText: e.target.value })}
+                />
             </Field>
         )
     };
@@ -884,72 +924,28 @@ export default function TicketEditorPage() {
             <div className='flex flex-col gap-y-6 pb-8'>
                 <div className='flex flex-col gap-y-1'>
                     <h1 className='font-semibold text-[28px] text-onSurface'>Билеты</h1>
-                    <p className='text-[13px] text-onSurfaceVariant'>
-                        Черновики хранятся только в этом браузере, бэка пока нет
-                    </p>
-                </div>
-
-                {/* Черновики; удаление — здесь же, рядом с тем, что удаляем */}
-                <div className='flex flex-wrap items-center gap-x-4 gap-y-3'>
-                    <div className='flex min-w-0 flex-1 gap-2 overflow-x-auto scrollbar-none -mx-1 px-1'>
-                        {drafts.map((d) => (
-                            <button
-                                key={d.id}
-                                type='button'
-                                onClick={() => selectDraft(d.id)}
-                                className={cn(
-                                    'h-11 shrink-0 max-w-[240px] truncate rounded-2xl px-4 text-sm font-medium transition-colors motion-reduce:transition-none',
-                                    d.id === draft.id
-                                        ? 'bg-onSurface text-surface'
-                                        : 'bg-surface text-onSurfaceVariant hover:text-onSurface'
-                                )}
-                            >
-                                {d.event.name || 'Без названия'}
-                            </button>
-                        ))}
-                        <button
-                            type='button'
-                            onClick={createDraft}
-                            className='h-11 shrink-0 rounded-2xl px-4 text-sm font-medium text-onSurfaceVariant border border-dashed border-onSurface/20 hover:text-onSurface hover:border-onSurface/40 transition-colors motion-reduce:transition-none'
-                        >
-                            + Новый билет
-                        </button>
+                    <div
+                        role='status'
+                        aria-live='polite'
+                        className='flex items-center gap-x-2 text-[13px] text-onSurfaceVariant'
+                    >
+                        {status === 'saving'
+                            ? 'Сохраняю…'
+                            : status === 'saved'
+                              ? 'Сохранено'
+                              : 'Не удалось сохранить'}
+                        {status === 'error' && (
+                            <>
+                                <Hint text={saveError} />
+                                <Button size='sm' variant='nothing' onClick={retry}>
+                                    Повторить
+                                </Button>
+                            </>
+                        )}
                     </div>
-                    {confirmDelete ? (
-                        <div className='flex shrink-0 items-center gap-x-2'>
-                            <span className='text-[13px] text-onSurfaceVariant'>
-                                Удалить черновик?
-                            </span>
-                            <Button
-                                variant='nothing'
-                                size='sm'
-                                className={QUIET_BTN}
-                                onClick={() => setConfirmDelete(false)}
-                            >
-                                Отмена
-                            </Button>
-                            <Button
-                                variant='nothing'
-                                size='sm'
-                                className='text-error hover:bg-error/10'
-                                onClick={() => {
-                                    remove(draft.id);
-                                    selectDraft(null);
-                                }}
-                            >
-                                Удалить
-                            </Button>
-                        </div>
-                    ) : (
-                        <Button
-                            variant='nothing'
-                            size='sm'
-                            className='shrink-0 text-onSurfaceVariant hover:text-error hover:bg-error/10'
-                            onClick={() => setConfirmDelete(true)}
-                        >
-                            Удалить черновик
-                        </Button>
-                    )}
+                    <Link className='text-sm text-primary hover:underline' to={`/event/${eventId}`}>
+                        К мероприятию
+                    </Link>
                 </div>
 
                 <div className='grid grid-cols-1 lg:grid-cols-[minmax(0,620px)_minmax(0,1fr)] gap-x-10 gap-y-8 items-start'>
@@ -1020,7 +1016,7 @@ export default function TicketEditorPage() {
                                     </Button>
                                 ) : (
                                     <span className='text-[13px] text-onSurfaceVariant'>
-                                        Готово. Черновик сохраняется сам
+                                        Готово. Изменения сохраняются сами
                                     </span>
                                 )}
                             </div>
@@ -1031,7 +1027,7 @@ export default function TicketEditorPage() {
                     <div className='order-1 lg:order-2 lg:sticky lg:top-[max(1rem,calc(50dvh-360px))] flex flex-col items-center gap-y-4'>
                         <TicketCard
                             className='w-full max-w-[380px]'
-                            event={draft.event}
+                            event={ticketEvent}
                             skin={skin}
                             tier={tier?.name}
                             past={step.past}
@@ -1041,26 +1037,15 @@ export default function TicketEditorPage() {
                                 avatar: coverUrl('user', currentUser.imageUrl, 100)
                             }}
                             serial={137}
-                            code={`SU-${draft.id.slice(0, 4).toUpperCase()}`}
+                            code={`SU-${eventId.toString(16).toUpperCase().padStart(4, '0').slice(-4)}`}
                         />
                         <p className='max-w-[380px] text-[13px] text-onSurfaceVariant text-center [text-wrap:balance]'>
                             Наведи, чтобы наклонить, кликни, чтобы перевернуть. Имя и номер у
                             каждого участника свои
                         </p>
-                        {draft.event.lineup && draft.event.lineup.length > 0 && (
+                        {event.lineup.length > 0 && (
                             <p className='max-w-[380px] text-[13px] text-onSurfaceVariant text-center'>
-                                Лайнап:{' '}
-                                {draft.event.lineup.map((a, i) => (
-                                    <span key={a.id}>
-                                        {i > 0 && ', '}
-                                        <Link
-                                            to={`/user/${encodeURIComponent(a.username)}`}
-                                            className='text-onSurface hover:underline'
-                                        >
-                                            {a.username}
-                                        </Link>
-                                    </span>
-                                ))}
+                                Лайнап: {event.lineup.map((slot) => slot.name).join(', ')}
                             </p>
                         )}
                     </div>

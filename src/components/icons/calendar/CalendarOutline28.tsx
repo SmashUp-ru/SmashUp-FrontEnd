@@ -1,0 +1,28 @@
+import { cn } from '@/lib/utils.ts';
+import { IconProps } from '@/components/icons/props.tsx';
+
+/** VK Icons `calendar_outline_28` (vkcom.github.io/icons). */
+export default function CalendarOutlineIcon({
+    className,
+    color = 'onSurfaceVariant',
+    hoverColor,
+    size = 28,
+    height,
+    width
+}: IconProps) {
+    return (
+        <svg
+            width={size ? size : width}
+            height={size ? size : height}
+            viewBox='0 0 28 28'
+            xmlns='http://www.w3.org/2000/svg'
+            className={cn(
+                `text-${color} hover:text-${hoverColor}`,
+                'fill-current transition-[color,transform] duration-150 motion-reduce:transition-none',
+                className
+            )}
+        >
+            <path d='M19 1a1 1 0 0 1 1 1v1.16c.84.133 1.384.35 1.93.641A5.452 5.452 0 0 1 24.2 6.07c.475.889.748 1.77.794 3.93H25v7.308l-.005.61c-.041 2.22-.315 3.113-.796 4.012a5.452 5.452 0 0 1-2.269 2.27c-.977.522-1.947.801-4.622.801h-6.616l-.61-.005c-2.22-.041-3.113-.315-4.013-.796a5.452 5.452 0 0 1-2.268-2.269c-.502-.938-.778-1.87-.8-4.309L3 10.691V10c.053-2.16.326-3.042.801-3.93A5.452 5.452 0 0 1 6.07 3.8 5.679 5.679 0 0 1 8 3.16V2a1 1 0 0 1 2 0v1.007c.216-.005.447-.007.692-.007h6.616c.245 0 .476.002.694.007L18 2a1 1 0 0 1 1-1Zm3.999 11H5v5.591l.01.57c.039 1.506.198 2.159.555 2.826.337.63.818 1.112 1.448 1.448.746.4 1.473.551 3.396.564h7.182l.57-.009c1.506-.039 2.159-.198 2.826-.555a3.452 3.452 0 0 0 1.448-1.448c.4-.746.551-1.473.564-3.396V12Zm-5.408-7H10.41l-.41.007V6a1 1 0 0 1-2 0v-.807c-.381.087-.683.21-.987.372a3.453 3.453 0 0 0-1.448 1.448c-.37.69-.527 1.365-.559 2.986L22.993 10l-.003-.16c-.039-1.507-.198-2.16-.555-2.827a3.452 3.452 0 0 0-1.448-1.448 3.833 3.833 0 0 0-.986-.372L20 6a1 1 0 1 1-2 0l.002-.994-.41-.005Z' />
+        </svg>
+    );
+}

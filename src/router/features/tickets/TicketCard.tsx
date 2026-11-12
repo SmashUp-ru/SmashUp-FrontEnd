@@ -1,6 +1,8 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { ticketAssetUrl } from '@/lib/cdn.ts';
+import { formatEventDate } from '@/lib/events.ts';
 import { cn } from '@/lib/utils.ts';
-import { formatTicketDate, TicketEvent, TicketFont, TicketSkin } from '@/store/ticketDrafts.ts';
+import { TicketEvent, TicketFont, TicketSkin } from '@/store/ticketDrafts.ts';
 
 const DEFAULT_STAMP = 'Посещено';
 import TicketCode from '@/router/features/tickets/TicketCode.tsx';
@@ -122,7 +124,7 @@ const STACK: Record<Exclude<TicketFont, 'custom' | 'custom2'>, string> = {
     serif: "Georgia, 'Times New Roman', serif"
 };
 
-// data URL шрифта → имя семейства; FontFace регистрируем один раз на документ.
+// Имя ассета шрифта → имя семейства; FontFace регистрируем один раз на документ.
 const loadedFonts = new Map<string, string>();
 
 /** Регистрирует свой шрифт организатора, возвращает имя семейства (или undefined, пока грузится). */
@@ -132,9 +134,9 @@ function useCustomFont(font?: { data: string }) {
         if (!font) return setFamily(undefined);
         const known = loadedFonts.get(font.data);
         if (known) return setFamily(known);
-        const name = `ticket-font-${loadedFonts.size + 1}`;
+        const name = `ticket-font-${crypto.randomUUID()}`;
         let cancelled = false;
-        new FontFace(name, `url(${font.data})`)
+        new FontFace(name, `url(${ticketAssetUrl(font.data)})`)
             .load()
             .then((face) => {
                 document.fonts.add(face);
@@ -145,7 +147,9 @@ function useCustomFont(font?: { data: string }) {
         return () => {
             cancelled = true;
         };
-    }, [font]);
+        // объект шрифта пересоздаётся при каждом сохранении — сравниваем по содержимому
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [font?.data]);
     return family;
 }
 
@@ -262,15 +266,15 @@ export default function TicketCard({
         '--holo-hue': skin.holoHue,
         '--holo-angle': `${skin.holoAngle}deg`,
         fontFamily: fontOf(skin.bodyFont),
-        '--mask': skin.mask ? `url(${skin.mask})` : undefined,
-        '--emboss': skin.emboss ? `url(${skin.emboss})` : undefined,
+        '--mask': skin.mask ? `url(${ticketAssetUrl(skin.mask)})` : undefined,
+        '--emboss': skin.emboss ? `url(${ticketAssetUrl(skin.emboss)})` : undefined,
         '--sparkle-tex': skin.foil === 'sparkle' ? getSparkleTexture() : undefined
     } as CSSProperties;
 
     const no = `№ ${String(serial).padStart(4, '0')}${event.capacity ? ` / ${event.capacity}` : ''}`;
-    const when = formatTicketDate(event);
+    const when = formatEventDate(event.startsAt, event.timezone);
     const where = [event.city, event.venue].filter(Boolean).join(' · ');
-    const lineup = event.lineup?.map((a) => a.username).join(', ');
+    const lineup = event.lineup?.map((a) => a.name).join(', ');
     const top = skin.info === 'top';
     const minimal = skin.info === 'minimal';
     const align = { left: 'text-left', center: 'text-center', right: 'text-right' }[skin.align];
@@ -327,7 +331,6 @@ export default function TicketCard({
         />
     );
 
-    // ponytail: QR — когда будет бэк с настоящим кодом прохода; сейчас код текстом
     // После мероприятия штамп встаёт на место кода: код уже использован, а поверх белой
     // плашки «чернила» цвета текста карты не видны.
     const codeBox = past ? (
@@ -373,7 +376,7 @@ export default function TicketCard({
                     {skin.art && (
                         <div
                             className='ticket-layer ticket-art'
-                            style={{ backgroundImage: `url(${skin.art})` }}
+                            style={{ backgroundImage: `url(${ticketAssetUrl(skin.art)})` }}
                         />
                     )}
                     {skin.emboss && (
@@ -392,7 +395,7 @@ export default function TicketCard({
                     {skin.foreground && (
                         <div
                             className='ticket-layer ticket-fg'
-                            style={{ backgroundImage: `url(${skin.foreground})` }}
+                            style={{ backgroundImage: `url(${ticketAssetUrl(skin.foreground)})` }}
                         />
                     )}
 
@@ -441,7 +444,7 @@ export default function TicketCard({
                     {skin.back && (
                         <div
                             className='ticket-layer bg-cover bg-center'
-                            style={{ backgroundImage: `url(${skin.back})` }}
+                            style={{ backgroundImage: `url(${ticketAssetUrl(skin.back)})` }}
                         />
                     )}
                     <div
@@ -485,7 +488,7 @@ export default function TicketCard({
                         {skin.partners && (
                             <div
                                 className='h-[10cqw] shrink-0 bg-contain bg-center bg-no-repeat'
-                                style={{ backgroundImage: `url(${skin.partners})` }}
+                                style={{ backgroundImage: `url(${ticketAssetUrl(skin.partners)})` }}
                                 role='img'
                                 aria-label='Партнёры'
                             />
