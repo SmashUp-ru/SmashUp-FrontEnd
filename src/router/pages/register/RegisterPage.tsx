@@ -21,6 +21,8 @@ import { useEffect } from 'react';
 import { axiosSession } from '@/lib/utils.ts';
 import { startVkFlow } from '@/lib/vk.ts';
 import { useGlobalStore } from '@/store/global.ts';
+import { useUserStore } from '@/store/entities/user.ts';
+import { AxiosSmashUpResponse } from '@/router/shared/types/smashup.ts';
 import { registerFormSchema } from '@/router/shared/schemas/register.ts';
 import { axiosCatcher } from '@/router/shared/toasts/axios.tsx';
 import { useToast } from '@/router/shared/hooks/use-toast.ts';
@@ -32,6 +34,8 @@ export default function RegisterPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const token = useGlobalStore((state) => state.token);
+    const { updateToken, updateCurrentUser } = useGlobalStore();
+    const getUserByToken = useUserStore((state) => state.getOneByStringKey);
 
     // при регистрации через VK сюда приходят vkId и email (из /vk/authorize)
     const vkState = location.state as { vkId?: number | null; email?: string } | null;
@@ -55,7 +59,15 @@ export default function RegisterPage() {
                 password: values.password,
                 ...(vkId !== null ? { vkId } : {})
             })
-            .then(() => navigate('/register/email'))
+            .then(async (r: AxiosSmashUpResponse<{ token?: string }>) => {
+                // Через VK письма нет: бэк сразу создаёт аккаунт и отдаёт токен (почту подтвердил VK)
+                const newToken = vkId !== null ? r.data.response?.token : undefined;
+                if (!newToken) return navigate('/register/email');
+                updateToken(newToken);
+                localStorage.setItem('smashup_token', newToken);
+                updateCurrentUser(await getUserByToken('token', newToken));
+                navigate('/', { replace: true });
+            })
             .catch(axiosCatcher(toast, 'при попытке регистрации.'));
     }
 
@@ -119,6 +131,8 @@ export default function RegisterPage() {
                                             className='w-full'
                                             placeholder='sanya@smashup.ru'
                                             {...field}
+                                            // бэк сверяет её с почтой из VK: другая = register.bad_vk_id
+                                            readOnly={vkId !== null}
                                         />
                                     </FormControl>
                                     <FormMessage className='text-onSurfaceVariant font-medium text-[13px]' />
