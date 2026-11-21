@@ -28,10 +28,13 @@ const TabsTrigger = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.Trigger>,
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
 >(({ className, ...props }, ref) => (
+    // Кольцо фокуса внутри (`ring-inset`): список вкладок с `overflow-x-auto` обрезал
+    // внешнюю браузерную обводку. Цвет onSurface — на активной (primary) вкладке
+    // кольцо цвета primary не было бы видно.
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
-            'inline-flex bg-surfaceVariant font-medium text-sm md:text-[15px] px-3 md:px-4 py-2 text-onSurface items-center justify-center whitespace-nowrap rounded-2xl transition-colors disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-surface',
+            'inline-flex bg-surfaceVariant font-medium text-sm md:text-[15px] px-3 md:px-4 py-2 text-onSurface items-center justify-center whitespace-nowrap rounded-2xl transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-onSurface disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-surface',
             className
         )}
         {...props}
