@@ -42,7 +42,7 @@ export default function PlayerBarVkMashup() {
             setAudioUrl(null);
         } else {
             setAudioUrl(vkMashupSrc.audioUrl);
-            if (vkMashupSrc.audioUrl === null) {
+            if (!vkMashupSrc.audioUrl) {
                 axiosSession
                     .get(
                         `${import.meta.env.VITE_BACKEND_URL}/uploads/mashup/vk/${vkMashupSrc.ownerId}_${vkMashupSrc.audioId}`
@@ -57,7 +57,7 @@ export default function PlayerBarVkMashup() {
                             const audioUrl = r.data.response.audioUrl;
                             const duration = r.data.response.duration;
 
-                            if (audioUrl === null || duration === null) {
+                            if (!audioUrl || duration === null) {
                                 toast({
                                     element: (
                                         <ErrorToast

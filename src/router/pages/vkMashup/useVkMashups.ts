@@ -102,7 +102,7 @@ export function useVkMashups(autoLoad: boolean = true) {
                 removeItem(
                     page,
                     vkMashup,
-                    (l, r) => l.audioId === r.audioId && r.ownerId === r.ownerId,
+                    (l, r) => l.audioId === r.audioId && l.ownerId === r.ownerId,
                     true
                 );
             } else if (vkMashup.page > index) {

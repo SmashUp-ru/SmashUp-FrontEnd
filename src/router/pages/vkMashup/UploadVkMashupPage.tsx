@@ -75,7 +75,7 @@ export default function UploadVkMashupPage() {
             handleLoggedUser={true}
             handleTracksUrls={true}
             handleMashupFile={false}
-            requireImageFile={vkMashup.imageUrl === undefined}
+            requireImageFile={!vkMashup.imageUrl}
             showTracksIcons={true}
             lockStatusLink={true}
             onClick={(body: MashupFormBody) => {

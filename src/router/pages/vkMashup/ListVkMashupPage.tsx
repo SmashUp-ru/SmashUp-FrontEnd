@@ -70,7 +70,9 @@ export default function ListVkMashupPage() {
                 ))}
             </div>
 
-            {mashups.length != vkMashups.total && (
+            {/* total с бэка считает и уже загруженные на SmashUp, поэтому конец списка
+                определяем по неполной последней странице (бэк отдаёт по 25) */}
+            {mashups.length != vkMashups.total && vkMashups.pages.get(index - 1)?.length === 25 && (
                 <Button
                     variant='default'
                     disabled={isLoading}
