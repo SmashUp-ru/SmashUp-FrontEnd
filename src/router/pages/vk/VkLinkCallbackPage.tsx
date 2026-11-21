@@ -35,7 +35,7 @@ export default function VkLinkCallbackPage() {
         }
 
         axiosSession
-            .get('/vk/link', { params: { code, state } })
+            .get('/vk/link', { params: { code, state, device_id: searchParams.get('device_id') } })
             .then(() => {
                 toast({ element: <BaseToast icon field='VK ID' after='привязан' /> });
                 navigate('/settings', { replace: true });

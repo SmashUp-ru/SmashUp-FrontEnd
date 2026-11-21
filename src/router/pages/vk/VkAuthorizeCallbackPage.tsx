@@ -6,7 +6,7 @@ import { useToast } from '@/router/shared/hooks/use-toast.ts';
 import { useGlobalStore } from '@/store/global.ts';
 import { useUserStore } from '@/store/entities/user.ts';
 import { AxiosSmashUpResponse } from '@/router/shared/types/smashup.ts';
-import { consumeVkState, vkRedirectUri } from '@/lib/vk.ts';
+import { consumeVkState } from '@/lib/vk.ts';
 
 // Элемент ответа /vk/authorize. Форма задокументирована, но живьём не проверялась
 // (нужен реальный VK-код), поэтому парсим защитно.
@@ -49,8 +49,8 @@ export default function VkAuthorizeCallbackPage() {
 
         axiosSession
             .get('/vk/authorize', {
-                // тот же redirect_uri, что ушёл в /vk/authorize/url, иначе VK не обменяет код
-                params: { code, redirect_uri: vkRedirectUri('authorize') }
+                // VK ID: бэк обменивает код по state (там его PKCE и redirect_uri) и device_id от VK
+                params: { code, state, device_id: searchParams.get('device_id') }
             })
             .then(async (r: AxiosSmashUpResponse<VkAuthorizeItem | VkAuthorizeItem[]>) => {
                 const data = r.data.response;
